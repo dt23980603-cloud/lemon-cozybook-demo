@@ -1,0 +1,156 @@
+const JSON_HEADERS = {
+  'content-type': 'application/json; charset=utf-8',
+  'cache-control': 'no-store'
+};
+
+async function ensureTable(db) {
+  await db.prepare(`
+    CREATE TABLE IF NOT EXISTS guild_state (
+      id TEXT PRIMARY KEY,
+      state_json TEXT NOT NULL,
+      updated_at INTEGER NOT NULL
+    )
+  `).run();
+}
+
+function isPlainObject(value) {
+  return value && typeof value === 'object' && !Array.isArray(value);
+}
+
+function sanitizePatch(input) {
+  const patch = {};
+
+  if (Array.isArray(input?.members)) patch.members = input.members;
+  if (isPlainObject(input?.checks)) patch.checks = input.checks;
+  if (Array.isArray(input?.customFlowers)) patch.customFlowers = input.customFlowers;
+  if (Array.isArray(input?.updateList)) patch.updateList = input.updateList;
+
+  return patch;
+}
+
+async function readCurrentState(db, stateId = 'main') {
+  const row = await db
+    .prepare('SELECT state_json, updated_at FROM guild_state WHERE id = ?1')
+    .bind(stateId)
+    .first();
+
+  if (!row) return { state: {}, updatedAt: 0, exists: false };
+
+  let state = {};
+  try {
+    const parsed = JSON.parse(row.state_json);
+    if (isPlainObject(parsed)) state = parsed;
+  } catch (_) {
+    state = {};
+  }
+
+  return {
+    state,
+    updatedAt: Number(row.updated_at || 0),
+    exists: true
+  };
+}
+
+export async function onRequestGet(context) {
+  const { env } = context;
+  if (!env.DB) {
+    return new Response(JSON.stringify({ error: 'D1 binding DB is not configured.' }), {
+      status: 500,
+      headers: JSON_HEADERS
+    });
+  }
+
+  await ensureTable(env.DB);
+  const url = new URL(context.request.url);
+  const stateId = url.searchParams.get('mode') === 'demo' ? 'demo' : 'main';
+  let current = await readCurrentState(env.DB, stateId);
+
+  // 데모 상태가 아직 없으면 운영(main) 상태를 1회 복제해 시작합니다.
+  if (stateId === 'demo' && !current.exists) {
+    const main = await readCurrentState(env.DB, 'main');
+    if (main.exists) {
+      const seededAt = Date.now();
+      await env.DB.prepare(`
+        INSERT INTO guild_state (id, state_json, updated_at)
+        VALUES (?1, ?2, ?3)
+        ON CONFLICT(id) DO UPDATE SET
+          state_json = excluded.state_json,
+          updated_at = excluded.updated_at
+      `).bind('demo', JSON.stringify(main.state), seededAt).run();
+      current = { state: main.state, updatedAt: seededAt, exists: true };
+    }
+  }
+
+  if (!current.exists) {
+    return new Response(JSON.stringify({ exists: false, state: null, updatedAt: 0 }), {
+      headers: JSON_HEADERS
+    });
+  }
+
+  return new Response(JSON.stringify({
+    exists: true,
+    state: current.state,
+    updatedAt: current.updatedAt
+  }), { headers: JSON_HEADERS });
+}
+
+export async function onRequestPut(context) {
+  const { env, request } = context;
+  if (!env.DB) {
+    return new Response(JSON.stringify({ error: 'D1 binding DB is not configured.' }), {
+      status: 500,
+      headers: JSON_HEADERS
+    });
+  }
+
+  let body;
+  try {
+    body = await request.json();
+  } catch (_) {
+    return new Response(JSON.stringify({ error: 'Invalid JSON body.' }), {
+      status: 400,
+      headers: JSON_HEADERS
+    });
+  }
+
+  const patch = sanitizePatch(body?.state);
+  if (Object.keys(patch).length === 0) {
+    return new Response(JSON.stringify({ error: 'No valid guild state fields were provided.' }), {
+      status: 400,
+      headers: JSON_HEADERS
+    });
+  }
+
+  await ensureTable(env.DB);
+  const url = new URL(context.request.url);
+  const stateId = url.searchParams.get('mode') === 'demo' ? 'demo' : 'main';
+  const current = await readCurrentState(env.DB, stateId);
+  const mergedState = { ...current.state, ...patch };
+  const updatedAt = Date.now();
+
+  await env.DB.prepare(`
+    INSERT INTO guild_state (id, state_json, updated_at)
+    VALUES (?1, ?2, ?3)
+    ON CONFLICT(id) DO UPDATE SET
+      state_json = excluded.state_json,
+      updated_at = excluded.updated_at
+  `).bind(stateId, JSON.stringify(mergedState), updatedAt).run();
+
+  return new Response(JSON.stringify({
+    ok: true,
+    updatedAt,
+    savedFields: Object.keys(patch)
+  }), {
+    headers: JSON_HEADERS
+  });
+}
+
+export async function onRequest(context) {
+  if (context.request.method === 'GET') return onRequestGet(context);
+  if (context.request.method === 'PUT') return onRequestPut(context);
+
+  return new Response(JSON.stringify({ error: 'Method not allowed.' }), {
+    status: 405,
+    headers: { ...JSON_HEADERS, allow: 'GET, PUT' }
+  });
+}

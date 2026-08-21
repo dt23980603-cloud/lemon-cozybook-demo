@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>코지 공략모음 | 레몬</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        *, body, input, button, select, textarea {
+            font-family: 'Gowun Batang', serif;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            margin: 15px;
+            color: #333;
+        }
+
+        .container-full {
+            width: 100%;
+            box-sizing: border-box;
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-btn-home {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .nav-btn-home:hover {
+            background-color: #fff0f0;
+            transform: translateY(-2px);
+        }
+
+        .guide-card {
+            background-color: #f8f9fa;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 15px;
+        }
+
+        .guide-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .guide-title {
+            font-weight: bold;
+            font-size: 1.05rem;
+        }
+
+        .guide-count {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: #fff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #fff;
+            min-width: 720px;
+        }
+
+        th, td {
+            border-right: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            padding: 11px 12px;
+            font-size: 0.92rem;
+            vertical-align: middle;
+        }
+
+        th:last-child, td:last-child {
+            border-right: none;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        th {
+            background-color: #fff9db;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        td.number {
+            width: 80px;
+            text-align: center;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        td.guide-name {
+            text-align: left;
+            font-weight: bold;
+        }
+
+        td.link-cell {
+            width: 150px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .btn-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 14px;
+            background-color: #fff0f0;
+            border: 1px solid #333;
+            border-radius: 5px;
+            color: #333;
+            font-size: 0.86rem;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-link:hover {
+            background-color: #fae0e0;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 700px) {
+            body { margin: 8px; }
+            .container-full { padding: 12px; }
+            .header h1 { font-size: 1.25rem !important; }
+            .guide-title-row { align-items: flex-start; flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-full">
+        <div class="header">
+            <div class="header-left">
+                <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기">🔙</a>
+                <h1 style="margin: 0; font-size: 1.5rem;">📖코지 공략모음📖</h1>
+            </div>
+        </div>
+
+        <div class="guide-card">
+            <div class="guide-title-row">
+                <div class="guide-title">🍋 더 코지 플로리스트 공략 모음</div>
+                <div class="guide-count">총 14개 공략</div>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;">번호</th>
+                            <th>공략 제목</th>
+                            <th style="width: 150px;">링크</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="number">[1]</td><td class="guide-name">정원 가꾸기 기초</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224292427133" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[3]</td><td class="guide-name">꽃 레벨업 &lt;기초편&gt;</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224295387584" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[4]</td><td class="guide-name">꽃 레벨업 &lt;심화편&gt;</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224296400664" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[5]</td><td class="guide-name">꽃 개량편 &lt;1&gt;</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224298448501" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[6]</td><td class="guide-name">꽃 개량편 &lt;2&gt;</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224299540036" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[7]</td><td class="guide-name">꽃 개량 &lt;옵션편&gt;</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224303199524" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[8]</td><td class="guide-name">친구와 단짝 콘텐츠</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224308121203" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[9]</td><td class="guide-name">주민주문과 단체주문</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224309981639" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[10]</td><td class="guide-name">길드 컨텐츠 &lt;1&gt;</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224317729143" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[11]</td><td class="guide-name">길드 컨텐츠 &lt;2&gt;</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224323966005" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[12]</td><td class="guide-name">길드 컨텐츠-무,소과금 편</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224324714114" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[13]</td><td class="guide-name">길드 재배 활용하기</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224331951854" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[14]</td><td class="guide-name">4대 이벤트 알기</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224364919820" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[15]</td><td class="guide-name">스타소울 알기</td><td class="link-cell"><a class="btn-link" href="https://game.naver.com/lounge/The_Cozy_Florist/board/detail/7675397" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

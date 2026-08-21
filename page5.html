@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DEMO | 전체 꽃 도감 | 레몬</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, body, input, button, select, textarea { font-family: 'Gowun Batang', serif; box-sizing: border-box; }
+    body { background:#f9f9f9; margin:15px; color:#333; }
+    .container-full { width:100%; background:#fff; padding:20px; border:1px solid #ccc; border-radius:8px; box-shadow:2px 2px 5px rgba(0,0,0,.05); }
+    .header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:20px; padding-bottom:10px; }
+    .header-left { display:flex; align-items:center; gap:12px; }
+    .nav-btn-home { display:inline-flex; align-items:center; justify-content:center; width:50px; height:50px; background:#fff; border:1px solid #ccc; border-radius:8px; text-decoration:none; font-size:1.2rem; transition:.2s; }
+    .nav-btn-home:hover { background:#fff0f0; transform:translateY(-2px); }
+    .subtitle { margin:3px 0 0; color:#777; font-size:.88rem; }
+    .header-actions { display:flex; align-items:center; gap:8px; }
+    .btn-delete-flower { padding:9px 14px; background:#fff; border:1px solid #b45a5a; color:#9c3030; border-radius:6px; font-weight:bold; cursor:pointer; transition:.15s; }
+    .btn-delete-flower:hover { background:#fff0f0; }
+
+    .control-card { background:#f8f9fa; border:1px solid #333; border-radius:6px; padding:15px; margin-bottom:18px; }
+    .search-row { display:flex; gap:8px; margin-bottom:12px; }
+    .search-input { flex:1; min-width:0; padding:10px 12px; border:1px solid #aaa; border-radius:6px; font-size:.95rem; background:#fff; }
+    .btn-clear { padding:9px 14px; background:#fff; border:1px solid #999; border-radius:6px; font-weight:bold; cursor:pointer; }
+    .btn-clear:hover { background:#f1f1f1; }
+    .tab-container { display:flex; gap:10px; flex-wrap:wrap; }
+    .tab-btn { flex:1; min-width:92px; padding:10px 12px; background:#f1f1f1; border:1px solid #ccc; border-radius:8px; font-weight:bold; font-size:.95rem; cursor:pointer; transition:.2s; }
+    .tab-btn:hover { filter:brightness(.96); }
+    .tab-btn.active[data-grade="ALL"] { background:#fff0f0; border-color:#4b4949; box-shadow:inset 0 -3px 0 #4b4949; }
+    .tab-btn.active[data-grade="N"] { background:#d4edbc; border-color:#4b4949; box-shadow:inset 0 -3px 0 #4b4949; }
+    .tab-btn.active[data-grade="R"] { background:#bfe1f6; border-color:#4b4949; box-shadow:inset 0 -3px 0 #4b4949; }
+    .tab-btn.active[data-grade="SR"] { background:#e6cff2; border-color:#4b4949; box-shadow:inset 0 -3px 0 #4b4949; }
+    .tab-btn.active[data-grade="SSR"] { background:#ffe5a0; border-color:#4b4949; box-shadow:inset 0 -3px 0 #4b4949; }
+    .tab-btn.active[data-grade="UR"] { background:#ffcfc9; border-color:#4b4949; box-shadow:inset 0 -3px 0 #4b4949; }
+    .result-info { display:flex; justify-content:space-between; align-items:center; gap:10px; margin:0 2px 12px; color:#666; font-size:.88rem; }
+
+    .flower-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(205px,1fr)); gap:16px; }
+    .flower-card { background:#fff; border:1px solid #bbb; border-radius:10px; overflow:hidden; box-shadow:2px 2px 5px rgba(0,0,0,.05); transition:.2s; }
+    .flower-card:hover { transform:translateY(-2px); box-shadow:2px 5px 10px rgba(0,0,0,.09); }
+    .image-wrap { position:relative; aspect-ratio:1/1; background:#f8f9fa; border-bottom:1px solid #ddd; display:flex; align-items:center; justify-content:center; padding:12px; }
+    .flower-image { width:100%; height:100%; object-fit:contain; }
+    .custom-placeholder { display:flex; align-items:center; justify-content:center; font-size:3rem; color:#aaa; background:#f8f9fa; }
+    .grade-badge { position:absolute; top:10px; left:10px; display:inline-flex; align-items:center; justify-content:center; min-width:42px; height:28px; padding:0 9px; border:1px solid #777; border-radius:14px; font-size:.82rem; font-weight:bold; background:#d4edbc; }
+    .card-body { padding:13px; text-align:center; }
+    .flower-name { font-size:1rem; font-weight:bold; margin-bottom:10px; }
+    .flower-meta { color:#777; font-size:.78rem; margin-bottom:11px; }
+    .btn-open { width:100%; padding:8px 12px; background:#fff0f0; border:1px solid #666; border-radius:6px; font-size:.85rem; font-weight:bold; cursor:pointer; transition:.15s; }
+    .btn-open:hover { background:#fae0e0; }
+    .empty-result { grid-column:1/-1; padding:50px 15px; text-align:center; color:#888; border:1px dashed #ccc; border-radius:8px; background:#fafafa; }
+
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:1200; justify-content:center; align-items:center; padding:18px; }
+    .modal-overlay.active { display:flex; }
+    .flower-detail-card { background:#fff; border:2px solid #333; border-radius:10px; padding:20px; width:520px; max-width:100%; box-shadow:0 4px 15px rgba(0,0,0,.2); }
+    .modal-header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:15px; }
+    .modal-title { font-weight:bold; font-size:1.1rem; }
+    .modal-close { background:none; border:none; font-size:1.2rem; font-weight:bold; cursor:pointer; color:#888; }
+    .modal-close:hover { color:#000; }
+    .flower-detail-layout { display:flex; gap:20px; align-items:flex-start; }
+    .flower-detail-image { width:160px; height:160px; object-fit:contain; border:1px solid #ccc; border-radius:10px; background:#f8f9fa; flex-shrink:0; }
+    .flower-detail-info { flex:1; min-width:0; }
+    .flower-detail-name { font-size:1.15rem; font-weight:bold; margin-bottom:12px; }
+    .flower-detail-row { display:flex; gap:10px; padding:7px 0; border-bottom:1px solid #eee; font-size:.9rem; line-height:1.45; }
+    .flower-detail-label { width:80px; flex-shrink:0; color:#666; font-weight:bold; }
+    .flower-detail-source { margin-top:12px; font-size:.75rem; color:#999; }
+
+    .delete-flower-card { background:#fff; border:2px solid #333; border-radius:10px; padding:20px; width:560px; max-width:100%; max-height:80vh; display:flex; flex-direction:column; box-shadow:0 4px 15px rgba(0,0,0,.2); }
+    .delete-guide { margin:0 0 12px; color:#777; font-size:.82rem; line-height:1.5; }
+    .delete-flower-list { overflow-y:auto; border:1px solid #ddd; border-radius:8px; background:#fafafa; }
+    .delete-flower-row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 12px; border-bottom:1px solid #e5e5e5; background:#fff; }
+    .delete-flower-row:last-child { border-bottom:none; }
+    .delete-flower-info { min-width:0; display:flex; align-items:center; gap:9px; }
+    .delete-grade { display:inline-flex; align-items:center; justify-content:center; min-width:42px; height:26px; padding:0 8px; border:1px solid #999; border-radius:13px; font-size:.78rem; font-weight:bold; background:#f3f3f3; }
+    .delete-flower-name { font-size:.9rem; font-weight:bold; word-break:break-all; }
+    .btn-delete-row { flex-shrink:0; padding:6px 11px; background:#fff0f0; border:1px solid #b45a5a; color:#9c3030; border-radius:5px; font-weight:bold; cursor:pointer; }
+    .btn-delete-row:hover { background:#f9dede; }
+    .delete-empty { padding:28px 15px; text-align:center; color:#888; }
+
+    @media (max-width:700px) { .flower-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:520px) {
+      body { margin:8px; }
+      .container-full { padding:13px; }
+      .header { align-items:flex-start; }
+      .header h1 { font-size:1.25rem !important; }
+      .tab-btn { min-width:72px; }
+      .flower-grid { grid-template-columns:1fr; }
+      .flower-detail-layout { flex-direction:column; align-items:center; }
+      .flower-detail-info { width:100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container-full">
+    <div class="header">
+      <div class="header-left">
+        <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기">🔙</a>
+        <div>
+          <h1 style="margin:0; font-size:1.5rem;">🌷전체 꽃 도감🌷</h1>
+          <p class="subtitle">더 코지 플로리스트의 모든 꽃을 사진으로 확인할 수 있습니다.</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="openDeleteFlowerModal" class="btn-delete-flower" type="button">🗑 꽃 삭제</button>
+      </div>
+    </div>
+
+    <div class="control-card">
+      <div class="search-row">
+        <input id="flowerSearch" class="search-input" type="search" placeholder="🔍 꽃 이름 검색..." autocomplete="off">
+        <button id="clearSearch" class="btn-clear" type="button">초기화</button>
+      </div>
+      <div class="tab-container">
+        <button class="tab-btn active" data-grade="ALL">전체 <span class="count">(69)</span></button>
+        <button class="tab-btn" data-grade="N">N <span class="count">(69)</span></button>
+        <button class="tab-btn" data-grade="R">R <span class="count">(0)</span></button>
+        <button class="tab-btn" data-grade="SR">SR <span class="count">(0)</span></button>
+        <button class="tab-btn" data-grade="SSR">SSR <span class="count">(0)</span></button>
+        <button class="tab-btn" data-grade="UR">UR <span class="count">(0)</span></button>
+      </div>
+    </div>
+
+    <div class="result-info">
+      <span id="resultText">총 69개의 꽃</span>
+      <span>※ N등급 69개 공용 데이터 + 메인페이지 추가 꽃 연동 테스트입니다.</span>
+    </div>
+
+    <div id="flowerGrid" class="flower-grid"></div>
+  </div>
+
+  <div class="modal-overlay" id="flowerDetailModal" aria-hidden="true">
+    <div class="flower-detail-card" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+      <div class="modal-header">
+        <div class="modal-title" id="detailTitle">🌹 꽃 정보</div>
+        <button class="modal-close" type="button" id="closeModal" aria-label="닫기">✕</button>
+      </div>
+      <div class="flower-detail-layout">
+        <img id="detailImage" src="" alt="" class="flower-detail-image">
+        <div class="flower-detail-info">
+          <div id="detailName" class="flower-detail-name"></div>
+          <div class="flower-detail-row"><span class="flower-detail-label">등급</span><span id="detailGrade"></span></div>
+          <div class="flower-detail-row"><span class="flower-detail-label">길드전</span><span id="detailScore"></span></div>
+          <div class="flower-detail-row"><span class="flower-detail-label">획득</span><span id="detailAcquire"></span></div>
+          <div class="flower-detail-row"><span class="flower-detail-label">도감 조건</span><span id="detailUnlock"></span></div>
+          <div class="flower-detail-row"><span class="flower-detail-label">비고</span><span id="detailNote"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="deleteFlowerModal" aria-hidden="true">
+    <div class="delete-flower-card" role="dialog" aria-modal="true" aria-labelledby="deleteFlowerTitle">
+      <div class="modal-header">
+        <div class="modal-title" id="deleteFlowerTitle">🗑 등록 꽃 삭제</div>
+        <button class="modal-close" type="button" id="closeDeleteFlowerModal" aria-label="닫기">✕</button>
+      </div>
+      <p class="delete-guide">메인페이지에서 직접 추가한 꽃만 삭제할 수 있습니다. 삭제하면 길드 꽃 도감, 체크 정보, 메인페이지 업데이트 내역과 다른 브라우저에도 함께 반영됩니다.</p>
+      <div id="deleteFlowerList" class="delete-flower-list"></div>
+    </div>
+  </div>
+
+  <script src="flower-data.js"></script>
+  <script>
+    const masterFlowers = window.FLOWER_MASTER_DATA || [];
+
+    let customFlowersCache = (() => {
+      try {
+        const saved = JSON.parse(localStorage.getItem('demo_guild_custom_flowers') || '[]');
+        return Array.isArray(saved) ? saved : [];
+      } catch (e) {
+        return [];
+      }
+    })();
+
+    let updateListCache = (() => {
+      try {
+        const saved = JSON.parse(localStorage.getItem('demo_guild_update_list') || '[]');
+        return Array.isArray(saved) ? saved : [];
+      } catch (e) {
+        return [];
+      }
+    })();
+
+    let sharedChecksCache = (() => {
+      try {
+        const saved = JSON.parse(localStorage.getItem('demo_guild_checks') || '{}');
+        return saved && typeof saved === 'object' && !Array.isArray(saved) ? saved : {};
+      } catch (e) {
+        return {};
+      }
+    })();
+
+    const GUILD_STATE_API = '/api/guild-state?mode=demo';
+    let lastRemoteUpdatedAt = 0;
+    let remoteSyncReady = false;
+
+    function getCustomFlowers() {
+      const masterNames = new Set(masterFlowers.map(f => f.listName));
+      return customFlowersCache
+        .filter(item => item && item.grade && item.name && !masterNames.has(item.name))
+        .map((item, index) => ({
+          id: `CUSTOM_${item.grade}_${index}`,
+          name: item.name.replace(/^\[[^\]]+\]\s*/, ''),
+          listName: item.name,
+          grade: item.grade,
+          guildScore: null,
+          image: '',
+          imageRemote: '',
+          acquire: '메인페이지에서 등록한 꽃',
+          unlock: (item.name.match(/^\[([^\]]+)\]/) || [,'정보 준비중'])[1],
+          note: '상세 정보 준비중',
+          isCustom: true
+        }));
+    }
+
+    function getAllFlowers() {
+      return [...masterFlowers, ...getCustomFlowers()];
+    }
+
+    let activeGrade = 'ALL';
+
+    const grid = document.getElementById('flowerGrid');
+    const searchInput = document.getElementById('flowerSearch');
+    const resultText = document.getElementById('resultText');
+    const modal = document.getElementById('flowerDetailModal');
+    const deleteFlowerModal = document.getElementById('deleteFlowerModal');
+    const deleteFlowerList = document.getElementById('deleteFlowerList');
+
+    function renderFlowers() {
+      const flowers = getAllFlowers();
+      const keyword = searchInput.value.trim().toLowerCase();
+      const filtered = flowers.filter(f => (activeGrade === 'ALL' || f.grade === activeGrade) && f.name.toLowerCase().includes(keyword));
+      resultText.textContent = `총 ${filtered.length}개의 꽃`;
+      updateGradeCounts(flowers);
+      if (!filtered.length) {
+        grid.innerHTML = '<div class="empty-result">조건에 맞는 꽃이 없습니다.</div>';
+        return;
+      }
+      grid.innerHTML = filtered.map(f => `
+        <article class="flower-card">
+          <div class="image-wrap">
+            <span class="grade-badge">${f.grade}</span>
+            ${f.isCustom
+              ? '<div class="flower-image custom-placeholder" aria-label="이미지 준비중">🌷</div>'
+              : `<img src="${f.image}" alt="${f.name}" class="flower-image" onerror="this.onerror=null;this.src='${f.imageRemote}';">`}
+          </div>
+          <div class="card-body">
+            <div class="flower-name">${f.name}</div>
+            <div class="flower-meta">${f.guildScore == null ? '상세 정보 준비중' : `길드전 · ${f.guildScore}점`}</div>
+            <button class="btn-open" type="button" data-id="${f.id}">${f.isCustom ? '정보 준비중' : '열기'}</button>
+          </div>
+        </article>`).join('');
+
+      document.querySelectorAll('.btn-open').forEach(btn => btn.addEventListener('click', openDetail));
+    }
+
+    function renderDeleteFlowerList() {
+      if (!customFlowersCache.length) {
+        deleteFlowerList.innerHTML = '<div class="delete-empty">삭제할 등록 꽃이 없습니다.</div>';
+        return;
+      }
+
+      deleteFlowerList.innerHTML = customFlowersCache.map((flower, index) => `
+        <div class="delete-flower-row">
+          <div class="delete-flower-info">
+            <span class="delete-grade">${flower.grade || '-'}</span>
+            <span class="delete-flower-name">${flower.name || '(이름 없음)'}</span>
+          </div>
+          <button class="btn-delete-row" type="button" data-custom-index="${index}">삭제</button>
+        </div>`).join('');
+
+      deleteFlowerList.querySelectorAll('.btn-delete-row').forEach(btn => {
+        btn.addEventListener('click', () => deleteCustomFlower(Number(btn.dataset.customIndex)));
+      });
+    }
+
+    function openDeleteFlowers() {
+      renderDeleteFlowerList();
+      deleteFlowerModal.classList.add('active');
+      deleteFlowerModal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeDeleteFlowers() {
+      deleteFlowerModal.classList.remove('active');
+      deleteFlowerModal.setAttribute('aria-hidden', 'true');
+    }
+
+    function makeUpdateFlowerName(item) {
+      if (!item) return '';
+      const category = item.category && item.category !== '-' ? item.category : '';
+      const content = item.content || '';
+      return category ? `[${category}] ${content}` : content;
+    }
+
+    function removeMatchingUpdateEntries(flower) {
+      if (!flower) return;
+      updateListCache = updateListCache.filter(item =>
+        !(item && item.grade === flower.grade && makeUpdateFlowerName(item) === flower.name)
+      );
+    }
+
+    function shiftChecksAfterCustomFlowerDelete(grade, customIndex) {
+      const baseFlowerCounts = { N:69, R:75, SR:118, SSR:59, UR:21 };
+      const sameGradeBeforeCount = customFlowersCache
+        .slice(0, customIndex)
+        .filter(f => f && f.grade === grade).length;
+      const deletedTableIndex = (baseFlowerCounts[grade] || 0) + sameGradeBeforeCount;
+      const shiftedChecks = {};
+
+      Object.entries(sharedChecksCache || {}).forEach(([key, value]) => {
+        const match = key.match(/^([^_]+)_(\d+)_(.+)$/);
+        if (!match) {
+          shiftedChecks[key] = value;
+          return;
+        }
+
+        const [, gradeKey, indexText, memberId] = match;
+        const flowerIndexNumber = Number(indexText);
+        if (gradeKey !== grade) {
+          shiftedChecks[key] = value;
+          return;
+        }
+        if (flowerIndexNumber === deletedTableIndex) return;
+        if (flowerIndexNumber > deletedTableIndex) {
+          shiftedChecks[`${gradeKey}_${flowerIndexNumber - 1}_${memberId}`] = value;
+        } else {
+          shiftedChecks[key] = value;
+        }
+      });
+
+      return shiftedChecks;
+    }
+
+    async function deleteCustomFlower(customIndex) {
+      const flower = customFlowersCache[customIndex];
+      if (!flower) return;
+      if (!confirm(`'${flower.name}' 꽃을 전체 꽃 도감에서 삭제하시겠습니까?\n길드 꽃 도감의 해당 꽃, 체크 정보, 메인페이지 업데이트 내역도 함께 정리됩니다.`)) return;
+
+      // 삭제 직전에 최신 공용 상태를 한 번 더 받아 체크 데이터 유실을 방지합니다.
+      try {
+        const response = await fetch(GUILD_STATE_API, { cache:'no-store' });
+        if (response.ok) {
+          const payload = await response.json();
+          if (payload?.exists && payload.state) {
+            if (Array.isArray(payload.state.customFlowers)) customFlowersCache = payload.state.customFlowers;
+            if (Array.isArray(payload.state.updateList)) updateListCache = payload.state.updateList;
+            if (payload.state.checks && typeof payload.state.checks === 'object' && !Array.isArray(payload.state.checks)) {
+              sharedChecksCache = payload.state.checks;
+            }
+          }
+        }
+      } catch (_) {}
+
+      const currentIndex = customFlowersCache.findIndex(f =>
+        f && f.grade === flower.grade && f.name === flower.name
+      );
+      if (currentIndex < 0) {
+        alert('이미 삭제되었거나 최신 목록에서 꽃을 찾을 수 없습니다.');
+        renderDeleteFlowerList();
+        renderFlowers();
+        return;
+      }
+
+      const currentFlower = customFlowersCache[currentIndex];
+      sharedChecksCache = shiftChecksAfterCustomFlowerDelete(currentFlower.grade, currentIndex);
+      removeMatchingUpdateEntries(currentFlower);
+      customFlowersCache.splice(currentIndex, 1);
+
+      localStorage.setItem('demo_guild_custom_flowers', JSON.stringify(customFlowersCache));
+      localStorage.setItem('demo_guild_checks', JSON.stringify(sharedChecksCache));
+      localStorage.setItem('demo_guild_update_list', JSON.stringify(updateListCache));
+
+      const saved = await savePage5StateToRemote({
+        customFlowers: customFlowersCache,
+        checks: sharedChecksCache,
+        updateList: updateListCache
+      });
+
+      renderFlowers();
+      renderDeleteFlowerList();
+      alert(saved ? `'${currentFlower.name}' 꽃이 삭제되었습니다.` : `'${currentFlower.name}' 꽃을 현재 브라우저에서 삭제했습니다. D1 연결 상태를 확인해주세요.`);
+    }
+
+    function updateGradeCounts(flowers) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        const grade = btn.dataset.grade;
+        const count = grade === 'ALL' ? flowers.length : flowers.filter(f => f.grade === grade).length;
+        const countEl = btn.querySelector('.count');
+        if (countEl) countEl.textContent = `(${count})`;
+      });
+    }
+
+    function openDetail() {
+      const flower = getAllFlowers().find(f => f.id === this.dataset.id);
+      if (!flower || flower.isCustom) return;
+      const detailImage = document.getElementById('detailImage');
+      detailImage.src = flower.image;
+      detailImage.alt = flower.name;
+      detailImage.onerror = function () {
+        this.onerror = null;
+        this.src = flower.imageRemote;
+      };
+      document.getElementById('detailName').textContent = flower.name;
+      document.getElementById('detailGrade').textContent = flower.grade;
+      document.getElementById('detailScore').textContent = `${flower.guildScore}점`;
+      document.getElementById('detailAcquire').textContent = flower.acquire;
+      document.getElementById('detailUnlock').textContent = flower.unlock;
+      document.getElementById('detailNote').textContent = flower.note;
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden','false');
+    }
+    function closeDetail() {
+      modal.classList.remove('active');
+      modal.setAttribute('aria-hidden','true');
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeGrade = btn.dataset.grade;
+        renderFlowers();
+      });
+    });
+    searchInput.addEventListener('input', renderFlowers);
+    document.getElementById('clearSearch').addEventListener('click', () => { searchInput.value=''; activeGrade='ALL'; document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.grade==='ALL')); renderFlowers(); searchInput.focus(); });
+    document.getElementById('closeModal').addEventListener('click', closeDetail);
+    modal.addEventListener('click', e => { if (e.target === modal) closeDetail(); });
+    document.getElementById('openDeleteFlowerModal').addEventListener('click', openDeleteFlowers);
+    document.getElementById('closeDeleteFlowerModal').addEventListener('click', closeDeleteFlowers);
+    deleteFlowerModal.addEventListener('click', e => { if (e.target === deleteFlowerModal) closeDeleteFlowers(); });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        closeDetail();
+        closeDeleteFlowers();
+      }
+    });
+
+    async function savePage5StateToRemote(patch) {
+      try {
+        const response = await fetch(GUILD_STATE_API, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ state: patch })
+        });
+        if (!response.ok) throw new Error(`PUT ${response.status}`);
+        const payload = await response.json();
+        lastRemoteUpdatedAt = Number(payload.updatedAt || Date.now());
+        remoteSyncReady = true;
+        return true;
+      } catch (error) {
+        console.warn('D1 전체 꽃 도감 저장 실패', error);
+        return false;
+      }
+    }
+
+    async function saveCustomFlowersToRemote() {
+      await savePage5StateToRemote({ customFlowers: customFlowersCache });
+    }
+
+    async function syncCustomFlowersFromRemote(initial = false) {
+      try {
+        const response = await fetch(GUILD_STATE_API, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`GET ${response.status}`);
+        const payload = await response.json();
+
+        if (payload?.exists && payload.state) {
+          const updatedAt = Number(payload.updatedAt || 0);
+          const hasRemoteCustomFlowers = Array.isArray(payload.state.customFlowers);
+          const hasRemoteUpdateList = Array.isArray(payload.state.updateList);
+
+          if (hasRemoteCustomFlowers) {
+            customFlowersCache = payload.state.customFlowers;
+            localStorage.setItem('demo_guild_custom_flowers', JSON.stringify(customFlowersCache));
+          }
+          if (hasRemoteUpdateList) {
+            updateListCache = payload.state.updateList;
+            localStorage.setItem('demo_guild_update_list', JSON.stringify(updateListCache));
+          }
+          if (payload.state.checks && typeof payload.state.checks === 'object' && !Array.isArray(payload.state.checks)) {
+            sharedChecksCache = payload.state.checks;
+            localStorage.setItem('demo_guild_checks', JSON.stringify(sharedChecksCache));
+          }
+          if (hasRemoteCustomFlowers && (initial || updatedAt > lastRemoteUpdatedAt)) {
+            renderFlowers();
+            if (deleteFlowerModal.classList.contains('active')) renderDeleteFlowerList();
+          } else if (!hasRemoteCustomFlowers && initial && customFlowersCache.length > 0) {
+            await saveCustomFlowersToRemote();
+          }
+
+          lastRemoteUpdatedAt = Math.max(lastRemoteUpdatedAt, updatedAt);
+          remoteSyncReady = true;
+        } else if (initial && customFlowersCache.length > 0) {
+          remoteSyncReady = true;
+          await saveCustomFlowersToRemote();
+        } else {
+          remoteSyncReady = true;
+        }
+      } catch (error) {
+        console.warn('D1 추가 꽃 불러오기 실패 - 현재 브라우저 저장을 사용합니다.', error);
+        remoteSyncReady = false;
+      }
+    }
+
+    window.addEventListener('storage', e => {
+      if (e.key === 'demo_guild_update_list') {
+        try {
+          const savedUpdates = JSON.parse(e.newValue || '[]');
+          updateListCache = Array.isArray(savedUpdates) ? savedUpdates : [];
+        } catch (_) {
+          updateListCache = [];
+        }
+      }
+      if (e.key === 'demo_guild_custom_flowers') {
+        try {
+          const saved = JSON.parse(e.newValue || '[]');
+          customFlowersCache = Array.isArray(saved) ? saved : [];
+        } catch (_) {
+          customFlowersCache = [];
+        }
+        renderFlowers();
+        if (deleteFlowerModal.classList.contains('active')) renderDeleteFlowerList();
+      }
+      if (e.key === 'demo_guild_checks') {
+        try {
+          const saved = JSON.parse(e.newValue || '{}');
+          sharedChecksCache = saved && typeof saved === 'object' && !Array.isArray(saved) ? saved : {};
+        } catch (_) {
+          sharedChecksCache = {};
+        }
+      }
+    });
+
+    renderFlowers();
+    syncCustomFlowersFromRemote(true);
+    setInterval(() => {
+      if (remoteSyncReady) syncCustomFlowersFromRemote(false);
+    }, 3000);
+    window.addEventListener('focus', () => syncCustomFlowersFromRemote(false));
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) syncCustomFlowersFromRemote(false);
+    });
+  </script>
+</body>
+</html>
