@@ -87,6 +87,13 @@
             box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
         }
 
+        .button-grid .nav-row-three {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 15px;
+        }
+
         .nav-btn:hover {
             background-color: #fff2cc;
             transform: translateY(-2px);
@@ -286,6 +293,17 @@
                 margin-top: 0;
             }
 
+            .button-grid .nav-row-three {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 10px;
+            }
+
+            .button-grid .nav-row-three .nav-btn {
+                font-size: 0.86rem;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+
             .nav-btn {
                 min-width: 0;
                 min-height: 68px;
@@ -413,13 +431,17 @@
                 </div>
             </div>
 
-            <!-- 페이지 이동 버튼 5개 -->
+            <!-- 페이지 이동 버튼 -->
             <div class="button-grid">
                 <a href="page5.html" class="nav-btn">🌷전체 꽃 도감🌷</a>
                 <a href="page2.html" class="nav-btn">🌸길드 꽃 도감🌸</a>
                 <a href="page3.html" class="nav-btn">💡꽃 개량 효율표💡</a>
                 <a href="page4.html" class="nav-btn">💡플라워아트💡</a>
-                <a href="page1.html" class="nav-btn">📖코지 공략모음📖</a>
+                <div class="nav-row-three">
+                    <a href="https://open.kakao.com/o/gdYMYczi" class="nav-btn" target="_blank" rel="noopener noreferrer">💬 레몬 오픈채팅</a>
+                    <a href="https://game.naver.com/lounge/The_Cozy_Florist/home" class="nav-btn" target="_blank" rel="noopener noreferrer">🌿 코지 공식 라운지</a>
+                    <a href="page1.html" class="nav-btn">📖코지 공략모음📖</a>
+                </div>
             </div>
         </div>
 
