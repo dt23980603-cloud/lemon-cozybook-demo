@@ -23,23 +23,6 @@
             color: #333;
         }
 
-
-        /* PC 메인 배너 */
-        .main-banner {
-            width: 100%;
-            max-width: 1400px;
-            margin: 0 auto 20px;
-        }
-
-        .main-banner img {
-            display: block;
-            width: 100%;
-            height: auto;
-            aspect-ratio: 1664 / 500;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
         .container {
             display: flex;
             gap: 20px;
@@ -262,11 +245,29 @@
         }
 
 
+
+        /* 메인 배너: PC / 모바일 전용 이미지 자동 전환 */
+        .main-banner {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto 20px;
+        }
+
+        .main-banner img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .main-banner-mobile {
+            display: none !important;
+        }
+
         /* 모바일 전용 레이아웃: PC 스타일은 그대로 유지 */
         @media (max-width: 480px) {
-            .main-banner {
-                display: none;
-            }
+            .main-banner-pc { display: none !important; }
+            .main-banner-mobile { display: block !important; }
+            .main-banner { margin-bottom: 16px; }
 
             body {
                 margin: 12px;
@@ -439,8 +440,9 @@
 
 <body>
 
-    <div class="main-banner">
-        <img src="lemon-banner.png" alt="더 코지 플로리스트 레몬 배너">
+    <div class="main-banner" aria-label="더 코지 플로리스트 레몬 배너">
+        <img class="main-banner-pc" src="lemon-banner-pc.png" alt="더 코지 플로리스트 레몬 PC 배너">
+        <img class="main-banner-mobile" src="lemon-banner-mobile.png" alt="더 코지 플로리스트 레몬 모바일 배너">
     </div>
 
     <div class="container">
