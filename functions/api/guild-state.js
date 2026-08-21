@@ -28,10 +28,10 @@ function sanitizePatch(input) {
   return patch;
 }
 
-async function readCurrentState(db, stateId = 'main') {
+async function readCurrentState(db) {
   const row = await db
     .prepare('SELECT state_json, updated_at FROM guild_state WHERE id = ?1')
-    .bind(stateId)
+    .bind('main')
     .first();
 
   if (!row) return { state: {}, updatedAt: 0, exists: false };
@@ -61,25 +61,7 @@ export async function onRequestGet(context) {
   }
 
   await ensureTable(env.DB);
-  const url = new URL(context.request.url);
-  const stateId = url.searchParams.get('mode') === 'demo' ? 'demo' : 'main';
-  let current = await readCurrentState(env.DB, stateId);
-
-  // 데모 상태가 아직 없으면 운영(main) 상태를 1회 복제해 시작합니다.
-  if (stateId === 'demo' && !current.exists) {
-    const main = await readCurrentState(env.DB, 'main');
-    if (main.exists) {
-      const seededAt = Date.now();
-      await env.DB.prepare(`
-        INSERT INTO guild_state (id, state_json, updated_at)
-        VALUES (?1, ?2, ?3)
-        ON CONFLICT(id) DO UPDATE SET
-          state_json = excluded.state_json,
-          updated_at = excluded.updated_at
-      `).bind('demo', JSON.stringify(main.state), seededAt).run();
-      current = { state: main.state, updatedAt: seededAt, exists: true };
-    }
-  }
+  const current = await readCurrentState(env.DB);
 
   if (!current.exists) {
     return new Response(JSON.stringify({ exists: false, state: null, updatedAt: 0 }), {
@@ -122,9 +104,7 @@ export async function onRequestPut(context) {
   }
 
   await ensureTable(env.DB);
-  const url = new URL(context.request.url);
-  const stateId = url.searchParams.get('mode') === 'demo' ? 'demo' : 'main';
-  const current = await readCurrentState(env.DB, stateId);
+  const current = await readCurrentState(env.DB);
   const mergedState = { ...current.state, ...patch };
   const updatedAt = Date.now();
 
@@ -134,7 +114,7 @@ export async function onRequestPut(context) {
     ON CONFLICT(id) DO UPDATE SET
       state_json = excluded.state_json,
       updated_at = excluded.updated_at
-  `).bind(stateId, JSON.stringify(mergedState), updatedAt).run();
+  `).bind('main', JSON.stringify(mergedState), updatedAt).run();
 
   return new Response(JSON.stringify({
     ok: true,
@@ -144,8 +124,6 @@ export async function onRequestPut(context) {
     headers: JSON_HEADERS
   });
 }
-
-
 
 function isValidCheckChange(change) {
   return change && typeof change === 'object'
@@ -202,23 +180,7 @@ export async function onRequestPatch(context) {
   }
 
   await ensureTable(env.DB);
-  const url = new URL(request.url);
-  const stateId = url.searchParams.get('mode') === 'demo' ? 'demo' : 'main';
-
-  // Keep the demo seed behavior even if PATCH is the first request.
-  if (stateId === 'demo') {
-    const demo = await readCurrentState(env.DB, 'demo');
-    if (!demo.exists) {
-      const main = await readCurrentState(env.DB, 'main');
-      if (main.exists) {
-        await env.DB.prepare(`
-          INSERT INTO guild_state (id, state_json, updated_at)
-          VALUES (?1, ?2, ?3)
-          ON CONFLICT(id) DO NOTHING
-        `).bind('demo', JSON.stringify(main.state), Date.now()).run();
-      }
-    }
-  }
+  const stateId = 'main';
 
   await ensureStateRow(env.DB, stateId);
   const updatedAt = Date.now();

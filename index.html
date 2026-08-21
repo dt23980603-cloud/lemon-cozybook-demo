@@ -476,11 +476,11 @@
 
     <script>
         // 1. 브라우저 저장소(localStorage)에서 데이터 불러오기
-        let updateList = JSON.parse(localStorage.getItem('demo_guild_update_list')) || [];
-        let customFlowers = JSON.parse(localStorage.getItem('demo_guild_custom_flowers')) || [];
-        let sharedChecks = JSON.parse(localStorage.getItem('demo_guild_checks')) || {};
+        let updateList = JSON.parse(localStorage.getItem('guild_update_list')) || [];
+        let customFlowers = JSON.parse(localStorage.getItem('guild_custom_flowers')) || [];
+        let sharedChecks = JSON.parse(localStorage.getItem('guild_checks')) || {};
 
-        const GUILD_STATE_API = '/api/guild-state?mode=demo';
+        const GUILD_STATE_API = '/api/guild-state';
         let remoteSyncReady = false;
         let lastRemoteUpdatedAt = 0;
         let remotePollTimer = null;
@@ -605,9 +605,9 @@
                 updateList.splice(editingIndex, 1);
 
                 sharedChecks = shiftedChecks;
-                localStorage.setItem('demo_guild_update_list', JSON.stringify(updateList));
-                localStorage.setItem('demo_guild_custom_flowers', JSON.stringify(customFlowers));
-                localStorage.setItem('demo_guild_checks', JSON.stringify(sharedChecks));
+                localStorage.setItem('guild_update_list', JSON.stringify(updateList));
+                localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowers));
+                localStorage.setItem('guild_checks', JSON.stringify(sharedChecks));
 
                 saveSharedStateToRemote({
                     updateList,
@@ -692,8 +692,8 @@
                 };
             }
 
-            localStorage.setItem('demo_guild_update_list', JSON.stringify(updateList));
-            localStorage.setItem('demo_guild_custom_flowers', JSON.stringify(customFlowers));
+            localStorage.setItem('guild_update_list', JSON.stringify(updateList));
+            localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowers));
 
             saveSharedStateToRemote({
                 updateList,
@@ -758,7 +758,7 @@
 
             if (confirm('업데이트 내역을 모두 지우시겠습니까?\n(※ 길드 꽃 도감에 추가된 꽃은 그대로 유지됩니다)')) {
                 updateList = [];
-                localStorage.setItem('demo_guild_update_list', JSON.stringify(updateList));
+                localStorage.setItem('guild_update_list', JSON.stringify(updateList));
                 saveSharedStateToRemote({ updateList });
                 renderTable();
                 cancelEdit();
@@ -778,19 +778,19 @@
 
             if (Array.isArray(state.updateList)) {
                 updateList = state.updateList;
-                localStorage.setItem('demo_guild_update_list', JSON.stringify(updateList));
+                localStorage.setItem('guild_update_list', JSON.stringify(updateList));
                 changed = true;
             }
 
             if (Array.isArray(state.customFlowers)) {
                 customFlowers = state.customFlowers;
-                localStorage.setItem('demo_guild_custom_flowers', JSON.stringify(customFlowers));
+                localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowers));
                 changed = true;
             }
 
             if (state.checks && typeof state.checks === 'object' && !Array.isArray(state.checks)) {
                 sharedChecks = state.checks;
-                localStorage.setItem('demo_guild_checks', JSON.stringify(sharedChecks));
+                localStorage.setItem('guild_checks', JSON.stringify(sharedChecks));
             }
 
             if (changed) renderTable();
@@ -819,7 +819,7 @@
 
             const removedCount = beforeCount - updateList.length;
             if (removedCount > 0) {
-                localStorage.setItem('demo_guild_update_list', JSON.stringify(updateList));
+                localStorage.setItem('guild_update_list', JSON.stringify(updateList));
                 renderTable();
             }
 
@@ -864,12 +864,12 @@
                     const seedPatch = {};
                     if (!hasRemoteUpdateList && localUpdateBefore.length > 0) {
                         updateList = localUpdateBefore;
-                        localStorage.setItem('demo_guild_update_list', JSON.stringify(updateList));
+                        localStorage.setItem('guild_update_list', JSON.stringify(updateList));
                         seedPatch.updateList = updateList;
                     }
                     if (!hasRemoteCustomFlowers && localCustomBefore.length > 0) {
                         customFlowers = localCustomBefore;
-                        localStorage.setItem('demo_guild_custom_flowers', JSON.stringify(customFlowers));
+                        localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowers));
                         seedPatch.customFlowers = customFlowers;
                     }
 
@@ -950,6 +950,8 @@
             });
         }
     </script>
+
+    <div id="site-version-label" style="position:fixed;left:12px;bottom:10px;font-size:11px;line-height:1;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">v15</div>
 
 </body>
 
