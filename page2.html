@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>길드 꽃 도감 | 레몬</title>
+    <title>DEMO | 길드 꽃 도감 | 레몬</title>
     <!-- Google Fonts: Gowun Batang 불러오기 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1618,7 +1618,7 @@
 
         let customFlowers = (() => {
             try {
-                const saved = JSON.parse(localStorage.getItem('guild_custom_flowers')) || [];
+                const saved = JSON.parse(localStorage.getItem('demo_guild_custom_flowers')) || [];
                 return Array.isArray(saved) ? saved : [];
             } catch (e) {
                 return [];
@@ -1660,7 +1660,7 @@
 
 
         let members =
-            JSON.parse(localStorage.getItem('guild_members'))
+            JSON.parse(localStorage.getItem('demo_guild_members'))
             ||
             [
                 { id: 'm1', role: '길드장', name: '이지' },
@@ -1670,13 +1670,13 @@
 
 
         let checks =
-            JSON.parse(localStorage.getItem('guild_checks'))
+            JSON.parse(localStorage.getItem('demo_guild_checks'))
             || {};
 
 
         let selectedMemberIds = new Set();
 
-        const GUILD_STATE_API = '/api/guild-state';
+        const GUILD_STATE_API = '/api/guild-state?mode=demo';
         let remoteSyncReady = false;
         let remoteSaveTimer = null;
         let remotePollTimer = null;
@@ -1692,7 +1692,7 @@
 
 
         window.addEventListener('storage', function (event) {
-            if (event.key === 'guild_custom_flowers') {
+            if (event.key === 'demo_guild_custom_flowers') {
                 try {
                     const saved = JSON.parse(event.newValue || '[]');
                     customFlowers = Array.isArray(saved) ? saved : [];
@@ -1758,10 +1758,10 @@
             ) {
 
                 customFlowers = [];
-                localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowers));
+                localStorage.setItem('demo_guild_custom_flowers', JSON.stringify(customFlowers));
 
                 checks = {};
-                localStorage.setItem('guild_checks', JSON.stringify(checks));
+                localStorage.setItem('demo_guild_checks', JSON.stringify(checks));
 
                 renderAll();
                 saveGuildStatePatchToRemote({
@@ -2069,11 +2069,11 @@
 
         function saveCheckboxesLocally() {
             localStorage.setItem(
-                'guild_members',
+                'demo_guild_members',
                 JSON.stringify(members)
             );
             localStorage.setItem(
-                'guild_checks',
+                'demo_guild_checks',
                 JSON.stringify(checks)
             );
         }
@@ -2105,13 +2105,13 @@
         function saveData() {
 
             localStorage.setItem(
-                'guild_members',
+                'demo_guild_members',
                 JSON.stringify(members)
             );
 
 
             localStorage.setItem(
-                'guild_checks',
+                'demo_guild_checks',
                 JSON.stringify(checks)
             );
 
@@ -2136,19 +2136,19 @@
 
             if (Array.isArray(state.members)) {
                 members = state.members;
-                localStorage.setItem('guild_members', JSON.stringify(members));
+                localStorage.setItem('demo_guild_members', JSON.stringify(members));
                 changed = true;
             }
 
             if (state.checks && typeof state.checks === 'object' && !Array.isArray(state.checks)) {
                 checks = state.checks;
-                localStorage.setItem('guild_checks', JSON.stringify(checks));
+                localStorage.setItem('demo_guild_checks', JSON.stringify(checks));
                 changed = true;
             }
 
             if (Array.isArray(state.customFlowers)) {
                 customFlowers = state.customFlowers;
-                localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowers));
+                localStorage.setItem('demo_guild_custom_flowers', JSON.stringify(customFlowers));
                 changed = true;
             }
 
@@ -2185,7 +2185,7 @@
                     // 이 브라우저에 이미 추가 꽃이 있으면 최초 1회 D1에 이관합니다.
                     if (!hadRemoteCustomFlowers && localCustomFlowersBeforeSync.length > 0) {
                         customFlowers = localCustomFlowersBeforeSync;
-                        localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowers));
+                        localStorage.setItem('demo_guild_custom_flowers', JSON.stringify(customFlowers));
                         await saveGuildStatePatchToRemote({ customFlowers }, true);
                         renderAll();
                     }

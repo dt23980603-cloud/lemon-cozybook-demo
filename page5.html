@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>전체 꽃 도감 | 레몬</title>
+  <title>DEMO | 전체 꽃 도감 | 레몬</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
@@ -165,7 +165,7 @@
 
     let customFlowersCache = (() => {
       try {
-        const saved = JSON.parse(localStorage.getItem('guild_custom_flowers') || '[]');
+        const saved = JSON.parse(localStorage.getItem('demo_guild_custom_flowers') || '[]');
         return Array.isArray(saved) ? saved : [];
       } catch (e) {
         return [];
@@ -174,7 +174,7 @@
 
     let updateListCache = (() => {
       try {
-        const saved = JSON.parse(localStorage.getItem('guild_update_list') || '[]');
+        const saved = JSON.parse(localStorage.getItem('demo_guild_update_list') || '[]');
         return Array.isArray(saved) ? saved : [];
       } catch (e) {
         return [];
@@ -183,14 +183,14 @@
 
     let sharedChecksCache = (() => {
       try {
-        const saved = JSON.parse(localStorage.getItem('guild_checks') || '{}');
+        const saved = JSON.parse(localStorage.getItem('demo_guild_checks') || '{}');
         return saved && typeof saved === 'object' && !Array.isArray(saved) ? saved : {};
       } catch (e) {
         return {};
       }
     })();
 
-    const GUILD_STATE_API = '/api/guild-state';
+    const GUILD_STATE_API = '/api/guild-state?mode=demo';
     let lastRemoteUpdatedAt = 0;
     let remoteSyncReady = false;
 
@@ -366,9 +366,9 @@
       removeMatchingUpdateEntries(currentFlower);
       customFlowersCache.splice(currentIndex, 1);
 
-      localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowersCache));
-      localStorage.setItem('guild_checks', JSON.stringify(sharedChecksCache));
-      localStorage.setItem('guild_update_list', JSON.stringify(updateListCache));
+      localStorage.setItem('demo_guild_custom_flowers', JSON.stringify(customFlowersCache));
+      localStorage.setItem('demo_guild_checks', JSON.stringify(sharedChecksCache));
+      localStorage.setItem('demo_guild_update_list', JSON.stringify(updateListCache));
 
       const saved = await savePage5StateToRemote({
         customFlowers: customFlowersCache,
@@ -471,15 +471,15 @@
 
           if (hasRemoteCustomFlowers) {
             customFlowersCache = payload.state.customFlowers;
-            localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowersCache));
+            localStorage.setItem('demo_guild_custom_flowers', JSON.stringify(customFlowersCache));
           }
           if (hasRemoteUpdateList) {
             updateListCache = payload.state.updateList;
-            localStorage.setItem('guild_update_list', JSON.stringify(updateListCache));
+            localStorage.setItem('demo_guild_update_list', JSON.stringify(updateListCache));
           }
           if (payload.state.checks && typeof payload.state.checks === 'object' && !Array.isArray(payload.state.checks)) {
             sharedChecksCache = payload.state.checks;
-            localStorage.setItem('guild_checks', JSON.stringify(sharedChecksCache));
+            localStorage.setItem('demo_guild_checks', JSON.stringify(sharedChecksCache));
           }
           if (hasRemoteCustomFlowers && (initial || updatedAt > lastRemoteUpdatedAt)) {
             renderFlowers();
@@ -503,7 +503,7 @@
     }
 
     window.addEventListener('storage', e => {
-      if (e.key === 'guild_update_list') {
+      if (e.key === 'demo_guild_update_list') {
         try {
           const savedUpdates = JSON.parse(e.newValue || '[]');
           updateListCache = Array.isArray(savedUpdates) ? savedUpdates : [];
@@ -511,7 +511,7 @@
           updateListCache = [];
         }
       }
-      if (e.key === 'guild_custom_flowers') {
+      if (e.key === 'demo_guild_custom_flowers') {
         try {
           const saved = JSON.parse(e.newValue || '[]');
           customFlowersCache = Array.isArray(saved) ? saved : [];
@@ -521,7 +521,7 @@
         renderFlowers();
         if (deleteFlowerModal.classList.contains('active')) renderDeleteFlowerList();
       }
-      if (e.key === 'guild_checks') {
+      if (e.key === 'demo_guild_checks') {
         try {
           const saved = JSON.parse(e.newValue || '{}');
           sharedChecksCache = saved && typeof saved === 'object' && !Array.isArray(saved) ? saved : {};
