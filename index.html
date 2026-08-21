@@ -377,6 +377,26 @@
                 font-size: 0.72rem;
                 line-height: 1.45;
             }
+
+            /* 업데이트 내역 본문은 모바일에서 더 선명하게 */
+            #updateTable tbody td {
+                color: #111;
+            }
+
+            #updateTable .grade-text {
+                font-weight: 700;
+            }
+
+            #updateTable .grade-text-N { color: #4f7a2f; }
+            #updateTable .grade-text-R { color: #2f78a8; }
+            #updateTable .grade-text-SR { color: #8b4fb3; }
+            #updateTable .grade-text-SSR { color: #d88900; }
+            #updateTable .grade-text-UR { color: #c94d4d; }
+
+            /* 업데이트 내역 추가 박스는 모바일에서 덜 강조되도록 */
+            .add-form-card {
+                border-color: #d8d8d8;
+            }
         }
 
     </style>
@@ -427,7 +447,7 @@
                         </tr>
                     </thead>
                     <tbody id="updateTbody">
-                        <!-- 등록되는 내역이 이곳에 상단 추가됩니다 -->
+                        <!-- 등록되는 내역이 이곳에 위에서 아래 순서로 추가됩니다 -->
                     </tbody>
                 </table>
             </div>
@@ -615,7 +635,7 @@
                     return;
                 }
 
-                updateList.unshift({
+                updateList.push({
                     date: getTodayString(),
                     category: category || '-',
                     content: content,
@@ -923,7 +943,7 @@
           <td>${item.date}</td>
           <td>${item.category}</td>
           <td style="text-align: left; padding-left: 10px;">${item.content}</td>
-          <td>${item.grade}</td>
+          <td><span class="grade-text grade-text-${item.grade}">${item.grade}</span></td>
           <td><button type="button" class="btn-edit" onclick="startEdit(${index})">수정</button></td>
         `;
                 tbody.appendChild(tr);
