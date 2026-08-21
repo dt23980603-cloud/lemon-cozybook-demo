@@ -2054,13 +2054,51 @@
             isChecked
         ) {
 
-            checks[key] =
-                isChecked;
+            if (isChecked) {
+                checks[key] = true;
+            } else {
+                delete checks[key];
+            }
 
-
-            saveData();
+            saveCheckboxesLocally();
+            saveCheckChangesToRemote([{ key, checked: isChecked }]);
             renderAll();
 
+        }
+
+
+        function saveCheckboxesLocally() {
+            localStorage.setItem(
+                'demo_guild_members',
+                JSON.stringify(members)
+            );
+            localStorage.setItem(
+                'demo_guild_checks',
+                JSON.stringify(checks)
+            );
+        }
+
+
+        async function saveCheckChangesToRemote(changes) {
+            if (!remoteSyncReady || !Array.isArray(changes) || changes.length === 0) return;
+
+            try {
+                const response = await fetch(GUILD_STATE_API, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ changes })
+                });
+
+                if (!response.ok) throw new Error(`PATCH ${response.status}`);
+
+                const payload = await response.json();
+                lastRemoteUpdatedAt = Number(payload.updatedAt || Date.now());
+                remoteSyncReady = true;
+            } catch (error) {
+                console.warn('D1 체크박스 개별 저장 실패 - 로컬에는 저장되었습니다.', error);
+                // 서버 저장이 실패한 경우에만 기존 전체 저장 방식으로 재시도합니다.
+                queueRemoteGuildStateSave();
+            }
         }
 
 
@@ -2244,7 +2282,7 @@
 
         function startRemoteGuildStatePolling() {
             if (remotePollTimer) clearInterval(remotePollTimer);
-            remotePollTimer = setInterval(pullGuildStateFromRemote, 3000);
+            remotePollTimer = setInterval(pullGuildStateFromRemote, 1000);
         }
 
 
@@ -2719,6 +2757,8 @@
             const shouldCheck =
                 currentState !== 'all';
 
+            const changes = [];
+
             selectedMembers.forEach(member => {
                 const checkKey =
                     `${grade}_${flowerIdx}_${member.id}`;
@@ -2728,9 +2768,12 @@
                 } else {
                     delete checks[checkKey];
                 }
+
+                changes.push({ key: checkKey, checked: shouldCheck });
             });
 
-            saveData();
+            saveCheckboxesLocally();
+            saveCheckChangesToRemote(changes);
             renderAll();
             updateFlowerSearchSelectedMember();
             searchFlowers();
