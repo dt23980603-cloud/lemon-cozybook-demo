@@ -448,7 +448,7 @@
 
 <style id="pwa-install-style">
   #pwaInstallBtn {
-    display:none; position:fixed; right:14px; bottom:14px; z-index:10000;
+    display:block; position:fixed; right:14px; bottom:14px; z-index:10000;
     border:0; border-radius:999px; padding:10px 14px; cursor:pointer;
     background:#ffe680; color:#4a3b00; font-weight:700; font-size:13px;
     box-shadow:0 3px 12px rgba(0,0,0,.16);
@@ -1034,23 +1034,39 @@
   (() => {
     let deferredPrompt = null;
     const btn = document.getElementById('pwaInstallBtn');
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+    // 설치 전에는 항상 버튼을 표시합니다.
+    btn.style.display = isStandalone ? 'none' : 'block';
+
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      btn.style.display = 'block';
+      if (!isStandalone) btn.style.display = 'block';
     });
+
     btn.addEventListener('click', async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      btn.style.display = 'none';
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        return;
+      }
+
+      // 브라우저가 설치 프롬프트를 아직 제공하지 않는 경우에도 버튼은 유지하고 안내합니다.
+      const ua = navigator.userAgent.toLowerCase();
+      const isIOS = /iphone|ipad|ipod/.test(ua);
+      if (isIOS) {
+        alert('Safari의 공유 버튼을 누른 뒤 “홈 화면에 추가”를 선택해주세요.');
+      } else {
+        alert('Chrome에서 이 페이지를 열고 잠시 이용한 뒤 다시 눌러주세요. 브라우저 메뉴의 “앱 설치” 또는 “홈 화면에 추가”를 이용해도 됩니다.');
+      }
     });
+
     window.addEventListener('appinstalled', () => {
       deferredPrompt = null;
       btn.style.display = 'none';
     });
-    if (window.matchMedia('(display-mode: standalone)').matches) btn.style.display = 'none';
   })();
 </script>
 </body>
