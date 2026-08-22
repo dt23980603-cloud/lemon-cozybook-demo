@@ -4,6 +4,30 @@
     <link rel="icon" type="image/png" href="lemon-favicon.png"><style>
   .nav-btn-home { display:inline-flex; width:50px; height:50px; align-items:center; justify-content:center; text-decoration:none; }
   .back-icon { width:100%; height:100%; object-fit:contain; display:block; }
+
+        /* 이미지 전용 뒤로가기 버튼 */
+        .nav-btn-home {
+            border: none !important;
+            outline: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            overflow: visible !important;
+        }
+        .nav-btn-home:hover {
+            border: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            filter: brightness(.78);
+        }
+        .nav-btn-home:active { filter: brightness(.6); }
+        .nav-btn-home .back-icon {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            border: 0;
+        }
 </style></head>
 <body style="padding: 20px;">
   <h1>💖준비중입니다💖</h1>

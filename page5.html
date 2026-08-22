@@ -90,6 +90,30 @@
       .flower-detail-info { width:100%; }
     }
       .back-icon { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+        /* 이미지 전용 뒤로가기 버튼 */
+        .nav-btn-home {
+            border: none !important;
+            outline: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            overflow: visible !important;
+        }
+        .nav-btn-home:hover {
+            border: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            filter: brightness(.78);
+        }
+        .nav-btn-home:active { filter: brightness(.6); }
+        .nav-btn-home .back-icon {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            border: 0;
+        }
 </style>
 </head>
 <body>

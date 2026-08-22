@@ -913,8 +913,7 @@
                 <div class="guild-title-wrap">
                     <h1 style="margin: 0; font-size: 1.5rem;">🌸길드 꽃 도감🌸</h1>
                     <button type="button" class="guild-guide-btn" onclick="openGuildGuide()" title="길드 꽃 도감 가이드" aria-label="길드 꽃 도감 가이드 열기">
-                        <img src="guide-default.png" alt="가이드" class="guide-default">
-                        <img src="guide-hover.png" alt="" class="guide-hover" aria-hidden="true">
+                        <img src="guide-default.png" alt="가이드">
                     </button>
                 </div>
             </div>
@@ -3428,19 +3427,22 @@
             align-items: center;
             justify-content: center;
             flex: 0 0 auto;
-            transition: transform .15s ease;
+            transition: transform .15s ease, filter .15s ease, opacity .15s ease;
         }
-        .guild-guide-btn:hover { transform: translateY(-1px); }
-        .guild-guide-btn:active { transform: translateY(0) scale(.96); }
+        .guild-guide-btn:hover {
+            transform: translateY(-1px);
+            filter: brightness(.72);
+        }
+        .guild-guide-btn:active {
+            transform: translateY(0) scale(.96);
+            filter: brightness(.55);
+        }
         .guild-guide-btn img {
             width: 100%;
             height: 100%;
             object-fit: contain;
             display: block;
         }
-        .guild-guide-btn .guide-hover { display: none; }
-        .guild-guide-btn:hover .guide-default { display: none; }
-        .guild-guide-btn:hover .guide-hover { display: block; }
 
         .guide-modal-overlay {
             display: none;
@@ -3501,6 +3503,30 @@
             .guild-guide-btn { width: 40px; height: 40px; }
             .guide-modal-box { padding: 18px; max-height: 82vh; }
             .guide-modal-top h2 { font-size: 1.15rem; }
+        }
+
+        /* 이미지 전용 뒤로가기 버튼 */
+        .nav-btn-home {
+            border: none !important;
+            outline: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            overflow: visible !important;
+        }
+        .nav-btn-home:hover {
+            border: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            filter: brightness(.78);
+        }
+        .nav-btn-home:active { filter: brightness(.6); }
+        .nav-btn-home .back-icon {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            border: 0;
         }
 </style>
 
