@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>DEMO | 길드 꽃 도감 | 레몬</title>
+    <link rel="icon" type="image/png" href="lemon-favicon.png">
     <!-- Google Fonts: Gowun Batang 불러오기 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -898,7 +899,8 @@
                 width: 100%;
             }
         }
-    </style>
+        .back-icon { width: 100%; height: 100%; object-fit: contain; display: block; }
+</style>
 </head>
 
 <body>
@@ -907,8 +909,14 @@
 
         <div class="header">
             <div class="header-left">
-                <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기">🔙</a>
-                <h1 style="margin: 0; font-size: 1.5rem;">🌸길드 꽃 도감🌸</h1>
+                <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기"><img src="back-button.png" alt="뒤로가기" class="back-icon"></a>
+                <div class="guild-title-wrap">
+                    <h1 style="margin: 0; font-size: 1.5rem;">🌸길드 꽃 도감🌸</h1>
+                    <button type="button" class="guild-guide-btn" onclick="openGuildGuide()" title="길드 꽃 도감 가이드" aria-label="길드 꽃 도감 가이드 열기">
+                        <img src="guide-default.png" alt="가이드" class="guide-default">
+                        <img src="guide-hover.png" alt="" class="guide-hover" aria-hidden="true">
+                    </button>
+                </div>
             </div>
 
             <button type="button" class="btn-reset-danger" onclick="resetAllFlowers()">
@@ -3400,6 +3408,100 @@
         background: #f8f9fa !important;
         border-right: 1px solid #ccc !important;
     }
+    .back-icon { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+        /* 길드 꽃 도감 가이드 아이콘 */
+        .guild-title-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .guild-guide-btn {
+            width: 48px;
+            height: 48px;
+            padding: 0;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 auto;
+            transition: transform .15s ease;
+        }
+        .guild-guide-btn:hover { transform: translateY(-1px); }
+        .guild-guide-btn:active { transform: translateY(0) scale(.96); }
+        .guild-guide-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+        .guild-guide-btn .guide-hover { display: none; }
+        .guild-guide-btn:hover .guide-default { display: none; }
+        .guild-guide-btn:hover .guide-hover { display: block; }
+
+        .guide-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 10050;
+            background: rgba(0,0,0,.42);
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            box-sizing: border-box;
+        }
+        .guide-modal-overlay.active { display: flex; }
+        .guide-modal-box {
+            width: min(680px, 100%);
+            max-height: min(78vh, 760px);
+            overflow-y: auto;
+            background: #fff;
+            border: 1px solid #d7d7d7;
+            border-radius: 12px;
+            box-shadow: 0 12px 36px rgba(0,0,0,.18);
+            padding: 24px;
+            box-sizing: border-box;
+            color: #222;
+        }
+        .guide-modal-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .guide-modal-top h2 { margin: 0; font-size: 1.35rem; }
+        .guide-modal-close {
+            border: 0;
+            background: transparent;
+            font-size: 1.6rem;
+            line-height: 1;
+            cursor: pointer;
+            padding: 4px 7px;
+        }
+        .guide-step {
+            padding: 12px 0;
+            border-top: 1px solid #eee;
+            line-height: 1.65;
+        }
+        .guide-step:first-of-type { border-top: 0; padding-top: 0; }
+        .guide-step b { color: #423638; }
+        .guide-tip {
+            margin-top: 12px;
+            padding: 12px 14px;
+            background: #fff8e8;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+        @media (max-width: 480px) {
+            .guild-title-wrap { gap: 4px; }
+            .guild-guide-btn { width: 40px; height: 40px; }
+            .guide-modal-box { padding: 18px; max-height: 82vh; }
+            .guide-modal-top h2 { font-size: 1.15rem; }
+        }
 </style>
 
 <div id="viewportFixedGuildHeader" aria-hidden="true">
@@ -3554,6 +3656,37 @@
     setTimeout(updateFixedHeader, 0);
 })();
 </script>
+
+
+    <!-- 길드 꽃 도감 사용 가이드 -->
+    <div id="guildGuideModal" class="guide-modal-overlay" onclick="if(event.target===this) closeGuildGuide()">
+        <div class="guide-modal-box" role="dialog" aria-modal="true" aria-labelledby="guildGuideTitle">
+            <div class="guide-modal-top">
+                <h2 id="guildGuideTitle">🌸 길드 꽃 도감 사용 가이드 🌸</h2>
+                <button type="button" class="guide-modal-close" onclick="closeGuildGuide()" aria-label="가이드 닫기">×</button>
+            </div>
+            <div class="guide-step"><b>① 내 닉네임 선택하기</b><br>상단 목록 관리에서 자신의 닉네임을 클릭해주세요. 여러 명을 선택하면 여러 길드원의 보유 현황을 함께 비교할 수도 있습니다.</div>
+            <div class="guide-step"><b>② 보유하고 있는 꽃 체크하기</b><br>N / R / SR / SSR / UR 등급을 선택한 뒤 보유 중인 꽃의 체크박스를 눌러주세요. 체크한 내용은 자동으로 저장됩니다.</div>
+            <div class="guide-step"><b>③ 꽃을 빠르게 찾고 싶다면</b><br>꽃 검색을 이용하면 원하는 꽃을 찾아 바로 체크하거나 조회할 수 있습니다.</div>
+            <div class="guide-step"><b>④ 누가 가지고 있는지 확인하기</b><br>꽃 목록의 <b>조회</b> 버튼으로 보유 길드원을 확인하고, <b>정보</b> 버튼으로 꽃의 상세 정보를 확인할 수 있습니다.</div>
+            <div class="guide-tip">⚠️ 체크 상태는 길드원 모두에게 공유됩니다. 자신의 닉네임이 선택되어 있는지 확인한 뒤 체크해주세요. 잘못 체크했다면 같은 체크박스를 다시 눌러 해제하면 됩니다.</div>
+        </div>
+    </div>
+
+
+    <script>
+        function openGuildGuide() {
+            const modal = document.getElementById('guildGuideModal');
+            if (modal) modal.classList.add('active');
+        }
+        function closeGuildGuide() {
+            const modal = document.getElementById('guildGuideModal');
+            if (modal) modal.classList.remove('active');
+        }
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') closeGuildGuide();
+        });
+    </script>
 
 </body>
 
