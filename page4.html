@@ -28,9 +28,26 @@
             display: block;
             border: 0;
         }
-</style></head>
+</style>
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#ffe680">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="레몬 DEMO">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+</head>
 <body style="padding: 20px;">
   <h1>💖준비중입니다💖</h1>
   <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기"><img src="back-button.png" alt="뒤로가기" class="back-icon"></a>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch((err) => console.warn('PWA service worker registration failed:', err));
+    });
+  }
+</script>
+
 </body>
 </html>

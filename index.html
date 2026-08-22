@@ -437,6 +437,25 @@
         }
 
     </style>
+
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#ffe680">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="레몬 DEMO">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+<style id="pwa-install-style">
+  #pwaInstallBtn {
+    display:none; position:fixed; right:14px; bottom:14px; z-index:10000;
+    border:0; border-radius:999px; padding:10px 14px; cursor:pointer;
+    background:#ffe680; color:#4a3b00; font-weight:700; font-size:13px;
+    box-shadow:0 3px 12px rgba(0,0,0,.16);
+  }
+  #pwaInstallBtn:hover { filter:brightness(.96); }
+  @media (max-width:480px){ #pwaInstallBtn { right:12px; bottom:12px; font-size:12px; padding:9px 12px; } }
+</style>
 </head>
 
 <body>
@@ -468,7 +487,7 @@
                 <div class="nav-row-three">
                     <a href="https://open.kakao.com/o/gdYMYczi" class="nav-btn" target="_blank" rel="noopener noreferrer">💬 레몬 오픈채팅</a>
                     <a href="https://game.naver.com/lounge/The_Cozy_Florist/home" class="nav-btn" target="_blank" rel="noopener noreferrer">🌿 코지 공식 라운지</a>
-                    <a href="page1.html" class="nav-btn">📖코지 공략모음📖</a>
+                    <a href="page1.html" class="nav-btn">📖 코지 공략모음</a>
                 </div>
             </div>
         </div>
@@ -1000,6 +1019,40 @@
 
     <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">v16</div>
 
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch((err) => console.warn('PWA service worker registration failed:', err));
+    });
+  }
+</script>
+
+
+<button id="pwaInstallBtn" type="button" aria-label="레몬 앱 설치">🍋 앱 설치</button>
+<script id="pwa-install-script">
+  (() => {
+    let deferredPrompt = null;
+    const btn = document.getElementById('pwaInstallBtn');
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      btn.style.display = 'block';
+    });
+    btn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      btn.style.display = 'none';
+    });
+    window.addEventListener('appinstalled', () => {
+      deferredPrompt = null;
+      btn.style.display = 'none';
+    });
+    if (window.matchMedia('(display-mode: standalone)').matches) btn.style.display = 'none';
+  })();
+</script>
 </body>
 
 </html>

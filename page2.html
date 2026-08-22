@@ -901,6 +901,14 @@
         }
         .back-icon { width: 100%; height: 100%; object-fit: contain; display: block; }
 </style>
+
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#ffe680">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="레몬 DEMO">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
 </head>
 
 <body>
@@ -3713,6 +3721,15 @@
             if (event.key === 'Escape') closeGuildGuide();
         });
     </script>
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch((err) => console.warn('PWA service worker registration failed:', err));
+    });
+  }
+</script>
 
 </body>
 
