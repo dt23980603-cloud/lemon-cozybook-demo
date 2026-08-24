@@ -925,10 +925,6 @@
                     </button>
                 </div>
             </div>
-
-            <button type="button" class="btn-reset-danger" onclick="resetAllFlowers()">
-                🗑️ 등록된 꽃 목록 전체 초기화
-            </button>
         </div>
 
         <!-- 길드원 목록 관리 -->
@@ -1276,7 +1272,6 @@
                     <div class="flower-detail-row"><span class="flower-detail-label">등급</span><span id="flowerDetailGrade"></span></div>
                     <div class="flower-detail-row"><span class="flower-detail-label">길드전</span><span id="flowerDetailScore"></span></div>
                     <div class="flower-detail-row"><span class="flower-detail-label">획득</span><span id="flowerDetailAcquire"></span></div>
-                    <div class="flower-detail-row"><span class="flower-detail-label">도감 조건</span><span id="flowerDetailUnlock"></span></div>
                     <div class="flower-detail-row"><span class="flower-detail-label">비고</span><span id="flowerDetailNote"></span></div>
                     <div class="flower-detail-source">이미지·꽃 정보 참고: 코지 꽃수첩 (thecozybook.pages.dev)</div>
                 </div>
@@ -1309,7 +1304,7 @@
     </div>
 
 
-    <script src="flower-data.js"></script>
+    <script src="flower-data-all.js"></script>
 
     <script>
 
@@ -1809,14 +1804,9 @@
             return changed;
         }
 
-        let customFlowers = (() => {
-            try {
-                const saved = JSON.parse(localStorage.getItem('guild_custom_flowers')) || [];
-                return Array.isArray(saved) ? saved : [];
-            } catch (e) {
-                return [];
-            }
-        })();
+        let customFlowers = [];
+        let remoteFlowerDetails = [];
+
 
 
         function getCustomFlowers() {
@@ -1872,6 +1862,7 @@
         let selectedMemberIds = new Set();
 
         const GUILD_STATE_API = '/api/guild-state';
+        const FLOWERS_API = '/api/flowers';
         let remoteSyncReady = false;
         let remoteSaveTimer = null;
         let remotePollTimer = null;
@@ -1881,22 +1872,13 @@
         window.onload = async function () {
             renderAll();
             setupScrollSync();
-            await initializeRemoteGuildState();
+            await Promise.all([initializeRemoteGuildState(), syncRemoteFlowers(true)]);
+            renderAll();
             startRemoteGuildStatePolling();
+            startRemoteFlowerPolling();
         };
 
 
-        window.addEventListener('storage', function (event) {
-            if (event.key === 'guild_custom_flowers') {
-                try {
-                    const saved = JSON.parse(event.newValue || '[]');
-                    customFlowers = Array.isArray(saved) ? saved : [];
-                } catch (_) {
-                    customFlowers = [];
-                }
-                renderAll();
-            }
-        });
 
 
         function getSortedMembers(memberList) {
@@ -1939,36 +1921,6 @@
 
 
             updateScrollWidths();
-
-        }
-
-
-        function resetAllFlowers() {
-
-            if (
-                confirm(
-                    '등록된 꽃 목록 전체를 초기화하시겠습니까?\n' +
-                    '(모든 등급의 등록된 꽃 및 해당 체크 정보가 지워집니다.)'
-                )
-            ) {
-
-                customFlowers = [];
-                localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowers));
-
-                checks = {};
-                localStorage.setItem('guild_checks', JSON.stringify(checks));
-
-                renderAll();
-                saveGuildStatePatchToRemote({
-                    customFlowers,
-                    checks
-                });
-
-                alert(
-                    '등록된 모든 꽃 목록이 초기화되었습니다.'
-                );
-
-            }
 
         }
 
@@ -2341,11 +2293,6 @@
                 changed = true;
             }
 
-            if (Array.isArray(state.customFlowers)) {
-                customFlowers = state.customFlowers;
-                localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowers));
-                changed = true;
-            }
 
             if (migrateLegacyGuildCheckKeys()) {
                 changed = true;
@@ -2369,37 +2316,17 @@
             try {
                 const response = await fetch(GUILD_STATE_API, { cache: 'no-store' });
                 if (!response.ok) throw new Error(`GET ${response.status}`);
-
                 const payload = await response.json();
-
                 if (payload && payload.exists && payload.state) {
-                    const hadRemoteCustomFlowers = Array.isArray(payload.state.customFlowers);
-                    const localCustomFlowersBeforeSync = [...customFlowers];
-
-                    if (applyGuildStateSnapshot(payload.state)) {
-                        lastRemoteUpdatedAt = Number(payload.updatedAt || 0);
-                    }
-
-                    // 기존 v9 D1 데이터에는 customFlowers가 없으므로,
-                    // 이 브라우저에 이미 추가 꽃이 있으면 최초 1회 D1에 이관합니다.
-                    if (!hadRemoteCustomFlowers && localCustomFlowersBeforeSync.length > 0) {
-                        customFlowers = localCustomFlowersBeforeSync;
-                        localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowers));
-                        await saveGuildStatePatchToRemote({ customFlowers }, true);
-                        renderAll();
-                    }
+                    applyGuildStateSnapshot(payload.state);
+                    lastRemoteUpdatedAt = Number(payload.updatedAt || 0);
                 } else {
                     await saveGuildStateToRemote(true);
-                    if (customFlowers.length > 0) {
-                        await saveGuildStatePatchToRemote({ customFlowers }, true);
-                    }
                 }
-
                 if (guildCheckMigrationPending) {
                     await saveGuildStatePatchToRemote({ checks }, true);
                     guildCheckMigrationPending = false;
                 }
-
                 remoteSyncReady = true;
             } catch (error) {
                 console.warn('D1 공용 저장 연결 실패 - 현재 브라우저 저장을 사용합니다.', error);
@@ -2407,6 +2334,28 @@
             }
         }
 
+        async function syncRemoteFlowers(silent = true) {
+            try {
+                const response = await fetch(FLOWERS_API, { cache:'no-store' });
+                if (!response.ok) throw new Error(`GET ${response.status}`);
+                const payload = await response.json();
+                remoteFlowerDetails = Array.isArray(payload.flowers) ? payload.flowers : [];
+                const masterLabels = new Set((window.FLOWER_MASTER_DATA || []).map(f => `${f.grade}\u0000${f.listName}`));
+                customFlowers = remoteFlowerDetails
+                    .filter(f => f && !masterLabels.has(`${f.grade}\u0000${f.listName}`))
+                    .map(f => ({ ...f, rawName:f.name, name:f.listName }));
+                renderAll();
+            } catch (error) {
+                console.warn('D1 신규 꽃 불러오기 실패', error);
+                if (!silent) alert('신규 꽃 목록을 불러오지 못했습니다.');
+            }
+        }
+
+        function startRemoteFlowerPolling() {
+            setInterval(() => syncRemoteFlowers(true), 5000);
+            window.addEventListener('focus', () => syncRemoteFlowers(true));
+            document.addEventListener('visibilitychange', () => { if (!document.hidden) syncRemoteFlowers(true); });
+        }
 
         function queueRemoteGuildStateSave() {
             if (!remoteSyncReady) return;
@@ -3318,7 +3267,11 @@
 
 
         function getMasterFlowerByListName(grade, flowerListName) {
-            return (window.FLOWER_MASTER_DATA || []).find(item =>
+            const base = (window.FLOWER_MASTER_DATA || []).find(item =>
+                item.grade === grade && item.listName === flowerListName
+            );
+            if (base) return base;
+            return (remoteFlowerDetails || []).find(item =>
                 item.grade === grade && item.listName === flowerListName
             );
         }
@@ -3331,16 +3284,12 @@
             const image = document.getElementById('flowerDetailImage');
             image.src = flower.image;
             image.alt = flower.name;
-            image.onerror = function () {
-                this.onerror = null;
-                this.src = flower.imageRemote;
-            };
+            image.onerror = function () { this.onerror = null; this.style.opacity = '.15'; };
 
             document.getElementById('flowerDetailName').textContent = flower.name;
             document.getElementById('flowerDetailGrade').textContent = flower.grade;
             document.getElementById('flowerDetailScore').textContent = flower.guildScore == null ? '-' : `${flower.guildScore}점`;
             document.getElementById('flowerDetailAcquire').textContent = flower.acquire;
-            document.getElementById('flowerDetailUnlock').textContent = flower.unlock;
             document.getElementById('flowerDetailNote').textContent = flower.note;
             document.getElementById('flowerDetailModal').classList.add('active');
         }

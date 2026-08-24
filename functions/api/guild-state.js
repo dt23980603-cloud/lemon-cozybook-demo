@@ -22,8 +22,6 @@ function sanitizePatch(input) {
 
   if (Array.isArray(input?.members)) patch.members = input.members;
   if (isPlainObject(input?.checks)) patch.checks = input.checks;
-  if (Array.isArray(input?.customFlowers)) patch.customFlowers = input.customFlowers;
-  if (Array.isArray(input?.updateList)) patch.updateList = input.updateList;
 
   return patch;
 }

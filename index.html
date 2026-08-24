@@ -492,532 +492,87 @@
             </div>
         </div>
 
-        <!-- 우측 영역 (업데이트 내역 & 입력 폼) -->
+        <!-- 우측 영역: 전체 꽃 도감에서 자동 생성되는 업데이트 내역 -->
         <div class="right-panel">
             <div>
-                <!-- 타이틀 바 & 전체 초기화 버튼 -->
                 <div class="table-header-box">
                     <span class="table-title">🍋 업데이트 내역</span>
-                    <button type="button" class="btn-reset" onclick="resetTable()">전체 초기화</button>
                 </div>
-
                 <table id="updateTable">
                     <thead>
                         <tr>
-                            <th style="width: 18%;">수정 일자</th>
-                            <th style="width: 16%;">분류</th>
-                            <th style="width: 40%;">내용</th>
-                            <th style="width: 14%;">꽃 등급</th>
-                            <th style="width: 12%;">관리</th>
+                            <th style="width: 26%;">수정 일자</th>
+                            <th style="width: 74%;">내용</th>
                         </tr>
                     </thead>
                     <tbody id="updateTbody">
-                        <!-- 등록되는 내역이 이곳에 위에서 아래 순서로 추가됩니다 -->
+                        <tr><td colspan="2" style="color:#888;">업데이트 내역을 불러오는 중입니다.</td></tr>
                     </tbody>
                 </table>
-            </div>
-
-            <!-- 내용 등록 입력 폼 -->
-            <div class="add-form-card">
-                <div id="formTitle" style="font-weight: bold; font-size: 0.95rem;">➕ 업데이트 내역 추가</div>
-                <div class="form-row">
-                    <input type="text" id="inputCategory" class="input-category" placeholder="분류">
-                    <input type="text" id="inputContent" class="input-content" placeholder="업데이트 내용">
-                    <select id="selectGrade" onchange="updateSelectColor(this)"
-                        style="background-color: #d9ead3; font-weight: normal;">
-                        <option value="N" style="background-color: #d9ead3;">N</option>
-                        <option value="R" style="background-color: #cfe2f3;">R</option>
-                        <option value="SR" style="background-color: #d9d2e9;">SR</option>
-                        <option value="SSR" style="background-color: #fff2cc;">SSR</option>
-                        <option value="UR" style="background-color: #f4cccc;">UR</option>
-                    </select>
-                    <button type="button" class="btn-add" id="btnSaveUpdate" onclick="saveUpdateRow()">등록</button>
-                    <button type="button" class="btn-cancel-edit" id="btnCancelEdit" onclick="cancelEdit()">취소</button>
-                </div>
-                <div class="edit-guide" id="editGuide">※ 등록된 꽃 이름 수정 시 길드 꽃 도감에도 자동으로 반영됩니다. 등급은 수정 중 변경할 수 없습니다.<br>※ 수정 모드에서 분류와 내용을 모두 비운 뒤 '수정 저장'을 누르면 해당 꽃이 삭제됩니다.</div>
             </div>
         </div>
     </div>
 
     <script>
-        // 1. 브라우저 저장소(localStorage)에서 데이터 불러오기
-        let updateList = JSON.parse(localStorage.getItem('guild_update_list')) || [];
-        let customFlowers = JSON.parse(localStorage.getItem('guild_custom_flowers')) || [];
-        let sharedChecks = JSON.parse(localStorage.getItem('guild_checks')) || {};
+        const UPDATES_API = '/api/updates';
+        let updateList = [];
+        let updatePollTimer = null;
 
-        const GUILD_STATE_API = '/api/guild-state';
-        let remoteSyncReady = false;
-        let lastRemoteUpdatedAt = 0;
-        let remotePollTimer = null;
-        function updateSelectColor(selectEl) {
-            const gradeColors = {
-                'N': '#d9ead3',
-                'R': '#cfe2f3',
-                'SR': '#d9d2e9',
-                'SSR': '#fff2cc',
-                'UR': '#f4cccc'
-            };
-
-            const selectedValue = selectEl.value;
-            if (gradeColors[selectedValue]) {
-                selectEl.style.backgroundColor = gradeColors[selectedValue];
-            }
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
         }
 
-
-
-        let editingIndex = null;
-
-        // 페이지 시작 시 기존 저장 내역 불러와서 표에 그리기
-        window.onload = async function () {
-            renderTable();
-            await initializeSharedFlowerState();
-            startSharedFlowerPolling();
-        };
-
-        function getTodayString() {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
+        function formatUpdateDate(timestamp) {
+            if (!timestamp) return '-';
+            const parts = new Intl.DateTimeFormat('ko-KR', {
+                timeZone: 'Asia/Seoul', year:'numeric', month:'2-digit', day:'2-digit'
+            }).formatToParts(new Date(timestamp));
+            const map = Object.fromEntries(parts.map(p => [p.type, p.value]));
+            return `${map.year}.${map.month}.${map.day}`;
         }
 
-        function makeFlowerName(category, content) {
-            return category ? `[${category}] ${content}` : content;
-        }
-
-        // 등록 / 수정 저장 공용 함수
-        function saveUpdateRow() {
-            const categoryInput = document.getElementById('inputCategory');
-            const contentInput = document.getElementById('inputContent');
-            const gradeSelect = document.getElementById('selectGrade');
-
-            const category = categoryInput.value.trim();
-            const content = contentInput.value.trim();
-            const grade = gradeSelect.value;
-
-            // 수정 모드에서 분류와 내용을 모두 비우면 해당 추가 꽃을 삭제
-            if (editingIndex !== null && !category && !content) {
-                const oldItem = updateList[editingIndex];
-                if (!oldItem) {
-                    cancelEdit();
-                    return;
-                }
-
-                const oldCategory = oldItem.category === '-' ? '' : oldItem.category;
-                const oldFlowerName = makeFlowerName(oldCategory, oldItem.content);
-                const oldGrade = oldItem.grade;
-
-                if (!confirm(`'${oldFlowerName}' 꽃을 목록에서 삭제하시겠습니까?`)) {
-                    return;
-                }
-
-                const flowerIndex = customFlowers.findIndex(f =>
-                    f.grade === oldGrade && f.name === oldFlowerName
-                );
-
-                if (flowerIndex === -1) {
-                    alert('도감에 연결된 추가 꽃 데이터를 찾지 못했습니다.');
-                    return;
-                }
-
-                // page2의 체크 키가 등급_꽃인덱스_길드원ID 구조이므로,
-                // 삭제되는 추가 꽃 뒤의 체크 인덱스를 한 칸씩 당겨 기존 체크 상태를 유지합니다.
-                const baseFlowerCounts = {
-                    N: 69,
-                    R: 75,
-                    SR: 118,
-                    SSR: 59,
-                    UR: 21
-                };
-
-                const sameGradeBeforeCount = customFlowers
-                    .slice(0, flowerIndex)
-                    .filter(f => f && f.grade === oldGrade).length;
-
-                const deletedTableIndex = (baseFlowerCounts[oldGrade] || 0) + sameGradeBeforeCount;
-                const checks = sharedChecks || {};
-                const shiftedChecks = {};
-
-                Object.entries(checks).forEach(([key, value]) => {
-                    const match = key.match(/^([^_]+)_(\d+)_(.+)$/);
-                    if (!match) {
-                        shiftedChecks[key] = value;
-                        return;
-                    }
-
-                    const [, gradeKey, indexText, memberId] = match;
-                    const flowerIndexNumber = Number(indexText);
-
-                    if (gradeKey !== oldGrade) {
-                        shiftedChecks[key] = value;
-                        return;
-                    }
-
-                    if (flowerIndexNumber === deletedTableIndex) {
-                        return; // 삭제한 꽃의 체크 정보 제거
-                    }
-
-                    if (flowerIndexNumber > deletedTableIndex) {
-                        shiftedChecks[`${gradeKey}_${flowerIndexNumber - 1}_${memberId}`] = value;
-                    } else {
-                        shiftedChecks[key] = value;
-                    }
-                });
-
-                customFlowers.splice(flowerIndex, 1);
-                updateList.splice(editingIndex, 1);
-
-                sharedChecks = shiftedChecks;
-                localStorage.setItem('guild_update_list', JSON.stringify(updateList));
-                localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowers));
-                localStorage.setItem('guild_checks', JSON.stringify(sharedChecks));
-
-                saveSharedStateToRemote({
-                    updateList,
-                    customFlowers,
-                    checks: sharedChecks
-                });
-
-                renderTable();
-                cancelEdit(false);
-                alert(`'${oldFlowerName}' 꽃이 삭제되었습니다.`);
-                return;
-            }
-
-            if (!content) {
-                alert('내용을 입력해 주세요!');
-                return;
-            }
-
-            const formattedFlowerName = makeFlowerName(category, content);
-
-            if (editingIndex === null) {
-                const exists = customFlowers.some(f => f.name === formattedFlowerName && f.grade === grade);
-                if (exists) {
-                    alert('같은 등급에 이미 등록된 꽃입니다.');
-                    return;
-                }
-
-                updateList.push({
-                    date: getTodayString(),
-                    category: category || '-',
-                    content: content,
-                    grade: grade
-                });
-
-                customFlowers.push({
-                    grade: grade,
-                    name: formattedFlowerName
-                });
-            } else {
-                const oldItem = updateList[editingIndex];
-                if (!oldItem) {
-                    cancelEdit();
-                    return;
-                }
-
-                const oldCategory = oldItem.category === '-' ? '' : oldItem.category;
-                const oldFlowerName = makeFlowerName(oldCategory, oldItem.content);
-                const oldGrade = oldItem.grade;
-
-                const duplicate = customFlowers.some(f =>
-                    f.grade === oldGrade &&
-                    f.name === formattedFlowerName &&
-                    !(f.grade === oldGrade && f.name === oldFlowerName)
-                );
-
-                if (duplicate) {
-                    alert('같은 등급에 이미 등록된 꽃 이름입니다.');
-                    return;
-                }
-
-                const flowerIndex = customFlowers.findIndex(f =>
-                    f.grade === oldGrade && f.name === oldFlowerName
-                );
-
-                if (flowerIndex === -1) {
-                    alert('도감에 연결된 추가 꽃 데이터를 찾지 못했습니다.');
-                    return;
-                }
-
-                customFlowers[flowerIndex] = {
-                    ...customFlowers[flowerIndex],
-                    grade: oldGrade,
-                    name: formattedFlowerName
-                };
-
-                updateList[editingIndex] = {
-                    ...oldItem,
-                    date: getTodayString(),
-                    category: category || '-',
-                    content: content,
-                    grade: oldGrade
-                };
-            }
-
-            localStorage.setItem('guild_update_list', JSON.stringify(updateList));
-            localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowers));
-
-            saveSharedStateToRemote({
-                updateList,
-                customFlowers
-            });
-
-            renderTable();
-            cancelEdit(false);
-        }
-
-        function startEdit(index) {
-            const item = updateList[index];
-            if (!item) return;
-
-            editingIndex = index;
-
-            document.getElementById('inputCategory').value = item.category === '-' ? '' : item.category;
-            document.getElementById('inputContent').value = item.content;
-
-            const gradeSelect = document.getElementById('selectGrade');
-            gradeSelect.value = item.grade;
-            gradeSelect.disabled = true;
-            updateSelectColor(gradeSelect);
-
-            document.getElementById('formTitle').textContent = '✏️ 등록 꽃 수정';
-            document.getElementById('btnSaveUpdate').textContent = '수정 저장';
-            document.getElementById('btnCancelEdit').style.display = 'inline-block';
-            document.getElementById('editGuide').style.display = 'block';
-            document.getElementById('inputContent').focus();
-        }
-
-        function cancelEdit(clearInputs = true) {
-            editingIndex = null;
-
-            const gradeSelect = document.getElementById('selectGrade');
-            gradeSelect.disabled = false;
-
-            document.getElementById('formTitle').textContent = '➕ 업데이트 내역 추가';
-            document.getElementById('btnSaveUpdate').textContent = '등록';
-            document.getElementById('btnCancelEdit').style.display = 'none';
-            document.getElementById('editGuide').style.display = 'none';
-
-            if (clearInputs) {
-                document.getElementById('inputCategory').value = '';
-                document.getElementById('inputContent').value = '';
-                gradeSelect.value = 'N';
-            } else {
-                document.getElementById('inputCategory').value = '';
-                document.getElementById('inputContent').value = '';
-                gradeSelect.value = 'N';
-            }
-
-            updateSelectColor(gradeSelect);
-        }
-
-        // 전체 초기화 함수 (업데이트 내역 표만 삭제, 꽃 도감 데이터는 유지)
-        function resetTable() {
-            if (updateList.length === 0) {
-                alert('삭제할 내역이 없습니다.');
-                return;
-            }
-
-            if (confirm('업데이트 내역을 모두 지우시겠습니까?\n(※ 길드 꽃 도감에 추가된 꽃은 그대로 유지됩니다)')) {
-                updateList = [];
-                localStorage.setItem('guild_update_list', JSON.stringify(updateList));
-                saveSharedStateToRemote({ updateList });
-                renderTable();
-                cancelEdit();
-            }
-        }
-
-        async function fetchSharedState() {
-            const response = await fetch(GUILD_STATE_API, { cache: 'no-store' });
-            if (!response.ok) throw new Error(`GET ${response.status}`);
-            return response.json();
-        }
-
-        function applySharedFlowerState(state) {
-            if (!state || typeof state !== 'object') return false;
-
-            let changed = false;
-
-            if (Array.isArray(state.updateList)) {
-                updateList = state.updateList;
-                localStorage.setItem('guild_update_list', JSON.stringify(updateList));
-                changed = true;
-            }
-
-            if (Array.isArray(state.customFlowers)) {
-                customFlowers = state.customFlowers;
-                localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowers));
-                changed = true;
-            }
-
-            if (state.checks && typeof state.checks === 'object' && !Array.isArray(state.checks)) {
-                sharedChecks = state.checks;
-                localStorage.setItem('guild_checks', JSON.stringify(sharedChecks));
-            }
-
-            if (changed) renderTable();
-            return changed;
-        }
-
-        // 전체 꽃 도감에서 이미 삭제된 등록 꽃의 업데이트 내역이 남아 있으면 자동 정리합니다.
-        // 비교 기준은 "등급 + 실제 꽃 이름"이며, 존재하는 등록 꽃의 내역만 유지합니다.
-        function cleanupOrphanUpdateRows() {
-            if (!Array.isArray(updateList) || updateList.length === 0) return 0;
-
-            const existingFlowerKeys = new Set(
-                (Array.isArray(customFlowers) ? customFlowers : [])
-                    .filter(flower => flower && flower.grade && flower.name)
-                    .map(flower => `${flower.grade}\u0000${flower.name}`)
-            );
-
-            const beforeCount = updateList.length;
-            updateList = updateList.filter(item => {
-                if (!item || !item.grade) return true;
-
-                const category = item.category === '-' ? '' : (item.category || '');
-                const flowerName = makeFlowerName(category, item.content || '');
-                return existingFlowerKeys.has(`${item.grade}\u0000${flowerName}`);
-            });
-
-            const removedCount = beforeCount - updateList.length;
-            if (removedCount > 0) {
-                localStorage.setItem('guild_update_list', JSON.stringify(updateList));
-                renderTable();
-            }
-
-            return removedCount;
-        }
-
-        async function saveSharedStateToRemote(patch, force = false) {
-            if (!force && !remoteSyncReady) return;
-
-            try {
-                const response = await fetch(GUILD_STATE_API, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ state: patch })
-                });
-
-                if (!response.ok) throw new Error(`PUT ${response.status}`);
-
-                const payload = await response.json();
-                lastRemoteUpdatedAt = Number(payload.updatedAt || Date.now());
-                remoteSyncReady = true;
-            } catch (error) {
-                console.warn('D1 꽃 데이터 공용 저장 실패 - 로컬에는 저장되었습니다.', error);
-            }
-        }
-
-        async function initializeSharedFlowerState() {
-            try {
-                const localUpdateBefore = Array.isArray(updateList) ? [...updateList] : [];
-                const localCustomBefore = Array.isArray(customFlowers) ? [...customFlowers] : [];
-
-                const payload = await fetchSharedState();
-
-                if (payload?.exists && payload.state) {
-                    const hasRemoteUpdateList = Array.isArray(payload.state.updateList);
-                    const hasRemoteCustomFlowers = Array.isArray(payload.state.customFlowers);
-
-                    applySharedFlowerState(payload.state);
-                    lastRemoteUpdatedAt = Number(payload.updatedAt || 0);
-                    remoteSyncReady = true;
-
-                    const seedPatch = {};
-                    if (!hasRemoteUpdateList && localUpdateBefore.length > 0) {
-                        updateList = localUpdateBefore;
-                        localStorage.setItem('guild_update_list', JSON.stringify(updateList));
-                        seedPatch.updateList = updateList;
-                    }
-                    if (!hasRemoteCustomFlowers && localCustomBefore.length > 0) {
-                        customFlowers = localCustomBefore;
-                        localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowers));
-                        seedPatch.customFlowers = customFlowers;
-                    }
-
-                    if (Object.keys(seedPatch).length > 0) {
-                        await saveSharedStateToRemote(seedPatch, true);
-                        renderTable();
-                    }
-
-                    const removedOrphans = cleanupOrphanUpdateRows();
-                    if (removedOrphans > 0) {
-                        await saveSharedStateToRemote({ updateList }, true);
-                    }
-                } else {
-                    remoteSyncReady = true;
-                    const removedOrphans = cleanupOrphanUpdateRows();
-                    await saveSharedStateToRemote({
-                        updateList,
-                        customFlowers
-                    }, true);
-                }
-            } catch (error) {
-                console.warn('D1 꽃 데이터 공용 저장 연결 실패 - 현재 브라우저 저장을 사용합니다.', error);
-                remoteSyncReady = false;
-            }
-        }
-
-        async function pullSharedFlowerState() {
-            if (!remoteSyncReady) return;
-
-            try {
-                const payload = await fetchSharedState();
-                const updatedAt = Number(payload?.updatedAt || 0);
-
-                if (payload?.exists && payload.state && updatedAt > lastRemoteUpdatedAt) {
-                    applySharedFlowerState(payload.state);
-                    lastRemoteUpdatedAt = updatedAt;
-
-                    const removedOrphans = cleanupOrphanUpdateRows();
-                    if (removedOrphans > 0) {
-                        await saveSharedStateToRemote({ updateList }, true);
-                    }
-                }
-            } catch (error) {
-                console.warn('D1 꽃 데이터 공용 상태 확인 실패', error);
-            }
-        }
-
-        function startSharedFlowerPolling() {
-            if (remotePollTimer) clearInterval(remotePollTimer);
-            remotePollTimer = setInterval(pullSharedFlowerState, 3000);
-
-            window.addEventListener('focus', pullSharedFlowerState);
-            document.addEventListener('visibilitychange', () => {
-                if (!document.hidden) pullSharedFlowerState();
-            });
-        }
-
-        // 배열에 저장된 데이터를 가져와 표(HTML)에 그려주는 함수
         function renderTable() {
             const tbody = document.getElementById('updateTbody');
-            tbody.innerHTML = '';
-
-            if (updateList.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="color:#888;">등록된 업데이트 내역이 없습니다.</td></tr>';
+            if (!updateList.length) {
+                tbody.innerHTML = '<tr><td colspan="2" style="color:#888;">등록된 업데이트 내역이 없습니다.</td></tr>';
                 return;
             }
-
-            updateList.forEach((item, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-          <td>${item.date}</td>
-          <td>${item.category}</td>
-          <td style="text-align: left; padding-left: 10px;">${item.content}</td>
-          <td><span class="grade-text grade-text-${item.grade}">${item.grade}</span></td>
-          <td><button type="button" class="btn-edit" onclick="startEdit(${index})">수정</button></td>
-        `;
-                tbody.appendChild(tr);
-            });
+            tbody.innerHTML = updateList.map(item => {
+                const label = item.category ? `[${item.category}] ${item.name}` : item.name;
+                const score = item.guildScore == null ? '-' : `${item.guildScore}점`;
+                return `<tr>
+                    <td>${escapeHtml(formatUpdateDate(item.createdAt))}</td>
+                    <td style="text-align:left;padding-left:12px;">
+                        <div style="font-weight:bold;word-break:keep-all;">${escapeHtml(label)}</div>
+                        <div style="margin-top:4px;font-size:.82rem;color:#666;"><span class="grade-text grade-text-${escapeHtml(item.grade)}">${escapeHtml(item.grade)}</span> · ⚔️ ${escapeHtml(score)}</div>
+                    </td>
+                </tr>`;
+            }).join('');
         }
+
+        async function fetchUpdates() {
+            try {
+                const response = await fetch(UPDATES_API, { cache:'no-store' });
+                if (!response.ok) throw new Error(`GET ${response.status}`);
+                const payload = await response.json();
+                updateList = Array.isArray(payload.updates) ? payload.updates : [];
+                renderTable();
+            } catch (error) {
+                console.warn('업데이트 내역 D1 조회 실패', error);
+                document.getElementById('updateTbody').innerHTML = '<tr><td colspan="2" style="color:#a66;">업데이트 내역을 불러오지 못했습니다.</td></tr>';
+            }
+        }
+
+        window.addEventListener('load', () => {
+            fetchUpdates();
+            updatePollTimer = setInterval(fetchUpdates, 5000);
+        });
+        window.addEventListener('focus', fetchUpdates);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) fetchUpdates(); });
     </script>
 
 
-    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v25</div>
+    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v26</div>
 
 
 <script id="pwa-auto-update-script">

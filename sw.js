@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-cozybook-pwa-demo-v25-r2';
+const CACHE_NAME = 'lemon-demo-v26';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -7,7 +7,7 @@ const APP_SHELL = [
   '/page3.html',
   '/page4.html',
   '/page5.html',
-  '/flower-data.js',
+  '/flower-data-all.js',
   '/images/branding/lemon-favicon.png',
   '/images/banners/lemon-banner-pc.png',
   '/images/banners/lemon-banner-mobile.png',
