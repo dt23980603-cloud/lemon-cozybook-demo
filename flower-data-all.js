@@ -1,7 +1,7 @@
 /* 전체 꽃 도감 전용 마스터 데이터
  * 기준: 업로드된 등급별 사진 파일 기준 356개
  * 꽃 이름 기준: 사진 파일명 우선 (2026-08-25)
- * page5.html 전용. 길드 꽃 도감(page2.html)은 기존 flower-data.js를 그대로 사용합니다.
+ * 표시명 규칙: [분류] 이름
  * 정리일: 2026-08-25
  */
 window.FLOWER_MASTER_DATA = [
@@ -2066,7 +2066,7 @@ window.FLOWER_MASTER_DATA = [
   {
     "id": "PHOTO_R_진홍빛_백일초",
     "name": "진홍빛 백일초",
-    "listName": "진홍빛 백일초",
+    "listName": "[정보 준비중] 진홍빛 백일초",
     "grade": "R",
     "guildScore": null,
     "image": "images/flowers/R/R_photo_079.webp",
@@ -3746,13 +3746,13 @@ window.FLOWER_MASTER_DATA = [
   {
     "id": "PHOTO_SR_금빛_솜털_삼지닥나무",
     "name": "금빛 솜털 삼지닥나무",
-    "listName": "금빛 솜털 삼지닥나무",
+    "listName": "[스타소울] 금빛 솜털 삼지닥나무",
     "grade": "SR",
     "guildScore": null,
     "image": "images/flowers/SR/SR_photo_120.webp",
     "imageRemote": "",
-    "acquire": "사진 파일 기준",
-    "unlock": "정보 준비중",
+    "acquire": "스타소울",
+    "unlock": "스타소울",
     "note": "사진 파일 기준 추가",
     "sourceId": "",
     "sourceSnapshot": "2026-08-25"
@@ -3760,13 +3760,13 @@ window.FLOWER_MASTER_DATA = [
   {
     "id": "PHOTO_SR_불꽃_솜털_국화",
     "name": "불꽃 솜털 국화",
-    "listName": "불꽃 솜털 국화",
+    "listName": "[특집 이벤트] 불꽃 솜털 국화",
     "grade": "SR",
     "guildScore": null,
     "image": "images/flowers/SR/SR_photo_121.webp",
     "imageRemote": "",
-    "acquire": "사진 파일 기준",
-    "unlock": "정보 준비중",
+    "acquire": "특집 이벤트",
+    "unlock": "특집 이벤트",
     "note": "사진 파일 기준 추가",
     "sourceId": "",
     "sourceSnapshot": "2026-08-25"
@@ -3774,7 +3774,7 @@ window.FLOWER_MASTER_DATA = [
   {
     "id": "PHOTO_SR_연분홍_앵초",
     "name": "연분홍 앵초",
-    "listName": "연분홍 앵초",
+    "listName": "[정보 준비중] 연분홍 앵초",
     "grade": "SR",
     "guildScore": null,
     "image": "images/flowers/SR/SR_photo_122.webp",
@@ -3788,13 +3788,13 @@ window.FLOWER_MASTER_DATA = [
   {
     "id": "PHOTO_SR_푸른_솜털_국화",
     "name": "푸른 솜털 국화",
-    "listName": "푸른 솜털 국화",
+    "listName": "[특집 이벤트] 푸른 솜털 국화",
     "grade": "SR",
     "guildScore": null,
     "image": "images/flowers/SR/SR_photo_123.webp",
     "imageRemote": "",
-    "acquire": "사진 파일 기준",
-    "unlock": "정보 준비중",
+    "acquire": "특집 이벤트",
+    "unlock": "특집 이벤트",
     "note": "사진 파일 기준 추가",
     "sourceId": "",
     "sourceSnapshot": "2026-08-25"
@@ -3802,13 +3802,13 @@ window.FLOWER_MASTER_DATA = [
   {
     "id": "PHOTO_SR_핑크_페더_라크스퍼",
     "name": "핑크 페더 라크스퍼",
-    "listName": "핑크 페더 라크스퍼",
+    "listName": "[스타소울] 핑크 페더 라크스퍼",
     "grade": "SR",
     "guildScore": null,
     "image": "images/flowers/SR/SR_photo_124.webp",
     "imageRemote": "",
-    "acquire": "사진 파일 기준",
-    "unlock": "정보 준비중",
+    "acquire": "스타소울",
+    "unlock": "스타소울",
     "note": "사진 파일 기준 추가",
     "sourceId": "",
     "sourceSnapshot": "2026-08-25"
@@ -4642,13 +4642,13 @@ window.FLOWER_MASTER_DATA = [
   {
     "id": "PHOTO_SSR_귀염냥_연회",
     "name": "귀염냥 연회",
-    "listName": "귀염냥 연회",
+    "listName": "[특집 이벤트] 귀염냥 연회",
     "grade": "SSR",
     "guildScore": null,
     "image": "images/flowers/SSR/SSR_photo_060.webp",
     "imageRemote": "",
-    "acquire": "사진 파일 기준",
-    "unlock": "정보 준비중",
+    "acquire": "특집 이벤트",
+    "unlock": "특집 이벤트",
     "note": "사진 파일 기준 추가",
     "sourceId": "",
     "sourceSnapshot": "2026-08-25"
@@ -4656,13 +4656,13 @@ window.FLOWER_MASTER_DATA = [
   {
     "id": "PHOTO_SSR_분홍빛_생일잔치",
     "name": "분홍빛 생일잔치",
-    "listName": "분홍빛 생일잔치",
+    "listName": "[특집 이벤트] 분홍빛 생일잔치",
     "grade": "SSR",
     "guildScore": null,
     "image": "images/flowers/SSR/SSR_photo_061.webp",
     "imageRemote": "",
-    "acquire": "사진 파일 기준",
-    "unlock": "정보 준비중",
+    "acquire": "특집 이벤트",
+    "unlock": "특집 이벤트",
     "note": "사진 파일 기준 추가",
     "sourceId": "",
     "sourceSnapshot": "2026-08-25"
@@ -4670,13 +4670,13 @@ window.FLOWER_MASTER_DATA = [
   {
     "id": "PHOTO_SSR_빛을_추적하는_꽃_모래시계",
     "name": "빛을 추적하는 꽃 모래시계",
-    "listName": "빛을 추적하는 꽃 모래시계",
+    "listName": "[꽃 패키지] 빛을 추적하는 꽃 모래시계",
     "grade": "SSR",
     "guildScore": null,
     "image": "images/flowers/SSR/SSR_photo_062.webp",
     "imageRemote": "",
-    "acquire": "사진 파일 기준",
-    "unlock": "정보 준비중",
+    "acquire": "꽃 패키지",
+    "unlock": "꽃 패키지",
     "note": "사진 파일 기준 추가",
     "sourceId": "",
     "sourceSnapshot": "2026-08-25"

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-cozybook-pwa-demo-v25';
+const CACHE_NAME = 'lemon-cozybook-pwa-demo-v25-r2';
 const APP_SHELL = [
   '/',
   '/index.html',
