@@ -40,67 +40,22 @@
     .flower-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(205px,1fr)); gap:16px; }
     .flower-card { background:#fff; border:1px solid #bbb; border-radius:10px; overflow:hidden; box-shadow:2px 2px 5px rgba(0,0,0,.05); transition:.2s; }
     .flower-card:hover { transform:translateY(-2px); box-shadow:2px 5px 10px rgba(0,0,0,.09); }
-    .image-wrap { position:relative; aspect-ratio:1/1; background:#f8f9fa; border-bottom:1px solid #ddd; display:flex; align-items:center; justify-content:center; padding:12px; }
+    .image-wrap { position:relative; background:#f8f9fa; border-bottom:1px solid #ddd; padding:10px 12px 12px; display:flex; flex-direction:column; align-items:stretch; justify-content:flex-start; gap:8px; }
+    .card-top-row { display:flex; align-items:center; justify-content:space-between; gap:8px; min-height:28px; }
     .flower-image { width:100%; height:100%; object-fit:contain; }
     .custom-placeholder { display:flex; align-items:center; justify-content:center; font-size:3rem; color:#aaa; background:#f8f9fa; }
-    .grade-badge { position:absolute; top:10px; left:10px; display:inline-flex; align-items:center; justify-content:center; min-width:42px; height:28px; padding:0 9px; border:1px solid #777; border-radius:14px; font-size:.82rem; font-weight:bold; background:#d4edbc; }
-
-    /* N/R등급 카드 디자인 테스트: 이미지 바깥 여백 크롭 + 등급 영역 분리 */
-    .flower-card.grade-N .image-wrap,
-    .flower-card.grade-R .image-wrap {
-      aspect-ratio:auto;
-      height:auto;
-      padding:10px 12px 12px;
-      display:flex;
-      flex-direction:column;
-      align-items:stretch;
-      justify-content:flex-start;
-      gap:8px;
-    }
-    .flower-card.grade-N .grade-badge,
-    .flower-card.grade-R .grade-badge {
-      position:static;
-      align-self:flex-start;
-      min-width:42px;
-      height:28px;
-      padding:0 9px;
-      border:none;
-      border-radius:14px;
-      font-size:.82rem;
-      font-family:Arial, sans-serif;
-      font-weight:800 !important;
-      line-height:1;
-      flex:0 0 auto;
-    }
+    .grade-badge { position:static; display:inline-flex; align-items:center; justify-content:center; min-width:42px; height:28px; padding:0 9px; border:none; border-radius:14px; font-size:.82rem; font-family:Arial, sans-serif; font-weight:800 !important; line-height:1; flex:0 0 auto; background:#d4edbc; }
+    .score-badge { display:inline-flex; align-items:center; justify-content:flex-end; min-height:28px; color:#555; font-size:.78rem; font-weight:700; line-height:1; white-space:nowrap; }
     .flower-card.grade-N .grade-badge { background:#d4edbc; }
     .flower-card.grade-R .grade-badge { background:#bfe1f6; }
-    .flower-card.grade-N .grade-image-crop,
-    .flower-card.grade-R .grade-image-crop {
-      width:100%;
-      aspect-ratio:1 / 1;
-      flex:0 0 auto;
-      overflow:hidden;
-      border-radius:22px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:#f4ecd9;
-    }
-    .flower-card.grade-N .grade-image-crop .flower-image,
-    .flower-card.grade-R .grade-image-crop .flower-image {
-      width:100%;
-      height:100%;
-      object-fit:contain;
-      transform:scale(1.07);
-      transform-origin:center;
-    }
-    .flower-card.grade-N .grade-image-crop .custom-placeholder,
-    .flower-card.grade-R .grade-image-crop .custom-placeholder {
-      transform:none;
-    }
+    .flower-card.grade-SR .grade-badge { background:#e6cff2; }
+    .flower-card.grade-SSR .grade-badge { background:#ffe5a0; }
+    .flower-card.grade-UR .grade-badge { background:#ffcfc9; }
+    .grade-image-crop { width:100%; aspect-ratio:1 / 1; flex:0 0 auto; overflow:hidden; border-radius:22px; display:flex; align-items:center; justify-content:center; background:#f4ecd9; }
+    .grade-image-crop .flower-image { width:100%; height:100%; object-fit:contain; }
+    .grade-image-crop .custom-placeholder { transform:none; }
     .card-body { padding:13px; text-align:center; }
     .flower-name { font-size:1rem; font-weight:bold; margin-bottom:10px; }
-    .flower-meta { color:#777; font-size:.78rem; margin-bottom:11px; }
     .btn-open { width:100%; padding:8px 12px; background:#fff0f0; border:1px solid #666; border-radius:6px; font-size:.85rem; font-weight:bold; cursor:pointer; transition:.15s; }
     .btn-open:hover { background:#fae0e0; }
     .empty-result { grid-column:1/-1; padding:50px 15px; text-align:center; color:#888; border:1px dashed #ccc; border-radius:8px; background:#fafafa; }
@@ -151,15 +106,13 @@
       .flower-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; }
       .flower-card { border-radius:8px; }
       .flower-card:hover { transform:none; }
-      .flower-card.grade-N .image-wrap,
-      .flower-card.grade-R .image-wrap { padding:6px 6px 7px; gap:5px; }
-      .flower-card.grade-N .grade-badge,
-      .flower-card.grade-R .grade-badge { min-width:30px; height:20px; padding:0 6px; border-radius:10px; font-size:.66rem; font-weight:800 !important; }
-      .flower-card.grade-N .grade-image-crop,
-      .flower-card.grade-R .grade-image-crop { border-radius:13px; }
+      .image-wrap { padding:6px 6px 7px; gap:5px; }
+      .card-top-row { min-height:20px; gap:4px; }
+      .grade-badge { min-width:30px; height:20px; padding:0 6px; border-radius:10px; font-size:.66rem; font-weight:800 !important; }
+      .score-badge { min-height:20px; font-size:.6rem; }
+      .grade-image-crop { border-radius:13px; }
       .card-body { padding:7px 5px 8px; }
       .flower-name { font-size:.72rem; line-height:1.25; margin-bottom:5px; min-height:1.8em; word-break:keep-all; }
-      .flower-meta { font-size:.58rem; line-height:1.25; margin-bottom:6px; white-space:nowrap; }
       .btn-open { padding:6px 2px; font-size:.67rem; border-radius:5px; }
       .result-info { font-size:.7rem; gap:6px; align-items:flex-start; }
 
@@ -374,16 +327,18 @@
       grid.innerHTML = filtered.map(f => `
         <article class="flower-card grade-${f.grade}">
           <div class="image-wrap">
-            <span class="grade-badge">${f.grade}</span>
-            ${(f.grade === 'N' || f.grade === 'R') ? '<div class="grade-image-crop">' : ''}
-            ${(f.isCustom || !f.image)
-              ? '<div class="flower-image custom-placeholder" aria-label="이미지 준비중">🌷</div>'
-              : `<img src="${f.image}" alt="${f.name}" class="flower-image" onerror="this.onerror=null;this.src='${f.imageRemote}';">`}
-            ${(f.grade === 'N' || f.grade === 'R') ? '</div>' : ''}
+            <div class="card-top-row">
+              <span class="grade-badge">${f.grade}</span>
+              <span class="score-badge">⚔️ ${f.guildScore == null ? '-' : `${f.guildScore}점`}</span>
+            </div>
+            <div class="grade-image-crop">
+              ${(f.isCustom || !f.image)
+                ? '<div class="flower-image custom-placeholder" aria-label="이미지 준비중">🌷</div>'
+                : `<img src="${f.image}" alt="${f.name}" class="flower-image" onerror="this.onerror=null;this.src='${f.imageRemote}';">`}
+            </div>
           </div>
           <div class="card-body">
             <div class="flower-name">${f.name}</div>
-            <div class="flower-meta">${f.guildScore == null ? '상세 정보 준비중' : `길드전 · ${f.guildScore}점`}</div>
             <button class="btn-open" type="button" data-id="${f.id}">${f.isCustom ? '정보 준비중' : '열기'}</button>
           </div>
         </article>`).join('');
