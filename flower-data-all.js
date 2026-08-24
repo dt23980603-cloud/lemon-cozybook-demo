@@ -1,5 +1,6 @@
 /* 전체 꽃 도감 전용 마스터 데이터
  * 기준: 업로드된 등급별 사진 파일 기준 356개
+ * 꽃 이름 기준: 사진 파일명 우선 (2026-08-25)
  * page5.html 전용. 길드 꽃 도감(page2.html)은 기존 flower-data.js를 그대로 사용합니다.
  * 정리일: 2026-08-25
  */
@@ -188,8 +189,8 @@ window.FLOWER_MASTER_DATA = [
   },
   {
     "id": "F0273",
-    "name": "푸른별꽃",
-    "listName": "[레벨 14 해제] 푸른별꽃",
+    "name": "푸른벌꽃",
+    "listName": "[레벨 14 해제] 푸른벌꽃",
     "grade": "N",
     "guildScore": 9,
     "image": "images/flowers/N/014.webp",
@@ -1294,8 +1295,8 @@ window.FLOWER_MASTER_DATA = [
   },
   {
     "id": "F0212",
-    "name": "보라 심장 물상추",
-    "listName": "[꽃의 밀령] 보라 심장 물상추",
+    "name": "보라심장 물상추",
+    "listName": "[꽃의 밀령] 보라심장 물상추",
     "grade": "R",
     "guildScore": 14,
     "image": "images/flowers/R/F0212.webp",
@@ -1630,8 +1631,8 @@ window.FLOWER_MASTER_DATA = [
   },
   {
     "id": "F0238",
-    "name": "연노랑 녹용호",
-    "listName": "[별똥별의 향기] 연노랑 녹용호",
+    "name": "연노랑 녹융호",
+    "listName": "[별똥별의 향기] 연노랑 녹융호",
     "grade": "R",
     "guildScore": 14,
     "image": "images/flowers/R/F0238.webp",
@@ -2569,8 +2570,8 @@ window.FLOWER_MASTER_DATA = [
   {
     "id": "F0108",
     "sourceId": "F0108",
-    "name": "옥빛 글라디올러스",
-    "listName": "[패키지 화단] 옥빛 글라디올러스",
+    "name": "옥빛 그라디올러스",
+    "listName": "[패키지 화단] 옥빛 그라디올러스",
     "grade": "SR",
     "guildScore": 23,
     "image": "images/flowers/SR/F0108.webp",
@@ -3171,8 +3172,8 @@ window.FLOWER_MASTER_DATA = [
   {
     "id": "F0154",
     "sourceId": "F0154",
-    "name": "분홍안개 맥문동",
-    "listName": "[꽃시장 교환] 분홍안개 맥문동",
+    "name": "분홍 안개 맥문동",
+    "listName": "[꽃시장 교환] 분홍 안개 맥문동",
     "grade": "SR",
     "guildScore": 21,
     "image": "images/flowers/SR/F0154.webp",
@@ -3437,8 +3438,8 @@ window.FLOWER_MASTER_DATA = [
   {
     "id": "F0173",
     "sourceId": "F0173",
-    "name": "우아한 보라빛 알리움",
-    "listName": "[꽃시장 교환] 우아한 보라빛 알리움",
+    "name": "우아한 보랏빛 알리움",
+    "listName": "[꽃시장 교환] 우아한 보랏빛 알리움",
     "grade": "SR",
     "guildScore": 21,
     "image": "images/flowers/SR/F0173.webp",
@@ -4290,8 +4291,8 @@ window.FLOWER_MASTER_DATA = [
   },
   {
     "id": "F0055",
-    "name": "위엄있는 분홍색 왕관",
-    "listName": "[누적 충전] 위엄있는 분홍색 왕관",
+    "name": "위엄 있는 분홍색 왕관",
+    "listName": "[누적 충전] 위엄 있는 분홍색 왕관",
     "grade": "SSR",
     "guildScore": 25,
     "image": "images/flowers/SSR/F0055.webp",
@@ -4318,8 +4319,8 @@ window.FLOWER_MASTER_DATA = [
   },
   {
     "id": "F0057",
-    "name": "적염괴화",
-    "listName": "[해 질 녘의 장원] 적염괴화",
+    "name": "적염 괴화",
+    "listName": "[해 질 녘의 장원] 적염 괴화",
     "grade": "SSR",
     "guildScore": 25,
     "image": "images/flowers/SSR/F0057.webp",
@@ -4486,8 +4487,8 @@ window.FLOWER_MASTER_DATA = [
   },
   {
     "id": "F0069",
-    "name": "행운의 올리브",
-    "listName": "[스타소울 상점] 행운의 올리브",
+    "name": "헹운의 올리브",
+    "listName": "[스타소울 상점] 헹운의 올리브",
     "grade": "SSR",
     "guildScore": 25,
     "image": "images/flowers/SSR/F0069.webp",
@@ -4738,8 +4739,8 @@ window.FLOWER_MASTER_DATA = [
   },
   {
     "id": "F0005",
-    "name": "게자리-물결치는 별무리",
-    "listName": "[별자리] 게자리•물결치는 별무리",
+    "name": "게자리 · 물결치는 별무리",
+    "listName": "[별자리] 게자리 · 물결치는 별무리",
     "grade": "UR",
     "guildScore": 28,
     "image": "images/flowers/UR/F0005.webp",
@@ -4780,8 +4781,8 @@ window.FLOWER_MASTER_DATA = [
   },
   {
     "id": "F0008",
-    "name": "구름빛 사절",
-    "listName": "[평화로운 우주 질서] 구름빛 사절",
+    "name": "평화로운 우주 질서",
+    "listName": "[평화로운 우주 질서] 평화로운 우주 질서",
     "grade": "UR",
     "guildScore": 28,
     "image": "images/flowers/UR/F0008.webp",
@@ -4822,8 +4823,8 @@ window.FLOWER_MASTER_DATA = [
   },
   {
     "id": "F0011",
-    "name": "사자자리-금관의 빛나는 정원",
-    "listName": "[별자리] 사자자리•금관의 빛나는 정원",
+    "name": "사자자리 · 금관의 빛나는 정원",
+    "listName": "[별자리] 사자자리 · 금관의 빛나는 정원",
     "grade": "UR",
     "guildScore": 28,
     "image": "images/flowers/UR/F0011.webp",
@@ -4864,8 +4865,8 @@ window.FLOWER_MASTER_DATA = [
   },
   {
     "id": "F0014",
-    "name": "쌍둥이자리-성수쌍영",
-    "listName": "[별자리] 쌍둥이자리•성수쌍영",
+    "name": "쌍둥이자리 · 성수쌍영",
+    "listName": "[별자리] 쌍둥이자리 · 성수쌍영",
     "grade": "UR",
     "guildScore": 28,
     "image": "images/flowers/UR/F0014.webp",
@@ -4934,8 +4935,8 @@ window.FLOWER_MASTER_DATA = [
   },
   {
     "id": "F0019",
-    "name": "황소자리-풍요의 별그림",
-    "listName": "[별자리] 황소자리•풍요의 별그림",
+    "name": "황소자리 · 풍요의 별그림",
+    "listName": "[별자리] 황소자리 · 풍요의 별그림",
     "grade": "UR",
     "guildScore": 28,
     "image": "images/flowers/UR/F0019.webp",
@@ -4976,8 +4977,8 @@ window.FLOWER_MASTER_DATA = [
   },
   {
     "id": "F0353",
-    "name": "처녀자리·블루스톤 가든 위스퍼",
-    "listName": "[스타소울] 처녀자리·블루스톤 가든 위스퍼",
+    "name": "처녀자리 · 블루스톤 가든 위스퍼",
+    "listName": "[스타소울] 처녀자리 · 블루스톤 가든 위스퍼",
     "grade": "UR",
     "guildScore": null,
     "image": "images/flowers/UR/F0353.webp",
