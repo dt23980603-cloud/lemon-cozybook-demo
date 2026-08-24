@@ -574,6 +574,7 @@
                     <td style="text-align:left;padding-left:12px;">
                         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
                             <div style="min-width:0;flex:1;">
+                                <div style="font-size:.72rem;color:#999;margin-bottom:2px;">${item.action === 'edit' ? '정보 수정' : '신규 추가'}</div>
                                 <div style="font-weight:bold;word-break:keep-all;">${escapeHtml(label)}</div>
                                 <div style="margin-top:4px;font-size:.82rem;color:#666;"><span class="grade-text grade-text-${escapeHtml(item.grade)}">${escapeHtml(item.grade)}</span> · ⚔️ ${escapeHtml(score)}</div>
                             </div>
@@ -646,7 +647,7 @@
     </script>
 
 
-    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v27</div>
+    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v28</div>
 
 
 <script id="pwa-auto-update-script">

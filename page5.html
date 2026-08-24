@@ -36,6 +36,10 @@
     .add-form-actions { display:flex; justify-content:flex-end; margin-top:8px; }
     .btn-submit-flower { min-width:100px; padding:9px 16px; border:1px solid #666; border-radius:6px; background:#fff0f0; font-weight:bold; cursor:pointer; }
     .btn-submit-flower:disabled { opacity:.55; cursor:wait; }
+    .detail-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:16px; padding-top:12px; border-top:1px solid #eee; }
+    .btn-edit-flower { padding:8px 16px; background:#fff0f0; border:1px solid #666; border-radius:6px; font-weight:bold; cursor:pointer; }
+    .btn-edit-flower:hover { background:#fae0e0; }
+    .edit-current-image { margin-top:4px; color:#777; font-size:.72rem; font-weight:normal; }
 
     .control-card { background:#f8f9fa; border:1px solid #333; border-radius:6px; padding:15px; margin-bottom:18px; }
     .search-row { display:flex; gap:8px; margin-bottom:12px; }
@@ -165,7 +169,7 @@
             border: 0;
         }
 
-    /* demo_v27 N등급: 450×350 가로형 이미지 프레임 */
+    /* demo_v28 N등급: 450×350 가로형 이미지 프레임 */
     .flower-card.grade-N .grade-image-crop {
       aspect-ratio:9 / 7;
       border-radius:8px;
@@ -189,7 +193,7 @@
       .flower-detail-image.grade-N-detail { width:min(180px, 100%); }
     }
 
-    /* demo_v27 전체 등급: 가로형 꽃 이미지 프레임 */
+    /* demo_v28 전체 등급: 가로형 꽃 이미지 프레임 */
     .grade-image-crop {
       aspect-ratio:9 / 7;
       border-radius:8px;
@@ -255,7 +259,7 @@
 
     <div class="result-info">
       <span id="resultText">총 69개의 꽃</span>
-      <span>※ 기본 356개 + 사이트에서 추가한 꽃이 자동으로 함께 표시됩니다.</span>
+      <span>※ D1의 공용 꽃 데이터를 기준으로 모든 길드원에게 동일하게 표시됩니다.</span>
     </div>
 
     <div id="flowerGrid" class="flower-grid"></div>
@@ -272,9 +276,11 @@
         <div class="flower-detail-info">
           <div id="detailName" class="flower-detail-name"></div>
           <div class="flower-detail-row"><span class="flower-detail-label">등급</span><span id="detailGrade"></span></div>
+          <div class="flower-detail-row"><span class="flower-detail-label">분류</span><span id="detailCategory"></span></div>
           <div class="flower-detail-row"><span class="flower-detail-label">길드전</span><span id="detailScore"></span></div>
           <div class="flower-detail-row"><span class="flower-detail-label">획득</span><span id="detailAcquire"></span></div>
           <div class="flower-detail-row"><span class="flower-detail-label">비고</span><span id="detailNote"></span></div>
+          <div class="detail-actions"><button id="openEditFlowerModal" class="btn-edit-flower" type="button">수정</button></div>
         </div>
       </div>
     </div>
@@ -302,13 +308,36 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="editFlowerModal" aria-hidden="true">
+    <div class="add-flower-card" role="dialog" aria-modal="true" aria-labelledby="editFlowerTitle">
+      <div class="modal-header">
+        <div class="modal-title" id="editFlowerTitle">✏️ 꽃 정보 수정</div>
+        <button class="modal-close" type="button" id="closeEditFlowerModal" aria-label="닫기">✕</button>
+      </div>
+      <form id="editFlowerForm" class="add-flower-form">
+        <input id="editKey" name="key" type="hidden">
+        <div class="add-form-grid">
+          <label>등급<select id="editGrade" name="grade" required><option>N</option><option>R</option><option>SR</option><option>SSR</option><option>UR</option></select></label>
+          <label>분류<input id="editCategory" name="category" type="text" maxlength="80" required></label>
+          <label class="span-2">꽃 이름<input id="editName" name="name" type="text" maxlength="120" required></label>
+          <label>길드전 점수<input id="editGuildScore" name="guildScore" type="number" min="0" max="9999" inputmode="numeric"></label>
+          <label>획득<input id="editAcquire" name="acquire" type="text" maxlength="200"></label>
+          <label class="span-2">비고<textarea id="editNote" name="note" maxlength="500" rows="3"></textarea></label>
+          <label class="span-2">이미지<input id="editImage" name="image" type="file" accept="image/png,image/jpeg,image/webp"><span class="image-help">새 이미지를 선택한 경우에만 WebP로 변환하여 R2에 저장합니다.</span><span id="editCurrentImage" class="edit-current-image"></span></label>
+        </div>
+        <div id="editFlowerStatus" class="add-status" aria-live="polite"></div>
+        <div class="add-form-actions"><button id="submitEditFlower" class="btn-submit-flower" type="submit">저장</button></div>
+      </form>
+    </div>
+  </div>
+
   <div class="modal-overlay" id="deleteFlowerModal" aria-hidden="true">
     <div class="delete-flower-card" role="dialog" aria-modal="true" aria-labelledby="deleteFlowerTitle">
       <div class="modal-header">
-        <div class="modal-title" id="deleteFlowerTitle">🗑 등록 꽃 삭제</div>
+        <div class="modal-title" id="deleteFlowerTitle">🗑 꽃 삭제</div>
         <button class="modal-close" type="button" id="closeDeleteFlowerModal" aria-label="닫기">✕</button>
       </div>
-      <p class="delete-guide">전체 꽃 도감의 ＋ 꽃 추가 버튼으로 등록한 꽃만 표시됩니다. 삭제하면 전체/길드 꽃 도감에서 함께 사라집니다.</p>
+      <p class="delete-guide">D1에 저장된 모든 꽃이 표시됩니다. 삭제하면 전체/길드 꽃 도감에서 함께 사라지며, R2에 저장된 해당 꽃 이미지는 함께 삭제됩니다.</p>
       <div id="deleteFlowerList" class="delete-flower-list"></div>
     </div>
   </div>
@@ -317,30 +346,31 @@
   <script>
     const masterFlowers = window.FLOWER_MASTER_DATA || [];
     const FLOWERS_API = '/api/flowers';
+    const BASE_SEED_VERSION = 'demo_v28_base_356';
     let remoteFlowers = [];
+    let d1Ready = false;
     let activeGrade = 'ALL';
+    let currentDetailKey = '';
 
     const grid = document.getElementById('flowerGrid');
     const searchInput = document.getElementById('flowerSearch');
     const resultText = document.getElementById('resultText');
     const modal = document.getElementById('flowerDetailModal');
     const addFlowerModal = document.getElementById('addFlowerModal');
+    const editFlowerModal = document.getElementById('editFlowerModal');
     const deleteFlowerModal = document.getElementById('deleteFlowerModal');
     const deleteFlowerList = document.getElementById('deleteFlowerList');
     const addFlowerForm = document.getElementById('addFlowerForm');
+    const editFlowerForm = document.getElementById('editFlowerForm');
     const addFlowerStatus = document.getElementById('addFlowerStatus');
+    const editFlowerStatus = document.getElementById('editFlowerStatus');
 
     function escapeHtml(value) {
       return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
     }
 
-    function dedupeRemoteFlowers(items) {
-      const masterLabels = new Set(masterFlowers.map(f => `${f.grade}\u0000${f.listName}`));
-      return (Array.isArray(items) ? items : []).filter(f => f && !masterLabels.has(`${f.grade}\u0000${f.listName}`));
-    }
-
     function getAllFlowers() {
-      return [...masterFlowers, ...dedupeRemoteFlowers(remoteFlowers)];
+      return d1Ready ? remoteFlowers : masterFlowers;
     }
 
     function updateGradeCounts(flowers) {
@@ -388,20 +418,27 @@
       return getAllFlowers().find(f => f.key === key);
     }
 
-    function openDetail() {
-      const flower = findFlowerByKey(this.dataset.key);
+    function showDetailForKey(key) {
+      const flower = findFlowerByKey(key);
       if (!flower) return;
+      currentDetailKey = flower.key;
       const detailImage = document.getElementById('detailImage');
       detailImage.src = flower.image;
       detailImage.alt = flower.name;
+      detailImage.style.opacity = '1';
       detailImage.onerror = function () { this.onerror = null; this.style.opacity = '.15'; };
       document.getElementById('detailName').textContent = flower.name;
       document.getElementById('detailGrade').textContent = flower.grade;
+      document.getElementById('detailCategory').textContent = flower.category || '-';
       document.getElementById('detailScore').textContent = flower.guildScore == null ? '-' : `${flower.guildScore}점`;
       document.getElementById('detailAcquire').textContent = flower.acquire || '-';
       document.getElementById('detailNote').textContent = flower.note || '-';
       modal.classList.add('active');
       modal.setAttribute('aria-hidden','false');
+    }
+
+    function openDetail() {
+      showDetailForKey(this.dataset.key);
     }
 
     function closeDetail() {
@@ -422,9 +459,33 @@
       addFlowerModal.setAttribute('aria-hidden','true');
     }
 
+    function openEditFlowers(key = currentDetailKey) {
+      const flower = findFlowerByKey(key);
+      if (!flower || !d1Ready) return;
+      document.getElementById('editKey').value = flower.key;
+      document.getElementById('editGrade').value = flower.grade;
+      document.getElementById('editCategory').value = flower.category || '';
+      document.getElementById('editName').value = flower.name || '';
+      document.getElementById('editGuildScore').value = flower.guildScore == null ? '' : flower.guildScore;
+      document.getElementById('editAcquire').value = flower.acquire || '';
+      document.getElementById('editNote').value = flower.note || '';
+      document.getElementById('editImage').value = '';
+      document.getElementById('editCurrentImage').textContent = `현재 이미지: ${flower.hasR2Image ? 'R2 이미지' : '프로젝트 기본 이미지'} · 변경하지 않으려면 선택하지 마세요.`;
+      editFlowerStatus.textContent = '';
+      editFlowerStatus.className = 'add-status';
+      editFlowerModal.classList.add('active');
+      editFlowerModal.setAttribute('aria-hidden','false');
+      setTimeout(() => document.getElementById('editName').focus(), 0);
+    }
+
+    function closeEditFlowers() {
+      editFlowerModal.classList.remove('active');
+      editFlowerModal.setAttribute('aria-hidden','true');
+    }
+
     function renderDeleteFlowerList() {
-      if (!remoteFlowers.length) {
-        deleteFlowerList.innerHTML = '<div class="delete-empty">삭제할 등록 꽃이 없습니다.</div>';
+      if (!d1Ready || !remoteFlowers.length) {
+        deleteFlowerList.innerHTML = '<div class="delete-empty">삭제할 꽃이 없습니다.</div>';
         return;
       }
       deleteFlowerList.innerHTML = remoteFlowers.map(f => `
@@ -435,7 +496,7 @@
           </div>
           <button class="btn-delete-row" type="button" data-key="${escapeHtml(f.key)}">삭제</button>
         </div>`).join('');
-      deleteFlowerList.querySelectorAll('.btn-delete-row').forEach(btn => btn.addEventListener('click', () => deleteRemoteFlower(btn.dataset.key)));
+      deleteFlowerList.querySelectorAll('.btn-delete-row').forEach(btn => btn.addEventListener('click', () => deleteFlower(btn.dataset.key)));
     }
 
     function openDeleteFlowers() {
@@ -449,6 +510,17 @@
       deleteFlowerModal.setAttribute('aria-hidden','true');
     }
 
+    async function ensureBaseSeed() {
+      const response = await fetch(`${FLOWERS_API}?seed=1`, {
+        method:'POST',
+        headers:{ 'content-type':'application/json' },
+        body:JSON.stringify({ seedVersion:BASE_SEED_VERSION, flowers:masterFlowers })
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.error || `기본 꽃 D1 이전 실패 (${response.status})`);
+      return payload;
+    }
+
     async function fetchRemoteFlowers() {
       const response = await fetch(FLOWERS_API, { cache:'no-store' });
       if (!response.ok) throw new Error(`GET ${response.status}`);
@@ -459,10 +531,11 @@
     async function syncRemoteFlowers(silent = true) {
       try {
         remoteFlowers = await fetchRemoteFlowers();
+        d1Ready = true;
         renderFlowers();
         if (deleteFlowerModal.classList.contains('active')) renderDeleteFlowerList();
       } catch (error) {
-        console.warn('D1 신규 꽃 불러오기 실패', error);
+        console.warn('D1 꽃 데이터 불러오기 실패', error);
         if (!silent) alert('공용 꽃 데이터를 불러오지 못했습니다. Cloudflare D1 연결을 확인해주세요.');
       }
     }
@@ -496,6 +569,11 @@
 
     addFlowerForm.addEventListener('submit', async e => {
       e.preventDefault();
+      if (!d1Ready) {
+        addFlowerStatus.textContent = 'D1 꽃 데이터를 먼저 불러와주세요.';
+        addFlowerStatus.className = 'add-status error';
+        return;
+      }
       const submit = document.getElementById('submitAddFlower');
       const imageInput = document.getElementById('addImage');
       const grade = document.getElementById('addGrade').value;
@@ -536,14 +614,65 @@
       }
     });
 
-    async function deleteRemoteFlower(key) {
+    editFlowerForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const submit = document.getElementById('submitEditFlower');
+      const key = document.getElementById('editKey').value;
+      const grade = document.getElementById('editGrade').value;
+      const category = document.getElementById('editCategory').value.trim();
+      const name = document.getElementById('editName').value.trim();
+      const listName = category ? `[${category}] ${name}` : name;
+      if (getAllFlowers().some(f => f.key !== key && f.grade === grade && f.listName === listName)) {
+        editFlowerStatus.textContent = '같은 등급에 동일한 [분류] 꽃 이름이 이미 있습니다.';
+        editFlowerStatus.className = 'add-status error';
+        return;
+      }
+
+      submit.disabled = true;
+      editFlowerStatus.textContent = '꽃 정보를 저장 중입니다…';
+      editFlowerStatus.className = 'add-status';
+      try {
+        const form = new FormData();
+        form.append('key', key);
+        form.append('grade', grade);
+        form.append('category', category);
+        form.append('name', name);
+        form.append('guildScore', document.getElementById('editGuildScore').value.trim());
+        form.append('acquire', document.getElementById('editAcquire').value.trim());
+        form.append('note', document.getElementById('editNote').value.trim());
+
+        const imageFile = document.getElementById('editImage').files[0];
+        if (imageFile) {
+          editFlowerStatus.textContent = '새 이미지를 WebP로 변환하고 저장 중입니다…';
+          const webp = await imageToWebP(imageFile);
+          form.append('image', webp, 'flower.webp');
+        }
+
+        const response = await fetch(FLOWERS_API, { method:'PUT', body:form });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(payload.error || `수정 실패 (${response.status})`);
+        editFlowerStatus.textContent = '수정되었습니다. 전체/길드 꽃 도감과 업데이트 내역에 자동 반영됩니다.';
+        editFlowerStatus.className = 'add-status ok';
+        await syncRemoteFlowers(true);
+        closeEditFlowers();
+        showDetailForKey(key);
+      } catch (error) {
+        editFlowerStatus.textContent = error.message || '수정 중 오류가 발생했습니다.';
+        editFlowerStatus.className = 'add-status error';
+      } finally {
+        submit.disabled = false;
+      }
+    });
+
+    async function deleteFlower(key) {
       const flower = remoteFlowers.find(f => f.key === key);
       if (!flower) return;
-      if (!confirm(`'${flower.listName}' 꽃을 삭제하시겠습니까?\n전체 꽃 도감과 길드 꽃 도감에서 함께 제거됩니다.`)) return;
+      if (!confirm(`'${flower.listName}' 꽃을 삭제하시겠습니까?\n전체 꽃 도감과 길드 꽃 도감에서 함께 제거됩니다.\nR2에 저장된 이미지가 있다면 함께 삭제됩니다.`)) return;
       try {
         const response = await fetch(`${FLOWERS_API}?key=${encodeURIComponent(key)}`, { method:'DELETE' });
         const payload = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(payload.error || `삭제 실패 (${response.status})`);
+        if (currentDetailKey === key) closeDetail();
         await syncRemoteFlowers(true);
         renderDeleteFlowerList();
       } catch (error) {
@@ -567,18 +696,31 @@
     });
     document.getElementById('closeModal').addEventListener('click', closeDetail);
     modal.addEventListener('click', e => { if (e.target === modal) closeDetail(); });
+    document.getElementById('openEditFlowerModal').addEventListener('click', () => openEditFlowers());
     document.getElementById('openAddFlowerModal').addEventListener('click', openAddFlowers);
     document.getElementById('closeAddFlowerModal').addEventListener('click', closeAddFlowers);
     addFlowerModal.addEventListener('click', e => { if (e.target === addFlowerModal) closeAddFlowers(); });
+    document.getElementById('closeEditFlowerModal').addEventListener('click', closeEditFlowers);
+    editFlowerModal.addEventListener('click', e => { if (e.target === editFlowerModal) closeEditFlowers(); });
     document.getElementById('openDeleteFlowerModal').addEventListener('click', openDeleteFlowers);
     document.getElementById('closeDeleteFlowerModal').addEventListener('click', closeDeleteFlowers);
     deleteFlowerModal.addEventListener('click', e => { if (e.target === deleteFlowerModal) closeDeleteFlowers(); });
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') { closeDetail(); closeAddFlowers(); closeDeleteFlowers(); }
+      if (e.key === 'Escape') { closeDetail(); closeAddFlowers(); closeEditFlowers(); closeDeleteFlowers(); }
     });
 
-    renderFlowers();
-    syncRemoteFlowers(true);
+    async function initializeFlowers() {
+      renderFlowers();
+      try {
+        await ensureBaseSeed();
+        await syncRemoteFlowers(false);
+      } catch (error) {
+        console.error('D1 기본 꽃 이전/조회 실패', error);
+        alert(`D1 꽃 데이터 초기화에 실패했습니다.\n${error.message || error}\n기존 flower-data-all.js 데이터를 임시로 표시합니다.`);
+      }
+    }
+
+    initializeFlowers();
     setInterval(() => syncRemoteFlowers(true), 5000);
     window.addEventListener('focus', () => syncRemoteFlowers(true));
     document.addEventListener('visibilitychange', () => { if (!document.hidden) syncRemoteFlowers(true); });

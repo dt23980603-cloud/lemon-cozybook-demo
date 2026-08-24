@@ -1745,7 +1745,19 @@
             return base;
         }
 
+        function getFlowerRecordByLabel(grade, flowerName) {
+            return (remoteFlowerDetails || []).find(item =>
+                item && item.grade === grade && item.listName === flowerName
+            ) || (window.FLOWER_MASTER_DATA || []).find(item =>
+                item && item.grade === grade && item.listName === flowerName
+            );
+        }
+
         function getFlowerCheckKey(grade, flowerName, memberId) {
+            const flower = getFlowerRecordByLabel(grade, flowerName);
+            if (flower && flower.key) {
+                return `flower::${encodeURIComponent(flower.key)}::${memberId}`;
+            }
             return `${grade}::${encodeURIComponent(flowerName)}::${memberId}`;
         }
 
@@ -1754,7 +1766,47 @@
         }
 
         function isCheckKeyForGrade(key, grade) {
-            return String(key).startsWith(`${grade}::`) || String(key).startsWith(`${grade}_`);
+            const text = String(key);
+            if (text.startsWith('flower::')) {
+                const parts = text.split('::');
+                const flowerKey = parts.length >= 3 ? decodeURIComponent(parts[1]) : '';
+                const flower = (remoteFlowerDetails || []).find(item => item && item.key === flowerKey)
+                    || (window.FLOWER_MASTER_DATA || []).find(item => item && item.key === flowerKey);
+                return Boolean(flower && flower.grade === grade);
+            }
+            return text.startsWith(`${grade}::`) || text.startsWith(`${grade}_`);
+        }
+
+        function migrateFlowerCheckKeysToStableIds() {
+            if (!Array.isArray(remoteFlowerDetails) || !remoteFlowerDetails.length) return false;
+            const flowerMap = new Map(remoteFlowerDetails.map(item => [`${item.grade}\u0000${item.listName}`, item]));
+            const migrated = { ...checks };
+            let changed = false;
+
+            Object.entries(checks).forEach(([key, value]) => {
+                if (String(key).startsWith('flower::')) return;
+                const parts = String(key).split('::');
+                if (parts.length !== 3 || !grades.includes(parts[0])) return;
+
+                const grade = parts[0];
+                let flowerName = '';
+                try { flowerName = decodeURIComponent(parts[1]); } catch (_) { flowerName = parts[1]; }
+                const memberId = parts[2];
+                const flower = flowerMap.get(`${grade}\u0000${flowerName}`);
+                if (!flower || !flower.key) return;
+
+                const stableKey = `flower::${encodeURIComponent(flower.key)}::${memberId}`;
+                if (!(stableKey in migrated)) migrated[stableKey] = value;
+                delete migrated[key];
+                changed = true;
+            });
+
+            if (changed) {
+                checks = migrated;
+                localStorage.setItem('guild_checks', JSON.stringify(checks));
+                guildCheckMigrationPending = true;
+            }
+            return changed;
         }
 
         let guildCheckMigrationPending = false;
@@ -1863,6 +1915,7 @@
 
         const GUILD_STATE_API = '/api/guild-state';
         const FLOWERS_API = '/api/flowers';
+        const BASE_SEED_VERSION = 'demo_v28_base_356';
         let remoteSyncReady = false;
         let remoteSaveTimer = null;
         let remotePollTimer = null;
@@ -1872,7 +1925,17 @@
         window.onload = async function () {
             renderAll();
             setupScrollSync();
-            await Promise.all([initializeRemoteGuildState(), syncRemoteFlowers(true)]);
+            await initializeRemoteGuildState();
+            try {
+                await ensureBaseFlowerSeed();
+            } catch (error) {
+                console.warn('기본 356개 D1 이전 실패 - 기존 정적 데이터를 임시 사용합니다.', error);
+            }
+            await syncRemoteFlowers(true);
+            if (guildCheckMigrationPending && remoteSyncReady) {
+                await saveGuildStatePatchToRemote({ checks }, true);
+                guildCheckMigrationPending = false;
+            }
             renderAll();
             startRemoteGuildStatePolling();
             startRemoteFlowerPolling();
@@ -2319,6 +2382,7 @@
                 const payload = await response.json();
                 if (payload && payload.exists && payload.state) {
                     applyGuildStateSnapshot(payload.state);
+                    migrateLegacyGuildCheckKeys();
                     lastRemoteUpdatedAt = Number(payload.updatedAt || 0);
                 } else {
                     await saveGuildStateToRemote(true);
@@ -2334,20 +2398,40 @@
             }
         }
 
+        async function ensureBaseFlowerSeed() {
+            const response = await fetch(`${FLOWERS_API}?seed=1`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({
+                    seedVersion: BASE_SEED_VERSION,
+                    flowers: window.FLOWER_MASTER_DATA || []
+                })
+            });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(payload.error || `SEED ${response.status}`);
+            return payload;
+        }
+
         async function syncRemoteFlowers(silent = true) {
             try {
                 const response = await fetch(FLOWERS_API, { cache:'no-store' });
                 if (!response.ok) throw new Error(`GET ${response.status}`);
                 const payload = await response.json();
                 remoteFlowerDetails = Array.isArray(payload.flowers) ? payload.flowers : [];
-                const masterLabels = new Set((window.FLOWER_MASTER_DATA || []).map(f => `${f.grade}\u0000${f.listName}`));
-                customFlowers = remoteFlowerDetails
-                    .filter(f => f && !masterLabels.has(`${f.grade}\u0000${f.listName}`))
-                    .map(f => ({ ...f, rawName:f.name, name:f.listName }));
+
+                // v28부터 D1이 전체 꽃 도감의 기준입니다. API 성공 시 기존 정적 목록을 대체합니다.
+                grades.forEach(grade => {
+                    flowersData[grade] = remoteFlowerDetails
+                        .filter(item => item && item.grade === grade)
+                        .map(item => item.listName)
+                        .sort(compareFlowerLabels);
+                });
+                customFlowers = [];
+                migrateFlowerCheckKeysToStableIds();
                 renderAll();
             } catch (error) {
-                console.warn('D1 신규 꽃 불러오기 실패', error);
-                if (!silent) alert('신규 꽃 목록을 불러오지 못했습니다.');
+                console.warn('D1 꽃 데이터 불러오기 실패', error);
+                if (!silent) alert('꽃 목록을 불러오지 못했습니다.');
             }
         }
 
@@ -3267,11 +3351,11 @@
 
 
         function getMasterFlowerByListName(grade, flowerListName) {
-            const base = (window.FLOWER_MASTER_DATA || []).find(item =>
+            const remote = (remoteFlowerDetails || []).find(item =>
                 item.grade === grade && item.listName === flowerListName
             );
-            if (base) return base;
-            return (remoteFlowerDetails || []).find(item =>
+            if (remote) return remote;
+            return (window.FLOWER_MASTER_DATA || []).find(item =>
                 item.grade === grade && item.listName === flowerListName
             );
         }
