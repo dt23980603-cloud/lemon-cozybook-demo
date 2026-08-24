@@ -168,6 +168,30 @@
       .flower-card.grade-N .grade-image-crop { border-radius:8px; }
       .flower-detail-image.grade-N-detail { width:min(180px, 100%); }
     }
+
+    /* demo_v24 전체 등급: 가로형 꽃 이미지 프레임 */
+    .grade-image-crop {
+      aspect-ratio:9 / 7;
+      border-radius:8px;
+      background:#f4ecd9;
+    }
+    .grade-image-crop .flower-image {
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      transform:none;
+    }
+    .flower-detail-image {
+      width:180px;
+      height:auto;
+      aspect-ratio:9 / 7;
+      object-fit:cover;
+      border-radius:8px;
+    }
+    @media (max-width:520px) {
+      .grade-image-crop { border-radius:8px; }
+      .flower-detail-image { width:min(180px, 100%); }
+    }
   </style>
 
     <link rel="manifest" href="/manifest.webmanifest">
@@ -495,7 +519,7 @@
       };
       document.getElementById('detailName').textContent = flower.name;
       document.getElementById('detailGrade').textContent = flower.grade;
-      document.getElementById('detailScore').textContent = `${flower.guildScore}점`;
+      document.getElementById('detailScore').textContent = flower.guildScore == null ? '-' : `${flower.guildScore}점`;
       document.getElementById('detailAcquire').textContent = flower.acquire;
       document.getElementById('detailUnlock').textContent = flower.unlock;
       document.getElementById('detailNote').textContent = flower.note;
