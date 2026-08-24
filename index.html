@@ -153,6 +153,27 @@
             background-color: #fa5252;
         }
 
+        .btn-update-delete {
+            flex: 0 0 auto;
+            margin-left: 10px;
+            width: 28px;
+            height: 28px;
+            border: 1px solid #e2b6b6;
+            border-radius: 6px;
+            background: #fff5f5;
+            color: #c94d4d;
+            cursor: pointer;
+            font-size: 0.92rem;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-update-delete:hover {
+            background: #ffe3e3;
+        }
+
         /* 업데이트 내역 본문: PC/모바일 공통 가독성 */
         #updateTable tbody td {
             color: #111;
@@ -363,6 +384,13 @@
                 font-size: 0.72rem;
             }
 
+            .btn-update-delete {
+                width: 26px;
+                height: 26px;
+                margin-left: 6px;
+                font-size: 0.82rem;
+            }
+
             #updateTable {
                 width: 100%;
                 table-layout: fixed;
@@ -497,6 +525,7 @@
             <div>
                 <div class="table-header-box">
                     <span class="table-title">🍋 업데이트 내역</span>
+                    <button type="button" class="btn-reset" id="clearUpdatesBtn" onclick="clearAllUpdates()">전체 초기화</button>
                 </div>
                 <table id="updateTable">
                     <thead>
@@ -543,11 +572,56 @@
                 return `<tr>
                     <td>${escapeHtml(formatUpdateDate(item.createdAt))}</td>
                     <td style="text-align:left;padding-left:12px;">
-                        <div style="font-weight:bold;word-break:keep-all;">${escapeHtml(label)}</div>
-                        <div style="margin-top:4px;font-size:.82rem;color:#666;"><span class="grade-text grade-text-${escapeHtml(item.grade)}">${escapeHtml(item.grade)}</span> · ⚔️ ${escapeHtml(score)}</div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                            <div style="min-width:0;flex:1;">
+                                <div style="font-weight:bold;word-break:keep-all;">${escapeHtml(label)}</div>
+                                <div style="margin-top:4px;font-size:.82rem;color:#666;"><span class="grade-text grade-text-${escapeHtml(item.grade)}">${escapeHtml(item.grade)}</span> · ⚔️ ${escapeHtml(score)}</div>
+                            </div>
+                            <button type="button" class="btn-update-delete" title="이 공지만 삭제" aria-label="이 공지만 삭제" onclick="deleteUpdate(${Number(item.id)})">🗑️</button>
+                        </div>
                     </td>
                 </tr>`;
             }).join('');
+        }
+
+        async function deleteUpdate(id) {
+            const item = updateList.find(entry => Number(entry.id) === Number(id));
+            const label = item ? (item.category ? `[${item.category}] ${item.name}` : item.name) : '이 공지';
+            if (!confirm(`${label}\n\n이 업데이트 공지만 삭제할까요?\n꽃 데이터와 이미지는 삭제되지 않습니다.`)) return;
+
+            try {
+                const response = await fetch(`${UPDATES_API}?id=${encodeURIComponent(id)}`, { method:'DELETE' });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(payload.error || `DELETE ${response.status}`);
+                updateList = updateList.filter(entry => Number(entry.id) !== Number(id));
+                renderTable();
+            } catch (error) {
+                console.error('업데이트 공지 삭제 실패', error);
+                alert(`공지 삭제에 실패했습니다.\n${error.message || error}`);
+            }
+        }
+
+        async function clearAllUpdates() {
+            if (!updateList.length) {
+                alert('삭제할 업데이트 내역이 없습니다.');
+                return;
+            }
+            if (!confirm('업데이트 내역을 전체 초기화할까요?\n\n공지 기록만 삭제되며 전체 꽃 도감, 길드 꽃 도감, R2 이미지는 그대로 유지됩니다.')) return;
+
+            const button = document.getElementById('clearUpdatesBtn');
+            if (button) button.disabled = true;
+            try {
+                const response = await fetch(`${UPDATES_API}?all=1`, { method:'DELETE' });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(payload.error || `DELETE ${response.status}`);
+                updateList = [];
+                renderTable();
+            } catch (error) {
+                console.error('업데이트 내역 전체 초기화 실패', error);
+                alert(`전체 초기화에 실패했습니다.\n${error.message || error}`);
+            } finally {
+                if (button) button.disabled = false;
+            }
         }
 
         async function fetchUpdates() {
@@ -572,7 +646,7 @@
     </script>
 
 
-    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v26</div>
+    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v27</div>
 
 
 <script id="pwa-auto-update-script">

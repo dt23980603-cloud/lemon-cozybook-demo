@@ -43,3 +43,28 @@ export async function onRequestGet(context) {
   }));
   return new Response(JSON.stringify({ updates }), { headers: JSON_HEADERS });
 }
+
+
+export async function onRequestDelete(context) {
+  const { env, request } = context;
+  if (!env.DB) {
+    return new Response(JSON.stringify({ error: 'D1 binding DB is not configured.' }), { status: 500, headers: JSON_HEADERS });
+  }
+
+  await ensureTable(env.DB);
+  const url = new URL(request.url);
+  const clearAll = url.searchParams.get('all') === '1';
+
+  if (clearAll) {
+    const result = await env.DB.prepare('DELETE FROM update_logs').run();
+    return new Response(JSON.stringify({ ok: true, cleared: true, changes: Number(result.meta?.changes || 0) }), { headers: JSON_HEADERS });
+  }
+
+  const id = Number(url.searchParams.get('id'));
+  if (!Number.isInteger(id) || id <= 0) {
+    return new Response(JSON.stringify({ error: 'A valid update id is required.' }), { status: 400, headers: JSON_HEADERS });
+  }
+
+  const result = await env.DB.prepare('DELETE FROM update_logs WHERE id = ?1').bind(id).run();
+  return new Response(JSON.stringify({ ok: true, deleted: id, changes: Number(result.meta?.changes || 0) }), { headers: JSON_HEADERS });
+}
