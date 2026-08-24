@@ -4847,5 +4847,19 @@ window.FLOWER_MASTER_DATA = [
     "note": "코지 꽃수첩 기준",
     "sourceId": "F0347",
     "sourceSnapshot": "2026-08-24"
+  },
+  {
+    "id": "F0353",
+    "name": "처녀자리·블루스톤 가든 위스퍼",
+    "listName": "[스타소울] 처녀자리·블루스톤 가든 위스퍼",
+    "grade": "UR",
+    "guildScore": null,
+    "image": "images/flowers/UR/F0353.webp",
+    "imageRemote": "",
+    "acquire": "스타소울",
+    "unlock": "스타소울",
+    "note": "꽃_리스트_356_등급별(최종) 기준",
+    "sourceId": "F0353",
+    "sourceSnapshot": "2026-08-24"
   }
 ];
