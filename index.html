@@ -174,6 +174,28 @@
             background: #ffe3e3;
         }
 
+        .btn-update-flower {
+            border: 1px solid #8fa98a;
+            border-radius: 6px;
+            background: #f7fbf5;
+            color: #355c35;
+            padding: 5px 9px;
+            font-size: .76rem;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .btn-update-flower:hover {
+            background: #eef7e9;
+        }
+
+        .update-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
         /* 업데이트 내역 본문: PC/모바일 공통 가독성 */
         #updateTable tbody td {
             color: #111;
@@ -578,11 +600,25 @@
                                 <div style="font-weight:bold;word-break:keep-all;">${escapeHtml(label)}</div>
                                 <div style="margin-top:4px;font-size:.82rem;color:#666;"><span class="grade-text grade-text-${escapeHtml(item.grade)}">${escapeHtml(item.grade)}</span> · ⚔️ ${escapeHtml(score)}</div>
                             </div>
-                            <button type="button" class="btn-update-delete" title="이 공지만 삭제" aria-label="이 공지만 삭제" onclick="deleteUpdate(${Number(item.id)})">🗑️</button>
+                            <div class="update-actions">
+                                <button type="button" class="btn-update-flower" data-flower-key="${escapeHtml(item.flowerKey || '')}">꽃 정보 보기</button>
+                                <button type="button" class="btn-update-delete" title="이 공지만 삭제" aria-label="이 공지만 삭제" onclick="deleteUpdate(${Number(item.id)})">🗑️</button>
+                            </div>
                         </div>
                     </td>
                 </tr>`;
             }).join('');
+            tbody.querySelectorAll('.btn-update-flower').forEach(button => {
+                button.addEventListener('click', () => openUpdateFlower(button.dataset.flowerKey));
+            });
+        }
+
+        function openUpdateFlower(flowerKey) {
+            if (!flowerKey) {
+                alert('연결된 꽃 정보를 찾을 수 없습니다.');
+                return;
+            }
+            location.href = `page5.html?flower=${encodeURIComponent(flowerKey)}&from=updates`;
         }
 
         async function deleteUpdate(id) {
