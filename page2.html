@@ -149,6 +149,22 @@
             transition: background-color 0.15s ease;
         }
 
+        /* 실수 방지를 위해 삭제/초기화는 관리 박스 우측에 분리 */
+        .member-danger-actions {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        @media (max-width: 760px) {
+            .member-danger-actions {
+                width: 100%;
+                margin-left: 0;
+                justify-content: flex-end;
+            }
+        }
+
         .btn-member-reset:hover {
             background-color: #f3f3f3;
         }
@@ -971,13 +987,15 @@
                     ✏️ 닉네임 변경
                 </button>
 
-                <button type="button" class="btn-member-action btn-member-delete" onclick="deleteSelectedMembers()">
-                    ❌ 삭제
-                </button>
+                <div class="member-danger-actions">
+                    <button type="button" class="btn-member-action btn-member-delete" onclick="deleteSelectedMembers()">
+                        ❌ 삭제
+                    </button>
 
-                <button type="button" class="btn-member-action btn-member-reset" onclick="resetSelectedMembers()">
-                    🔄 초기화
-                </button>
+                    <button type="button" class="btn-member-action btn-member-reset" onclick="resetSelectedMembers()">
+                        🔄 초기화
+                    </button>
+                </div>
 
             </div>
 
