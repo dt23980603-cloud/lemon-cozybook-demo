@@ -153,6 +153,15 @@
             background-color: #f3f3f3;
         }
 
+        .btn-member-rename {
+            color: #4b5563;
+            border-color: #9ca3af;
+        }
+
+        .btn-member-rename:hover {
+            background-color: #f5f7fa;
+        }
+
         .btn-member-delete {
             color: #9b2c2c;
             border-color: #c77;
@@ -933,7 +942,7 @@
             <div class="manage-title">
                 📖 길드원 목록 관리
                 <span style="font-size: 0.82rem; font-weight: normal; color: #666;">
-                    (닉네임 태그 클릭: 다중 필터링 / 선택 후 초기화·삭제 가능)
+                    (닉네임 태그 클릭: 선택 / 1명 선택 후 닉네임 변경 가능)
                 </span>
             </div>
 
@@ -956,6 +965,10 @@
 
                 <button type="button" class="btn-add" onclick="addMember()">
                     ➕ 추가
+                </button>
+
+                <button type="button" class="btn-member-action btn-member-rename" onclick="renameSelectedMember()">
+                    ✏️ 닉네임 변경
                 </button>
 
                 <button type="button" class="btn-member-action btn-member-delete" onclick="deleteSelectedMembers()">
@@ -2196,6 +2209,57 @@
             saveData();
             renderAll();
             alert(`선택한 ${selectedMembers.length}명의 '${activeGrade}' 등급 꽃 체크 표시가 초기화되었습니다.`);
+        }
+
+
+        async function renameSelectedMember() {
+            const selectedMembers = getSelectedMembers();
+
+            if (selectedMembers.length === 0) {
+                alert('닉네임을 변경할 길드원 1명을 먼저 선택해 주세요.');
+                return;
+            }
+
+            if (selectedMembers.length !== 1) {
+                alert('닉네임 변경은 한 번에 1명만 가능합니다. 1명만 선택해 주세요.');
+                return;
+            }
+
+            const member = selectedMembers[0];
+            const input = prompt(`'${member.name}'님의 새 닉네임을 입력해 주세요.`, member.name);
+
+            if (input === null) return;
+
+            const newName = input.trim();
+            if (!newName) {
+                alert('닉네임을 입력해 주세요.');
+                return;
+            }
+
+            if (newName === member.name) {
+                return;
+            }
+
+            const duplicate = members.some(item =>
+                item.id !== member.id &&
+                String(item.name || '').trim().toLocaleLowerCase('ko-KR') === newName.toLocaleLowerCase('ko-KR')
+            );
+
+            if (duplicate) {
+                alert('이미 사용 중인 닉네임입니다. 다른 닉네임을 입력해 주세요.');
+                return;
+            }
+
+            // member.id는 변경하지 않습니다. 따라서 기존 꽃 체크 기록은 그대로 유지됩니다.
+            member.name = newName;
+            localStorage.setItem('guild_members', JSON.stringify(members));
+            renderAll();
+            updateFlowerSearchSelectedMember();
+
+            // 체크 데이터 전체를 덮어쓰지 않고 길드원 목록만 D1에 부분 저장합니다.
+            await saveGuildStatePatchToRemote({ members }, true);
+
+            alert(`닉네임을 '${newName}'(으)로 변경했습니다.\n기존 꽃 체크 기록은 그대로 유지됩니다.`);
         }
 
 
