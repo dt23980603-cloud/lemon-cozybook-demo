@@ -958,7 +958,7 @@
             <div class="manage-title">
                 📖 길드원 목록 관리
                 <span style="font-size: 0.82rem; font-weight: normal; color: #666;">
-                    (닉네임 태그 클릭: 선택 / 1명 선택 후 닉네임 변경 가능)
+                    (닉네임 태그 클릭: 선택 / 1명 선택 후 역할·닉네임 수정 가능)
                 </span>
             </div>
 
@@ -983,8 +983,8 @@
                     ➕ 추가
                 </button>
 
-                <button type="button" class="btn-member-action btn-member-rename" onclick="renameSelectedMember()">
-                    ✏️ 닉네임 변경
+                <button type="button" class="btn-member-action btn-member-rename" onclick="updateSelectedMemberInfo()">
+                    ✏️ 정보 수정
                 </button>
 
                 <div class="member-danger-actions">
@@ -2230,31 +2230,28 @@
         }
 
 
-        async function renameSelectedMember() {
+        async function updateSelectedMemberInfo() {
             const selectedMembers = getSelectedMembers();
 
             if (selectedMembers.length === 0) {
-                alert('닉네임을 변경할 길드원 1명을 먼저 선택해 주세요.');
+                alert('정보를 수정할 길드원 1명을 먼저 선택해 주세요.');
                 return;
             }
 
             if (selectedMembers.length !== 1) {
-                alert('닉네임 변경은 한 번에 1명만 가능합니다. 1명만 선택해 주세요.');
+                alert('정보 수정은 한 번에 1명만 가능합니다. 1명만 선택해 주세요.');
                 return;
             }
 
             const member = selectedMembers[0];
-            const input = prompt(`'${member.name}'님의 새 닉네임을 입력해 주세요.`, member.name);
+            const roleSelect = document.getElementById('inputRole');
+            const nameInput = document.getElementById('inputNickname');
+            const newRole = roleSelect.value;
+            const newName = nameInput.value.trim();
 
-            if (input === null) return;
-
-            const newName = input.trim();
             if (!newName) {
                 alert('닉네임을 입력해 주세요.');
-                return;
-            }
-
-            if (newName === member.name) {
+                nameInput.focus();
                 return;
             }
 
@@ -2268,7 +2265,16 @@
                 return;
             }
 
+            if (newName === member.name && newRole === member.role) {
+                alert('변경된 정보가 없습니다.');
+                return;
+            }
+
+            const oldRole = member.role;
+            const oldName = member.name;
+
             // member.id는 변경하지 않습니다. 따라서 기존 꽃 체크 기록은 그대로 유지됩니다.
+            member.role = newRole;
             member.name = newName;
             localStorage.setItem('guild_members', JSON.stringify(members));
             renderAll();
@@ -2277,7 +2283,19 @@
             // 체크 데이터 전체를 덮어쓰지 않고 길드원 목록만 D1에 부분 저장합니다.
             await saveGuildStatePatchToRemote({ members }, true);
 
-            alert(`닉네임을 '${newName}'(으)로 변경했습니다.\n기존 꽃 체크 기록은 그대로 유지됩니다.`);
+            alert(`[${oldRole}] ${oldName} → [${newRole}] ${newName}\n정보를 수정했습니다. 기존 꽃 체크 기록은 그대로 유지됩니다.`);
+        }
+
+        function syncMemberEditInputs() {
+            const selectedMembers = getSelectedMembers();
+            if (selectedMembers.length !== 1) return;
+
+            const member = selectedMembers[0];
+            const roleSelect = document.getElementById('inputRole');
+            const nameInput = document.getElementById('inputNickname');
+
+            if (roleSelect) roleSelect.value = member.role || '멤버';
+            if (nameInput) nameInput.value = member.name || '';
         }
 
 
@@ -2326,6 +2344,7 @@
             }
 
             renderAll();
+            syncMemberEditInputs();
             updateFlowerSearchSelectedMember();
 
             const searchModal =
