@@ -239,7 +239,7 @@
         <h1>⚔️경쟁전 임무 계산⚔️</h1>
         <p class="subtitle">선택한 길드원이 실제로 보유한 꽃과 꽃별 추가 옵션 점수를 함께 반영합니다.</p>
       </div>
-      <button type="button" id="guideOpenBtn" class="guide-open-btn">📖계산 기준</button>
+      <button type="button" id="guideOpenBtn" class="guide-open-btn">📖 계산 기준</button>
     </header>
 
     <section class="card">
@@ -275,7 +275,7 @@
         </div>
 
         <div class="field calc-row-full">
-          <label>✨꽃 옵션</label>
+          <label>✨꽃 개량 옵션</label>
           <div class="flower-options-box">
             <div class="flower-options-copy">
               <strong id="optionConfigStatus">길드원을 선택하면 꽃별 옵션을 설정할 수 있습니다.</strong>
@@ -355,10 +355,11 @@
   <div id="guideModal" class="guide-modal" role="dialog" aria-modal="true" aria-labelledby="guideTitle">
     <div class="guide-dialog">
       <div class="guide-dialog-head">
-        <h2 id="guideTitle">📖계산 기준</h2>
+        <h2 id="guideTitle">📖 계산 기준</h2>
         <button type="button" id="guideCloseBtn" class="guide-close-btn" aria-label="닫기">×</button>
       </div>
 
+      <p>• 해당 계산은 A랭크를 기준으로 합니다.</p>
       <p>• 같은 꽃 임무를 여러 번 반복해서 수행할 수 있으므로 <strong>반복인 경우도 포함하여 최적으로 계산</strong>합니다.</p>
       <p>• 최종 점수는 <strong>(기본 점수 + 해당 꽃 개량 점수) × 배율</strong>로 계산합니다.</p>
       <p>• 단, 계산 결과가 60점을 넘으면 <strong>최대 60점으로 처리</strong>합니다. (경쟁전 최대 점수)</p>
