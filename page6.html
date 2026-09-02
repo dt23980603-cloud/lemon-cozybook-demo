@@ -235,7 +235,7 @@
       <p>• 2배는 기본 점수를 2배로 올리고 등급별 업그레이드 비용을 계산합니다.</p>
       <p>• 업그레이드 비용: N 27💎 · R 42💎 · SR 21점 63💎 / SR 23점 69💎 · SSR 75💎 · UR 84💎</p>
       <p>• <strong>임무 횟수 추가</strong>는 무조건 추가 임무 6회를 기준으로 합니다. 비용 <strong>270💎</strong>(45💎 × 6회)</p>
-      <p>• 추천 조합은 입력한 남은 임무 횟수 안에서 <strong>업그레이드 다이아가 가장 적은 조합</strong>을 우선합니다. 임무 횟수 추가를 체크한 경우 270💎가 총 비용에 추가됩니다.</p>
+      <p>• 추천 조합은 입력한 남은 임무 횟수 안에서 <strong>N → R → SR → SSR → UR 순으로 낮은 등급을 최대한 우선 사용</strong>하고, 부족한 만큼만 상위 등급으로 올립니다. 같은 등급 구성이라면 업그레이드 다이아가 더 적은 조합을 선택합니다. 임무 횟수 추가를 체크한 경우 270💎가 총 비용에 추가됩니다.</p>
     </div>
   </div>
 
@@ -460,17 +460,72 @@
       }
     }
 
+    const HIGH_GRADE_PRIORITY = ['UR', 'SSR', 'SR', 'R'];
+
+    function emptyGradeCounts() {
+      return { N:0, R:0, SR:0, SSR:0, UR:0 };
+    }
+
+    function addGradeCount(counts, grade) {
+      const next = { ...counts };
+      const key = String(grade || '').toUpperCase();
+      if (Object.prototype.hasOwnProperty.call(next, key)) next[key] += 1;
+      return next;
+    }
+
+    // 상위 등급 사용 횟수를 먼저 비교합니다.
+    // UR → SSR → SR → R 순서로 적게 쓴 조합이 우선이므로,
+    // 결과적으로 N부터 최대한 사용하고 부족한 만큼만 상위 등급으로 교체합니다.
+    function compareGradeUsage(aCounts, bCounts) {
+      if (!bCounts) return -1;
+      for (const grade of HIGH_GRADE_PRIORITY) {
+        const diff = (aCounts?.[grade] || 0) - (bCounts?.[grade] || 0);
+        if (diff !== 0) return diff;
+      }
+      return 0;
+    }
+
+    function compareState(a, b) {
+      if (!b) return -1;
+
+      // 1순위: 낮은 등급 우선 (상위 등급 사용 최소)
+      const gradeDiff = compareGradeUsage(a.gradeCounts, b.gradeCounts);
+      if (gradeDiff !== 0) return gradeDiff;
+
+      // 2순위: 같은 등급 구성이라면 업그레이드 다이아 최소
+      if (a.upgradeCost !== b.upgradeCost) return a.upgradeCost - b.upgradeCost;
+
+      return 0;
+    }
+
     function comparePlanCandidate(a, b) {
       if (!b) return -1;
+
+      // 1순위: 낮은 등급부터 최대한 사용
+      const gradeDiff = compareGradeUsage(a.gradeCounts, b.gradeCounts);
+      if (gradeDiff !== 0) return gradeDiff;
+
+      // 2순위: 같은 등급 구성 안에서 업그레이드 다이아 최소
       if (a.upgradeCost !== b.upgradeCost) return a.upgradeCost - b.upgradeCost;
+
+      // 3순위: 목표 초과 점수 최소
       if (a.overshoot !== b.overshoot) return a.overshoot - b.overshoot;
+
+      // 4순위: 사용 임무 횟수 최소
       if (a.count !== b.count) return a.count - b.count;
+
       return a.sum - b.sum;
     }
 
     function findMinimumDiamondPlan(options, maxCount, needed) {
       if (needed <= 0) {
-        return { upgradeCost:0, sum:0, count:0, counts:Array(options.length).fill(0) };
+        return {
+          upgradeCost:0,
+          sum:0,
+          count:0,
+          counts:Array(options.length).fill(0),
+          gradeCounts:emptyGradeCounts()
+        };
       }
       if (!options.length || maxCount <= 0) return null;
 
@@ -480,7 +535,16 @@
 
       const scoreCap = needed + maxPoints - 1;
       const usefulCount = Math.min(maxCount, Math.floor(scoreCap / minPoints));
-      const layers = [new Map([[0, { upgradeCost:0, prevSum:null, optionIndex:null }]])];
+
+      // 같은 횟수/점수에서는 "낮은 등급 우선 → 다이아 최소" 상태만 유지합니다.
+      const layers = [
+        new Map([[0, {
+          upgradeCost:0,
+          gradeCounts:emptyGradeCounts(),
+          prevSum:null,
+          optionIndex:null
+        }]])
+      ];
       let best = null;
 
       for (let count = 1; count <= usefulCount; count++) {
@@ -493,10 +557,16 @@
             const nextSum = sum + option.points;
             if (nextSum > scoreCap) continue;
 
-            const nextUpgradeCost = state.upgradeCost + option.diamondCost;
+            const nextState = {
+              upgradeCost: state.upgradeCost + option.diamondCost,
+              gradeCounts: addGradeCount(state.gradeCounts, option.grade),
+              prevSum: sum,
+              optionIndex
+            };
+
             const existing = current.get(nextSum);
-            if (!existing || nextUpgradeCost < existing.upgradeCost) {
-              current.set(nextSum, { upgradeCost:nextUpgradeCost, prevSum:sum, optionIndex });
+            if (!existing || compareState(nextState, existing) < 0) {
+              current.set(nextSum, nextState);
             }
           }
         }
@@ -505,12 +575,15 @@
 
         for (const [sum, state] of current) {
           if (sum < needed) continue;
+
           const candidate = {
-            upgradeCost:state.upgradeCost,
+            upgradeCost: state.upgradeCost,
+            gradeCounts: state.gradeCounts,
             sum,
             count,
-            overshoot:sum - needed
+            overshoot: sum - needed
           };
+
           if (comparePlanCandidate(candidate, best) < 0) best = candidate;
         }
       }
@@ -525,6 +598,7 @@
         counts[state.optionIndex] += 1;
         sum = state.prevSum;
       }
+
       return { ...best, counts };
     }
 
@@ -640,7 +714,7 @@
         .filter(row => row.count > 0);
 
       planArea.innerHTML = `
-        <div class="plan-title">💎 추천 조합 · 총 ${formatNumber(plan.count)}회 · ${formatNumber(totalCost)}💎</div>
+        <div class="plan-title">🌱 추천 조합 · 총 ${formatNumber(plan.count)}회 · ${formatNumber(totalCost)}💎</div>
         <div class="empty-plan" style="margin-bottom:10px;">
           입력한 남은 임무 ${formatNumber(basicRemaining)}회
           ${useMissionAdd
@@ -671,7 +745,7 @@
 
       resultNote.textContent =
         `${multiplier}배 기준 · 입력한 남은 임무 ${maxMissionCount}회 안에서 계산 · ` +
-        `추천 조합은 업그레이드 다이아 최소 → 목표 초과 점수 최소 → 사용 임무 횟수 최소 순입니다.` +
+        `추천 조합은 낮은 등급 우선 → 같은 등급 구성에서 업그레이드 다이아 최소 → 목표 초과 점수 최소 → 사용 임무 횟수 최소 순입니다.` +
         `${useMissionAdd ? ` 임무 횟수 추가 비용 ${formatNumber(addedMissionCost)}💎가 총 비용에 합산됩니다.` : ''}${excludedText}`;
     }
 
