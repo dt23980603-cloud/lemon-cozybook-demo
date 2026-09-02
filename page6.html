@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>길드전 임무 계산기 | 레몬</title>
+  <link rel="icon" type="image/png" href="images/branding/lemon-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, body, input, button, select { font-family:'Gowun Batang', serif; box-sizing:border-box; }
+    body { margin:15px; background:#f9f9f9; color:#333; }
+    button, select, input { color:#333; }
+    .page { width:min(1080px, 100%); margin:0 auto; }
+    .header { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+    .nav-btn-home { display:inline-flex; width:50px; height:50px; align-items:center; justify-content:center; text-decoration:none; flex:0 0 auto; }
+    .back-icon { width:100%; height:100%; object-fit:contain; display:block; }
+    .header-title h1 { margin:0; font-size:1.5rem; }
+    .subtitle { margin:4px 0 0; color:#777; font-size:.86rem; line-height:1.5; }
+
+    .card { background:#fff; border:1px solid #ccc; border-radius:10px; box-shadow:2px 2px 5px rgba(0,0,0,.05); padding:18px; margin-bottom:14px; }
+    .guide { background:#fff9db; border-color:#8c7a28; }
+    .guide strong { display:block; margin-bottom:6px; }
+    .guide p { margin:3px 0; line-height:1.55; font-size:.86rem; }
+
+    .section-title { margin:0 0 12px; font-size:1.02rem; font-weight:700; }
+    .form-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; }
+    .field { display:flex; flex-direction:column; gap:6px; }
+    .field.full { grid-column:1 / -1; }
+    .field label { font-size:.82rem; font-weight:700; color:#555; }
+    .field select, .field input { width:100%; min-height:43px; padding:9px 11px; border:1px solid #aaa; border-radius:7px; background:#fff; font-size:.95rem; }
+    .field select:focus, .field input:focus { outline:2px solid #f3df76; outline-offset:1px; border-color:#75682c; }
+
+    .multiplier-wrap { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+    .multiplier-btn { min-height:43px; border:1px solid #999; border-radius:7px; background:#fff; font-weight:700; cursor:pointer; transition:.15s; }
+    .multiplier-btn:hover { background:#fff9db; }
+    .multiplier-btn.active { background:#fff0a8; border-color:#594e1a; box-shadow:inset 0 -3px 0 #594e1a; }
+
+    .member-status { margin-top:10px; min-height:24px; padding:8px 10px; background:#fafafa; border:1px solid #e4e4e4; border-radius:7px; color:#666; font-size:.8rem; line-height:1.5; }
+    .member-status.error { background:#fff2f2; border-color:#e0a3a3; color:#9b3030; }
+
+    .action-row { margin-top:14px; display:flex; justify-content:flex-end; }
+    .calc-btn { min-width:160px; min-height:45px; padding:10px 18px; border:1px solid #555; border-radius:7px; background:#fff0f0; font-size:.95rem; font-weight:700; cursor:pointer; }
+    .calc-btn:hover { background:#fae0e0; transform:translateY(-1px); }
+    .calc-btn:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+
+    .result-card { display:none; }
+    .result-card.show { display:block; }
+    .result-head { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:12px; }
+    .result-head h2 { margin:0; font-size:1.12rem; }
+    .status-badge { display:inline-flex; align-items:center; min-height:27px; padding:3px 9px; border-radius:14px; border:1px solid #aaa; background:#f5f5f5; font-size:.75rem; font-weight:700; white-space:nowrap; }
+    .status-badge.ok { background:#edf8ed; border-color:#83ae83; color:#356035; }
+    .status-badge.warn { background:#fff5df; border-color:#d4a858; color:#7c591a; }
+    .status-badge.bad { background:#fff0f0; border-color:#cf8585; color:#8d3030; }
+
+    .summary-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-bottom:14px; }
+    .summary-item { border:1px solid #ddd; border-radius:8px; padding:10px; background:#fafafa; text-align:center; }
+    .summary-label { display:block; color:#777; font-size:.7rem; margin-bottom:3px; }
+    .summary-value { display:block; font-size:1rem; font-weight:700; word-break:keep-all; }
+
+    .plan-title { margin:14px 0 8px; font-size:.9rem; font-weight:700; }
+    .plan-table-wrap { overflow-x:auto; border:1px solid #ddd; border-radius:8px; }
+    table { width:100%; border-collapse:collapse; background:#fff; }
+    th, td { padding:9px 10px; border-bottom:1px solid #e4e4e4; text-align:center; font-size:.82rem; vertical-align:middle; }
+    th { background:#fff9db; font-weight:700; }
+    tr:last-child td { border-bottom:0; }
+    .flower-examples { text-align:left; line-height:1.5; min-width:220px; }
+    .score-pill { display:inline-flex; align-items:center; justify-content:center; min-width:60px; padding:4px 8px; border-radius:14px; background:#f4f4f4; border:1px solid #ccc; font-weight:700; }
+    .empty-plan { padding:16px; border:1px dashed #ccc; border-radius:8px; background:#fafafa; color:#777; font-size:.86rem; line-height:1.6; }
+    .result-note { margin:11px 0 0; color:#777; font-size:.76rem; line-height:1.55; }
+
+    details { margin-top:14px; border-top:1px solid #eee; padding-top:11px; }
+    summary { cursor:pointer; font-weight:700; font-size:.82rem; }
+    .score-option-list { display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
+    .score-option { padding:6px 9px; border:1px solid #ddd; border-radius:7px; background:#fafafa; font-size:.76rem; }
+
+    #site-version { position:fixed; left:12px; bottom:10px; font-size:11px; color:#aaa; z-index:9999; pointer-events:none; user-select:none; }
+
+    @media (max-width:700px) {
+      body { margin:8px; }
+      .card { padding:14px; }
+      .header-title h1 { font-size:1.25rem; }
+      .subtitle { font-size:.76rem; }
+      .form-grid { grid-template-columns:1fr; gap:10px; }
+      .field.full { grid-column:auto; }
+      .summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .action-row { display:block; }
+      .calc-btn { width:100%; }
+      th, td { padding:8px 7px; font-size:.74rem; }
+      .flower-examples { min-width:180px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기"><img src="images/ui/back-button.png" alt="뒤로가기" class="back-icon"></a>
+      <div class="header-title">
+        <h1>🧮 길드전 임무 계산기</h1>
+        <p class="subtitle">선택한 길드원이 실제로 보유한 꽃의 길드전 점수만 사용합니다.</p>
+      </div>
+    </header>
+
+    <section class="card guide">
+      <strong>계산 기준</strong>
+      <p>• 같은 꽃 임무는 여러 번 반복해서 사용할 수 있습니다.</p>
+      <p>• 1배는 꽃의 기본 길드전 점수, 2배는 다이아 업그레이드 후 점수로 계산합니다.</p>
+      <p>• 입력한 남은 임무 횟수를 모두 사용한다고 가정하고, 목표를 넘기는 조합 중 총점이 가장 낮은 조합을 찾습니다. 같은 총점이면 낮은 점수 임무를 더 많이 쓰는 조합을 우선합니다.</p>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">계산 조건</h2>
+      <div class="form-grid">
+        <div class="field full">
+          <label for="memberSelect">계산 대상 길드원</label>
+          <select id="memberSelect"><option value="">길드원 정보를 불러오는 중입니다…</option></select>
+        </div>
+
+        <div class="field">
+          <label>점수 배율</label>
+          <div class="multiplier-wrap" role="group" aria-label="점수 배율 선택">
+            <button type="button" class="multiplier-btn" data-multiplier="1">1배</button>
+            <button type="button" class="multiplier-btn active" data-multiplier="2">2배</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="remainingInput">남은 임무 횟수</label>
+          <input id="remainingInput" type="number" min="0" max="500" step="1" inputmode="numeric" placeholder="예: 15">
+        </div>
+
+        <div class="field">
+          <label for="targetInput">목표 점수</label>
+          <input id="targetInput" type="number" min="0" step="1" inputmode="numeric" placeholder="예: 1400">
+        </div>
+
+        <div class="field">
+          <label for="currentInput">현재 점수</label>
+          <input id="currentInput" type="number" min="0" step="1" inputmode="numeric" placeholder="예: 1120">
+        </div>
+      </div>
+
+      <div id="memberStatus" class="member-status">D1의 꽃 정보와 길드 체크 정보를 불러오는 중입니다.</div>
+      <div class="action-row"><button type="button" id="calcBtn" class="calc-btn" disabled>계산하기</button></div>
+    </section>
+
+    <section id="resultCard" class="card result-card" aria-live="polite">
+      <div class="result-head">
+        <h2 id="resultTitle">계산 결과</h2>
+        <span id="resultBadge" class="status-badge">대기</span>
+      </div>
+      <div id="summaryGrid" class="summary-grid"></div>
+      <div id="planArea"></div>
+      <p id="resultNote" class="result-note"></p>
+      <details id="scoreDetails">
+        <summary>계산에 사용된 보유 꽃 점수 보기</summary>
+        <div id="scoreOptionList" class="score-option-list"></div>
+      </details>
+    </section>
+  </main>
+
+  <div id="site-version">demo_v30</div>
+  <script src="flower-data-all.js"></script>
+  <script>
+    const FLOWERS_API = '/api/flowers';
+    const GUILD_STATE_API = '/api/guild-state';
+    const BASE_SEED_VERSION = 'demo_v28_base_356';
+    const MASTER_FLOWERS = window.FLOWER_MASTER_DATA || [];
+    const roleOrder = { '길드장':1, '부길드장':2, '임원':3, '정예':4, '멤버':5 };
+
+    let flowers = [];
+    let members = [];
+    let checks = {};
+    let multiplier = 2;
+    let ready = false;
+
+    const memberSelect = document.getElementById('memberSelect');
+    const memberStatus = document.getElementById('memberStatus');
+    const targetInput = document.getElementById('targetInput');
+    const currentInput = document.getElementById('currentInput');
+    const remainingInput = document.getElementById('remainingInput');
+    const calcBtn = document.getElementById('calcBtn');
+    const resultCard = document.getElementById('resultCard');
+    const resultTitle = document.getElementById('resultTitle');
+    const resultBadge = document.getElementById('resultBadge');
+    const summaryGrid = document.getElementById('summaryGrid');
+    const planArea = document.getElementById('planArea');
+    const resultNote = document.getElementById('resultNote');
+    const scoreOptionList = document.getElementById('scoreOptionList');
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
+    }
+
+    function formatNumber(value) {
+      return Number(value || 0).toLocaleString('ko-KR');
+    }
+
+    function checkKey(flowerKey, memberId) {
+      return `flower::${encodeURIComponent(flowerKey)}::${memberId}`;
+    }
+
+    function sortedMembers() {
+      return [...members].sort((a,b) => {
+        const roleDiff = (roleOrder[a.role] || 99) - (roleOrder[b.role] || 99);
+        if (roleDiff) return roleDiff;
+        return String(a.name || '').localeCompare(String(b.name || ''), 'ko-KR');
+      });
+    }
+
+    function renderMembers() {
+      const previous = memberSelect.value || localStorage.getItem('mission_calc_member') || localStorage.getItem('all_flower_selected_member') || '';
+      const list = sortedMembers();
+      memberSelect.innerHTML = '<option value="">길드원을 선택해주세요</option>' + list.map(member =>
+        `<option value="${escapeHtml(member.id)}">${escapeHtml(member.role || '멤버')} · ${escapeHtml(member.name || '')}</option>`
+      ).join('');
+      if (list.some(member => member.id === previous)) memberSelect.value = previous;
+      updateMemberStatus();
+    }
+
+    function getSelectedMember() {
+      return members.find(member => member.id === memberSelect.value) || null;
+    }
+
+    function getOwnedScoredFlowers(memberId) {
+      if (!memberId) return [];
+      return flowers.filter(flower => {
+        const baseScore = Number(flower.guildScore);
+        return flower?.key && Number.isFinite(baseScore) && baseScore > 0 && Boolean(checks[checkKey(flower.key, memberId)]);
+      });
+    }
+
+    function getOwnedFlowerCount(memberId) {
+      if (!memberId) return 0;
+      return flowers.filter(flower => flower?.key && Boolean(checks[checkKey(flower.key, memberId)])).length;
+    }
+
+    function groupScoreOptions(memberId) {
+      const grouped = new Map();
+      getOwnedScoredFlowers(memberId).forEach(flower => {
+        const base = Number(flower.guildScore);
+        if (!grouped.has(base)) grouped.set(base, []);
+        grouped.get(base).push(flower);
+      });
+      return [...grouped.entries()].sort((a,b) => a[0]-b[0]).map(([baseScore, list]) => ({
+        baseScore,
+        points: baseScore * multiplier,
+        flowers: [...list].sort((a,b) => String(a.listName || a.name || '').localeCompare(String(b.listName || b.name || ''), 'ko-KR'))
+      }));
+    }
+
+    function updateMemberStatus() {
+      const selected = getSelectedMember();
+      memberStatus.classList.remove('error');
+      if (!ready) {
+        memberStatus.textContent = 'D1의 꽃 정보와 길드 체크 정보를 불러오는 중입니다.';
+        calcBtn.disabled = true;
+        return;
+      }
+      if (!selected) {
+        memberStatus.textContent = `현재 D1 꽃 ${flowers.length}종을 불러왔습니다. 계산할 길드원을 선택해주세요.`;
+        calcBtn.disabled = true;
+        return;
+      }
+      const owned = getOwnedFlowerCount(selected.id);
+      const scored = getOwnedScoredFlowers(selected.id).length;
+      const options = groupScoreOptions(selected.id);
+      memberStatus.textContent = `${selected.name} · 보유 체크 ${owned}종 · 길드전 점수 등록 ${scored}종 · 사용 가능한 점수 ${options.length}단계`;
+      if (!options.length) {
+        memberStatus.classList.add('error');
+        memberStatus.textContent += ' · 계산 가능한 꽃이 없습니다.';
+      }
+      calcBtn.disabled = !options.length;
+      renderScoreOptions(options);
+    }
+
+    function renderScoreOptions(options) {
+      scoreOptionList.innerHTML = options.length ? options.map(option =>
+        `<span class="score-option">⚔️ ${option.points}점/회 <small>(기본 ${option.baseScore}점 · ${option.flowers.length}종)</small></span>`
+      ).join('') : '<span class="score-option">사용 가능한 점수 없음</span>';
+    }
+
+    async function ensureBaseSeedIfNeeded() {
+      let remote = await fetchFlowers();
+      if (remote.length || MASTER_FLOWERS.length < 300) return remote;
+      const response = await fetch(`${FLOWERS_API}?seed=1`, {
+        method:'POST', headers:{'content-type':'application/json'},
+        body:JSON.stringify({ seedVersion:BASE_SEED_VERSION, flowers:MASTER_FLOWERS })
+      });
+      if (response.ok) remote = await fetchFlowers();
+      return remote;
+    }
+
+    async function fetchFlowers() {
+      const response = await fetch(FLOWERS_API, { cache:'no-store' });
+      if (!response.ok) throw new Error(`꽃 데이터 GET ${response.status}`);
+      const payload = await response.json();
+      return Array.isArray(payload.flowers) ? payload.flowers : [];
+    }
+
+    async function fetchGuildState() {
+      const response = await fetch(GUILD_STATE_API, { cache:'no-store' });
+      if (!response.ok) throw new Error(`길드 데이터 GET ${response.status}`);
+      const payload = await response.json();
+      if (payload.exists && payload.state) {
+        if (Array.isArray(payload.state.members)) members = payload.state.members;
+        if (payload.state.checks && typeof payload.state.checks === 'object') checks = payload.state.checks;
+      } else {
+        members = JSON.parse(localStorage.getItem('guild_members') || '[]');
+        checks = JSON.parse(localStorage.getItem('guild_checks') || '{}');
+      }
+    }
+
+    async function loadData(showError = true) {
+      try {
+        const [loadedFlowers] = await Promise.all([ensureBaseSeedIfNeeded(), fetchGuildState()]);
+        flowers = loadedFlowers;
+        localStorage.setItem('guild_members', JSON.stringify(members));
+        localStorage.setItem('guild_checks', JSON.stringify(checks));
+        ready = true;
+        renderMembers();
+      } catch (error) {
+        console.warn('임무 계산기 데이터 조회 실패', error);
+        ready = false;
+        calcBtn.disabled = true;
+        memberStatus.classList.add('error');
+        memberStatus.textContent = showError ? `데이터를 불러오지 못했습니다. ${error.message || error}` : '데이터를 불러오지 못했습니다.';
+      }
+    }
+
+    function findBestTotal(scores, count, needed) {
+      if (count === 0) return needed <= 0 ? 0 : null;
+      let reachable = new Set([0]);
+      for (let used = 0; used < count; used++) {
+        const next = new Set();
+        for (const sum of reachable) {
+          for (const score of scores) next.add(sum + score);
+        }
+        reachable = next;
+      }
+      let best = null;
+      for (const sum of reachable) {
+        if (sum >= needed && (best == null || sum < best)) best = sum;
+      }
+      return best;
+    }
+
+    function reconstructLowScoreFirst(scores, count, total) {
+      const memo = new Map();
+      function solve(index, remainingCount, remainingSum) {
+        const key = `${index}|${remainingCount}|${remainingSum}`;
+        if (memo.has(key)) return memo.get(key);
+        if (index === scores.length - 1) {
+          const ok = scores[index] * remainingCount === remainingSum;
+          const result = ok ? [remainingCount] : null;
+          memo.set(key, result);
+          return result;
+        }
+        const current = scores[index];
+        const nextMin = scores[index + 1];
+        const maxScore = scores[scores.length - 1];
+        for (let take = remainingCount; take >= 0; take--) {
+          const restCount = remainingCount - take;
+          const restSum = remainingSum - current * take;
+          if (restSum < 0) continue;
+          if (restCount === 0) {
+            if (restSum === 0) {
+              const result = [take, ...Array(scores.length-index-1).fill(0)];
+              memo.set(key, result);
+              return result;
+            }
+            continue;
+          }
+          if (restSum < nextMin * restCount || restSum > maxScore * restCount) continue;
+          const child = solve(index + 1, restCount, restSum);
+          if (child) {
+            const result = [take, ...child];
+            memo.set(key, result);
+            return result;
+          }
+        }
+        memo.set(key, null);
+        return null;
+      }
+      return solve(0, count, total);
+    }
+
+    function summaryItem(label, value) {
+      return `<div class="summary-item"><span class="summary-label">${escapeHtml(label)}</span><strong class="summary-value">${escapeHtml(value)}</strong></div>`;
+    }
+
+    function setResultBadge(text, type) {
+      resultBadge.textContent = text;
+      resultBadge.className = `status-badge ${type || ''}`.trim();
+    }
+
+    function flowerExamples(option) {
+      const names = option.flowers.map(f => f.listName || f.name || '').filter(Boolean);
+      const shown = names.slice(0,3).map(escapeHtml).join(', ');
+      return names.length > 3 ? `${shown} 외 ${names.length - 3}종` : shown;
+    }
+
+    function calculate() {
+      const selected = getSelectedMember();
+      if (!selected) return alert('계산할 길드원을 선택해주세요.');
+
+      const target = Number(targetInput.value);
+      const current = Number(currentInput.value);
+      const remaining = Number(remainingInput.value);
+      if (!Number.isInteger(target) || target < 0 || !Number.isInteger(current) || current < 0) {
+        return alert('목표 점수와 현재 점수를 0 이상의 정수로 입력해주세요.');
+      }
+      if (!Number.isInteger(remaining) || remaining < 0 || remaining > 500) {
+        return alert('남은 임무 횟수는 0~500 사이의 정수로 입력해주세요.');
+      }
+
+      const options = groupScoreOptions(selected.id);
+      const scores = options.map(option => option.points);
+      resultCard.classList.add('show');
+      resultTitle.textContent = `${selected.name}님의 계산 결과`;
+      renderScoreOptions(options);
+
+      const needed = Math.max(0, target - current);
+      if (needed === 0) {
+        setResultBadge('목표 달성', 'ok');
+        summaryGrid.innerHTML = [
+          summaryItem('현재 점수', `${formatNumber(current)}점`),
+          summaryItem('목표 점수', `${formatNumber(target)}점`),
+          summaryItem('필요 점수', '0점'),
+          summaryItem('계산 배율', `${multiplier}배`)
+        ].join('');
+        planArea.innerHTML = '<div class="empty-plan">🎉 이미 목표 점수에 도달했습니다. 추가 임무 조합을 계산할 필요가 없습니다.</div>';
+        resultNote.textContent = '현재 점수가 목표 점수 이상인 경우 남은 임무는 계산에서 제외합니다.';
+        return;
+      }
+
+      if (!options.length) {
+        setResultBadge('계산 불가', 'bad');
+        summaryGrid.innerHTML = [summaryItem('필요 점수', `${formatNumber(needed)}점`), summaryItem('계산 배율', `${multiplier}배`)].join('');
+        planArea.innerHTML = '<div class="empty-plan">길드전 점수가 등록된 보유 꽃이 없어 계산할 수 없습니다.</div>';
+        resultNote.textContent = '';
+        return;
+      }
+
+      const minScore = scores[0];
+      const maxScore = scores[scores.length - 1];
+      const minPossible = minScore * remaining;
+      const maxPossible = maxScore * remaining;
+
+      if (remaining === 0 || maxPossible < needed) {
+        const maxFinal = current + maxPossible;
+        setResultBadge('목표 달성 불가', 'bad');
+        summaryGrid.innerHTML = [
+          summaryItem('필요 점수', `${formatNumber(needed)}점`),
+          summaryItem('최대 획득', `${formatNumber(maxPossible)}점`),
+          summaryItem('최대 최종', `${formatNumber(maxFinal)}점`),
+          summaryItem('부족 점수', `${formatNumber(Math.max(0, target-maxFinal))}점`)
+        ].join('');
+        planArea.innerHTML = `<div class="empty-plan">⚠️ ${escapeHtml(selected.name)}님의 현재 보유 꽃과 남은 임무 ${formatNumber(remaining)}회로는 목표에 도달할 수 없습니다.<br>가장 높은 사용 가능 점수는 회당 ${formatNumber(maxScore)}점입니다.</div>`;
+        resultNote.textContent = `${multiplier}배 기준 · 같은 꽃 반복 사용 가능 · 남은 임무 전체 사용 기준`;
+        return;
+      }
+
+      let bestTotal;
+      let counts;
+      if (minPossible >= needed) {
+        bestTotal = minPossible;
+        counts = Array(scores.length).fill(0);
+        counts[0] = remaining;
+      } else {
+        bestTotal = findBestTotal(scores, remaining, needed);
+        counts = bestTotal == null ? null : reconstructLowScoreFirst(scores, remaining, bestTotal);
+      }
+
+      if (bestTotal == null || !counts) {
+        setResultBadge('계산 불가', 'bad');
+        summaryGrid.innerHTML = [summaryItem('필요 점수', `${formatNumber(needed)}점`), summaryItem('계산 배율', `${multiplier}배`)].join('');
+        planArea.innerHTML = '<div class="empty-plan">조건에 맞는 임무 조합을 찾지 못했습니다.</div>';
+        resultNote.textContent = '';
+        return;
+      }
+
+      const finalScore = current + bestTotal;
+      const over = Math.max(0, finalScore - target);
+      setResultBadge(over === 0 ? '정확히 달성' : '달성 가능', 'ok');
+      summaryGrid.innerHTML = [
+        summaryItem('필요 점수', `${formatNumber(needed)}점`),
+        summaryItem('추천 획득', `${formatNumber(bestTotal)}점`),
+        summaryItem('예상 최종', `${formatNumber(finalScore)}점`),
+        summaryItem('목표 초과', `+${formatNumber(over)}점`)
+      ].join('');
+
+      const rows = counts.map((count, index) => ({ count, option:options[index] })).filter(row => row.count > 0);
+      planArea.innerHTML = `
+        <div class="plan-title">추천 임무 조합 · 총 ${formatNumber(remaining)}회</div>
+        <div class="plan-table-wrap">
+          <table>
+            <thead><tr><th>회당 점수</th><th>횟수</th><th>소계</th><th>사용 가능한 보유 꽃 예시</th></tr></thead>
+            <tbody>${rows.map(row => `
+              <tr>
+                <td><span class="score-pill">⚔️ ${formatNumber(row.option.points)}점</span></td>
+                <td><strong>${formatNumber(row.count)}회</strong></td>
+                <td>${formatNumber(row.option.points * row.count)}점</td>
+                <td class="flower-examples">${flowerExamples(row.option)}</td>
+              </tr>`).join('')}</tbody>
+          </table>
+        </div>`;
+      resultNote.textContent = `${multiplier}배 기준 · 남은 ${remaining}회를 모두 사용하는 조합 · 동일한 점수의 보유 꽃은 어느 꽃 임무가 떠도 같은 점수로 계산할 수 있습니다.`;
+    }
+
+    document.querySelectorAll('.multiplier-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        multiplier = Number(button.dataset.multiplier) === 1 ? 1 : 2;
+        document.querySelectorAll('.multiplier-btn').forEach(btn => btn.classList.toggle('active', btn === button));
+        updateMemberStatus();
+        if (resultCard.classList.contains('show') && targetInput.value !== '' && currentInput.value !== '' && remainingInput.value !== '') calculate();
+      });
+    });
+
+    memberSelect.addEventListener('change', () => {
+      if (memberSelect.value) localStorage.setItem('mission_calc_member', memberSelect.value);
+      else localStorage.removeItem('mission_calc_member');
+      resultCard.classList.remove('show');
+      updateMemberStatus();
+    });
+    calcBtn.addEventListener('click', calculate);
+    [targetInput, currentInput, remainingInput].forEach(input => input.addEventListener('keydown', event => {
+      if (event.key === 'Enter' && !calcBtn.disabled) calculate();
+    }));
+
+    loadData(true);
+    window.addEventListener('focus', () => loadData(false));
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) loadData(false); });
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(err => console.warn('PWA service worker registration failed:', err)));
+    }
+  </script>
+</body>
+</html>

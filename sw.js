@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v29';
+const CACHE_NAME = 'lemon-demo-v30';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -7,6 +7,7 @@ const APP_SHELL = [
   '/page3.html',
   '/page4.html',
   '/page5.html',
+  '/page6.html',
   '/flower-data-all.js',
   '/images/branding/lemon-favicon.png',
   '/images/banners/lemon-banner-pc.png',
