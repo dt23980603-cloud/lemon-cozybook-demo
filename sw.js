@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v30-result-ui-order';
+const CACHE_NAME = 'lemon-demo-v31-flower-options';
 const APP_SHELL = [
   '/',
   '/index.html',
