@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>길드전 임무 계산기 | 레몬</title>
+  <title>경쟁전 임무 계산 | 레몬</title>
   <link rel="icon" type="image/png" href="images/branding/lemon-favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -236,10 +236,10 @@
     <header class="header">
       <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기"><img src="images/ui/back-button.png" alt="뒤로가기" class="back-icon"></a>
       <div class="header-title">
-        <h1>🧮 길드전 임무 계산기</h1>
+        <h1>⚔️경쟁전 임무 계산⚔️</h1>
         <p class="subtitle">선택한 길드원이 실제로 보유한 꽃과 꽃별 추가 옵션 점수를 함께 반영합니다.</p>
       </div>
-      <button type="button" id="guideOpenBtn" class="guide-open-btn">📖 계산 가이드</button>
+      <button type="button" id="guideOpenBtn" class="guide-open-btn">📖계산 기준</button>
     </header>
 
     <section class="card">
@@ -355,19 +355,31 @@
   <div id="guideModal" class="guide-modal" role="dialog" aria-modal="true" aria-labelledby="guideTitle">
     <div class="guide-dialog">
       <div class="guide-dialog-head">
-        <h2 id="guideTitle">📖 계산 기준</h2>
+        <h2 id="guideTitle">📖계산 기준</h2>
         <button type="button" id="guideCloseBtn" class="guide-close-btn" aria-label="닫기">×</button>
       </div>
-      <p>• 같은 꽃 임무는 여러 번 반복해서 사용할 수 있습니다.</p>
-      <p>• <strong>꽃 옵션 설정</strong>에서 길드원이 보유한 꽃마다 +0~+4점을 개별로 저장할 수 있습니다.</p>
-      <p>• 최종 점수는 <strong>(기본 점수 + 해당 꽃 옵션 점수) × 배율</strong>로 계산합니다.</p>
-      <p>• 단, 계산 결과가 60점을 넘으면 <strong>최대 60점</strong>으로 처리합니다.</p>
-      <p>• 옵션 점수가 붙어도 <strong>임무 업그레이드 다이아는 변하지 않습니다.</strong> 옵션은 획득 점수에만 반영합니다.</p>
-      <p>• 1배는 업그레이드 다이아가 들지 않으며, 2배는 기존 등급/기본 점수 기준 업그레이드 비용을 그대로 사용합니다.</p>
-      <p>• 업그레이드 비용: N 27💎 · R 42💎 · SR 21점 63💎 / SR 23점 69💎 · SSR 75💎 · UR 84💎</p>
-      <p>• 옵션 뽑기에 사용한 다이아는 계산하지 않습니다.</p>
-      <p>• <strong>임무 횟수 추가</strong>는 무조건 추가 임무 6회를 기준으로 합니다. 비용 <strong>270💎</strong>(45💎 × 6회)</p>
+
+      <p>• 같은 꽃 임무를 여러 번 반복해서 수행할 수 있으므로 <strong>반복인 경우도 포함하여 최적으로 계산</strong>합니다.</p>
+      <p>• 최종 점수는 <strong>(기본 점수 + 해당 꽃 개량 점수) × 배율</strong>로 계산합니다.</p>
+      <p>• 단, 계산 결과가 60점을 넘으면 <strong>최대 60점으로 처리</strong>합니다. (경쟁전 최대 점수)</p>
       <p>• 추천 조합은 입력한 남은 임무 횟수 안에서 <strong>N → R → SR → SSR → UR 순으로 낮은 등급을 최대한 우선 사용</strong>하고, 부족한 만큼만 상위 등급으로 올립니다. 같은 등급 구성이라면 업그레이드 다이아가 더 적은 조합을 선택합니다.</p>
+
+      <p>[✖️점수배율]</p>
+      <p>• 임무를 업그레이드 하지 않을 시, '1배'로 설정 / 업그레이드 진행 시, '2배'를 선택합니다.</p>
+      <p>• 임무 업그레이드 비용</p>
+      <p>&nbsp;- N | 27💎</p>
+      <p>&nbsp;- R | 42💎</p>
+      <p>&nbsp;- SR (21점) | 63💎 / (23점) | 69💎</p>
+      <p>&nbsp;- SSR | 75💎</p>
+      <p>&nbsp;- UR | 84💎</p>
+
+      <p>[➕추가 임무]</p>
+      <p>• <strong>임무 횟수 추가</strong>는 무조건 추가 임무 <strong>6회</strong>를 기준으로 합니다. 비용 270💎(45💎 × 6회)</p>
+
+      <p>[✨꽃 개량 옵션]</p>
+      <p>• 보유한 꽃마다 개별로 <strong>개량(절품:경쟁포인트 증가)의 옵션을 +0 ~ +4점으로 설정</strong>할 수 있습니다.</p>
+      <p>• 옵션 점수가 붙어도 <strong>임무 업그레이드 다이아는 변하지 않습니다.</strong> 옵션은 획득 점수에만 반영합니다.</p>
+      <p>• 꽃 개량에 사용된 다이아는 계산하지 않습니다.</p>
     </div>
   </div>
 

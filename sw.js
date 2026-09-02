@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v31-flower-options';
+const CACHE_NAME = 'lemon-demo-v31-competition-guide-revision';
 const APP_SHELL = [
   '/',
   '/index.html',
