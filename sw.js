@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v30';
+const CACHE_NAME = 'lemon-demo-v30-mission-cost2';
 const APP_SHELL = [
   '/',
   '/index.html',

@@ -29,6 +29,7 @@
     .field { display:flex; flex-direction:column; gap:6px; }
     .field.full { grid-column:1 / -1; }
     .field label { font-size:.82rem; font-weight:700; color:#555; }
+    .field-hint { color:#888; font-size:.72rem; line-height:1.4; }
     .field select, .field input { width:100%; min-height:43px; padding:9px 11px; border:1px solid #aaa; border-radius:7px; background:#fff; font-size:.95rem; }
     .field select:focus, .field input:focus { outline:2px solid #f3df76; outline-offset:1px; border-color:#75682c; }
 
@@ -65,7 +66,6 @@
     th, td { padding:9px 10px; border-bottom:1px solid #e4e4e4; text-align:center; font-size:.82rem; vertical-align:middle; }
     th { background:#fff9db; font-weight:700; }
     tr:last-child td { border-bottom:0; }
-    .flower-examples { text-align:left; line-height:1.5; min-width:220px; }
     .score-pill { display:inline-flex; align-items:center; justify-content:center; min-width:60px; padding:4px 8px; border-radius:14px; background:#f4f4f4; border:1px solid #ccc; font-weight:700; }
     .empty-plan { padding:16px; border:1px dashed #ccc; border-radius:8px; background:#fafafa; color:#777; font-size:.86rem; line-height:1.6; }
     .result-note { margin:11px 0 0; color:#777; font-size:.76rem; line-height:1.55; }
@@ -88,7 +88,6 @@
       .action-row { display:block; }
       .calc-btn { width:100%; }
       th, td { padding:8px 7px; font-size:.74rem; }
-      .flower-examples { min-width:180px; }
     }
   </style>
 </head>
@@ -108,7 +107,8 @@
       <p>• 1배는 기본 길드전 점수 그대로 사용하며 업그레이드 다이아는 들지 않습니다.</p>
       <p>• 2배는 기본 점수를 2배로 올리고, 등급별 업그레이드 비용을 함께 계산합니다.</p>
       <p>• 업그레이드 비용: N 27💎 · R 42💎 · SR 21점 63💎 / 23점 69💎 · SSR 75💎 · UR 84💎</p>
-      <p>• 남은 임무 횟수 이내에서 목표를 달성하는 조합을 찾습니다. 2배는 <strong>총 다이아 최소</strong>를 최우선으로 하고, 같은 비용이면 목표 초과 점수 → 사용 임무 횟수가 적은 조합을 우선합니다.</p>
+      <p>• 기본 임무는 최대 <strong>18회</strong>이며, 부족하면 최대 <strong>24회</strong>까지 추가할 수 있습니다. 추가 임무는 1회당 <strong>45💎</strong>입니다.</p>
+      <p>• 계산기는 <strong>업그레이드 비용 + 추가 임무 비용을 합친 총 다이아</strong>가 가장 적은 조합을 우선 추천합니다. 같은 비용이면 목표 초과 점수 → 사용 임무 횟수가 적은 조합을 우선합니다.</p>
     </section>
 
     <section class="card">
@@ -128,8 +128,9 @@
         </div>
 
         <div class="field">
-          <label for="remainingInput">남은 임무 횟수</label>
-          <input id="remainingInput" type="number" min="0" max="500" step="1" inputmode="numeric" placeholder="예: 15">
+          <label for="remainingInput">남은 기본 임무 횟수</label>
+          <input id="remainingInput" type="number" min="0" max="18" step="1" inputmode="numeric" value="18" placeholder="0~18">
+          <small class="field-hint">기본 최대 18회 · 추가 임무 최대 24회(1회 45💎)는 자동 계산</small>
         </div>
 
         <div class="field">
@@ -172,6 +173,9 @@
     const roleOrder = { '길드장':1, '부길드장':2, '임원':3, '정예':4, '멤버':5 };
     const gradeOrder = { 'N':1, 'R':2, 'SR':3, 'SSR':4, 'UR':5 };
     const UPGRADE_DIAMOND_COST = { N:27, R:42, SSR:75, UR:84 };
+    const BASE_MISSION_LIMIT = 18;
+    const EXTRA_MISSION_LIMIT = 24;
+    const EXTRA_MISSION_COST = 45;
 
     let flowers = [];
     let members = [];
@@ -378,26 +382,34 @@
 
     function comparePlanCandidate(a, b) {
       if (!b) return -1;
-      if (a.cost !== b.cost) return a.cost - b.cost;
+      if (a.totalCost !== b.totalCost) return a.totalCost - b.totalCost;
       if (a.overshoot !== b.overshoot) return a.overshoot - b.overshoot;
       if (a.count !== b.count) return a.count - b.count;
       return a.sum - b.sum;
     }
 
-    function findMinimumDiamondPlan(options, remaining, needed) {
-      if (needed <= 0) return { cost:0, sum:0, count:0, counts:Array(options.length).fill(0) };
-      if (!options.length || remaining <= 0) return null;
+    function findMinimumDiamondPlan(options, basicRemaining, needed) {
+      if (needed <= 0) {
+        return {
+          totalCost:0, upgradeCost:0, extraMissionCost:0, extraCount:0,
+          sum:0, count:0, counts:Array(options.length).fill(0)
+        };
+      }
+      if (!options.length) return null;
+
+      const maxCount = basicRemaining + EXTRA_MISSION_LIMIT;
+      if (maxCount <= 0) return null;
 
       const minPoints = Math.min(...options.map(option => option.points));
       const maxPoints = Math.max(...options.map(option => option.points));
-      if (maxPoints * remaining < needed) return null;
+      if (maxPoints * maxCount < needed) return null;
 
-      // 최적 조합은 목표를 maxPoints 이상 초과할 필요가 없습니다.
-      // 그 이상이면 임무 하나를 빼도 목표 이상이라 비용/횟수가 더 좋아집니다.
+      // 목표를 한 번의 최대 점수 이상 초과할 필요는 없으므로 탐색 범위를 제한합니다.
       const scoreCap = needed + maxPoints - 1;
-      const usefulCount = Math.min(remaining, Math.floor(scoreCap / minPoints));
+      const usefulCount = Math.min(maxCount, Math.floor(scoreCap / minPoints));
 
-      const layers = [new Map([[0, { cost:0, prevSum:null, optionIndex:null }]])];
+      // 같은 횟수/점수에서는 업그레이드 비용이 가장 낮은 경로만 보관합니다.
+      const layers = [new Map([[0, { upgradeCost:0, prevSum:null, optionIndex:null }]])];
       let best = null;
 
       for (let count = 1; count <= usefulCount; count++) {
@@ -409,10 +421,17 @@
             const option = options[optionIndex];
             const nextSum = sum + option.points;
             if (nextSum > scoreCap) continue;
-            const nextCost = state.cost + option.diamondCost;
+
+            const nextUpgradeCost = state.upgradeCost + option.diamondCost;
             const existing = current.get(nextSum);
-            if (!existing || nextCost < existing.cost || (nextCost === existing.cost && optionIndex < existing.optionIndex)) {
-              current.set(nextSum, { cost:nextCost, prevSum:sum, optionIndex });
+            if (!existing ||
+                nextUpgradeCost < existing.upgradeCost ||
+                (nextUpgradeCost === existing.upgradeCost && optionIndex < existing.optionIndex)) {
+              current.set(nextSum, {
+                upgradeCost:nextUpgradeCost,
+                prevSum:sum,
+                optionIndex
+              });
             }
           }
         }
@@ -421,12 +440,22 @@
 
         for (const [sum, state] of current) {
           if (sum < needed) continue;
+
+          const extraCount = Math.max(0, count - basicRemaining);
+          if (extraCount > EXTRA_MISSION_LIMIT) continue;
+
+          const extraMissionCost = extraCount * EXTRA_MISSION_COST;
+          const totalCost = state.upgradeCost + extraMissionCost;
           const candidate = {
-            cost:state.cost,
+            totalCost,
+            upgradeCost:state.upgradeCost,
+            extraMissionCost,
+            extraCount,
             sum,
             count,
             overshoot:sum - needed
           };
+
           if (comparePlanCandidate(candidate, best) < 0) best = candidate;
         }
       }
@@ -454,11 +483,6 @@
       resultBadge.className = `status-badge ${type || ''}`.trim();
     }
 
-    function flowerExamples(option) {
-      const names = option.flowers.map(f => f.listName || f.name || '').filter(Boolean);
-      const shown = names.slice(0,3).map(escapeHtml).join(', ');
-      return names.length > 3 ? `${shown} 외 ${names.length - 3}종` : shown;
-    }
 
     function calculate() {
       const selected = getSelectedMember();
@@ -466,12 +490,13 @@
 
       const target = Number(targetInput.value);
       const current = Number(currentInput.value);
-      const remaining = Number(remainingInput.value);
+      const basicRemaining = Number(remainingInput.value);
+
       if (!Number.isInteger(target) || target < 0 || !Number.isInteger(current) || current < 0) {
         return alert('목표 점수와 현재 점수를 0 이상의 정수로 입력해주세요.');
       }
-      if (!Number.isInteger(remaining) || remaining < 0 || remaining > 500) {
-        return alert('남은 임무 횟수는 0~500 사이의 정수로 입력해주세요.');
+      if (!Number.isInteger(basicRemaining) || basicRemaining < 0 || basicRemaining > BASE_MISSION_LIMIT) {
+        return alert(`남은 기본 임무 횟수는 0~${BASE_MISSION_LIMIT} 사이의 정수로 입력해주세요.`);
       }
 
       const { options, excludedUpgradeCost } = groupScoreOptions(selected.id);
@@ -480,13 +505,15 @@
       renderScoreOptions(options);
 
       const needed = Math.max(0, target - current);
+      const maxMissionCount = basicRemaining + EXTRA_MISSION_LIMIT;
+
       if (needed === 0) {
         setResultBadge('목표 달성', 'ok');
         summaryGrid.innerHTML = [
           summaryItem('현재 점수', `${formatNumber(current)}점`),
           summaryItem('목표 점수', `${formatNumber(target)}점`),
           summaryItem('필요 점수', '0점'),
-          summaryItem('사용 다이아', '0💎')
+          summaryItem('총 사용 다이아', '0💎')
         ].join('');
         planArea.innerHTML = '<div class="empty-plan">🎉 이미 목표 점수에 도달했습니다. 추가 임무 조합을 계산할 필요가 없습니다.</div>';
         resultNote.textContent = '현재 점수가 목표 점수 이상인 경우 남은 임무는 계산에서 제외합니다.';
@@ -495,16 +522,21 @@
 
       if (!options.length) {
         setResultBadge('계산 불가', 'bad');
-        summaryGrid.innerHTML = [summaryItem('필요 점수', `${formatNumber(needed)}점`), summaryItem('계산 배율', `${multiplier}배`)].join('');
+        summaryGrid.innerHTML = [
+          summaryItem('필요 점수', `${formatNumber(needed)}점`),
+          summaryItem('계산 배율', `${multiplier}배`)
+        ].join('');
         planArea.innerHTML = '<div class="empty-plan">길드전 점수가 등록되고 현재 배율에서 비용 계산이 가능한 보유 꽃이 없어 계산할 수 없습니다.</div>';
-        resultNote.textContent = multiplier === 2 && excludedUpgradeCost ? `업그레이드 비용 기준이 없는 보유 꽃 ${excludedUpgradeCost}종은 제외되었습니다.` : '';
+        resultNote.textContent = multiplier === 2 && excludedUpgradeCost
+          ? `업그레이드 비용 기준이 없는 보유 꽃 ${excludedUpgradeCost}종은 제외되었습니다.`
+          : '';
         return;
       }
 
       const maxOption = options.reduce((best, option) => option.points > best.points ? option : best, options[0]);
-      const maxPossible = maxOption.points * remaining;
+      const maxPossible = maxOption.points * maxMissionCount;
 
-      if (remaining === 0 || maxPossible < needed) {
+      if (maxPossible < needed) {
         const maxFinal = current + maxPossible;
         setResultBadge('목표 달성 불가', 'bad');
         summaryGrid.innerHTML = [
@@ -513,15 +545,18 @@
           summaryItem('최대 최종', `${formatNumber(maxFinal)}점`),
           summaryItem('부족 점수', `${formatNumber(Math.max(0, target-maxFinal))}점`)
         ].join('');
-        planArea.innerHTML = `<div class="empty-plan">⚠️ ${escapeHtml(selected.name)}님의 현재 보유 꽃과 남은 임무 ${formatNumber(remaining)}회로는 목표에 도달할 수 없습니다.<br>가장 높은 사용 가능 점수는 회당 ${formatNumber(maxOption.points)}점입니다.</div>`;
-        resultNote.textContent = `${multiplier}배 기준 · 같은 꽃 반복 사용 가능 · 남은 임무 횟수 이내 계산`;
+        planArea.innerHTML = `<div class="empty-plan">⚠️ ${escapeHtml(selected.name)}님의 현재 보유 꽃으로 기본 ${formatNumber(basicRemaining)}회 + 추가 최대 ${EXTRA_MISSION_LIMIT}회를 모두 사용해도 목표에 도달할 수 없습니다.<br>가장 높은 사용 가능 점수는 회당 ${formatNumber(maxOption.points)}점입니다.</div>`;
+        resultNote.textContent = `${multiplier}배 기준 · 같은 꽃 반복 사용 가능 · 추가 임무는 최대 ${EXTRA_MISSION_LIMIT}회(회당 ${EXTRA_MISSION_COST}💎)`;
         return;
       }
 
-      const plan = findMinimumDiamondPlan(options, remaining, needed);
+      const plan = findMinimumDiamondPlan(options, basicRemaining, needed);
       if (!plan) {
         setResultBadge('계산 불가', 'bad');
-        summaryGrid.innerHTML = [summaryItem('필요 점수', `${formatNumber(needed)}점`), summaryItem('계산 배율', `${multiplier}배`)].join('');
+        summaryGrid.innerHTML = [
+          summaryItem('필요 점수', `${formatNumber(needed)}점`),
+          summaryItem('계산 배율', `${multiplier}배`)
+        ].join('');
         planArea.innerHTML = '<div class="empty-plan">조건에 맞는 임무 조합을 찾지 못했습니다.</div>';
         resultNote.textContent = '';
         return;
@@ -529,39 +564,58 @@
 
       const finalScore = current + plan.sum;
       const over = Math.max(0, finalScore - target);
+      const basicUsed = Math.min(plan.count, basicRemaining);
+
       setResultBadge(over === 0 ? '정확히 달성' : '달성 가능', 'ok');
       summaryGrid.innerHTML = [
         summaryItem('필요 점수', `${formatNumber(needed)}점`),
         summaryItem('추천 획득', `${formatNumber(plan.sum)}점`),
-        summaryItem('사용 다이아', `${formatNumber(plan.cost)}💎`),
-        summaryItem('사용 임무', `${formatNumber(plan.count)} / ${formatNumber(remaining)}회`),
+        summaryItem('총 사용 다이아', `${formatNumber(plan.totalCost)}💎`),
+        summaryItem('업그레이드 비용', `${formatNumber(plan.upgradeCost)}💎`),
+        summaryItem('추가 임무 비용', `${formatNumber(plan.extraMissionCost)}💎`),
+        summaryItem('사용 임무', `${formatNumber(plan.count)}회`),
+        summaryItem('추가 구매', `${formatNumber(plan.extraCount)} / ${EXTRA_MISSION_LIMIT}회`),
         summaryItem('예상 최종', `${formatNumber(finalScore)}점`),
         summaryItem('목표 초과', `+${formatNumber(over)}점`)
       ].join('');
 
-      const rows = plan.counts.map((count, index) => ({ count, option:options[index] })).filter(row => row.count > 0);
+      const rows = plan.counts
+        .map((count, index) => ({ count, option:options[index] }))
+        .filter(row => row.count > 0);
+
       planArea.innerHTML = `
-        <div class="plan-title">💎 최소 비용 추천 조합 · 총 ${formatNumber(plan.count)}회 · ${formatNumber(plan.cost)}💎</div>
+        <div class="plan-title">💎 최소 비용 추천 조합 · 총 ${formatNumber(plan.count)}회 · ${formatNumber(plan.totalCost)}💎</div>
+        <div class="empty-plan" style="margin-bottom:10px;">
+          기본 임무 ${formatNumber(basicUsed)}회
+          ${plan.extraCount > 0
+            ? ` + 추가 임무 ${formatNumber(plan.extraCount)}회 (${formatNumber(plan.extraMissionCost)}💎)`
+            : ' · 추가 임무 구매 없음'}
+        </div>
         <div class="plan-table-wrap">
           <table>
-            <thead><tr><th>등급</th><th>회당 점수</th><th>횟수</th><th>점수 소계</th><th>다이아</th><th>사용 가능한 보유 꽃 예시</th></tr></thead>
+            <thead>
+              <tr><th>등급</th><th>회당 점수</th><th>횟수</th><th>점수 소계</th><th>업그레이드 비용</th></tr>
+            </thead>
             <tbody>${rows.map(row => `
               <tr>
                 <td><strong>${escapeHtml(row.option.grade)}</strong></td>
                 <td><span class="score-pill">⚔️ ${formatNumber(row.option.points)}점</span><br><small>기본 ${formatNumber(row.option.baseScore)}점</small></td>
                 <td><strong>${formatNumber(row.count)}회</strong></td>
                 <td>${formatNumber(row.option.points * row.count)}점</td>
-                <td>${multiplier === 2 ? `${formatNumber(row.option.diamondCost)}💎 × ${formatNumber(row.count)} = <strong>${formatNumber(row.option.diamondCost * row.count)}💎</strong>` : '<strong>0💎</strong>'}</td>
-                <td class="flower-examples">${flowerExamples(row.option)}</td>
+                <td>${multiplier === 2
+                  ? `${formatNumber(row.option.diamondCost)}💎 × ${formatNumber(row.count)} = <strong>${formatNumber(row.option.diamondCost * row.count)}💎</strong>`
+                  : '<strong>0💎</strong>'}</td>
               </tr>`).join('')}</tbody>
           </table>
         </div>`;
 
-      const priorityText = multiplier === 2
-        ? '총 다이아 최소 → 목표 초과 점수 최소 → 사용 임무 횟수 최소 순으로 추천합니다.'
-        : '1배는 업그레이드 비용이 0💎이므로 목표 초과 점수 최소 → 사용 임무 횟수 최소 순으로 추천합니다.';
-      const excludedText = multiplier === 2 && excludedUpgradeCost ? ` 업그레이드 비용 기준이 없는 보유 꽃 ${excludedUpgradeCost}종은 계산에서 제외되었습니다.` : '';
-      resultNote.textContent = `${multiplier}배 기준 · 같은 꽃 반복 사용 가능 · 남은 ${remaining}회 이내에서 계산 · ${priorityText}${excludedText}`;
+      const excludedText = multiplier === 2 && excludedUpgradeCost
+        ? ` 업그레이드 비용 기준이 없는 보유 꽃 ${excludedUpgradeCost}종은 계산에서 제외되었습니다.`
+        : '';
+
+      resultNote.textContent =
+        `${multiplier}배 기준 · 기본 남은 임무 ${basicRemaining}회 · 추가 임무 최대 ${EXTRA_MISSION_LIMIT}회(회당 ${EXTRA_MISSION_COST}💎) · ` +
+        `업그레이드 비용과 추가 임무 비용을 합친 총 다이아 최소 → 목표 초과 점수 최소 → 사용 임무 횟수 최소 순으로 추천합니다.${excludedText}`;
     }
 
     document.querySelectorAll('.multiplier-btn').forEach(button => {
