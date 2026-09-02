@@ -104,7 +104,7 @@
     .status-badge.bad { background:#fff0f0; border-color:#cf8585; color:#8d3030; }
 
     .summary-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-bottom:14px; }
-    .summary-item { border:1px solid #ddd; border-radius:8px; padding:10px; background:#fafafa; text-align:center; }
+    .summary-item { border:1.5px solid #c7c7c7; border-radius:8px; padding:10px; background:#fafafa; text-align:center; }
     .summary-label { display:block; color:#777; font-size:.7rem; margin-bottom:3px; }
     .summary-value { display:block; font-size:1rem; font-weight:700; word-break:keep-all; }
 
@@ -640,10 +640,15 @@
       if (needed === 0) {
         setResultBadge('목표 달성', 'ok');
         summaryGrid.innerHTML = [
-          summaryItem('현재 점수', `${formatNumber(current)}점`),
-          summaryItem('목표 점수', `${formatNumber(target)}점`),
-          summaryItem('필요 점수', '0점'),
-          summaryItem('총 사용 다이아', '0💎')
+          summaryItem('🎯필요 점수', '0점'),
+          summaryItem('💡추천 조합 획득 점수', '0점'),
+          summaryItem('🏆예상 최종', `${formatNumber(current)}점`),
+          summaryItem('🚀목표 초과', `+${formatNumber(Math.max(0, current-target))}점`),
+
+          summaryItem('⚔️사용 임무', '0회'),
+          summaryItem('➕임무 추가 비용', '0💎'),
+          summaryItem('⬆️임무 업그레이드 비용', '0💎'),
+          summaryItem('💎총 사용 다이아', '0💎')
         ].join('');
         planArea.innerHTML = '<div class="empty-plan">🎉 이미 목표 점수에 도달했습니다. 추가 계산이 필요하지 않습니다.</div>';
         resultNote.textContent = '현재 점수가 목표 점수 이상이면 임무 추가 여부와 관계없이 비용을 계산하지 않습니다.';
@@ -699,14 +704,15 @@
 
       setResultBadge(over === 0 ? '정확히 달성' : '달성 가능', 'ok');
       summaryGrid.innerHTML = [
-        summaryItem('필요 점수', `${formatNumber(needed)}점`),
-        summaryItem('추천 획득', `${formatNumber(plan.sum)}점`),
-        summaryItem('총 사용 다이아', `${formatNumber(totalCost)}💎`),
-        summaryItem('업그레이드 비용', `${formatNumber(plan.upgradeCost)}💎`),
-        summaryItem('임무 추가 비용', `${formatNumber(addedMissionCost)}💎`),
-        summaryItem('사용 임무', `${formatNumber(plan.count)} / ${formatNumber(maxMissionCount)}회`),
-        summaryItem('예상 최종', `${formatNumber(finalScore)}점`),
-        summaryItem('목표 초과', `+${formatNumber(over)}점`)
+        summaryItem('🎯필요 점수', `${formatNumber(needed)}점`),
+        summaryItem('💡추천 조합 획득 점수', `${formatNumber(plan.sum)}점`),
+        summaryItem('🏆예상 최종', `${formatNumber(finalScore)}점`),
+        summaryItem('🚀목표 초과', `+${formatNumber(over)}점`),
+
+        summaryItem('⚔️사용 임무', `${formatNumber(plan.count)} / ${formatNumber(maxMissionCount)}회`),
+        summaryItem('➕임무 추가 비용', `${formatNumber(addedMissionCost)}💎`),
+        summaryItem('⬆️임무 업그레이드 비용', `${formatNumber(plan.upgradeCost)}💎`),
+        summaryItem('💎총 사용 다이아', `${formatNumber(totalCost)}💎`)
       ].join('');
 
       const rows = plan.counts

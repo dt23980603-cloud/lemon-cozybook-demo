@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v30-low-grade-priority';
+const CACHE_NAME = 'lemon-demo-v30-result-ui-order';
 const APP_SHELL = [
   '/',
   '/index.html',
