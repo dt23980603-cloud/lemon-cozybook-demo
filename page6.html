@@ -151,17 +151,17 @@
         </div>
 
         <div class="field">
-          <label for="remainingInput">남은 기본 임무 횟수</label>
-          <input id="remainingInput" type="number" min="0" max="18" step="1" inputmode="numeric" value="18" placeholder="0~18">
-          <small class="field-hint">기본 임무는 최대 18회입니다.</small>
+          <label for="remainingInput">남은 임무 횟수</label>
+          <input id="remainingInput" type="number" min="0" max="24" step="1" inputmode="numeric" placeholder="예: 12">
+          <small class="field-hint">현재 게임 화면에 실제로 남아 있는 횟수를 입력해주세요.</small>
         </div>
 
         <div class="field">
           <label>추가 임무</label>
           <label class="extra-mission-toggle" for="maxExtraToggle">
             <span class="toggle-copy">
-              <span class="toggle-title">임무 횟수 최대 추가</span>
-              <span class="toggle-sub">체크 시 +6회 · 45💎 × 6 = 270💎</span>
+              <span class="toggle-title">임무 횟수 추가 (+270💎)</span>
+              <span class="toggle-sub">체크 시 비용만 합산되며, 입력한 남은 임무 횟수는 변경되지 않습니다.</span>
             </span>
             <input id="maxExtraToggle" type="checkbox">
           </label>
@@ -207,9 +207,8 @@
       <p>• 1배는 기본 길드전 점수 그대로 사용하며 업그레이드 다이아는 들지 않습니다.</p>
       <p>• 2배는 기본 점수를 2배로 올리고 등급별 업그레이드 비용을 계산합니다.</p>
       <p>• 업그레이드 비용: N 27💎 · R 42💎 · SR 21점 63💎 / SR 23점 69💎 · SSR 75💎 · UR 84💎</p>
-      <p>• 기본 임무는 최대 <strong>18회</strong>입니다.</p>
-      <p>• <strong>임무 횟수 최대 추가</strong>를 체크하면 추가 임무 <strong>6회</strong>를 사용할 수 있으며, 비용 <strong>270💎</strong>(45💎 × 6회)이 계산 결과에 합산됩니다.</p>
-      <p>• 추천 조합은 사용 가능한 임무 횟수 안에서 <strong>업그레이드 다이아가 가장 적은 조합</strong>을 우선합니다. 최대 추가를 체크한 경우 270💎가 총 비용에 추가됩니다.</p>
+      <p>• <strong>임무 횟수 추가</strong>는 무조건 추가 임무 6회를 기준으로 합니다. 비용 <strong>270💎</strong>(45💎 × 6회)</p>
+      <p>• 추천 조합은 입력한 남은 임무 횟수 안에서 <strong>업그레이드 다이아가 가장 적은 조합</strong>을 우선합니다. 임무 횟수 추가를 체크한 경우 270💎가 총 비용에 추가됩니다.</p>
     </div>
   </div>
 
@@ -519,16 +518,15 @@
       const target = Number(targetInput.value);
       const current = Number(currentInput.value);
       const basicRemaining = Number(remainingInput.value);
-      const useMaxExtra = Boolean(maxExtraToggle.checked);
-      const addedMissionCount = useMaxExtra ? EXTRA_MISSION_LIMIT : 0;
-      const addedMissionCost = useMaxExtra ? EXTRA_MISSION_LIMIT * EXTRA_MISSION_COST : 0;
-      const maxMissionCount = basicRemaining + addedMissionCount;
+      const useMissionAdd = Boolean(maxExtraToggle.checked);
+      const addedMissionCost = useMissionAdd ? EXTRA_MISSION_LIMIT * EXTRA_MISSION_COST : 0;
+      const maxMissionCount = basicRemaining;
 
       if (!Number.isInteger(target) || target < 0 || !Number.isInteger(current) || current < 0) {
         return alert('목표 점수와 현재 점수를 0 이상의 정수로 입력해주세요.');
       }
-      if (!Number.isInteger(basicRemaining) || basicRemaining < 0 || basicRemaining > BASE_MISSION_LIMIT) {
-        return alert(`남은 기본 임무 횟수는 0~${BASE_MISSION_LIMIT} 사이의 정수로 입력해주세요.`);
+      if (!Number.isInteger(basicRemaining) || basicRemaining < 0 || basicRemaining > 24) {
+        return alert('남은 임무 횟수는 0~24 사이의 정수로 입력해주세요.');
       }
 
       const { options, excludedUpgradeCost } = groupScoreOptions(selected.id);
@@ -577,9 +575,8 @@
           summaryItem('부족 점수', `${formatNumber(Math.max(0, target-maxFinal))}점`)
         ].join('');
         planArea.innerHTML = `<div class="empty-plan">⚠️ ${escapeHtml(selected.name)}님의 현재 보유 꽃으로 사용 가능한 ${formatNumber(maxMissionCount)}회 안에는 목표에 도달할 수 없습니다.<br>가장 높은 사용 가능 점수는 회당 ${formatNumber(maxOption.points)}점입니다.</div>`;
-        resultNote.textContent = useMaxExtra
-          ? `${multiplier}배 기준 · 남은 기본 ${basicRemaining}회 + 최대 추가 6회 · 최대 추가 비용 270💎`
-          : `${multiplier}배 기준 · 남은 기본 ${basicRemaining}회만 사용 · 필요하면 '임무 횟수 최대 추가'를 체크해 다시 계산하세요.`;
+        resultNote.textContent = `${multiplier}배 기준 · 입력한 남은 임무 ${basicRemaining}회 안에서 계산합니다.` +
+          `${useMissionAdd ? ' 임무 횟수 추가 비용 270💎는 총 비용에 합산됩니다.' : ''}`;
         return;
       }
 
@@ -618,10 +615,10 @@
       planArea.innerHTML = `
         <div class="plan-title">💎 추천 조합 · 총 ${formatNumber(plan.count)}회 · ${formatNumber(totalCost)}💎</div>
         <div class="empty-plan" style="margin-bottom:10px;">
-          남은 기본 임무 ${formatNumber(basicRemaining)}회
-          ${useMaxExtra
-            ? ` + 최대 추가 ${EXTRA_MISSION_LIMIT}회 (${formatNumber(addedMissionCost)}💎)`
-            : ' · 추가 임무 없음'}
+          입력한 남은 임무 ${formatNumber(basicRemaining)}회
+          ${useMissionAdd
+            ? ` · 임무 횟수 추가 비용 ${formatNumber(addedMissionCost)}💎 포함`
+            : ' · 임무 횟수 추가 비용 없음'}
         </div>
         <div class="plan-table-wrap">
           <table>
@@ -646,10 +643,9 @@
         : '';
 
       resultNote.textContent =
-        `${multiplier}배 기준 · 사용 가능 임무 ${maxMissionCount}회` +
-        `${useMaxExtra ? ` (기본 ${basicRemaining} + 추가 6)` : ` (기본 ${basicRemaining})`} · ` +
+        `${multiplier}배 기준 · 입력한 남은 임무 ${maxMissionCount}회 안에서 계산 · ` +
         `추천 조합은 업그레이드 다이아 최소 → 목표 초과 점수 최소 → 사용 임무 횟수 최소 순입니다.` +
-        `${useMaxExtra ? ` 최대 추가 비용 ${formatNumber(addedMissionCost)}💎가 총 비용에 합산됩니다.` : ''}${excludedText}`;
+        `${useMissionAdd ? ` 임무 횟수 추가 비용 ${formatNumber(addedMissionCost)}💎가 총 비용에 합산됩니다.` : ''}${excludedText}`;
     }
 
 
