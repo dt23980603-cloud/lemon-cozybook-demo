@@ -46,6 +46,22 @@
     .guide-dialog p { margin:6px 0; line-height:1.6; font-size:.86rem; }
 
     .section-title { margin:0 0 12px; font-size:1.02rem; font-weight:700; }
+
+    /* 계산 조건: 1열 전체 / 2열 2분할 / 3열 전체 / 4열 2분할 */
+    .calc-condition-layout {
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .calc-row-full {
+      width:100%;
+    }
+    .calc-row-two {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:12px;
+    }
+
     .form-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; }
     .field { display:flex; flex-direction:column; gap:6px; }
     .field.full { grid-column:1 / -1; }
@@ -121,6 +137,9 @@
       .calc-btn { width:100%; }
       th, td { padding:8px 7px; font-size:.74rem; }
     }
+      @media (max-width:760px) {
+      .calc-row-two { grid-template-columns:1fr; }
+    }
   </style>
 </head>
 <body>
@@ -136,45 +155,53 @@
 
     <section class="card">
       <h2 class="section-title">계산 조건</h2>
-      <div class="form-grid">
-        <div class="field full">
-          <label for="memberSelect">계산 대상 길드원</label>
+
+      <div class="calc-condition-layout">
+        <!-- 1열 -->
+        <div class="field calc-row-full">
+          <label for="memberSelect">👤계산 대상 길드원</label>
           <select id="memberSelect"><option value="">길드원 정보를 불러오는 중입니다…</option></select>
         </div>
 
-        <div class="field">
-          <label>점수 배율</label>
-          <div class="multiplier-wrap" role="group" aria-label="점수 배율 선택">
-            <button type="button" class="multiplier-btn" data-multiplier="1">1배</button>
-            <button type="button" class="multiplier-btn active" data-multiplier="2">2배</button>
+        <!-- 2열 -->
+        <div class="calc-row-two">
+          <div class="field">
+            <label>✖️점수 배율</label>
+            <div class="multiplier-wrap" role="group" aria-label="점수 배율 선택">
+              <button type="button" class="multiplier-btn" data-multiplier="1">1배</button>
+              <button type="button" class="multiplier-btn active" data-multiplier="2">2배</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>➕추가 임무</label>
+            <label class="extra-mission-toggle" for="maxExtraToggle">
+              <span class="toggle-copy">
+                <span class="toggle-title">임무 횟수 추가</span>
+                <span class="toggle-sub">(45💎 x 6회 =270💎)</span>
+              </span>
+              <input id="maxExtraToggle" type="checkbox">
+            </label>
           </div>
         </div>
 
-        <div class="field">
-          <label for="remainingInput">남은 임무 횟수</label>
-          <input id="remainingInput" type="number" min="0" max="24" step="1" inputmode="numeric" placeholder="예: 12">
-          <small class="field-hint">현재 게임 화면에 실제로 남아 있는 횟수를 입력해주세요.</small>
-        </div>
-
-        <div class="field">
-          <label>추가 임무</label>
-          <label class="extra-mission-toggle" for="maxExtraToggle">
-            <span class="toggle-copy">
-              <span class="toggle-title">임무 횟수 추가 (+270💎)</span>
-              <span class="toggle-sub">체크 시 비용만 합산되며, 입력한 남은 임무 횟수는 변경되지 않습니다.</span>
-            </span>
-            <input id="maxExtraToggle" type="checkbox">
-          </label>
-        </div>
-
-        <div class="field">
-          <label for="targetInput">목표 점수</label>
+        <!-- 3열 -->
+        <div class="field calc-row-full">
+          <label for="targetInput">🎯목표 점수</label>
           <input id="targetInput" type="number" min="0" step="1" inputmode="numeric" placeholder="예: 1400">
         </div>
 
-        <div class="field">
-          <label for="currentInput">현재 점수</label>
-          <input id="currentInput" type="number" min="0" step="1" inputmode="numeric" placeholder="예: 1120">
+        <!-- 4열 -->
+        <div class="calc-row-two">
+          <div class="field">
+            <label for="remainingInput">📋남은 임무 횟수</label>
+            <input id="remainingInput" type="number" min="0" max="24" step="1" inputmode="numeric" placeholder="예: 12">
+          </div>
+
+          <div class="field">
+            <label for="currentInput">📈현재 점수</label>
+            <input id="currentInput" type="number" min="0" step="1" inputmode="numeric" placeholder="예: 1120">
+          </div>
         </div>
       </div>
 

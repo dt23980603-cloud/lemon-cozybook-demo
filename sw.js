@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v30-mission-add-cost-only';
+const CACHE_NAME = 'lemon-demo-v30-calc-layout-v2';
 const APP_SHELL = [
   '/',
   '/index.html',
