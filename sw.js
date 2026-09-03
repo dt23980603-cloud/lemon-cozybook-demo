@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v33-integrated-catalog-members';
+const CACHE_NAME = 'lemon-demo-v34-member-row-mobile';
 const APP_SHELL = [
   '/',
   '/index.html',

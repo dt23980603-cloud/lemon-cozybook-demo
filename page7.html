@@ -20,7 +20,16 @@ h1{margin:0;font-size:1.45rem}.subtitle{margin:4px 0 0;color:#777;font-size:.8re
 .dialog-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.dialog-head h2{margin:0;font-size:1rem}.close{width:34px;height:34px;border:1px solid #aaa;border-radius:50%;background:#fff}.edit-grid{display:grid;gap:9px}.edit-grid label{display:grid;gap:5px;font-size:.78rem;font-weight:700}.edit-grid select,.edit-grid input{min-height:42px;padding:8px 10px;border:1px solid #aaa;border-radius:7px;background:#fff}
 .dialog-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}.dialog-actions button{min-height:38px;padding:7px 14px;border:1px solid #888;border-radius:7px;background:#fff;font-weight:700}.dialog-actions .save{background:#fff0a8;border-color:#74662a}
 #site-version{position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;pointer-events:none}
-@media(max-width:600px){body{margin:8px}.card{padding:12px}h1{font-size:1.25rem}.form{grid-template-columns:1fr 1fr}.form input{grid-column:1/-1;grid-row:1}.form select{grid-column:1;grid-row:2}.btn-add{grid-column:2;grid-row:2}.member-row{grid-template-columns:1fr}.actions{justify-content:flex-end}}
+@media(max-width:600px){
+body{margin:8px}.card{padding:12px}h1{font-size:1.25rem}
+.form{grid-template-columns:1fr 1fr}.form input{grid-column:1/-1;grid-row:1}.form select{grid-column:1;grid-row:2}.btn-add{grid-column:2;grid-row:2}
+.member-row{grid-template-columns:minmax(0,1fr) auto;gap:6px;padding:8px}
+.member-main{gap:6px;min-width:0}
+.member-role{min-width:45px;font-size:.7rem}
+.member-name{font-size:.78rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.actions{display:flex;gap:4px;justify-content:flex-end;flex-wrap:nowrap}
+.actions button{min-height:30px;padding:5px 7px;font-size:.65rem;white-space:nowrap}
+}
 </style>
 </head>
 <body>
@@ -29,14 +38,14 @@ h1{margin:0;font-size:1.45rem}.subtitle{margin:4px 0 0;color:#777;font-size:.8re
 <section class="card"><h2 class="title">➕ 길드원 추가</h2><div class="form"><select id="addRole"><option>길드장</option><option>부길드장</option><option>임원</option><option>정예</option><option selected>멤버</option></select><input id="addName" maxlength="40" placeholder="닉네임 입력"><button id="addBtn" class="btn-add">추가</button></div><div id="status" class="status"></div></section>
 <section class="card"><h2 class="title">📖 길드원 목록 <span id="memberCount"></span></h2><div id="memberList" class="member-list"></div></section>
 </main>
-<div id="editModal" class="modal"><div class="dialog"><div class="dialog-head"><h2>✏️ 정보 수정</h2><button id="editClose" class="close">×</button></div><div class="edit-grid"><label>직위<select id="editRole"><option>길드장</option><option>부길드장</option><option>임원</option><option>정예</option><option>멤버</option></select></label><label>닉네임<input id="editName" maxlength="40"></label></div><div class="dialog-actions"><button id="editCancel">취소</button><button id="editSave" class="save">저장</button></div></div></div>
-<div id="site-version">demo_v33</div>
+<div id="editModal" class="modal"><div class="dialog"><div class="dialog-head"><h2>✏️ 수정</h2><button id="editClose" class="close">×</button></div><div class="edit-grid"><label>직위<select id="editRole"><option>길드장</option><option>부길드장</option><option>임원</option><option>정예</option><option>멤버</option></select></label><label>닉네임<input id="editName" maxlength="40"></label></div><div class="dialog-actions"><button id="editCancel">취소</button><button id="editSave" class="save">저장</button></div></div></div>
+<div id="site-version">demo_v34</div>
 <script>
 const API='/api/guild-state';const roleOrder={'길드장':1,'부길드장':2,'임원':3,'정예':4,'멤버':5};let members=[],checks={},flowerOptions={},editMemberId='';
 const memberList=document.getElementById('memberList'),memberCount=document.getElementById('memberCount'),statusEl=document.getElementById('status'),addRole=document.getElementById('addRole'),addName=document.getElementById('addName'),editModal=document.getElementById('editModal'),editRole=document.getElementById('editRole'),editName=document.getElementById('editName');
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 function sorted(){return [...members].sort((a,b)=>(roleOrder[a.role]||99)-(roleOrder[b.role]||99)||String(a.name||'').localeCompare(String(b.name||''),'ko-KR'))}
-function render(){const list=sorted();memberCount.textContent=`(${list.length}명)`;memberList.innerHTML=list.length?list.map(m=>`<div class="member-row role-${esc(m.role||'멤버')}"><div class="member-main"><span class="role-dot"></span><span class="member-role">${esc(m.role||'멤버')}</span><span class="member-name">${esc(m.name||'')}</span></div><div class="actions"><button data-edit="${esc(m.id)}">✏️ 정보 수정</button><button class="delete" data-delete="${esc(m.id)}">삭제</button></div></div>`).join(''):'<div class="empty">등록된 길드원이 없습니다.</div>';memberList.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openEdit(b.dataset.edit));memberList.querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>deleteMember(b.dataset.delete))}
+function render(){const list=sorted();memberCount.textContent=`(${list.length}명)`;memberList.innerHTML=list.length?list.map(m=>`<div class="member-row role-${esc(m.role||'멤버')}"><div class="member-main"><span class="role-dot"></span><span class="member-role">${esc(m.role||'멤버')}</span><span class="member-name">${esc(m.name||'')}</span></div><div class="actions"><button data-edit="${esc(m.id)}">✏️ 수정</button><button class="delete" data-delete="${esc(m.id)}">🗑️ 삭제</button></div></div>`).join(''):'<div class="empty">등록된 길드원이 없습니다.</div>';memberList.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openEdit(b.dataset.edit));memberList.querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>deleteMember(b.dataset.delete))}
 function localSave(){localStorage.setItem('guild_members',JSON.stringify(members));localStorage.setItem('guild_checks',JSON.stringify(checks));localStorage.setItem('guild_flower_options',JSON.stringify(flowerOptions))}
 async function load(){try{const r=await fetch(API,{cache:'no-store'});if(!r.ok)throw new Error(`GET ${r.status}`);const p=await r.json();if(p.exists&&p.state){members=Array.isArray(p.state.members)?p.state.members:[];checks=p.state.checks&&typeof p.state.checks==='object'?p.state.checks:{};flowerOptions=p.state.flowerOptions&&typeof p.state.flowerOptions==='object'?p.state.flowerOptions:{}}else{members=JSON.parse(localStorage.getItem('guild_members')||'[]');checks=JSON.parse(localStorage.getItem('guild_checks')||'{}');flowerOptions=JSON.parse(localStorage.getItem('guild_flower_options')||'{}')}localSave();render()}catch(e){console.warn(e);statusEl.textContent='길드원 정보를 불러오지 못했습니다.'}}
 async function savePatch(state){const r=await fetch(API,{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({state})});const p=await r.json().catch(()=>({}));if(!r.ok)throw new Error(p.error||`PUT ${r.status}`)}
