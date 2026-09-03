@@ -93,6 +93,20 @@
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 15px;
+            width: 100%;
+        }
+
+        .button-grid .nav-row-three .nav-btn {
+            width: 100%;
+            box-sizing: border-box;
+            background: #fff;
+            border: 1px solid #b9b9b9;
+            border-radius: 16px;
+            box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .button-grid .nav-row-three .nav-btn:hover {
+            background: #f7f7f7;
         }
 
         .button-grid .nav-btn-wide {
@@ -364,14 +378,18 @@
             }
 
             .button-grid .nav-row-three {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
+                grid-template-columns: repeat(2, minmax(0, 1fr));
                 gap: 10px;
+                width: 100%;
             }
 
             .button-grid .nav-row-three .nav-btn {
+                width: 100%;
+                min-height: 58px;
                 font-size: 0.86rem;
-                padding-left: 5px;
-                padding-right: 5px;
+                padding: 10px 6px;
+                background: #fff;
+                border-radius: 16px;
             }
 
             .nav-btn {
@@ -536,7 +554,7 @@
                 <a href="page5.html" class="nav-btn">🌷전체 꽃 도감🌷</a>
                 <a href="page2.html" class="nav-btn">⚔️경쟁전 임무 계산⚔️</a>
                 <a href="page3.html" class="nav-btn">💡꽃 개량 효율표💡</a>
-                <a href="page6.html" class="nav-btn">📖코지 공략모음📖</a>
+                <a href="page6.html" class="nav-btn">📖 코지 공략모음 📖</a>
                 <div class="nav-row-three">
                     <a href="https://open.kakao.com/o/gdYMYczi" class="nav-btn" target="_blank" rel="noopener noreferrer">💬 레몬 오픈채팅</a>
                     <a href="https://game.naver.com/lounge/The_Cozy_Florist/home" class="nav-btn" target="_blank" rel="noopener noreferrer">🌿 코지 공식 라운지</a>
@@ -685,7 +703,7 @@
     </script>
 
 
-    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v39</div>
+    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.0</div>
 
 
 <script id="pwa-auto-update-script">

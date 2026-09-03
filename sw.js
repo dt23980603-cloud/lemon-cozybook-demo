@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v39-page-reorder';
+const CACHE_NAME = 'lemon-demo-v4.0-main-layout';
 const APP_SHELL = [
   '/',
   '/index.html',
