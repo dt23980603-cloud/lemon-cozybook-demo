@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>꽃 관리 | 레몬</title>
+<link rel="icon" type="image/png" href="images/branding/lemon-favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,body,input,button,select,textarea{font-family:'Gowun Batang',serif;box-sizing:border-box}
+body{margin:14px;background:#f9f9f9;color:#333}.page{width:min(960px,100%);margin:0 auto}
+.header{display:flex;align-items:center;gap:12px;margin-bottom:14px}.back{width:50px;height:50px;display:inline-flex;flex:0 0 auto}.back img{width:100%;height:100%;object-fit:contain}
+h1{margin:0;font-size:1.45rem}.subtitle{margin:3px 0 0;color:#888;font-size:.74rem;line-height:1.45}
+.nav-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.nav-tab{min-height:44px;border:1px solid #aaa;border-radius:8px;background:#fff;font-weight:700;font-size:.9rem;cursor:pointer}
+.nav-tab.active{background:#fff9db;border-color:#6c6338;box-shadow:inset 0 -3px 0 #6c6338}
+.panel{display:none}.panel.active{display:block}
+.card{background:#fff;border:1px solid #bbb;border-radius:10px;padding:16px;margin-bottom:14px;box-shadow:2px 2px 5px rgba(0,0,0,.04)}
+.card-title{margin:0 0 12px;font-size:1rem}.guide{margin:0 0 12px;color:#777;font-size:.76rem;line-height:1.55}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.form-grid label{display:flex;flex-direction:column;gap:5px;font-size:.8rem;font-weight:700;color:#555}
+.form-grid label.span-2{grid-column:1/-1}.form-grid input,.form-grid select,.form-grid textarea{width:100%;min-height:41px;padding:8px 10px;border:1px solid #aaa;border-radius:7px;background:#fff;font-size:.86rem}
+.form-grid textarea{min-height:72px;resize:vertical}.image-help{font-size:.68rem;color:#999;font-weight:400}.actions{display:flex;justify-content:flex-end;margin-top:12px}
+.submit{min-width:105px;min-height:39px;padding:7px 14px;border:1px solid #666;border-radius:7px;background:#fff9db;font-weight:700;cursor:pointer}.submit:disabled{opacity:.55;cursor:wait}
+.status{min-height:21px;margin-top:9px;color:#777;font-size:.76rem}.status.ok{color:#276b37}.status.error{color:#a12d2d}
+.finder{display:grid;grid-template-columns:130px minmax(0,1fr) auto;gap:7px;margin-bottom:10px}.finder select,.finder input{min-height:40px;padding:8px 9px;border:1px solid #aaa;border-radius:7px;background:#fff}.finder button{padding:7px 12px;border:1px solid #999;border-radius:7px;background:#fff;font-weight:700}
+.flower-list{display:flex;flex-direction:column;gap:6px;max-height:440px;overflow-y:auto}
+.flower-row{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px 9px;border:1px solid #ddd;border-radius:8px;background:#fafafa}
+.grade{display:flex;align-items:center;justify-content:center;min-height:29px;border-radius:14px;font-family:Arial,sans-serif;font-size:.72rem;font-weight:800}.grade-N{background:#d4edbc}.grade-R{background:#bfe1f6}.grade-SR{background:#e6cff2}.grade-SSR{background:#ffe5a0}.grade-UR{background:#ffcfc9}
+.flower-name{min-width:0;font-size:.8rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.row-btn{min-height:32px;padding:5px 10px;border:1px solid #999;border-radius:6px;background:#fff;font-size:.72rem;font-weight:700;cursor:pointer}.row-btn.edit{background:#fff9db}.row-btn.delete{background:#fff0f0;border-color:#c99;color:#962e2e}
+.selected-card{display:none;grid-template-columns:110px minmax(0,1fr);gap:13px;align-items:center;margin-bottom:12px;padding:10px;border:1px solid #ddd;border-radius:9px;background:#fafafa}.selected-card.show{display:grid}.selected-card img{width:110px;height:110px;object-fit:contain;border-radius:9px;background:#f4ecd9}.selected-name{font-weight:700;margin-bottom:4px}.selected-meta{font-size:.74rem;color:#777}
+.empty{padding:25px;text-align:center;color:#888;border:1px dashed #ccc;border-radius:8px}
+#site-version{position:fixed;left:12px;bottom:10px;color:#aaa;font-size:11px;pointer-events:none}
+@media(max-width:600px){
+body{margin:8px}.card{padding:12px}.header{gap:8px}.back{width:44px;height:44px}h1{font-size:1.25rem}.subtitle{font-size:.62rem}
+.nav-tabs{gap:5px}.nav-tab{min-height:38px;font-size:.72rem;padding:5px 2px}.form-grid{grid-template-columns:1fr}.form-grid label.span-2{grid-column:auto}
+.finder{grid-template-columns:100px minmax(0,1fr)}.finder button{grid-column:1/-1}.flower-row{grid-template-columns:44px minmax(0,1fr) auto;padding:7px}.flower-name{font-size:.7rem}.row-btn{font-size:.64rem;padding:4px 7px}
+.selected-card{grid-template-columns:82px minmax(0,1fr)}.selected-card img{width:82px;height:82px}
+}
+</style>
+</head>
+<body>
+<main class="page">
+  <header class="header">
+    <a class="back" href="page5.html" title="전체 꽃 도감으로 돌아가기"><img src="images/ui/back-button.png" alt="뒤로가기"></a>
+    <div><h1>⚙️ 꽃 관리</h1><p class="subtitle">꽃 추가·수정·삭제를 한 곳에서 관리합니다.</p></div>
+  </header>
+
+  <div class="nav-tabs">
+    <button class="nav-tab active" data-panel="add">＋ 꽃 추가</button>
+    <button class="nav-tab" data-panel="edit">✏️ 꽃 수정</button>
+    <button class="nav-tab" data-panel="delete">🗑️ 꽃 삭제</button>
+  </div>
+
+  <section id="panel-add" class="panel active">
+    <div class="card">
+      <h2 class="card-title">＋ 새 꽃 추가</h2>
+      <form id="addForm">
+        <div class="form-grid">
+          <label>등급<select id="addGrade" required><option>N</option><option>R</option><option>SR</option><option>SSR</option><option>UR</option></select></label>
+          <label>분류<input id="addCategory" maxlength="80" placeholder="예: 꽃시장 교환" required></label>
+          <label class="span-2">꽃 이름<input id="addName" maxlength="120" required></label>
+          <label>길드전 점수<input id="addGuildScore" type="number" min="0" max="9999" inputmode="numeric" placeholder="예: 14"></label>
+          <label>획득<input id="addAcquire" maxlength="200" placeholder="예: 꽃시장"></label>
+          <label class="span-2">비고<textarea id="addNote" maxlength="500" rows="3"></textarea></label>
+          <label class="span-2">이미지<input id="addImage" type="file" accept="image/png,image/jpeg,image/webp" required><span class="image-help">PNG/JPG도 등록 시 WebP로 자동 변환되어 저장됩니다.</span></label>
+        </div>
+        <div id="addStatus" class="status" aria-live="polite"></div>
+        <div class="actions"><button id="submitAdd" class="submit" type="submit">등록</button></div>
+      </form>
+    </div>
+  </section>
+
+  <section id="panel-edit" class="panel">
+    <div class="card">
+      <h2 class="card-title">✏️ 수정할 꽃 선택</h2>
+      <div class="finder">
+        <select id="editGradeFilter"><option value="ALL">전체 등급</option><option>N</option><option>R</option><option>SR</option><option>SSR</option><option>UR</option></select>
+        <input id="editSearch" type="search" placeholder="꽃 이름 검색...">
+        <button id="editClear" type="button">초기화</button>
+      </div>
+      <div id="editList" class="flower-list"></div>
+    </div>
+
+    <div id="editFormCard" class="card" hidden>
+      <h2 class="card-title">✏️ 꽃 정보 수정</h2>
+      <div id="editSelectedCard" class="selected-card">
+        <img id="editPreview" src="" alt="">
+        <div><div id="editSelectedName" class="selected-name"></div><div id="editSelectedMeta" class="selected-meta"></div></div>
+      </div>
+      <form id="editForm">
+        <input id="editKey" type="hidden">
+        <div class="form-grid">
+          <label>등급<select id="editGrade" required><option>N</option><option>R</option><option>SR</option><option>SSR</option><option>UR</option></select></label>
+          <label>분류<input id="editCategory" maxlength="80" required></label>
+          <label class="span-2">꽃 이름<input id="editName" maxlength="120" required></label>
+          <label>길드전 점수<input id="editGuildScore" type="number" min="0" max="9999" inputmode="numeric"></label>
+          <label>획득<input id="editAcquire" maxlength="200"></label>
+          <label class="span-2">비고<textarea id="editNote" maxlength="500" rows="3"></textarea></label>
+          <label class="span-2">이미지<input id="editImage" type="file" accept="image/png,image/jpeg,image/webp"><span id="editImageHelp" class="image-help">변경하지 않으려면 이미지를 선택하지 마세요.</span></label>
+        </div>
+        <div id="editStatus" class="status" aria-live="polite"></div>
+        <div class="actions"><button id="submitEdit" class="submit" type="submit">저장</button></div>
+      </form>
+    </div>
+  </section>
+
+  <section id="panel-delete" class="panel">
+    <div class="card">
+      <h2 class="card-title">🗑️ 꽃 삭제</h2>
+      <p class="guide">삭제하면 D1의 꽃 데이터가 제거되고, R2에 저장된 해당 꽃 이미지가 있다면 함께 삭제됩니다. 삭제 전 꽃 이름을 꼭 확인해주세요.</p>
+      <div class="finder">
+        <select id="deleteGradeFilter"><option value="ALL">전체 등급</option><option>N</option><option>R</option><option>SR</option><option>SSR</option><option>UR</option></select>
+        <input id="deleteSearch" type="search" placeholder="꽃 이름 검색...">
+        <button id="deleteClear" type="button">초기화</button>
+      </div>
+      <div id="deleteList" class="flower-list"></div>
+    </div>
+  </section>
+</main>
+<div id="site-version">demo_v38</div>
+
+<script src="flower-data-all.js"></script>
+<script>
+const FLOWERS_API='/api/flowers';
+const BASE_SEED_VERSION='demo_v38_base_356';
+const masterFlowers=window.FLOWER_MASTER_DATA||[];
+let flowers=[];
+let ready=false;
+
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+const byName=(a,b)=>String(a.listName||a.name||'').localeCompare(String(b.listName||b.name||''),'ko-KR');
+
+function getFlower(key){return flowers.find(f=>f.key===key)||null}
+function listFiltered(grade, keyword){
+  const q=String(keyword||'').trim().toLocaleLowerCase('ko-KR');
+  return flowers.filter(f=>(grade==='ALL'||f.grade===grade)&&(`${f.listName||''} ${f.name||''}`).toLocaleLowerCase('ko-KR').includes(q)).sort((a,b)=>(['N','R','SR','SSR','UR'].indexOf(a.grade)-['N','R','SR','SSR','UR'].indexOf(b.grade))||byName(a,b));
+}
+async function ensureSeed(){
+  const r=await fetch(`${FLOWERS_API}?seed=1`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({seedVersion:BASE_SEED_VERSION,flowers:masterFlowers})});
+  const p=await r.json().catch(()=>({}));
+  if(!r.ok)throw new Error(p.error||`기본 꽃 D1 이전 실패 (${r.status})`);
+}
+async function refresh(){
+  const r=await fetch(FLOWERS_API,{cache:'no-store'});
+  if(!r.ok)throw new Error(`GET ${r.status}`);
+  const p=await r.json();
+  flowers=Array.isArray(p.flowers)?p.flowers:[];
+  ready=true;
+  renderEditList();renderDeleteList();
+}
+async function imageToWebP(file){
+  if(!file)throw new Error('이미지를 선택해주세요.');
+  const url=URL.createObjectURL(file);
+  try{
+    const img=await new Promise((resolve,reject)=>{const el=new Image();el.onload=()=>resolve(el);el.onerror=()=>reject(new Error('이미지 파일을 읽을 수 없습니다.'));el.src=url});
+    const maxWidth=1600,scale=Math.min(1,maxWidth/img.naturalWidth),w=Math.max(1,Math.round(img.naturalWidth*scale)),h=Math.max(1,Math.round(img.naturalHeight*scale));
+    const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/webp',.88));
+    if(!blob)throw new Error('WebP 변환에 실패했습니다.');
+    return new File([blob],'flower.webp',{type:'image/webp'});
+  }finally{URL.revokeObjectURL(url)}
+}
+function rowHtml(f,action,label){
+  return `<div class="flower-row"><span class="grade grade-${esc(f.grade)}">${esc(f.grade)}</span><span class="flower-name">${esc(f.listName||f.name)}</span><button type="button" class="row-btn ${action}" data-key="${esc(f.key)}">${label}</button></div>`;
+}
+function renderEditList(){
+  const list=listFiltered(document.getElementById('editGradeFilter').value,document.getElementById('editSearch').value);
+  const box=document.getElementById('editList');
+  box.innerHTML=list.length?list.map(f=>rowHtml(f,'edit','✏️ 수정')).join(''):'<div class="empty">조건에 맞는 꽃이 없습니다.</div>';
+  box.querySelectorAll('[data-key]').forEach(b=>b.onclick=()=>selectEditFlower(b.dataset.key));
+}
+function renderDeleteList(){
+  const list=listFiltered(document.getElementById('deleteGradeFilter').value,document.getElementById('deleteSearch').value);
+  const box=document.getElementById('deleteList');
+  box.innerHTML=list.length?list.map(f=>rowHtml(f,'delete','🗑️ 삭제')).join(''):'<div class="empty">조건에 맞는 꽃이 없습니다.</div>';
+  box.querySelectorAll('[data-key]').forEach(b=>b.onclick=()=>deleteFlower(b.dataset.key));
+}
+function selectEditFlower(key){
+  const f=getFlower(key);if(!f)return;
+  document.getElementById('editKey').value=f.key;
+  document.getElementById('editGrade').value=f.grade;
+  document.getElementById('editCategory').value=f.category||'';
+  document.getElementById('editName').value=f.name||'';
+  document.getElementById('editGuildScore').value=f.guildScore==null?'':f.guildScore;
+  document.getElementById('editAcquire').value=f.acquire||'';
+  document.getElementById('editNote').value=f.note||'';
+  document.getElementById('editImage').value='';
+  document.getElementById('editPreview').src=f.image||'';
+  document.getElementById('editSelectedName').textContent=f.listName||f.name||'';
+  document.getElementById('editSelectedMeta').textContent=`${f.grade} · ${f.hasR2Image?'R2 이미지':'프로젝트 기본 이미지'}`;
+  document.getElementById('editSelectedCard').classList.add('show');
+  document.getElementById('editFormCard').hidden=false;
+  document.getElementById('editStatus').textContent='';
+  document.getElementById('editFormCard').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+document.querySelectorAll('.nav-tab').forEach(btn=>btn.onclick=()=>{
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.toggle('active',b===btn));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===`panel-${btn.dataset.panel}`));
+});
+
+document.getElementById('addForm').addEventListener('submit',async e=>{
+  e.preventDefault();if(!ready)return;
+  const status=document.getElementById('addStatus'),submit=document.getElementById('submitAdd');
+  const grade=document.getElementById('addGrade').value,category=document.getElementById('addCategory').value.trim(),name=document.getElementById('addName').value.trim();
+  const listName=category?`[${category}] ${name}`:name;
+  if(flowers.some(f=>f.grade===grade&&f.listName===listName)){status.textContent='같은 등급에 동일한 [분류] 꽃 이름이 이미 있습니다.';status.className='status error';return}
+  submit.disabled=true;status.textContent='이미지를 WebP로 변환하고 등록 중입니다…';status.className='status';
+  try{
+    const webp=await imageToWebP(document.getElementById('addImage').files[0]);
+    const form=new FormData();form.append('grade',grade);form.append('category',category);form.append('name',name);form.append('guildScore',document.getElementById('addGuildScore').value.trim());form.append('acquire',document.getElementById('addAcquire').value.trim());form.append('note',document.getElementById('addNote').value.trim());form.append('image',webp,'flower.webp');
+    const r=await fetch(FLOWERS_API,{method:'POST',body:form});const p=await r.json().catch(()=>({}));if(!r.ok)throw new Error(p.error||`등록 실패 (${r.status})`);
+    status.textContent='등록되었습니다. 전체 꽃 도감과 업데이트 내역에 자동 반영됩니다.';status.className='status ok';e.target.reset();await refresh();
+  }catch(err){status.textContent=err.message||'등록 중 오류가 발생했습니다.';status.className='status error'}finally{submit.disabled=false}
+});
+
+document.getElementById('editForm').addEventListener('submit',async e=>{
+  e.preventDefault();const key=document.getElementById('editKey').value;if(!key)return;
+  const status=document.getElementById('editStatus'),submit=document.getElementById('submitEdit'),grade=document.getElementById('editGrade').value,category=document.getElementById('editCategory').value.trim(),name=document.getElementById('editName').value.trim(),listName=category?`[${category}] ${name}`:name;
+  if(flowers.some(f=>f.key!==key&&f.grade===grade&&f.listName===listName)){status.textContent='같은 등급에 동일한 [분류] 꽃 이름이 이미 있습니다.';status.className='status error';return}
+  submit.disabled=true;status.textContent='꽃 정보를 저장 중입니다…';status.className='status';
+  try{
+    const form=new FormData();form.append('key',key);form.append('grade',grade);form.append('category',category);form.append('name',name);form.append('guildScore',document.getElementById('editGuildScore').value.trim());form.append('acquire',document.getElementById('editAcquire').value.trim());form.append('note',document.getElementById('editNote').value.trim());
+    const file=document.getElementById('editImage').files[0];if(file){status.textContent='새 이미지를 WebP로 변환하고 저장 중입니다…';form.append('image',await imageToWebP(file),'flower.webp')}
+    const r=await fetch(FLOWERS_API,{method:'PUT',body:form});const p=await r.json().catch(()=>({}));if(!r.ok)throw new Error(p.error||`수정 실패 (${r.status})`);
+    status.textContent='수정되었습니다. 전체 꽃 도감과 업데이트 내역에 자동 반영됩니다.';status.className='status ok';await refresh();selectEditFlower(key);
+  }catch(err){status.textContent=err.message||'수정 중 오류가 발생했습니다.';status.className='status error'}finally{submit.disabled=false}
+});
+
+async function deleteFlower(key){
+  const f=getFlower(key);if(!f)return;
+  if(!confirm(`'${f.listName||f.name}' 꽃을 삭제하시겠습니까?\\nD1 데이터와 R2 이미지가 있다면 함께 삭제됩니다.`))return;
+  try{
+    const r=await fetch(`${FLOWERS_API}?key=${encodeURIComponent(key)}`,{method:'DELETE'});const p=await r.json().catch(()=>({}));if(!r.ok)throw new Error(p.error||`삭제 실패 (${r.status})`);
+    await refresh();
+  }catch(err){alert(err.message||'삭제 중 오류가 발생했습니다.')}
+}
+
+['editGradeFilter','editSearch'].forEach(id=>document.getElementById(id).addEventListener(id.includes('Search')?'input':'change',renderEditList));
+['deleteGradeFilter','deleteSearch'].forEach(id=>document.getElementById(id).addEventListener(id.includes('Search')?'input':'change',renderDeleteList));
+document.getElementById('editClear').onclick=()=>{document.getElementById('editGradeFilter').value='ALL';document.getElementById('editSearch').value='';renderEditList()};
+document.getElementById('deleteClear').onclick=()=>{document.getElementById('deleteGradeFilter').value='ALL';document.getElementById('deleteSearch').value='';renderDeleteList()};
+
+(async()=>{try{await ensureSeed();await refresh()}catch(err){console.error(err);alert(`꽃 관리 데이터를 불러오지 못했습니다.\\n${err.message||err}`)}})();
+</script>
+<script>if('serviceWorker'in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}))}</script>
+</body>
+</html>

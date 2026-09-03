@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v37-filter-colors';
+const CACHE_NAME = 'lemon-demo-v38-guide-flower-management';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -9,6 +9,7 @@ const APP_SHELL = [
   '/page5.html',
   '/page6.html',
   '/page7.html',
+  '/page8.html',
   '/flower-data-all.js',
   '/images/branding/lemon-favicon.png',
   '/images/banners/lemon-banner-pc.png',

@@ -232,7 +232,7 @@
       .flower-detail-image { width:min(180px, 100%); }
     }
   
-    /* demo_v37: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
+    /* demo_v38: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
     .flower-grid {
       grid-template-columns:repeat(2,minmax(0,1fr));
       gap:14px;
@@ -410,7 +410,7 @@
     }
 
   
-    /* demo_v37 통합 도감 보완 */
+    /* demo_v38 통합 도감 보완 */
     .guild-check-row{position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:7px;}
     .guild-check-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
     .guild-manage-link{padding:5px 9px;border:1px solid #aaa;border-radius:6px;background:#fff;color:#555;text-decoration:none;font-size:.72rem;font-weight:700;}
@@ -474,7 +474,7 @@
     }
 
   
-    /* demo_v37: 선택 길드원 보유 수량 / 필터 안내 / 카드 가독성 */
+    /* demo_v38: 선택 길드원 보유 수량 / 필터 안내 / 카드 가독성 */
     .member-ownership-filter-wrap{
       display:grid;
       gap:5px;
@@ -540,7 +540,7 @@
     }
 
   
-    /* demo_v37: 보유/미보유 필터 색상 */
+    /* demo_v38: 보유/미보유 필터 색상 */
     .ownership-filter-btn[data-ownership-filter="OWNED"]{
       background:#e4f4df;
       border-color:#76946b;
@@ -581,6 +581,55 @@
       background:#f5f5f5 !important;
     }
 
+  
+    /* demo_v38: 통합 도감 헤더 / 가이드 / 관리 버튼 */
+    .catalog-title-block{min-width:0;}
+    .catalog-title-row{display:inline-flex;align-items:center;gap:6px;}
+    .catalog-guide-btn{
+      width:42px;height:42px;padding:0;border:0;outline:0;background:transparent;
+      cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+      flex:0 0 auto;transition:transform .15s ease,filter .15s ease;
+    }
+    .catalog-guide-btn:hover{transform:translateY(-1px);filter:brightness(.72);}
+    .catalog-guide-btn:active{transform:scale(.96);filter:brightness(.55);}
+    .catalog-guide-btn img{width:100%;height:100%;object-fit:contain;display:block;}
+    .subtitle{font-size:.74rem !important;line-height:1.45;margin-top:1px !important;}
+    .flower-manage-btn{
+      width:42px;height:42px;display:inline-flex;align-items:center;justify-content:center;
+      border:1px solid #bbb;border-radius:8px;background:#fff;color:#555;
+      text-decoration:none;font-size:1.25rem;line-height:1;transition:.15s;
+    }
+    .flower-manage-btn:hover{background:#f5f5f5;transform:translateY(-1px);}
+    .detail-actions{display:none !important;}
+
+    .guide-modal-overlay{
+      display:none;position:fixed;inset:0;z-index:10050;background:rgba(0,0,0,.42);
+      align-items:center;justify-content:center;padding:18px;box-sizing:border-box;
+    }
+    .guide-modal-overlay.active{display:flex;}
+    .guide-modal-box{
+      width:min(690px,100%);max-height:min(82vh,780px);overflow-y:auto;background:#fff;
+      border:1px solid #d7d7d7;border-radius:12px;box-shadow:0 12px 36px rgba(0,0,0,.18);
+      padding:24px;box-sizing:border-box;color:#222;
+    }
+    .guide-modal-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px;}
+    .guide-modal-top h2{margin:0;font-size:1.25rem;}
+    .guide-modal-close{border:0;background:transparent;font-size:1.6rem;line-height:1;cursor:pointer;padding:4px 7px;}
+    .guide-step{padding:11px 0;border-top:1px solid #eee;line-height:1.65;font-size:.9rem;}
+    .guide-step:first-of-type{border-top:0;padding-top:0;}
+    .guide-step b{color:#423638;}
+    .guide-tip{margin-top:12px;padding:12px 14px;background:#fff8e8;border-radius:8px;line-height:1.6;font-size:.86rem;}
+    @media(max-width:520px){
+      .catalog-title-row{gap:3px;}
+      .catalog-guide-btn{width:34px;height:34px;}
+      .subtitle{font-size:.62rem !important;}
+      .flower-manage-btn{width:36px;height:36px;font-size:1.05rem;}
+      .guide-modal-box{padding:17px;max-height:84vh;}
+      .guide-modal-top h2{font-size:1.05rem;}
+      .guide-step{font-size:.78rem;}
+      .guide-tip{font-size:.75rem;}
+    }
+
   </style>
 
     <link rel="manifest" href="/manifest.webmanifest">
@@ -596,14 +645,18 @@
     <div class="header">
       <div class="header-left">
         <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기"><img src="images/ui/back-button.png" alt="뒤로가기" class="back-icon"></a>
-        <div>
-          <h1 style="margin:0; font-size:1.5rem;">🌷전체 꽃 도감🌷</h1>
+        <div class="catalog-title-block">
+          <div class="catalog-title-row">
+            <h1 style="margin:0; font-size:1.5rem;">🌷전체 꽃 도감🌷</h1>
+            <button type="button" class="catalog-guide-btn" id="openCatalogGuide" title="전체 꽃 도감 가이드" aria-label="전체 꽃 도감 가이드 열기">
+              <img src="images/ui/guide-default.png" alt="가이드">
+            </button>
+          </div>
           <p class="subtitle">꽃 이미지·상세 정보와 길드 보유 현황을 한 화면에서 확인할 수 있습니다.</p>
         </div>
       </div>
       <div class="header-actions">
-        <button id="openAddFlowerModal" class="btn-add-flower" type="button">＋ 꽃 추가</button>
-        <button id="openDeleteFlowerModal" class="btn-delete-flower" type="button" aria-label="등록 꽃 삭제" title="등록 꽃 삭제">🗑️</button>
+        <a href="page8.html" class="flower-manage-btn" title="꽃 관리" aria-label="꽃 관리 페이지 열기">⚙️</a>
       </div>
     </div>
 
@@ -652,6 +705,25 @@
     </div>
 
     <div id="flowerGrid" class="flower-grid"></div>
+  </div>
+
+
+  <!-- 전체 꽃 도감 사용 가이드 -->
+  <div id="catalogGuideModal" class="guide-modal-overlay" aria-hidden="true">
+    <div class="guide-modal-box" role="dialog" aria-modal="true" aria-labelledby="catalogGuideTitle">
+      <div class="guide-modal-top">
+        <h2 id="catalogGuideTitle">🌷 전체 꽃 도감 사용 가이드 🌷</h2>
+        <button type="button" class="guide-modal-close" id="closeCatalogGuide" aria-label="가이드 닫기">×</button>
+      </div>
+      <div class="guide-step"><b>① 체크 대상 길드원 선택</b><br>상단의 <b>👤 체크 대상 길드원</b>에서 자신의 닉네임을 선택해주세요. 선택한 길드원의 보유 체크 상태가 각 꽃 카드에 표시됩니다.</div>
+      <div class="guide-step"><b>② 꽃 보유 체크 / 해제</b><br>꽃 카드의 <b>✓ 보유 / □ 보유</b> 버튼으로 선택한 길드원의 보유 여부를 바로 변경할 수 있습니다. 체크 내용은 길드 공용 데이터로 저장됩니다.</div>
+      <div class="guide-step"><b>③ 보유한 꽃만 빠르게 보기</b><br>길드원을 선택하면 <b>✓ 보유만</b>과 <b>□ 미보유만</b> 버튼이 나타납니다. 같은 버튼을 한 번 더 누르면 필터가 해제되어 전체 꽃이 다시 표시됩니다.</div>
+      <div class="guide-step"><b>④ 등급별 보유 수 확인</b><br>길드원을 선택한 상태에서 N / R / SR / SSR / UR 등급을 누르면 현재 등급의 <b>보유 꽃 수 / 전체 꽃 수</b>를 바로 확인할 수 있습니다.</div>
+      <div class="guide-step"><b>⑤ 길드 전체 보유 현황 확인</b><br>각 꽃 카드의 <b>👥 길드 보유 현황</b>에는 현재 그 꽃을 보유한 길드원이 표시됩니다. 인원이 많으면 <b>더보기</b>를 눌러 전체 명단을 펼칠 수 있습니다.</div>
+      <div class="guide-step"><b>⑥ 꽃 검색과 상세 정보</b><br>꽃 이름 검색과 등급 필터를 함께 사용할 수 있습니다. <b>정보 보기</b>에서는 분류, 길드전 점수, 획득 방법, 비고를 확인할 수 있습니다.</div>
+      <div class="guide-step"><b>⑦ 길드원 정보 관리</b><br>상단의 <b>⚙️ 길드원 관리</b>에서 길드원 추가, 직위·닉네임 수정, 삭제를 할 수 있습니다.</div>
+      <div class="guide-tip">⚠️ 보유 체크는 길드원 모두에게 공유됩니다. 꽃을 체크하기 전에 선택된 닉네임이 맞는지 확인해주세요. 잘못 체크했다면 같은 꽃의 보유 버튼을 다시 눌러 해제하면 됩니다.</div>
+    </div>
   </div>
 
   <div class="modal-overlay" id="flowerDetailModal" aria-hidden="true">
@@ -736,7 +808,7 @@
     const masterFlowers = window.FLOWER_MASTER_DATA || [];
     const FLOWERS_API = '/api/flowers';
     const GUILD_STATE_API = '/api/guild-state';
-    const BASE_SEED_VERSION = 'demo_v37_base_356';
+    const BASE_SEED_VERSION = 'demo_v38_base_356';
     let remoteFlowers = [];
     let d1Ready = false;
     let activeGrade = 'ALL';
@@ -1423,6 +1495,22 @@
       if (!guildMemberPicker.contains(event.target)) closeGuildMemberPicker();
     });
 
+    const catalogGuideModal = document.getElementById('catalogGuideModal');
+    document.getElementById('openCatalogGuide').addEventListener('click', () => {
+      catalogGuideModal.classList.add('active');
+      catalogGuideModal.setAttribute('aria-hidden','false');
+    });
+    document.getElementById('closeCatalogGuide').addEventListener('click', () => {
+      catalogGuideModal.classList.remove('active');
+      catalogGuideModal.setAttribute('aria-hidden','true');
+    });
+    catalogGuideModal.addEventListener('click', event => {
+      if (event.target === catalogGuideModal) {
+        catalogGuideModal.classList.remove('active');
+        catalogGuideModal.setAttribute('aria-hidden','true');
+      }
+    });
+
     searchInput.addEventListener('input', renderFlowers);
     document.getElementById('clearSearch').addEventListener('click', () => {
       searchInput.value=''; activeGrade='ALL';
@@ -1431,17 +1519,21 @@
     });
     document.getElementById('closeModal').addEventListener('click', closeDetail);
     modal.addEventListener('click', e => { if (e.target === modal) closeDetail(); });
-    document.getElementById('openEditFlowerModal').addEventListener('click', () => openEditFlowers());
-    document.getElementById('openAddFlowerModal').addEventListener('click', openAddFlowers);
+    document.getElementById('openEditFlowerModal')?.addEventListener('click', () => openEditFlowers());
+    document.getElementById('openAddFlowerModal')?.addEventListener('click', openAddFlowers);
     document.getElementById('closeAddFlowerModal').addEventListener('click', closeAddFlowers);
     addFlowerModal.addEventListener('click', e => { if (e.target === addFlowerModal) closeAddFlowers(); });
     document.getElementById('closeEditFlowerModal').addEventListener('click', closeEditFlowers);
     editFlowerModal.addEventListener('click', e => { if (e.target === editFlowerModal) closeEditFlowers(); });
-    document.getElementById('openDeleteFlowerModal').addEventListener('click', openDeleteFlowers);
+    document.getElementById('openDeleteFlowerModal')?.addEventListener('click', openDeleteFlowers);
     document.getElementById('closeDeleteFlowerModal').addEventListener('click', closeDeleteFlowers);
     deleteFlowerModal.addEventListener('click', e => { if (e.target === deleteFlowerModal) closeDeleteFlowers(); });
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') { closeDetail(); closeAddFlowers(); closeEditFlowers(); closeDeleteFlowers(); }
+      if (e.key === 'Escape') {
+        closeDetail(); closeAddFlowers(); closeEditFlowers(); closeDeleteFlowers();
+        catalogGuideModal.classList.remove('active');
+        catalogGuideModal.setAttribute('aria-hidden','true');
+      }
     });
 
     async function initializeFlowers() {
