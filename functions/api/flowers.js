@@ -4,7 +4,7 @@ const JSON_HEADERS = {
 };
 
 const GRADES = new Set(['N', 'R', 'SR', 'SSR', 'UR']);
-const BASE_SEED_VERSION = 'demo_v35_base_356';
+const BASE_SEED_VERSION = 'demo_v36_base_356';
 
 async function ensureTables(db) {
   await db.prepare(`

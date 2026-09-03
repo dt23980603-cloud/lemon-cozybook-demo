@@ -232,7 +232,7 @@
       .flower-detail-image { width:min(180px, 100%); }
     }
   
-    /* demo_v35: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
+    /* demo_v36: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
     .flower-grid {
       grid-template-columns:repeat(2,minmax(0,1fr));
       gap:14px;
@@ -410,7 +410,7 @@
     }
 
   
-    /* demo_v35 통합 도감 보완 */
+    /* demo_v36 통합 도감 보완 */
     .guild-check-row{position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:7px;}
     .guild-check-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
     .guild-manage-link{padding:5px 9px;border:1px solid #aaa;border-radius:6px;background:#fff;color:#555;text-decoration:none;font-size:.72rem;font-weight:700;}
@@ -473,6 +473,72 @@
       .ownership-filter-btn{min-height:32px;padding:5px 7px;font-size:.67rem;}
     }
 
+  
+    /* demo_v36: 선택 길드원 보유 수량 / 필터 안내 / 카드 가독성 */
+    .member-ownership-filter-wrap{
+      display:grid;
+      gap:5px;
+      width:100%;
+    }
+    .member-ownership-filter-wrap[hidden]{display:none!important;}
+    .ownership-filter-help{
+      color:#777;
+      font-size:.68rem;
+      line-height:1.45;
+      text-align:left;
+      padding:0 2px;
+    }
+    .selected-grade-ownership{
+      margin-left:auto;
+      padding:5px 9px;
+      border:1px solid #d1c378;
+      border-radius:7px;
+      background:#fff9db;
+      color:#4f471f;
+      font-size:.8rem;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .selected-grade-ownership[hidden]{display:none!important;}
+    .guild-owner-tag{
+      font-weight:700 !important;
+    }
+
+    /* 꽃 사진을 이미지 영역의 정중앙에 고정 */
+    .image-wrap{
+      align-items:center !important;
+      justify-content:center !important;
+    }
+    .grade-image-crop{
+      margin:auto !important;
+      display:flex !important;
+      align-items:center !important;
+      justify-content:center !important;
+    }
+    .grade-image-crop .flower-image,
+    .flower-image{
+      display:block;
+      margin:auto;
+      object-position:center center;
+    }
+
+    @media(max-width:620px){
+      .ownership-filter-help{
+        font-size:.6rem;
+        text-align:center;
+      }
+      .result-info{
+        align-items:flex-start;
+        flex-wrap:wrap;
+        gap:6px;
+      }
+      .selected-grade-ownership{
+        margin-left:0;
+        padding:4px 7px;
+        font-size:.68rem;
+      }
+    }
+
   </style>
 
     <link rel="manifest" href="/manifest.webmanifest">
@@ -512,9 +578,12 @@
           </button>
           <div id="guildMemberPickerMenu" class="guild-member-picker-menu" role="listbox" aria-label="체크 대상 길드원"></div>
         </div>
-        <div id="memberOwnershipFilters" class="member-ownership-filters" hidden>
-          <button type="button" class="ownership-filter-btn" data-ownership-filter="OWNED">✓ 보유만</button>
-          <button type="button" class="ownership-filter-btn" data-ownership-filter="MISSING">□ 미보유만</button>
+        <div id="memberOwnershipFilters" class="member-ownership-filter-wrap" hidden>
+          <div class="member-ownership-filters">
+            <button type="button" class="ownership-filter-btn" data-ownership-filter="OWNED">✓ 보유만</button>
+            <button type="button" class="ownership-filter-btn" data-ownership-filter="MISSING">□ 미보유만</button>
+          </div>
+          <div class="ownership-filter-help">※ 두 버튼이 모두 해제된 상태에서는 전체 꽃이 다시 표시됩니다.</div>
         </div>
         <select id="guildMemberSelect" class="guild-member-select-native" aria-hidden="true" tabindex="-1">
           <option value="">길드원을 선택해주세요</option>
@@ -537,7 +606,7 @@
 
     <div class="result-info">
       <span id="resultText">총 69개의 꽃</span>
-      <span>※ D1의 공용 꽃 데이터를 기준으로 모든 길드원에게 동일하게 표시됩니다.</span>
+      <span id="selectedGradeOwnership" class="selected-grade-ownership" hidden></span>
     </div>
 
     <div id="flowerGrid" class="flower-grid"></div>
@@ -625,7 +694,7 @@
     const masterFlowers = window.FLOWER_MASTER_DATA || [];
     const FLOWERS_API = '/api/flowers';
     const GUILD_STATE_API = '/api/guild-state';
-    const BASE_SEED_VERSION = 'demo_v35_base_356';
+    const BASE_SEED_VERSION = 'demo_v36_base_356';
     let remoteFlowers = [];
     let d1Ready = false;
     let activeGrade = 'ALL';
@@ -662,6 +731,7 @@
     const guildMemberPickerValue = document.getElementById('guildMemberPickerValue');
     const guildMemberPickerMenu = document.getElementById('guildMemberPickerMenu');
     const memberOwnershipFilters = document.getElementById('memberOwnershipFilters');
+    const selectedGradeOwnership = document.getElementById('selectedGradeOwnership');
 
     function escapeHtml(value) {
       return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
@@ -892,6 +962,29 @@
       });
     }
 
+    function updateSelectedGradeOwnership(flowers) {
+      const selected = getSelectedGuildMember();
+
+      if (!selected) {
+        selectedGradeOwnership.hidden = true;
+        selectedGradeOwnership.textContent = '';
+        return;
+      }
+
+      const gradeFlowers = activeGrade === 'ALL'
+        ? flowers
+        : flowers.filter(flower => flower.grade === activeGrade);
+
+      const ownedCount = gradeFlowers.filter(flower =>
+        Boolean(guildChecks[getGuildFlowerCheckKey(flower.key, selected.id)])
+      ).length;
+
+      const gradeLabel = activeGrade === 'ALL' ? '전체 등급' : `${activeGrade} 등급`;
+      selectedGradeOwnership.textContent =
+        `${selected.name} · ${gradeLabel} 보유 ${ownedCount} / ${gradeFlowers.length}`;
+      selectedGradeOwnership.hidden = false;
+    }
+
     function renderFlowers() {
       const flowers = getAllFlowers();
       const keyword = searchInput.value.trim().toLocaleLowerCase('ko-KR');
@@ -915,6 +1008,7 @@
         ? `${selected.name} · 총 ${filtered.length}개의 꽃${filterLabel}`
         : `총 ${filtered.length}개의 꽃`;
       updateGradeCounts(flowers);
+      updateSelectedGradeOwnership(flowers);
       if (!filtered.length) {
         grid.innerHTML = '<div class="empty-result">조건에 맞는 꽃이 없습니다.</div>';
         return;
