@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v36-grade-owned-count';
+const CACHE_NAME = 'lemon-demo-v37-filter-colors';
 const APP_SHELL = [
   '/',
   '/index.html',

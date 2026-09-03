@@ -39,7 +39,7 @@ body{margin:8px}.card{padding:12px}h1{font-size:1.25rem}
 <section class="card"><h2 class="title">📖 길드원 목록 <span id="memberCount"></span></h2><div id="memberList" class="member-list"></div></section>
 </main>
 <div id="editModal" class="modal"><div class="dialog"><div class="dialog-head"><h2>✏️ 수정</h2><button id="editClose" class="close">×</button></div><div class="edit-grid"><label>직위<select id="editRole"><option>길드장</option><option>부길드장</option><option>임원</option><option>정예</option><option>멤버</option></select></label><label>닉네임<input id="editName" maxlength="40"></label></div><div class="dialog-actions"><button id="editCancel">취소</button><button id="editSave" class="save">저장</button></div></div></div>
-<div id="site-version">demo_v36</div>
+<div id="site-version">demo_v37</div>
 <script>
 const API='/api/guild-state';const roleOrder={'길드장':1,'부길드장':2,'임원':3,'정예':4,'멤버':5};let members=[],checks={},flowerOptions={},editMemberId='';
 const memberList=document.getElementById('memberList'),memberCount=document.getElementById('memberCount'),statusEl=document.getElementById('status'),addRole=document.getElementById('addRole'),addName=document.getElementById('addName'),editModal=document.getElementById('editModal'),editRole=document.getElementById('editRole'),editName=document.getElementById('editName');
