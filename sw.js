@@ -1,8 +1,7 @@
-const CACHE_NAME = 'lemon-demo-v38-guide-flower-management';
+const CACHE_NAME = 'lemon-demo-v39-page-reorder';
 const APP_SHELL = [
   '/',
   '/index.html',
-  '/page1.html',
   '/page2.html',
   '/page3.html',
   '/page4.html',

@@ -1,1245 +1,262 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>경쟁전 임무 계산 | 레몬</title>
-  <link rel="icon" type="image/png" href="images/branding/lemon-favicon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    *, body, input, button, select { font-family:'Gowun Batang', serif; box-sizing:border-box; }
-    body { margin:15px; background:#f9f9f9; color:#333; }
-    button, select, input { color:#333; }
-    .page { width:min(1080px, 100%); margin:0 auto; }
-    .header { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
-    .nav-btn-home { display:inline-flex; width:50px; height:50px; align-items:center; justify-content:center; text-decoration:none; flex:0 0 auto; }
-    .back-icon { width:100%; height:100%; object-fit:contain; display:block; }
-    .header-title h1 { margin:0; font-size:1.5rem; }
-    .subtitle { margin:4px 0 0; color:#777; font-size:.86rem; line-height:1.5; }
+    <meta charset="UTF-8">
+    <title>코지 공략모음 | 레몬</title>
+    <link rel="icon" type="image/png" href="images/branding/lemon-favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        *, body, input, button, select, textarea {
+            font-family: 'Gowun Batang', serif;
+        }
 
-    .card { background:#fff; border:1px solid #ccc; border-radius:10px; box-shadow:2px 2px 5px rgba(0,0,0,.05); padding:18px; margin-bottom:14px; }
+        body {
+            background-color: #f9f9f9;
+            margin: 15px;
+            color: #333;
+        }
 
-    .guide-open-btn {
-      margin-left:auto; min-height:38px; padding:7px 12px; border:1px solid #8c7a28;
-      border-radius:7px; background:#fff9db; color:#5d511d; font-size:.82rem; font-weight:700;
-      cursor:pointer; white-space:nowrap;
-    }
-    .guide-open-btn:hover { background:#fff1a8; }
-    .guide-modal {
-      position:fixed; inset:0; z-index:1000; display:none; align-items:center; justify-content:center;
-      padding:18px; background:rgba(0,0,0,.38);
-    }
-    .guide-modal.show { display:flex; }
-    .guide-dialog {
-      width:min(620px, 100%); max-height:min(78vh, 720px); overflow:auto;
-      background:#fff; border:1px solid #8c7a28; border-radius:12px; padding:18px;
-      box-shadow:0 10px 30px rgba(0,0,0,.2);
-    }
-    .guide-dialog-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
-    .guide-dialog-head h2 { margin:0; font-size:1.05rem; }
-    .guide-close-btn {
-      width:34px; height:34px; border:1px solid #aaa; border-radius:50%; background:#fff;
-      font-size:1.05rem; cursor:pointer;
-    }
-    .guide-dialog p { margin:6px 0; line-height:1.6; font-size:.86rem; }
+        .container-full {
+            width: 100%;
+            box-sizing: border-box;
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+        }
 
-    .section-title { margin:0 0 12px; font-size:1.02rem; font-weight:700; }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+        }
 
-    /* 계산 조건: 1열 전체 / 2열 2분할 / 3열 전체 / 4열 2분할 */
-    .calc-condition-layout {
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-    }
-    .calc-row-full {
-      width:100%;
-    }
-    .calc-row-two {
-      display:grid;
-      grid-template-columns:repeat(2, minmax(0,1fr));
-      gap:12px;
-    }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-    .form-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; }
-    .field { display:flex; flex-direction:column; gap:6px; }
-    .field.full { grid-column:1 / -1; }
-    .field label { font-size:.82rem; font-weight:700; color:#555; }
-    .field-hint { color:#888; font-size:.72rem; line-height:1.4; }
-    .field select, .field input { width:100%; min-height:43px; padding:9px 11px; border:1px solid #aaa; border-radius:7px; background:#fff; font-size:.95rem; }
-    .field select:focus, .field input:focus { outline:2px solid #f3df76; outline-offset:1px; border-color:#75682c; }
+        .nav-btn-home {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
 
-    .extra-mission-toggle {
-      display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:43px;
-      padding:9px 11px; border:1px solid #aaa; border-radius:7px; background:#fff;
-      cursor:pointer; user-select:none;
-    }
-    .extra-mission-toggle:hover { background:#fff9db; }
-    .extra-mission-toggle input { width:18px; height:18px; margin:0; flex:0 0 auto; accent-color:#8c7a28; }
-    .extra-mission-toggle .toggle-copy { flex:1; min-width:0; }
-    .extra-mission-toggle .toggle-title { display:block; font-size:.86rem; font-weight:700; }
-    .extra-mission-toggle .toggle-sub { display:block; margin-top:2px; color:#777; font-size:.72rem; line-height:1.35; }
+        .nav-btn-home:hover {
+            background-color: #fff0f0;
+            transform: translateY(-2px);
+        }
 
-    .multiplier-wrap { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
-    .multiplier-btn { min-height:43px; border:1px solid #999; border-radius:7px; background:#fff; font-weight:700; cursor:pointer; transition:.15s; }
-    .multiplier-btn:hover { background:#fff9db; }
-    .multiplier-btn.active { background:#fff0a8; border-color:#594e1a; box-shadow:inset 0 -3px 0 #594e1a; }
+        .guide-card {
+            background-color: #f8f9fa;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 15px;
+        }
 
-    .flower-options-box {
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-      min-height:48px; padding:9px 11px; border:1px solid #aaa; border-radius:7px; background:#fff;
-    }
-    .flower-options-copy { min-width:0; }
-    .flower-options-copy strong { display:block; font-size:.86rem; }
-    .flower-options-copy span { display:block; margin-top:2px; color:#777; font-size:.72rem; line-height:1.4; }
-    .option-config-btn {
-      flex:0 0 auto; min-height:36px; padding:7px 12px; border:1px solid #8c7a28; border-radius:7px;
-      background:#fff9db; color:#5d511d; font-size:.8rem; font-weight:700; cursor:pointer;
-    }
-    .option-config-btn:hover { background:#fff1a8; }
-    .option-config-btn:disabled { opacity:.5; cursor:not-allowed; }
+        .guide-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
 
-    .option-modal {
-      position:fixed; inset:0; z-index:1100; display:none; align-items:center; justify-content:center;
-      padding:18px; background:rgba(0,0,0,.42);
-    }
-    .option-modal.show { display:flex; }
-    .option-dialog {
-      width:min(760px, 100%); max-height:min(86vh, 820px); display:flex; flex-direction:column;
-      background:#fff; border:1px solid #8c7a28; border-radius:12px; overflow:hidden;
-      box-shadow:0 12px 34px rgba(0,0,0,.23);
-    }
-    .option-dialog-head {
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-      padding:16px 18px 12px; border-bottom:1px solid #eee;
-    }
-    .option-dialog-head h2 { margin:0; font-size:1.05rem; }
-    .option-close-btn {
-      width:34px; height:34px; border:1px solid #aaa; border-radius:50%; background:#fff;
-      font-size:1.05rem; cursor:pointer;
-    }
-    .option-toolbar { padding:12px 18px; border-bottom:1px solid #eee; background:#fffdf3; }
-    .option-grade-filters { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:9px; }
-    .option-filter-btn {
-      min-height:32px; padding:5px 10px; border:1px solid #bbb; border-radius:16px;
-      background:#fff; font-size:.76rem; font-weight:700; cursor:pointer;
-    }
-    .option-filter-btn.active { background:#fff0a8; border-color:#6d6024; }
-    .option-search {
-      width:100%; min-height:39px; padding:8px 10px; border:1px solid #aaa; border-radius:7px;
-      background:#fff; font-size:.86rem;
-    }
-    .option-list {
-      flex:1; min-height:180px; overflow:auto; padding:8px 18px 14px;
-    }
-    .option-row {
-      display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:12px;
-      padding:10px 2px; border-bottom:1px solid #eee;
-    }
-    .option-row:last-child { border-bottom:0; }
-    .option-flower-main { min-width:0; }
-    .option-flower-name { display:flex; align-items:center; gap:7px; min-width:0; font-size:.86rem; font-weight:700; }
-    .option-flower-name .name-text { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-    .option-grade {
-      display:inline-flex; min-width:38px; justify-content:center; padding:3px 7px; border:1px solid #bbb;
-      border-radius:13px; background:#fafafa; font-size:.7rem; font-weight:700;
-    }
-    .option-flower-meta { margin-top:4px; color:#777; font-size:.72rem; }
-    .option-select {
-      min-width:92px; min-height:38px; padding:7px 9px; border:1px solid #999; border-radius:7px;
-      background:#fff; font-size:.86rem; font-weight:700;
-    }
-    .option-empty { padding:28px 10px; text-align:center; color:#888; font-size:.84rem; }
-    .option-dialog-foot {
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-      padding:12px 18px; border-top:1px solid #eee; background:#fafafa;
-    }
-    .option-save-status { color:#777; font-size:.76rem; }
-    .option-foot-actions { display:flex; gap:8px; }
-    .option-secondary-btn, .option-save-btn {
-      min-height:38px; padding:7px 14px; border-radius:7px; font-size:.82rem; font-weight:700; cursor:pointer;
-    }
-    .option-secondary-btn { border:1px solid #aaa; background:#fff; }
-    .option-save-btn { border:1px solid #685b1f; background:#fff0a8; }
-    .option-save-btn:disabled { opacity:.55; cursor:not-allowed; }
+        .guide-title {
+            font-weight: bold;
+            font-size: 1.05rem;
+        }
 
-    .member-status { margin-top:10px; min-height:24px; padding:8px 10px; background:#fafafa; border:1px solid #e4e4e4; border-radius:7px; color:#666; font-size:.8rem; line-height:1.5; }
-    .member-status.error { background:#fff2f2; border-color:#e0a3a3; color:#9b3030; }
+        .guide-count {
+            font-size: 0.85rem;
+            color: #666;
+        }
 
-    .action-row { margin-top:14px; display:flex; justify-content:flex-end; }
-    .calc-btn { min-width:160px; min-height:45px; padding:10px 18px; border:1px solid #555; border-radius:7px; background:#fff0f0; font-size:.95rem; font-weight:700; cursor:pointer; }
-    .calc-btn:hover { background:#fae0e0; transform:translateY(-1px); }
-    .calc-btn:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+        .table-wrapper {
+            overflow-x: auto;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: #fff;
+        }
 
-    .result-card { display:none; }
-    .result-card.show { display:block; }
-    .result-head { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:12px; }
-    .result-head h2 { margin:0; font-size:1.12rem; }
-    .status-badge { display:inline-flex; align-items:center; min-height:27px; padding:3px 9px; border-radius:14px; border:1px solid #aaa; background:#f5f5f5; font-size:.75rem; font-weight:700; white-space:nowrap; }
-    .status-badge.ok { background:#edf8ed; border-color:#83ae83; color:#356035; }
-    .status-badge.warn { background:#fff5df; border-color:#d4a858; color:#7c591a; }
-    .status-badge.bad { background:#fff0f0; border-color:#cf8585; color:#8d3030; }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #fff;
+            min-width: 720px;
+        }
 
-    .summary-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-bottom:14px; }
-    .summary-item { border:1.5px solid #c7c7c7; border-radius:8px; padding:10px; background:#fafafa; text-align:center; }
-    .summary-label { display:block; color:#777; font-size:.7rem; margin-bottom:3px; }
-    .summary-value { display:block; font-size:1rem; font-weight:700; word-break:keep-all; }
+        th, td {
+            border-right: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            padding: 11px 12px;
+            font-size: 0.92rem;
+            vertical-align: middle;
+        }
 
-    .plan-title { margin:14px 0 8px; font-size:.9rem; font-weight:700; }
-    .plan-table-wrap { overflow-x:auto; border:1px solid #ddd; border-radius:8px; }
-    table { width:100%; border-collapse:collapse; background:#fff; }
-    th, td { padding:9px 10px; border-bottom:1px solid #e4e4e4; text-align:center; font-size:.82rem; vertical-align:middle; }
-    th { background:#fff9db; font-weight:700; }
-    tr:last-child td { border-bottom:0; }
-    .score-pill { display:inline-flex; align-items:center; justify-content:center; min-width:60px; padding:4px 8px; border-radius:14px; background:#f4f4f4; border:1px solid #ccc; font-weight:700; }
-    .empty-plan { padding:16px; border:1px dashed #ccc; border-radius:8px; background:#fafafa; color:#777; font-size:.86rem; line-height:1.6; }
-    .result-note { margin:11px 0 0; color:#777; font-size:.76rem; line-height:1.55; }
+        th:last-child, td:last-child {
+            border-right: none;
+        }
 
-    details { margin-top:14px; border-top:1px solid #eee; padding-top:11px; }
-    summary { cursor:pointer; font-weight:700; font-size:.82rem; }
-    .score-option-list { display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
-    .score-option { padding:6px 9px; border:1px solid #ddd; border-radius:7px; background:#fafafa; font-size:.76rem; }
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
 
-    #site-version { position:fixed; left:12px; bottom:10px; font-size:11px; color:#aaa; z-index:9999; pointer-events:none; user-select:none; }
+        th {
+            background-color: #fff9db;
+            font-weight: bold;
+            text-align: center;
+        }
 
-    @media (max-width:700px) {
-      body { margin:8px; }
-      .card { padding:14px; }
-      .header-title h1 { font-size:1.25rem; }
-      .subtitle { font-size:.76rem; }
-      .form-grid { grid-template-columns:1fr; gap:10px; }
-      .field.full { grid-column:auto; }
-      .summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
-      .action-row { display:block; }
-      .calc-btn { width:100%; }
-      th, td { padding:8px 7px; font-size:.74rem; }
-      .flower-options-box { align-items:flex-start; flex-direction:column; }
-      .option-config-btn { width:100%; }
-      .option-modal { padding:8px; }
-      .option-dialog { max-height:92vh; }
-      .option-dialog-head, .option-toolbar, .option-dialog-foot { padding-left:12px; padding-right:12px; }
-      .option-list { padding-left:12px; padding-right:12px; }
-      .option-row { grid-template-columns:minmax(0,1fr) 82px; gap:8px; }
-      .option-select { min-width:82px; width:82px; }
-      .option-dialog-foot { align-items:flex-start; flex-direction:column; }
-      .option-foot-actions { width:100%; }
-      .option-secondary-btn, .option-save-btn { flex:1; }
-    }
-      @media (max-width:760px) {
-      .calc-row-two { grid-template-columns:1fr; }
-    }
-  </style>
+        td.number {
+            width: 80px;
+            text-align: center;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        td.guide-name {
+            text-align: left;
+            font-weight: bold;
+        }
+
+        td.link-cell {
+            width: 150px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .btn-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 14px;
+            background-color: #fff0f0;
+            border: 1px solid #333;
+            border-radius: 5px;
+            color: #333;
+            font-size: 0.86rem;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-link:hover {
+            background-color: #fae0e0;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 700px) {
+            body { margin: 8px; }
+            .container-full { padding: 12px; }
+            .header h1 { font-size: 1.25rem !important; }
+            .guide-title-row { align-items: flex-start; flex-direction: column; }
+        }
+        .back-icon { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+        /* 이미지 전용 뒤로가기 버튼 */
+        .nav-btn-home {
+            border: none !important;
+            outline: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            overflow: visible !important;
+        }
+        .nav-btn-home:hover {
+            border: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            filter: brightness(.78);
+        }
+        .nav-btn-home:active { filter: brightness(.6); }
+        .nav-btn-home .back-icon {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            border: 0;
+        }
+</style>
+
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#ffe680">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="레몬">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
 </head>
 <body>
-  <main class="page">
-    <header class="header">
-      <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기"><img src="images/ui/back-button.png" alt="뒤로가기" class="back-icon"></a>
-      <div class="header-title">
-        <h1>⚔️경쟁전 임무 계산⚔️</h1>
-        <p class="subtitle">선택한 길드원이 실제로 보유한 꽃과 꽃별 추가 옵션 점수를 함께 반영합니다.</p>
-      </div>
-      <button type="button" id="guideOpenBtn" class="guide-open-btn">📖 계산 기준</button>
-    </header>
-
-    <section class="card">
-      <h2 class="section-title">계산 조건</h2>
-
-      <div class="calc-condition-layout">
-        <!-- 1열 -->
-        <div class="field calc-row-full">
-          <label for="memberSelect">👤계산 대상 길드원</label>
-          <select id="memberSelect"><option value="">길드원 정보를 불러오는 중입니다…</option></select>
-        </div>
-
-        <!-- 2열 -->
-        <div class="calc-row-two">
-          <div class="field">
-            <label>✖️점수 배율</label>
-            <div class="multiplier-wrap" role="group" aria-label="점수 배율 선택">
-              <button type="button" class="multiplier-btn" data-multiplier="1">1배</button>
-              <button type="button" class="multiplier-btn active" data-multiplier="2">2배</button>
+    <div class="container-full">
+        <div class="header">
+            <div class="header-left">
+                <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기"><img src="images/ui/back-button.png" alt="뒤로가기" class="back-icon"></a>
+                <h1 style="margin: 0; font-size: 1.5rem;">📖코지 공략모음📖</h1>
             </div>
-          </div>
-
-          <div class="field">
-            <label>➕추가 임무</label>
-            <label class="extra-mission-toggle" for="maxExtraToggle">
-              <span class="toggle-copy">
-                <span class="toggle-title">임무 횟수 추가</span>
-                <span class="toggle-sub">(45💎 x 6회 =270💎)</span>
-              </span>
-              <input id="maxExtraToggle" type="checkbox">
-            </label>
-          </div>
         </div>
 
-        <div class="field calc-row-full">
-          <label>✨꽃 개량 옵션</label>
-          <div class="flower-options-box">
-            <div class="flower-options-copy">
-              <strong id="optionConfigStatus">길드원을 선택하면 꽃별 옵션을 설정할 수 있습니다.</strong>
-              <span>꽃마다 +0~+4점을 개별 저장하며, 옵션 뽑기 비용은 다이아 계산에 포함하지 않습니다.</span>
+        <div class="guide-card">
+            <div class="guide-title-row">
+                <div class="guide-title">🍋 더 코지 플로리스트 공략 모음</div>
+                <div class="guide-count">총 14개 공략</div>
             </div>
-            <button type="button" id="optionConfigBtn" class="option-config-btn" disabled>꽃 옵션 설정</button>
-          </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;">번호</th>
+                            <th>공략 제목</th>
+                            <th style="width: 150px;">링크</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="number">[1]</td><td class="guide-name">정원 가꾸기 기초</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224292427133" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[3]</td><td class="guide-name">꽃 레벨업 &lt;기초편&gt;</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224295387584" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[4]</td><td class="guide-name">꽃 레벨업 &lt;심화편&gt;</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224296400664" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[5]</td><td class="guide-name">꽃 개량편 &lt;1&gt;</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224298448501" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[6]</td><td class="guide-name">꽃 개량편 &lt;2&gt;</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224299540036" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[7]</td><td class="guide-name">꽃 개량 &lt;옵션편&gt;</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224303199524" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[8]</td><td class="guide-name">친구와 단짝 콘텐츠</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224308121203" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[9]</td><td class="guide-name">주민주문과 단체주문</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224309981639" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[10]</td><td class="guide-name">길드 컨텐츠 &lt;1&gt;</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224317729143" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[11]</td><td class="guide-name">길드 컨텐츠 &lt;2&gt;</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224323966005" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[12]</td><td class="guide-name">길드 컨텐츠-무,소과금 편</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224324714114" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[13]</td><td class="guide-name">길드 재배 활용하기</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224331951854" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[14]</td><td class="guide-name">4대 이벤트 알기</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224364919820" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                        <tr><td class="number">[15]</td><td class="guide-name">스타소울 알기</td><td class="link-cell"><a class="btn-link" href="https://game.naver.com/lounge/The_Cozy_Florist/board/detail/7675397" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-
-        <!-- 3열 -->
-        <div class="field calc-row-full">
-          <label for="targetInput">🎯목표 점수</label>
-          <input id="targetInput" type="number" min="0" step="1" inputmode="numeric" placeholder="예: 1400">
-        </div>
-
-        <!-- 4열 -->
-        <div class="calc-row-two">
-          <div class="field">
-            <label for="remainingInput">📋남은 임무 횟수</label>
-            <input id="remainingInput" type="number" min="0" max="24" step="1" inputmode="numeric" placeholder="예: 12">
-          </div>
-
-          <div class="field">
-            <label for="currentInput">📈현재 점수</label>
-            <input id="currentInput" type="number" min="0" step="1" inputmode="numeric" placeholder="예: 1120">
-          </div>
-        </div>
-      </div>
-
-      <div id="memberStatus" class="member-status">D1의 꽃 정보와 길드 체크 정보를 불러오는 중입니다.</div>
-      <div class="action-row"><button type="button" id="calcBtn" class="calc-btn" disabled>계산하기</button></div>
-    </section>
-
-    <section id="resultCard" class="card result-card" aria-live="polite">
-      <div class="result-head">
-        <h2 id="resultTitle">계산 결과</h2>
-        <span id="resultBadge" class="status-badge">대기</span>
-      </div>
-      <div id="summaryGrid" class="summary-grid"></div>
-      <div id="planArea"></div>
-      <p id="resultNote" class="result-note"></p>
-      <details id="scoreDetails">
-        <summary>계산에 사용된 보유 꽃 점수 보기</summary>
-        <div id="scoreOptionList" class="score-option-list"></div>
-      </details>
-    </section>
-  </main>
-
-  <div id="optionModal" class="option-modal" role="dialog" aria-modal="true" aria-labelledby="optionModalTitle">
-    <div class="option-dialog">
-      <div class="option-dialog-head">
-        <h2 id="optionModalTitle">✨ 꽃 옵션 설정</h2>
-        <button type="button" id="optionCloseBtn" class="option-close-btn" aria-label="닫기">×</button>
-      </div>
-      <div class="option-toolbar">
-        <div id="optionGradeFilters" class="option-grade-filters" aria-label="등급 필터">
-          <button type="button" class="option-filter-btn active" data-grade="ALL">전체</button>
-          <button type="button" class="option-filter-btn" data-grade="N">N</button>
-          <button type="button" class="option-filter-btn" data-grade="R">R</button>
-          <button type="button" class="option-filter-btn" data-grade="SR">SR</button>
-          <button type="button" class="option-filter-btn" data-grade="SSR">SSR</button>
-          <button type="button" class="option-filter-btn" data-grade="UR">UR</button>
-        </div>
-        <input id="optionSearchInput" class="option-search" type="search" placeholder="꽃 이름 검색" autocomplete="off">
-      </div>
-      <div id="optionFlowerList" class="option-list"></div>
-      <div class="option-dialog-foot">
-        <span id="optionSaveStatus" class="option-save-status">변경 사항 없음</span>
-        <div class="option-foot-actions">
-          <button type="button" id="optionCancelBtn" class="option-secondary-btn">취소</button>
-          <button type="button" id="optionSaveBtn" class="option-save-btn">저장</button>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <div id="guideModal" class="guide-modal" role="dialog" aria-modal="true" aria-labelledby="guideTitle">
-    <div class="guide-dialog">
-      <div class="guide-dialog-head">
-        <h2 id="guideTitle">📖 계산 기준</h2>
-        <button type="button" id="guideCloseBtn" class="guide-close-btn" aria-label="닫기">×</button>
-      </div>
-
-      <p>• 해당 계산은 <strong>A랭크를 기준</strong>으로 합니다.</p>
-      <p>• 같은 꽃 임무를 여러 번 반복해서 수행할 수 있으므로 <strong>반복인 경우도 포함하여 최적으로 계산</strong>합니다.</p>
-      <p>• 최종 점수는 <strong>(기본 점수 + 해당 꽃 개량 점수) × 배율</strong>로 계산합니다.</p>
-      <p>• 단, 계산 결과가 60점을 넘으면 <strong>최대 60점으로 처리</strong>합니다. (경쟁전 최대 점수)</p>
-      <p>• 추천 조합은 입력한 남은 임무 횟수 안에서 <strong>N → R → SR → SSR → UR 순으로 낮은 등급을 최대한 우선 사용</strong>하고, 부족한 만큼만 상위 등급으로 올립니다. 같은 등급 구성이라면 업그레이드 다이아가 더 적은 조합을 선택합니다.</p>
-
-      <p>[✖️점수배율]</p>
-      <p>• 임무를 업그레이드 하지 않을 시, '1배'로 설정 / 업그레이드 진행 시, '2배'를 선택합니다.</p>
-      <p>• 임무 업그레이드 비용</p>
-      <p>&nbsp;- N | 27💎</p>
-      <p>&nbsp;- R | 42💎</p>
-      <p>&nbsp;- SR (21점) | 63💎 / (23점) | 69💎</p>
-      <p>&nbsp;- SSR | 75💎</p>
-      <p>&nbsp;- UR | 84💎</p>
-
-      <p>[➕추가 임무]</p>
-      <p>• <strong>임무 횟수 추가</strong>는 무조건 추가 임무 <strong>6회</strong>를 기준으로 합니다. 비용 270💎(45💎 × 6회)</p>
-
-      <p>[✨꽃 개량 옵션]</p>
-      <p>• 보유한 꽃마다 개별로 <strong>개량(절품:경쟁포인트 증가)의 옵션을 +0 ~ +4점으로 설정</strong>할 수 있습니다.</p>
-      <p>• 옵션 점수가 붙어도 <strong>임무 업그레이드 다이아는 변하지 않습니다.</strong> 옵션은 획득 점수에만 반영합니다.</p>
-      <p>• 꽃 개량에 사용된 다이아는 계산하지 않습니다.</p>
-    </div>
-  </div>
-
-  <div id="site-version">demo_v38</div>
-  <script src="flower-data-all.js"></script>
-  <script>
-    const FLOWERS_API = '/api/flowers';
-    const GUILD_STATE_API = '/api/guild-state';
-    const BASE_SEED_VERSION = 'demo_v38_base_356';
-    const MASTER_FLOWERS = window.FLOWER_MASTER_DATA || [];
-    const roleOrder = { '길드장':1, '부길드장':2, '임원':3, '정예':4, '멤버':5 };
-    const gradeOrder = { 'N':1, 'R':2, 'SR':3, 'SSR':4, 'UR':5 };
-    const UPGRADE_DIAMOND_COST = { N:27, R:42, SSR:75, UR:84 };
-    const BASE_MISSION_LIMIT = 18;
-    const EXTRA_MISSION_LIMIT = 6;
-    const EXTRA_MISSION_COST = 45;
-
-    let flowers = [];
-    let members = [];
-    let checks = {};
-    let flowerOptions = {};
-    let multiplier = 2;
-    let ready = false;
-
-    let optionDraft = new Map();
-    let optionFilterGrade = 'ALL';
-    let optionEditingMemberId = '';
-
-    const memberSelect = document.getElementById('memberSelect');
-    const memberStatus = document.getElementById('memberStatus');
-    const targetInput = document.getElementById('targetInput');
-    const currentInput = document.getElementById('currentInput');
-    const remainingInput = document.getElementById('remainingInput');
-    const maxExtraToggle = document.getElementById('maxExtraToggle');
-    const optionConfigBtn = document.getElementById('optionConfigBtn');
-    const optionConfigStatus = document.getElementById('optionConfigStatus');
-    const optionModal = document.getElementById('optionModal');
-    const optionModalTitle = document.getElementById('optionModalTitle');
-    const optionCloseBtn = document.getElementById('optionCloseBtn');
-    const optionCancelBtn = document.getElementById('optionCancelBtn');
-    const optionSaveBtn = document.getElementById('optionSaveBtn');
-    const optionSaveStatus = document.getElementById('optionSaveStatus');
-    const optionGradeFilters = document.getElementById('optionGradeFilters');
-    const optionSearchInput = document.getElementById('optionSearchInput');
-    const optionFlowerList = document.getElementById('optionFlowerList');
-    const guideOpenBtn = document.getElementById('guideOpenBtn');
-    const guideCloseBtn = document.getElementById('guideCloseBtn');
-    const guideModal = document.getElementById('guideModal');
-    const calcBtn = document.getElementById('calcBtn');
-    const resultCard = document.getElementById('resultCard');
-    const resultTitle = document.getElementById('resultTitle');
-    const resultBadge = document.getElementById('resultBadge');
-    const summaryGrid = document.getElementById('summaryGrid');
-    const planArea = document.getElementById('planArea');
-    const resultNote = document.getElementById('resultNote');
-    const scoreOptionList = document.getElementById('scoreOptionList');
-
-    function escapeHtml(value) {
-      return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
-    }
-
-    function formatNumber(value) {
-      return Number(value || 0).toLocaleString('ko-KR');
-    }
-
-    function checkKey(flowerKey, memberId) {
-      return `flower::${encodeURIComponent(flowerKey)}::${memberId}`;
-    }
-
-    function optionKey(flowerKey, memberId) {
-      return `option::${encodeURIComponent(flowerKey)}::${memberId}`;
-    }
-
-    function getFlowerOption(memberId, flowerKey) {
-      const value = Number(flowerOptions[optionKey(flowerKey, memberId)] || 0);
-      return Number.isInteger(value) && value >= 0 && value <= 4 ? value : 0;
-    }
-
-    function sortedMembers() {
-      return [...members].sort((a,b) => {
-        const roleDiff = (roleOrder[a.role] || 99) - (roleOrder[b.role] || 99);
-        if (roleDiff) return roleDiff;
-        return String(a.name || '').localeCompare(String(b.name || ''), 'ko-KR');
-      });
-    }
-
-    function renderMembers() {
-      // 계산기 페이지에 새로 들어왔을 때는 항상 '선택 없음'이 기본값입니다.
-      // 같은 페이지에서 데이터만 새로고침되는 경우에는 현재 선택을 유지합니다.
-      const previous = memberSelect.value || '';
-      const list = sortedMembers();
-      memberSelect.innerHTML = '<option value="">길드원을 선택해주세요</option>' + list.map(member =>
-        `<option value="${escapeHtml(member.id)}">${escapeHtml(member.role || '멤버')} · ${escapeHtml(member.name || '')}</option>`
-      ).join('');
-      memberSelect.value = list.some(member => member.id === previous) ? previous : '';
-      updateMemberStatus();
-    }
-
-    function getSelectedMember() {
-      return members.find(member => member.id === memberSelect.value) || null;
-    }
-
-    function getOwnedScoredFlowers(memberId) {
-      if (!memberId) return [];
-      return flowers.filter(flower => {
-        const baseScore = Number(flower.guildScore);
-        return flower?.key && Number.isFinite(baseScore) && baseScore > 0 && Boolean(checks[checkKey(flower.key, memberId)]);
-      });
-    }
-
-    function getOwnedFlowerCount(memberId) {
-      if (!memberId) return 0;
-      return flowers.filter(flower => flower?.key && Boolean(checks[checkKey(flower.key, memberId)])).length;
-    }
-
-    function getUpgradeDiamondCost(flower) {
-      const grade = String(flower?.grade || '').toUpperCase();
-      const baseScore = Number(flower?.guildScore);
-      if (grade === 'SR') {
-        if (baseScore === 21) return 63;
-        if (baseScore === 23) return 69;
-        return null;
-      }
-      return Object.prototype.hasOwnProperty.call(UPGRADE_DIAMOND_COST, grade)
-        ? UPGRADE_DIAMOND_COST[grade]
-        : null;
-    }
-
-    function groupScoreOptions(memberId) {
-      const grouped = new Map();
-      let excludedUpgradeCost = 0;
-
-      getOwnedScoredFlowers(memberId).forEach(flower => {
-        const baseScore = Number(flower.guildScore);
-        const grade = String(flower.grade || '').toUpperCase();
-        const optionBonus = getFlowerOption(memberId, flower.key);
-        const diamondCost = multiplier === 1 ? 0 : getUpgradeDiamondCost(flower);
-
-        if (multiplier === 2 && diamondCost == null) {
-          excludedUpgradeCost += 1;
-          return;
-        }
-
-        const rawPoints = (baseScore + optionBonus) * multiplier;
-        const points = Math.min(rawPoints, 60);
-        const key = `${grade}|${baseScore}|${optionBonus}|${diamondCost}|${points}`;
-
-        if (!grouped.has(key)) grouped.set(key, {
-          grade,
-          baseScore,
-          optionBonus,
-          points,
-          rawPoints,
-          diamondCost,
-          flowers:[]
-        });
-
-        grouped.get(key).flowers.push(flower);
-      });
-
-      const options = [...grouped.values()]
-        .map(option => ({
-          ...option,
-          flowers:[...option.flowers].sort((a,b) =>
-            String(a.listName || a.name || '').localeCompare(String(b.listName || b.name || ''), 'ko-KR')
-          )
-        }))
-        .sort((a,b) =>
-          (gradeOrder[a.grade] || 99) - (gradeOrder[b.grade] || 99) ||
-          a.diamondCost - b.diamondCost ||
-          a.points - b.points ||
-          a.baseScore - b.baseScore ||
-          a.optionBonus - b.optionBonus
-        );
-
-      return { options, excludedUpgradeCost };
-    }
-
-    function updateMemberStatus() {
-      const selected = getSelectedMember();
-      memberStatus.classList.remove('error');
-
-      if (!ready) {
-        memberStatus.textContent = 'D1의 꽃 정보와 길드 체크 정보를 불러오는 중입니다.';
-        optionConfigBtn.disabled = true;
-        optionConfigStatus.textContent = '데이터를 불러오는 중입니다.';
-        calcBtn.disabled = true;
-        return;
-      }
-
-      if (!selected) {
-        memberStatus.textContent = `현재 D1 꽃 ${flowers.length}종을 불러왔습니다. 계산할 길드원을 선택해주세요.`;
-        optionConfigBtn.disabled = true;
-        optionConfigStatus.textContent = '길드원을 선택하면 꽃별 옵션을 설정할 수 있습니다.';
-        calcBtn.disabled = true;
-        return;
-      }
-
-      const owned = getOwnedFlowerCount(selected.id);
-      const scoredFlowers = getOwnedScoredFlowers(selected.id);
-      const scored = scoredFlowers.length;
-      const optionCount = scoredFlowers.filter(flower => getFlowerOption(selected.id, flower.key) > 0).length;
-      const { options, excludedUpgradeCost } = groupScoreOptions(selected.id);
-
-      optionConfigBtn.disabled = false;
-      optionConfigStatus.textContent = optionCount
-        ? `${selected.name} · 옵션이 설정된 꽃 ${optionCount}종`
-        : `${selected.name} · 현재 모든 꽃 옵션 +0점`;
-
-      memberStatus.textContent = `${selected.name} · 보유 체크 ${owned}종 · 길드전 점수 등록 ${scored}종 · 사용 가능한 임무 유형 ${options.length}개`;
-      if (multiplier === 2 && excludedUpgradeCost) {
-        memberStatus.textContent += ` · 업그레이드 비용 기준이 없는 ${excludedUpgradeCost}종은 2배 계산에서 제외`;
-      }
-      if (!options.length) {
-        memberStatus.classList.add('error');
-        memberStatus.textContent += ' · 계산 가능한 꽃이 없습니다.';
-      }
-
-      calcBtn.disabled = !options.length;
-      renderScoreOptions(options);
-    }
-
-    function renderScoreOptions(options) {
-      scoreOptionList.innerHTML = options.length ? options.map(option => {
-        const costText = multiplier === 2 ? ` · ${option.diamondCost}💎/회` : ' · 0💎/회';
-        const optionText = option.optionBonus > 0 ? ` + 옵션 ${option.optionBonus}점` : '';
-        const capText = option.rawPoints > 60 ? ' · 60점 상한 적용' : '';
-        const names = option.flowers.slice(0, 3).map(flower => escapeHtml(flower.listName || flower.name || '')).join(', ');
-        const more = option.flowers.length > 3 ? ` 외 ${option.flowers.length - 3}종` : '';
-        return `<span class="score-option">${escapeHtml(option.grade)} · ⚔️ ${option.points}점 <small>(기본 ${option.baseScore}점${optionText}${costText}${capText} · ${names}${more})</small></span>`;
-      }).join('') : '<span class="score-option">사용 가능한 점수 없음</span>';
-    }
-
-    async function ensureBaseSeedIfNeeded() {
-      let remote = await fetchFlowers();
-      if (remote.length || MASTER_FLOWERS.length < 300) return remote;
-      const response = await fetch(`${FLOWERS_API}?seed=1`, {
-        method:'POST', headers:{'content-type':'application/json'},
-        body:JSON.stringify({ seedVersion:BASE_SEED_VERSION, flowers:MASTER_FLOWERS })
-      });
-      if (response.ok) remote = await fetchFlowers();
-      return remote;
-    }
-
-    async function fetchFlowers() {
-      const response = await fetch(FLOWERS_API, { cache:'no-store' });
-      if (!response.ok) throw new Error(`꽃 데이터 GET ${response.status}`);
-      const payload = await response.json();
-      return Array.isArray(payload.flowers) ? payload.flowers : [];
-    }
-
-    async function fetchGuildState() {
-      const response = await fetch(GUILD_STATE_API, { cache:'no-store' });
-      if (!response.ok) throw new Error(`길드 데이터 GET ${response.status}`);
-      const payload = await response.json();
-      if (payload.exists && payload.state) {
-        if (Array.isArray(payload.state.members)) members = payload.state.members;
-        if (payload.state.checks && typeof payload.state.checks === 'object') checks = payload.state.checks;
-        flowerOptions = payload.state.flowerOptions && typeof payload.state.flowerOptions === 'object'
-          ? payload.state.flowerOptions
-          : {};
-      } else {
-        members = JSON.parse(localStorage.getItem('guild_members') || '[]');
-        checks = JSON.parse(localStorage.getItem('guild_checks') || '{}');
-        flowerOptions = JSON.parse(localStorage.getItem('guild_flower_options') || '{}');
-      }
-    }
-
-    async function loadData(showError = true) {
-      try {
-        const [loadedFlowers] = await Promise.all([ensureBaseSeedIfNeeded(), fetchGuildState()]);
-        flowers = loadedFlowers;
-        localStorage.setItem('guild_members', JSON.stringify(members));
-        localStorage.setItem('guild_checks', JSON.stringify(checks));
-        localStorage.setItem('guild_flower_options', JSON.stringify(flowerOptions));
-        ready = true;
-        renderMembers();
-      } catch (error) {
-        console.warn('임무 계산기 데이터 조회 실패', error);
-        ready = false;
-        calcBtn.disabled = true;
-        memberStatus.classList.add('error');
-        memberStatus.textContent = showError ? `데이터를 불러오지 못했습니다. ${error.message || error}` : '데이터를 불러오지 못했습니다.';
-      }
-    }
-
-    function currentOptionFlowers(memberId) {
-      return getOwnedScoredFlowers(memberId)
-        .slice()
-        .sort((a,b) => {
-          const gradeDiff = (gradeOrder[String(a.grade || '').toUpperCase()] || 99) - (gradeOrder[String(b.grade || '').toUpperCase()] || 99);
-          if (gradeDiff) return gradeDiff;
-          return String(a.listName || a.name || '').localeCompare(String(b.listName || b.name || ''), 'ko-KR');
-        });
-    }
-
-    function updateOptionSaveStatus() {
-      if (!optionEditingMemberId) {
-        optionSaveStatus.textContent = '변경 사항 없음';
-        return;
-      }
-
-      const flowersForMember = currentOptionFlowers(optionEditingMemberId);
-      const changed = flowersForMember.reduce((count, flower) => {
-        const before = getFlowerOption(optionEditingMemberId, flower.key);
-        const after = Number(optionDraft.get(flower.key) || 0);
-        return count + (before !== after ? 1 : 0);
-      }, 0);
-
-      const configured = flowersForMember.reduce((count, flower) =>
-        count + (Number(optionDraft.get(flower.key) || 0) > 0 ? 1 : 0), 0);
-
-      optionSaveStatus.textContent = changed
-        ? `변경 ${changed}종 · 옵션 설정 ${configured}종`
-        : `변경 사항 없음 · 옵션 설정 ${configured}종`;
-    }
-
-    function renderOptionFlowerList() {
-      if (!optionEditingMemberId) {
-        optionFlowerList.innerHTML = '<div class="option-empty">길드원을 먼저 선택해주세요.</div>';
-        return;
-      }
-
-      const query = String(optionSearchInput.value || '').trim().toLocaleLowerCase('ko-KR');
-      const list = currentOptionFlowers(optionEditingMemberId).filter(flower => {
-        const grade = String(flower.grade || '').toUpperCase();
-        if (optionFilterGrade !== 'ALL' && grade !== optionFilterGrade) return false;
-        if (!query) return true;
-        const name = String(flower.listName || flower.name || '').toLocaleLowerCase('ko-KR');
-        return name.includes(query);
-      });
-
-      if (!list.length) {
-        optionFlowerList.innerHTML = '<div class="option-empty">조건에 맞는 보유 꽃이 없습니다.</div>';
-        updateOptionSaveStatus();
-        return;
-      }
-
-      optionFlowerList.innerHTML = list.map(flower => {
-        const grade = String(flower.grade || '').toUpperCase();
-        const baseScore = Number(flower.guildScore);
-        const value = Number(optionDraft.get(flower.key) || 0);
-        const raw1 = baseScore + value;
-        const raw2 = (baseScore + value) * 2;
-        const final2 = Math.min(raw2, 60);
-        const capText = raw2 > 60 ? ' · 2배 최대 60점 적용' : '';
-        const selectOptions = [0,1,2,3,4].map(score =>
-          `<option value="${score}"${score === value ? ' selected' : ''}>+${score}점</option>`
-        ).join('');
-
-        return `
-          <div class="option-row">
-            <div class="option-flower-main">
-              <div class="option-flower-name">
-                <span class="option-grade">${escapeHtml(grade)}</span>
-                <span class="name-text">${escapeHtml(flower.listName || flower.name || '')}</span>
-              </div>
-              <div class="option-flower-meta">기본 ${formatNumber(baseScore)}점 · 1배 ${formatNumber(raw1)}점 · 2배 ${formatNumber(final2)}점${capText}</div>
-            </div>
-            <select class="option-select" data-flower-key="${escapeHtml(flower.key)}" aria-label="${escapeHtml(flower.listName || flower.name || '')} 옵션 점수">
-              ${selectOptions}
-            </select>
-          </div>`;
-      }).join('');
-
-      updateOptionSaveStatus();
-    }
-
-    function openOptionModal() {
-      const selected = getSelectedMember();
-      if (!selected) {
-        alert('먼저 계산 대상 길드원을 선택해주세요.');
-        return;
-      }
-
-      optionEditingMemberId = selected.id;
-      optionDraft = new Map(
-        currentOptionFlowers(selected.id).map(flower => [
-          flower.key,
-          getFlowerOption(selected.id, flower.key)
-        ])
-      );
-
-      optionFilterGrade = 'ALL';
-      optionSearchInput.value = '';
-      optionGradeFilters.querySelectorAll('.option-filter-btn').forEach(button => {
-        button.classList.toggle('active', button.dataset.grade === 'ALL');
-      });
-
-      optionModalTitle.textContent = `✨ ${selected.name}님의 꽃 옵션 설정`;
-      optionModal.classList.add('show');
-      renderOptionFlowerList();
-      optionSearchInput.focus();
-    }
-
-    function closeOptionModal() {
-      optionModal.classList.remove('show');
-      optionEditingMemberId = '';
-      optionDraft = new Map();
-      optionConfigBtn.focus();
-    }
-
-    async function patchFlowerOptionChanges(optionChanges) {
-      const chunks = [];
-      for (let index = 0; index < optionChanges.length; index += 150) {
-        chunks.push(optionChanges.slice(index, index + 150));
-      }
-
-      for (const chunk of chunks) {
-        const response = await fetch(GUILD_STATE_API, {
-          method:'PATCH',
-          headers:{'content-type':'application/json'},
-          body:JSON.stringify({ optionChanges:chunk })
-        });
-        if (!response.ok) {
-          const detail = await response.text().catch(() => '');
-          throw new Error(`꽃 옵션 저장 실패 (${response.status}) ${detail}`);
-        }
-      }
-    }
-
-    async function saveOptionSettings() {
-      const selected = members.find(member => member.id === optionEditingMemberId);
-      if (!selected) return;
-
-      const changed = currentOptionFlowers(selected.id)
-        .map(flower => {
-          const before = getFlowerOption(selected.id, flower.key);
-          const after = Number(optionDraft.get(flower.key) || 0);
-          return before === after ? null : {
-            key: optionKey(flower.key, selected.id),
-            value: after
-          };
-        })
-        .filter(Boolean);
-
-      if (!changed.length) {
-        closeOptionModal();
-        return;
-      }
-
-      optionSaveBtn.disabled = true;
-      optionCancelBtn.disabled = true;
-      optionSaveStatus.textContent = `저장 중 · ${changed.length}종`;
-
-      try {
-        await patchFlowerOptionChanges(changed);
-
-        changed.forEach(change => {
-          if (change.value > 0) flowerOptions[change.key] = change.value;
-          else delete flowerOptions[change.key];
-        });
-        localStorage.setItem('guild_flower_options', JSON.stringify(flowerOptions));
-
-        optionSaveStatus.textContent = `저장 완료 · ${changed.length}종`;
-        optionModal.classList.remove('show');
-        optionEditingMemberId = '';
-        optionDraft = new Map();
-        updateMemberStatus();
-
-        if (resultCard.classList.contains('show') &&
-            targetInput.value !== '' &&
-            currentInput.value !== '' &&
-            remainingInput.value !== '') {
-          calculate();
-        }
-      } catch (error) {
-        console.warn('꽃 옵션 저장 실패', error);
-        alert('꽃 옵션을 저장하지 못했습니다. 잠시 후 다시 시도해주세요.');
-        optionSaveStatus.textContent = '저장 실패';
-      } finally {
-        optionSaveBtn.disabled = false;
-        optionCancelBtn.disabled = false;
-      }
-    }
-
-    const HIGH_GRADE_PRIORITY = ['UR', 'SSR', 'SR', 'R'];
-
-    function emptyGradeCounts() {
-      return { N:0, R:0, SR:0, SSR:0, UR:0 };
-    }
-
-    function addGradeCount(counts, grade) {
-      const next = { ...counts };
-      const key = String(grade || '').toUpperCase();
-      if (Object.prototype.hasOwnProperty.call(next, key)) next[key] += 1;
-      return next;
-    }
-
-    // 상위 등급 사용 횟수를 먼저 비교합니다.
-    // UR → SSR → SR → R 순서로 적게 쓴 조합이 우선이므로,
-    // 결과적으로 N부터 최대한 사용하고 부족한 만큼만 상위 등급으로 교체합니다.
-    function compareGradeUsage(aCounts, bCounts) {
-      if (!bCounts) return -1;
-      for (const grade of HIGH_GRADE_PRIORITY) {
-        const diff = (aCounts?.[grade] || 0) - (bCounts?.[grade] || 0);
-        if (diff !== 0) return diff;
-      }
-      return 0;
-    }
-
-    function compareState(a, b) {
-      if (!b) return -1;
-
-      // 1순위: 낮은 등급 우선 (상위 등급 사용 최소)
-      const gradeDiff = compareGradeUsage(a.gradeCounts, b.gradeCounts);
-      if (gradeDiff !== 0) return gradeDiff;
-
-      // 2순위: 같은 등급 구성이라면 업그레이드 다이아 최소
-      if (a.upgradeCost !== b.upgradeCost) return a.upgradeCost - b.upgradeCost;
-
-      return 0;
-    }
-
-    function comparePlanCandidate(a, b) {
-      if (!b) return -1;
-
-      // 1순위: 낮은 등급부터 최대한 사용
-      const gradeDiff = compareGradeUsage(a.gradeCounts, b.gradeCounts);
-      if (gradeDiff !== 0) return gradeDiff;
-
-      // 2순위: 같은 등급 구성 안에서 업그레이드 다이아 최소
-      if (a.upgradeCost !== b.upgradeCost) return a.upgradeCost - b.upgradeCost;
-
-      // 3순위: 목표 초과 점수 최소
-      if (a.overshoot !== b.overshoot) return a.overshoot - b.overshoot;
-
-      // 4순위: 사용 임무 횟수 최소
-      if (a.count !== b.count) return a.count - b.count;
-
-      return a.sum - b.sum;
-    }
-
-    function findMinimumDiamondPlan(options, maxCount, needed) {
-      if (needed <= 0) {
-        return {
-          upgradeCost:0,
-          sum:0,
-          count:0,
-          counts:Array(options.length).fill(0),
-          gradeCounts:emptyGradeCounts()
-        };
-      }
-      if (!options.length || maxCount <= 0) return null;
-
-      const minPoints = Math.min(...options.map(option => option.points));
-      const maxPoints = Math.max(...options.map(option => option.points));
-      if (maxPoints * maxCount < needed) return null;
-
-      const scoreCap = needed + maxPoints - 1;
-      const usefulCount = Math.min(maxCount, Math.floor(scoreCap / minPoints));
-
-      // 같은 횟수/점수에서는 "낮은 등급 우선 → 다이아 최소" 상태만 유지합니다.
-      const layers = [
-        new Map([[0, {
-          upgradeCost:0,
-          gradeCounts:emptyGradeCounts(),
-          prevSum:null,
-          optionIndex:null
-        }]])
-      ];
-      let best = null;
-
-      for (let count = 1; count <= usefulCount; count++) {
-        const previous = layers[count - 1];
-        const current = new Map();
-
-        for (const [sum, state] of previous) {
-          for (let optionIndex = 0; optionIndex < options.length; optionIndex++) {
-            const option = options[optionIndex];
-            const nextSum = sum + option.points;
-            if (nextSum > scoreCap) continue;
-
-            const nextState = {
-              upgradeCost: state.upgradeCost + option.diamondCost,
-              gradeCounts: addGradeCount(state.gradeCounts, option.grade),
-              prevSum: sum,
-              optionIndex
-            };
-
-            const existing = current.get(nextSum);
-            if (!existing || compareState(nextState, existing) < 0) {
-              current.set(nextSum, nextState);
-            }
-          }
-        }
-
-        layers.push(current);
-
-        for (const [sum, state] of current) {
-          if (sum < needed) continue;
-
-          const candidate = {
-            upgradeCost: state.upgradeCost,
-            gradeCounts: state.gradeCounts,
-            sum,
-            count,
-            overshoot: sum - needed
-          };
-
-          if (comparePlanCandidate(candidate, best) < 0) best = candidate;
-        }
-      }
-
-      if (!best) return null;
-
-      const counts = Array(options.length).fill(0);
-      let sum = best.sum;
-      for (let count = best.count; count > 0; count--) {
-        const state = layers[count].get(sum);
-        if (!state) return null;
-        counts[state.optionIndex] += 1;
-        sum = state.prevSum;
-      }
-
-      return { ...best, counts };
-    }
-
-    function summaryItem(label, value) {
-      return `<div class="summary-item"><span class="summary-label">${escapeHtml(label)}</span><strong class="summary-value">${escapeHtml(value)}</strong></div>`;
-    }
-
-    function setResultBadge(text, type) {
-      resultBadge.textContent = text;
-      resultBadge.className = `status-badge ${type || ''}`.trim();
-    }
-
-
-    function calculate() {
-      const selected = getSelectedMember();
-      if (!selected) return alert('계산할 길드원을 선택해주세요.');
-
-      const target = Number(targetInput.value);
-      const current = Number(currentInput.value);
-      const basicRemaining = Number(remainingInput.value);
-      const useMissionAdd = Boolean(maxExtraToggle.checked);
-      const addedMissionCost = useMissionAdd ? EXTRA_MISSION_LIMIT * EXTRA_MISSION_COST : 0;
-      const maxMissionCount = basicRemaining;
-
-      if (!Number.isInteger(target) || target < 0 || !Number.isInteger(current) || current < 0) {
-        return alert('목표 점수와 현재 점수를 0 이상의 정수로 입력해주세요.');
-      }
-      if (!Number.isInteger(basicRemaining) || basicRemaining < 0 || basicRemaining > 24) {
-        return alert('남은 임무 횟수는 0~24 사이의 정수로 입력해주세요.');
-      }
-
-      const { options, excludedUpgradeCost } = groupScoreOptions(selected.id);
-      resultCard.classList.add('show');
-      resultTitle.textContent = `${selected.name}님의 계산 결과`;
-      renderScoreOptions(options);
-
-      const needed = Math.max(0, target - current);
-
-      if (needed === 0) {
-        setResultBadge('목표 달성', 'ok');
-        summaryGrid.innerHTML = [
-          summaryItem('🎯필요 점수', '0점'),
-          summaryItem('💡추천 조합 획득 점수', '0점'),
-          summaryItem('🏆예상 최종', `${formatNumber(current)}점`),
-          summaryItem('🚀목표 초과', `+${formatNumber(Math.max(0, current-target))}점`),
-
-          summaryItem('⚔️사용 임무', '0회'),
-          summaryItem('➕임무 추가 비용', '0💎'),
-          summaryItem('⬆️임무 업그레이드 비용', '0💎'),
-          summaryItem('💎총 사용 다이아', '0💎')
-        ].join('');
-        planArea.innerHTML = '<div class="empty-plan">🎉 이미 목표 점수에 도달했습니다. 추가 계산이 필요하지 않습니다.</div>';
-        resultNote.textContent = '현재 점수가 목표 점수 이상이면 꽃 옵션 및 임무 추가 여부와 관계없이 비용을 계산하지 않습니다.';
-        return;
-      }
-
-      if (!options.length) {
-        setResultBadge('계산 불가', 'bad');
-        summaryGrid.innerHTML = [
-          summaryItem('필요 점수', `${formatNumber(needed)}점`),
-          summaryItem('계산 배율', `${multiplier}배`)
-        ].join('');
-        planArea.innerHTML = '<div class="empty-plan">길드전 점수가 등록되고 현재 배율에서 비용 계산이 가능한 보유 꽃이 없어 계산할 수 없습니다.</div>';
-        resultNote.textContent = multiplier === 2 && excludedUpgradeCost
-          ? `업그레이드 비용 기준이 없는 보유 꽃 ${excludedUpgradeCost}종은 제외되었습니다.`
-          : '';
-        return;
-      }
-
-      const maxOption = options.reduce((best, option) => option.points > best.points ? option : best, options[0]);
-      const maxPossible = maxOption.points * maxMissionCount;
-
-      if (maxPossible < needed) {
-        const maxFinal = current + maxPossible;
-        setResultBadge('목표 달성 불가', 'bad');
-        summaryGrid.innerHTML = [
-          summaryItem('필요 점수', `${formatNumber(needed)}점`),
-          summaryItem('사용 가능 임무', `${formatNumber(maxMissionCount)}회`),
-          summaryItem('최대 획득', `${formatNumber(maxPossible)}점`),
-          summaryItem('부족 점수', `${formatNumber(Math.max(0, target-maxFinal))}점`)
-        ].join('');
-        planArea.innerHTML = `<div class="empty-plan">⚠️ ${escapeHtml(selected.name)}님의 현재 보유 꽃으로 사용 가능한 ${formatNumber(maxMissionCount)}회 안에는 목표에 도달할 수 없습니다.<br>가장 높은 사용 가능 점수는 회당 ${formatNumber(maxOption.points)}점입니다.</div>`;
-        resultNote.textContent = `${multiplier}배 기준 · 꽃별 옵션 적용 · 입력한 남은 임무 ${basicRemaining}회 안에서 계산합니다.` +
-          `${useMissionAdd ? ' 임무 횟수 추가 비용 270💎는 총 비용에 합산됩니다.' : ''}`;
-        return;
-      }
-
-      const plan = findMinimumDiamondPlan(options, maxMissionCount, needed);
-      if (!plan) {
-        setResultBadge('계산 불가', 'bad');
-        summaryGrid.innerHTML = [
-          summaryItem('필요 점수', `${formatNumber(needed)}점`),
-          summaryItem('계산 배율', `${multiplier}배`)
-        ].join('');
-        planArea.innerHTML = '<div class="empty-plan">조건에 맞는 임무 조합을 찾지 못했습니다.</div>';
-        resultNote.textContent = '';
-        return;
-      }
-
-      const finalScore = current + plan.sum;
-      const over = Math.max(0, finalScore - target);
-      const totalCost = plan.upgradeCost + addedMissionCost;
-
-      setResultBadge(over === 0 ? '정확히 달성' : '달성 가능', 'ok');
-      summaryGrid.innerHTML = [
-        summaryItem('🎯필요 점수', `${formatNumber(needed)}점`),
-        summaryItem('💡추천 조합 획득 점수', `${formatNumber(plan.sum)}점`),
-        summaryItem('🏆예상 최종', `${formatNumber(finalScore)}점`),
-        summaryItem('🚀목표 초과', `+${formatNumber(over)}점`),
-
-        summaryItem('⚔️사용 임무', `${formatNumber(plan.count)} / ${formatNumber(maxMissionCount)}회`),
-        summaryItem('➕임무 추가 비용', `${formatNumber(addedMissionCost)}💎`),
-        summaryItem('⬆️임무 업그레이드 비용', `${formatNumber(plan.upgradeCost)}💎`),
-        summaryItem('💎총 사용 다이아', `${formatNumber(totalCost)}💎`)
-      ].join('');
-
-      const rows = plan.counts
-        .map((count, index) => ({ count, option:options[index] }))
-        .filter(row => row.count > 0);
-
-      planArea.innerHTML = `
-        <div class="plan-title">🌱 추천 조합 · 총 ${formatNumber(plan.count)}회 · ${formatNumber(totalCost)}💎</div>
-        <div class="empty-plan" style="margin-bottom:10px;">
-          입력한 남은 임무 ${formatNumber(basicRemaining)}회
-          ${useMissionAdd
-            ? ` · 임무 횟수 추가 비용 ${formatNumber(addedMissionCost)}💎 포함`
-            : ' · 임무 횟수 추가 비용 없음'}
-        </div>
-        <div class="plan-table-wrap">
-          <table>
-            <thead>
-              <tr><th>등급</th><th>회당 점수</th><th>횟수</th><th>점수 소계</th><th>업그레이드 비용</th></tr>
-            </thead>
-            <tbody>${rows.map(row => `
-              <tr>
-                <td><strong>${escapeHtml(row.option.grade)}</strong></td>
-                <td><span class="score-pill">⚔️ ${formatNumber(row.option.points)}점</span><br><small>기본 ${formatNumber(row.option.baseScore)}점${row.option.optionBonus > 0 ? ` + 옵션 ${formatNumber(row.option.optionBonus)}점` : ''}${row.option.rawPoints > 60 ? ' · 최대 60점 적용' : ''}</small></td>
-                <td><strong>${formatNumber(row.count)}회</strong></td>
-                <td>${formatNumber(row.option.points * row.count)}점</td>
-                <td>${multiplier === 2
-                  ? `${formatNumber(row.option.diamondCost)}💎 × ${formatNumber(row.count)} = <strong>${formatNumber(row.option.diamondCost * row.count)}💎</strong>`
-                  : '<strong>0💎</strong>'}</td>
-              </tr>`).join('')}</tbody>
-          </table>
-        </div>`;
-
-      const excludedText = multiplier === 2 && excludedUpgradeCost
-        ? ` 업그레이드 비용 기준이 없는 보유 꽃 ${excludedUpgradeCost}종은 계산에서 제외되었습니다.`
-        : '';
-
-      resultNote.textContent =
-        `${multiplier}배 기준 · 꽃별 옵션 적용 · 입력한 남은 임무 ${maxMissionCount}회 안에서 계산 · ` +
-        `추천 조합은 낮은 등급 우선 → 같은 등급 구성에서 업그레이드 다이아 최소 → 목표 초과 점수 최소 → 사용 임무 횟수 최소 순입니다. 옵션 점수는 획득 점수에만 반영되며 업그레이드 다이아는 기존 비용 그대로입니다.` +
-        `${useMissionAdd ? ` 임무 횟수 추가 비용 ${formatNumber(addedMissionCost)}💎가 총 비용에 합산됩니다.` : ''}${excludedText}`;
-    }
-
-
-    document.querySelectorAll('.multiplier-btn').forEach(button => {
-      button.addEventListener('click', () => {
-        multiplier = Number(button.dataset.multiplier) === 1 ? 1 : 2;
-        document.querySelectorAll('.multiplier-btn').forEach(btn => btn.classList.toggle('active', btn === button));
-        updateMemberStatus();
-        if (resultCard.classList.contains('show') && targetInput.value !== '' && currentInput.value !== '' && remainingInput.value !== '') calculate();
-      });
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch((err) => console.warn('PWA service worker registration failed:', err));
     });
+  }
+</script>
 
-    optionConfigBtn.addEventListener('click', openOptionModal);
-    optionCloseBtn.addEventListener('click', closeOptionModal);
-    optionCancelBtn.addEventListener('click', closeOptionModal);
-    optionSaveBtn.addEventListener('click', saveOptionSettings);
-
-    optionModal.addEventListener('click', event => {
-      if (event.target === optionModal) closeOptionModal();
-    });
-
-    optionGradeFilters.addEventListener('click', event => {
-      const button = event.target.closest('.option-filter-btn');
-      if (!button) return;
-      optionFilterGrade = button.dataset.grade || 'ALL';
-      optionGradeFilters.querySelectorAll('.option-filter-btn').forEach(item => {
-        item.classList.toggle('active', item === button);
-      });
-      renderOptionFlowerList();
-    });
-
-    optionSearchInput.addEventListener('input', renderOptionFlowerList);
-
-    optionFlowerList.addEventListener('change', event => {
-      const select = event.target.closest('.option-select');
-      if (!select) return;
-      optionDraft.set(select.dataset.flowerKey, Number(select.value || 0));
-      renderOptionFlowerList();
-    });
-
-    memberSelect.addEventListener('change', () => {
-      if (optionModal.classList.contains('show')) {
-        optionModal.classList.remove('show');
-        optionEditingMemberId = '';
-        optionDraft = new Map();
-      }
-      resultCard.classList.remove('show');
-      updateMemberStatus();
-    });
-
-    maxExtraToggle.addEventListener('change', () => {
-      if (resultCard.classList.contains('show') && targetInput.value !== '' && currentInput.value !== '' && remainingInput.value !== '') calculate();
-    });
-
-    function openGuide() {
-      guideModal.classList.add('show');
-      guideCloseBtn.focus();
-    }
-    function closeGuide() {
-      guideModal.classList.remove('show');
-      guideOpenBtn.focus();
-    }
-    guideOpenBtn.addEventListener('click', openGuide);
-    guideCloseBtn.addEventListener('click', closeGuide);
-    guideModal.addEventListener('click', event => {
-      if (event.target === guideModal) closeGuide();
-    });
-    document.addEventListener('keydown', event => {
-      if (event.key !== 'Escape') return;
-      if (optionModal.classList.contains('show')) {
-        closeOptionModal();
-        return;
-      }
-      if (guideModal.classList.contains('show')) closeGuide();
-    });
-
-    calcBtn.addEventListener('click', calculate);
-    [targetInput, currentInput, remainingInput].forEach(input => input.addEventListener('keydown', event => {
-      if (event.key === 'Enter' && !calcBtn.disabled) calculate();
-    }));
-
-    localStorage.removeItem('mission_calc_member');
-    loadData(true);
-    window.addEventListener('focus', () => loadData(false));
-    document.addEventListener('visibilitychange', () => { if (!document.hidden) loadData(false); });
-  </script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(err => console.warn('PWA service worker registration failed:', err)));
-    }
-  </script>
 </body>
 </html>

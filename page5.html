@@ -232,7 +232,7 @@
       .flower-detail-image { width:min(180px, 100%); }
     }
   
-    /* demo_v38: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
+    /* demo_v39: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
     .flower-grid {
       grid-template-columns:repeat(2,minmax(0,1fr));
       gap:14px;
@@ -410,7 +410,7 @@
     }
 
   
-    /* demo_v38 통합 도감 보완 */
+    /* demo_v39 통합 도감 보완 */
     .guild-check-row{position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:7px;}
     .guild-check-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
     .guild-manage-link{padding:5px 9px;border:1px solid #aaa;border-radius:6px;background:#fff;color:#555;text-decoration:none;font-size:.72rem;font-weight:700;}
@@ -474,7 +474,7 @@
     }
 
   
-    /* demo_v38: 선택 길드원 보유 수량 / 필터 안내 / 카드 가독성 */
+    /* demo_v39: 선택 길드원 보유 수량 / 필터 안내 / 카드 가독성 */
     .member-ownership-filter-wrap{
       display:grid;
       gap:5px;
@@ -540,7 +540,7 @@
     }
 
   
-    /* demo_v38: 보유/미보유 필터 색상 */
+    /* demo_v39: 보유/미보유 필터 색상 */
     .ownership-filter-btn[data-ownership-filter="OWNED"]{
       background:#e4f4df;
       border-color:#76946b;
@@ -582,7 +582,7 @@
     }
 
   
-    /* demo_v38: 통합 도감 헤더 / 가이드 / 관리 버튼 */
+    /* demo_v39: 통합 도감 헤더 / 가이드 / 관리 버튼 */
     .catalog-title-block{min-width:0;}
     .catalog-title-row{display:inline-flex;align-items:center;gap:6px;}
     .catalog-guide-btn{
@@ -808,7 +808,7 @@
     const masterFlowers = window.FLOWER_MASTER_DATA || [];
     const FLOWERS_API = '/api/flowers';
     const GUILD_STATE_API = '/api/guild-state';
-    const BASE_SEED_VERSION = 'demo_v38_base_356';
+    const BASE_SEED_VERSION = 'demo_v39_base_356';
     let remoteFlowers = [];
     let d1Ready = false;
     let activeGrade = 'ALL';

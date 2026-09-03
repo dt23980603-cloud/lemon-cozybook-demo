@@ -1,4065 +1,1245 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-    <meta charset="UTF-8">
-    <title>길드 꽃 도감 | 레몬</title>
-    <link rel="icon" type="image/png" href="images/branding/lemon-favicon.png">
-    <!-- Google Fonts: Gowun Batang 불러오기 -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
-
-    <style>
-        *,
-        body,
-        input,
-        button,
-        select,
-        textarea {
-            font-family: 'Gowun Batang', serif;
-        }
-
-        body {
-            background-color: #f9f9f9;
-            margin: 15px;
-            color: #333;
-        }
-
-        .container-full {
-            width: 100%;
-            box-sizing: border-box;
-            background: #fff;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .nav-btn-home {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 50px;
-            height: 50px;
-            background-color: #ffffff;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-sizing: border-box;
-        }
-
-        .nav-btn-home:hover {
-            background-color: #fff0f0;
-            transform: translateY(-2px);
-        }
-
-        /* 등록된 꽃 목록 전체 초기화 */
-        .btn-reset-danger {
-            background-color: #fff0f0;
-            color: #d93838;
-            border: 1px solid #d93838;
-            padding: 8px 14px;
-            font-weight: bold;
-            font-size: 0.85rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-reset-danger:hover {
-            background-color: #d93838;
-            color: #ffffff;
-        }
-
-        .member-manage-card {
-            background-color: #f8f9fa;
-            border: 1px solid #333;
-            border-radius: 6px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-
-        .manage-title {
-            font-weight: bold;
-            font-size: 1.05rem;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* 왼쪽 멤버, 닉네임 입력창 스타일 수정 */
-        .form-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-        }
-
-        .form-row input,
-        .form-row select {
-            padding: 6px 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 0.9rem;
-        }
-
-        /* 추가버튼 스타일 수정 */
-        .btn-add {
-            background-color: #fff;
-            border: 1px solid #333;
-            padding: 6px 16px;
-            font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .btn-add:hover {
-            background-color: #cfe2f3;
-        }
-
-        
-        .btn-member-action {
-            padding: 6px 14px;
-            border: 1px solid #777;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            cursor: pointer;
-            background-color: #fff;
-            transition: background-color 0.15s ease;
-        }
-
-        /* 실수 방지를 위해 삭제/초기화는 관리 박스 우측에 분리 */
-        .member-danger-actions {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        @media (max-width: 760px) {
-            .member-danger-actions {
-                width: 100%;
-                margin-left: 0;
-                justify-content: flex-end;
-            }
-        }
-
-        .btn-member-reset:hover {
-            background-color: #f3f3f3;
-        }
-
-        .btn-member-rename {
-            color: #4b5563;
-            border-color: #9ca3af;
-        }
-
-        .btn-member-rename:hover {
-            background-color: #f5f7fa;
-        }
-
-        .btn-member-delete {
-            color: #9b2c2c;
-            border-color: #c77;
-        }
-
-        .btn-member-delete:hover {
-            background-color: #fff0f0;
-        }
-
-        .member-tag-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px dashed #ccc;
-        }
-
-        .member-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            border: 1px solid #999;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            user-select: none;
-        }
-
-        .member-tag:hover {
-            filter: brightness(0.95);
-            transform: translateY(-1px);
-        }
-
-        .tag-길드장,
-        .role-길드장 {
-            background-color: #ffcfc9 !important;
-            color: #800000;
-            border-color: #e09f98;
-        }
-
-        .tag-부길드장,
-        .role-부길드장 {
-            background-color: #ffe5a0 !important;
-            color: #664d00;
-            border-color: #d1b25a;
-        }
-
-        .tag-임원,
-        .role-임원 {
-            background-color: #e6cff2 !important;
-            color: #4a154b;
-            border-color: #bfa1ce;
-        }
-
-        .tag-정예,
-        .role-정예 {
-            background-color: #bfe1f6 !important;
-            color: #004085;
-            border-color: #8bbcdb;
-        }
-
-        .tag-멤버,
-        .role-멤버 {
-            background-color: #d4edbc !important;
-            color: #1e4620;
-            border-color: #a4ce85;
-        }
-
-        /* 멤버 태그 시, 보더 색상 */
-        .member-tag.selected {
-            border: 2px solid rgb(0, 0, 0) !important;
-            box-shadow: 0 0 2px rgb(0, 0, 0);
-            font-size: 0.9rem;
-        }
-
-        .btn-reset-member-chk {
-            background: transparent;
-            border: none;
-            font-size: 1rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            margin-left: 0.5px;
-            padding: 0;
-            line-height: 1;
-            transition: all 0.15s ease;
-        }
-
-        .btn-reset-member-chk:hover {
-            background: transparent;
-            filter: brightness(0.7);
-            transform: scale(1.1);
-        }
-
-        .btn-del-tag {
-            background: none;
-            border: none;
-            color: #555;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 0.9rem;
-            padding: 0 2px;
-            margin-left: 2px;
-        }
-
-        .btn-del-tag:hover {
-            color: #d93838;
-        }
-
-        .tab-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 12px 0;
-            background-color: #f1f1f1;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .tab-btn:hover {
-            filter: brightness(0.95);
-        }
-
-        .grade-count {
-            margin-left: 6px;
-            font-size: 0.88rem;
-            font-weight: normal;
-            color: #555;
-        }
-
-        .tab-btn[data-grade="N"].active {
-            background-color: #d4edbc !important;
-            border-color: #4b4949;
-            box-shadow: inset 0 -3px 0 #4b4949;
-        }
-
-        .tab-btn[data-grade="R"].active {
-            background-color: #bfe1f6 !important;
-            border-color: #4b4949;
-            box-shadow: inset 0 -3px 0 #4b4949;
-        }
-
-        .tab-btn[data-grade="SR"].active {
-            background-color: #e6cff2 !important;
-            border-color: #4b4949;
-            box-shadow: inset 0 -3px 0 #4b4949;
-        }
-
-        .tab-btn[data-grade="SSR"].active {
-            background-color: #ffe5a0 !important;
-            border-color: #4b4949;
-            box-shadow: inset 0 -3px 0 #4b4949;
-        }
-
-        .tab-btn[data-grade="UR"].active {
-            background-color: #f4cccc !important;
-            border-color: #4b4949;
-            box-shadow: inset 0 -3px 0 #4b4949;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .table-wrapper {
-            border: 1px solid #333;
-            border-radius: 8px;
-            background: #fff;
-            overflow: hidden;
-        }
-
-        .top-scrollbar-container {
-            overflow-x: auto;
-            overflow-y: hidden;
-            width: 100%;
-            background-color: #f1f1f1;
-            border-bottom: 1px solid #ccc;
-        }
-
-        .top-scrollbar-content {
-            height: 1px;
-        }
-
-        .table-scroll-body {
-            overflow-x: auto;
-            max-width: 100%;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-
-        .table-scroll-body::-webkit-scrollbar {
-            display: none;
-        }
-
-        .sheet-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            background: #fff;
-            white-space: nowrap;
-        }
-
-        /* 길드원 필터링 시 실제 표시되는 열까지만 표 너비 축소 */
-        .sheet-table.filtered {
-            width: auto;
-            min-width: 0;
-        }
-
-        .sheet-table.filtered th:not(.sticky-col):not(.flower-query-col),
-        .sheet-table.filtered td:not(.sticky-col):not(.flower-query-col) {
-            width: 120px;
-            min-width: 120px;
-        }
-
-        .sheet-table th,
-        .sheet-table td {
-            border-right: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-            padding: 8px 12px;
-            text-align: center;
-            font-size: 0.9rem;
-            min-width: 90px;
-            background-color: #fff;
-        }
-
-        .sheet-table .sticky-col {
-            position: sticky;
-            left: 0;
-            z-index: 5;
-            min-width: 230px;
-            width: 230px;
-            box-sizing: border-box;
-            border-right: 2px solid #333 !important;
-        }
-
-        .sheet-table .flower-query-col {
-            position: sticky;
-            left: 230px;
-            z-index: 5;
-            min-width: 64px;
-            width: 64px;
-            box-sizing: border-box;
-            padding-left: 6px;
-            padding-right: 6px;
-            background-color: #fff;
-            border-right: 1px solid #ccc !important;
-        }
-
-        th.sticky-col,
-        th.flower-query-col {
-            background-color: #f8f9fa !important;
-            z-index: 6;
-            font-weight: bold;
-        }
-
-        td.flower-name {
-            text-align: left;
-            padding-left: 8px;
-            font-weight: bold;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .flower-action-group {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            vertical-align: middle;
-            margin-right: 12px;
-        }
-
-        .flower-action-group .btn-flower-info,
-        .flower-action-group .btn-search-open {
-            margin: 0;
-            vertical-align: middle;
-        }
-
-        td.flower-name.flower-N {
-            background-color: #d4edbc !important;
-        }
-
-        td.flower-name.flower-R {
-            background-color: #bfe1f6 !important;
-        }
-
-        td.flower-name.flower-SR {
-            background-color: #e6cff2 !important;
-        }
-
-        td.flower-name.flower-SSR {
-            background-color: #ffe5a0 !important;
-        }
-
-        td.flower-name.flower-UR {
-            background-color: #ffcfc9 !important;
-        }
-
-        .chk-box {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: #555;
-        }
-
-        .btn-flower-info {
-            width: 42px;
-            min-width: 42px;
-            height: 26px;
-            box-sizing: border-box;
-            background-color: #ffffff;
-            border: 1px solid #666;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            padding: 0;
-            margin-right: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.15s ease;
-            vertical-align: middle;
-        }
-
-        .btn-flower-info:hover {
-            background-color: #333;
-            color: #fff;
-        }
-
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal-card {
-            background: #fff;
-            border: 2px solid #333;
-            border-radius: 10px;
-            padding: 20px;
-            width: 360px;
-            max-width: 90%;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-        }
-
-        .modal-title {
-            font-weight: bold;
-            font-size: 1.1rem;
-            color: #333;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
-            color: #888;
-        }
-
-        .modal-close:hover {
-            color: #000;
-        }
-
-        .modal-body {
-            max-height: 250px;
-            overflow-y: auto;
-            margin-bottom: 15px;
-        }
-
-        .holder-tag-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0;
-            padding-right: 8px;
-        }
-
-        .holder-list-item {
-            display: block;
-            padding: 8px 2px;
-            border-bottom: 1px solid #eee;
-            font-size: 0.92rem;
-            color: #333;
-            line-height: 1.35;
-        }
-
-        .holder-list-item:last-child {
-            border-bottom: none;
-        }
-
-        .holder-role {
-            margin-right: 6px;
-            font-weight: 600;
-        }
-
-        .holder-role-길드장 { color: #b3261e; }
-        .holder-role-부길드장 { color: #9a6700; }
-        .holder-role-임원 { color: #7b3f98; }
-        .holder-role-정예 { color: #1976a3; }
-        .holder-role-멤버 { color: #3f7d3a; }
-
-        .empty-holder {
-            color: #888;
-            font-size: 0.9rem;
-            text-align: center;
-            padding: 10px 0;
-        }
-
-        /* 꽃 검색 */
-        .flower-search-card {
-            background-color: #f9f9f9;
-            border: 1px solid #333;
-            border-radius: 6px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-
-        .flower-search-title {
-            font-weight: bold;
-            font-size: 1.05rem;
-            margin-bottom: 10px;
-        }
-
-        .btn-open-flower-search {
-            width: 100%;
-            padding: 10px 14px;
-            background-color:#fff0f0;
-            border: 1px solid #333;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-open-flower-search:hover {
-            background-color: #fae0e0;
-        }
-
-        .search-modal-card {
-            background: #fff;
-            border: 2px solid #333;
-            border-radius: 10px;
-            padding: 20px;
-            width: 640px;
-            max-width: 90%;
-            max-height: 80vh;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .flower-search-input-row {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .flower-search-input {
-            flex: 1;
-            min-width: 0;
-            padding: 9px 11px;
-            border: 1px solid #aaa;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            box-sizing: border-box;
-        }
-
-        .btn-search-clear {
-            padding: 8px 12px;
-            background-color: #f5f5f5;
-            border: 1px solid #aaa;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .btn-search-clear:hover {
-            background-color: #e9e9e9;
-        }
-
-        .flower-search-result {
-            max-height: 420px;
-            overflow-y: auto;
-            border-top: 1px solid #ddd;
-        }
-
-        .search-guide {
-            color: #888;
-            font-size: 0.9rem;
-            text-align: center;
-            padding: 28px 10px;
-        }
-
-        .search-result-count {
-            padding: 9px 4px;
-            font-size: 0.85rem;
-            color: #666;
-            border-bottom: 1px solid #eee;
-        }
-
-        .search-result-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 9px 6px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .search-result-item:hover {
-            background-color: #fafafa;
-        }
-
-        .search-result-grade {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 46px;
-            height: 26px;
-            padding: 0 8px;
-            border: 1px solid #aaa;
-            border-radius: 5px;
-            font-size: 0.78rem;
-            font-weight: bold;
-            box-sizing: border-box;
-        }
-
-        .search-grade-N {
-            background-color: #d4edbc;
-        }
-
-        .search-grade-R {
-            background-color: #bfe1f6;
-        }
-
-        .search-grade-SR {
-            background-color: #e6cff2;
-        }
-
-        .search-grade-SSR {
-            background-color: #ffe5a0;
-        }
-
-        .search-grade-UR {
-            background-color: #ffcfc9;
-        }
-
-        .search-result-name {
-            flex: 1;
-            min-width: 0;
-            font-size: 0.9rem;
-            font-weight: bold;
-        }
-
-        .btn-search-holder {
-            flex: 0 0 76px;
-            width: 76px;
-            min-width: 76px;
-            height: 32px;
-            box-sizing: border-box;
-            padding: 0;
-            background-color: #fff;
-            border: 1px solid #666;
-            border-radius: 4px;
-            font-size: 0.78rem;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .btn-search-holder:hover {
-            background-color: #333;
-            color: #fff;
-        }
-
-        .search-selected-member {
-            margin: 0 0 12px;
-            padding: 9px 12px;
-            border: 1px solid #eadfe1;
-            border-radius: 10px;
-            background: #fff8f8;
-            color: #6e5f61;
-            font-size: 0.86rem;
-        }
-
-        .search-selected-member b {
-            color: #4f3f42;
-        }
-
-        .btn-search-check {
-            flex: 0 0 76px;
-            width: 76px;
-            min-width: 76px;
-            height: 32px;
-            box-sizing: border-box;
-            padding: 0;
-            border: 1px solid #d7bfc3;
-            border-radius: 4px;
-            background: #fff0f1;
-            color: #5e4448;
-            font-family: inherit;
-            font-size: 0.82rem;
-            cursor: pointer;
-            transition: background 0.15s ease, border-color 0.15s ease;
-        }
-
-        .btn-search-check:hover {
-            background: #ffe3e6;
-            border-color: #cfaeb4;
-        }
-
-        .btn-search-check.checked {
-            background: #f4f0e5;
-            border-color: #c8b990;
-            color: #5e5439;
-        }
-
-        .btn-search-check.partial {
-            background: #fff7dc;
-            border-color: #d9bf70;
-            color: #6a571e;
-        }
-
-        .btn-search-open {
-            flex: 0 0 42px;
-            width: 42px;
-            min-width: 42px;
-            height: 26px;
-            box-sizing: border-box;
-            padding: 0;
-            background-color: #ffffff;
-            border: 1px solid #666;
-            border-radius: 4px;
-            font-size: 0.78rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
-
-        .btn-search-open:hover {
-            background-color: #333;
-            color: #fff;
-        }
-
-        .flower-detail-card {
-            background: #fff;
-            border: 2px solid #333;
-            border-radius: 10px;
-            padding: 20px;
-            width: 520px;
-            max-width: 90%;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .flower-detail-layout {
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
-        }
-
-        .flower-detail-image {
-            width: 160px;
-            height: 160px;
-            object-fit: contain;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            background: #f8f9fa;
-            flex-shrink: 0;
-        }
-
-        .flower-detail-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .flower-detail-name {
-            font-size: 1.15rem;
-            font-weight: bold;
-            margin-bottom: 12px;
-        }
-
-        .flower-detail-row {
-            display: flex;
-            gap: 10px;
-            padding: 7px 0;
-            border-bottom: 1px solid #eee;
-            font-size: 0.9rem;
-            line-height: 1.45;
-        }
-
-        .flower-detail-label {
-            width: 80px;
-            flex-shrink: 0;
-            color: #666;
-            font-weight: bold;
-        }
-
-        .flower-detail-source {
-            margin-top: 12px;
-            font-size: 0.75rem;
-            color: #999;
-        }
-
-        @media (max-width: 560px) {
-            .flower-detail-layout {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .flower-detail-info {
-                width: 100%;
-            }
-        }
-        .back-icon { width: 100%; height: 100%; object-fit: contain; display: block; }
-</style>
-
-    <link rel="manifest" href="/manifest.webmanifest">
-    <meta name="theme-color" content="#ffe680">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="레몬">
-    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>경쟁전 임무 계산 | 레몬</title>
+  <link rel="icon" type="image/png" href="images/branding/lemon-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, body, input, button, select { font-family:'Gowun Batang', serif; box-sizing:border-box; }
+    body { margin:15px; background:#f9f9f9; color:#333; }
+    button, select, input { color:#333; }
+    .page { width:min(1080px, 100%); margin:0 auto; }
+    .header { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+    .nav-btn-home { display:inline-flex; width:50px; height:50px; align-items:center; justify-content:center; text-decoration:none; flex:0 0 auto; }
+    .back-icon { width:100%; height:100%; object-fit:contain; display:block; }
+    .header-title h1 { margin:0; font-size:1.5rem; }
+    .subtitle { margin:4px 0 0; color:#777; font-size:.86rem; line-height:1.5; }
+
+    .card { background:#fff; border:1px solid #ccc; border-radius:10px; box-shadow:2px 2px 5px rgba(0,0,0,.05); padding:18px; margin-bottom:14px; }
+
+    .guide-open-btn {
+      margin-left:auto; min-height:38px; padding:7px 12px; border:1px solid #8c7a28;
+      border-radius:7px; background:#fff9db; color:#5d511d; font-size:.82rem; font-weight:700;
+      cursor:pointer; white-space:nowrap;
+    }
+    .guide-open-btn:hover { background:#fff1a8; }
+    .guide-modal {
+      position:fixed; inset:0; z-index:1000; display:none; align-items:center; justify-content:center;
+      padding:18px; background:rgba(0,0,0,.38);
+    }
+    .guide-modal.show { display:flex; }
+    .guide-dialog {
+      width:min(620px, 100%); max-height:min(78vh, 720px); overflow:auto;
+      background:#fff; border:1px solid #8c7a28; border-radius:12px; padding:18px;
+      box-shadow:0 10px 30px rgba(0,0,0,.2);
+    }
+    .guide-dialog-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
+    .guide-dialog-head h2 { margin:0; font-size:1.05rem; }
+    .guide-close-btn {
+      width:34px; height:34px; border:1px solid #aaa; border-radius:50%; background:#fff;
+      font-size:1.05rem; cursor:pointer;
+    }
+    .guide-dialog p { margin:6px 0; line-height:1.6; font-size:.86rem; }
+
+    .section-title { margin:0 0 12px; font-size:1.02rem; font-weight:700; }
+
+    /* 계산 조건: 1열 전체 / 2열 2분할 / 3열 전체 / 4열 2분할 */
+    .calc-condition-layout {
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .calc-row-full {
+      width:100%;
+    }
+    .calc-row-two {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:12px;
+    }
+
+    .form-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; }
+    .field { display:flex; flex-direction:column; gap:6px; }
+    .field.full { grid-column:1 / -1; }
+    .field label { font-size:.82rem; font-weight:700; color:#555; }
+    .field-hint { color:#888; font-size:.72rem; line-height:1.4; }
+    .field select, .field input { width:100%; min-height:43px; padding:9px 11px; border:1px solid #aaa; border-radius:7px; background:#fff; font-size:.95rem; }
+    .field select:focus, .field input:focus { outline:2px solid #f3df76; outline-offset:1px; border-color:#75682c; }
+
+    .extra-mission-toggle {
+      display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:43px;
+      padding:9px 11px; border:1px solid #aaa; border-radius:7px; background:#fff;
+      cursor:pointer; user-select:none;
+    }
+    .extra-mission-toggle:hover { background:#fff9db; }
+    .extra-mission-toggle input { width:18px; height:18px; margin:0; flex:0 0 auto; accent-color:#8c7a28; }
+    .extra-mission-toggle .toggle-copy { flex:1; min-width:0; }
+    .extra-mission-toggle .toggle-title { display:block; font-size:.86rem; font-weight:700; }
+    .extra-mission-toggle .toggle-sub { display:block; margin-top:2px; color:#777; font-size:.72rem; line-height:1.35; }
+
+    .multiplier-wrap { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+    .multiplier-btn { min-height:43px; border:1px solid #999; border-radius:7px; background:#fff; font-weight:700; cursor:pointer; transition:.15s; }
+    .multiplier-btn:hover { background:#fff9db; }
+    .multiplier-btn.active { background:#fff0a8; border-color:#594e1a; box-shadow:inset 0 -3px 0 #594e1a; }
+
+    .flower-options-box {
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      min-height:48px; padding:9px 11px; border:1px solid #aaa; border-radius:7px; background:#fff;
+    }
+    .flower-options-copy { min-width:0; }
+    .flower-options-copy strong { display:block; font-size:.86rem; }
+    .flower-options-copy span { display:block; margin-top:2px; color:#777; font-size:.72rem; line-height:1.4; }
+    .option-config-btn {
+      flex:0 0 auto; min-height:36px; padding:7px 12px; border:1px solid #8c7a28; border-radius:7px;
+      background:#fff9db; color:#5d511d; font-size:.8rem; font-weight:700; cursor:pointer;
+    }
+    .option-config-btn:hover { background:#fff1a8; }
+    .option-config-btn:disabled { opacity:.5; cursor:not-allowed; }
+
+    .option-modal {
+      position:fixed; inset:0; z-index:1100; display:none; align-items:center; justify-content:center;
+      padding:18px; background:rgba(0,0,0,.42);
+    }
+    .option-modal.show { display:flex; }
+    .option-dialog {
+      width:min(760px, 100%); max-height:min(86vh, 820px); display:flex; flex-direction:column;
+      background:#fff; border:1px solid #8c7a28; border-radius:12px; overflow:hidden;
+      box-shadow:0 12px 34px rgba(0,0,0,.23);
+    }
+    .option-dialog-head {
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:16px 18px 12px; border-bottom:1px solid #eee;
+    }
+    .option-dialog-head h2 { margin:0; font-size:1.05rem; }
+    .option-close-btn {
+      width:34px; height:34px; border:1px solid #aaa; border-radius:50%; background:#fff;
+      font-size:1.05rem; cursor:pointer;
+    }
+    .option-toolbar { padding:12px 18px; border-bottom:1px solid #eee; background:#fffdf3; }
+    .option-grade-filters { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:9px; }
+    .option-filter-btn {
+      min-height:32px; padding:5px 10px; border:1px solid #bbb; border-radius:16px;
+      background:#fff; font-size:.76rem; font-weight:700; cursor:pointer;
+    }
+    .option-filter-btn.active { background:#fff0a8; border-color:#6d6024; }
+    .option-search {
+      width:100%; min-height:39px; padding:8px 10px; border:1px solid #aaa; border-radius:7px;
+      background:#fff; font-size:.86rem;
+    }
+    .option-list {
+      flex:1; min-height:180px; overflow:auto; padding:8px 18px 14px;
+    }
+    .option-row {
+      display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:12px;
+      padding:10px 2px; border-bottom:1px solid #eee;
+    }
+    .option-row:last-child { border-bottom:0; }
+    .option-flower-main { min-width:0; }
+    .option-flower-name { display:flex; align-items:center; gap:7px; min-width:0; font-size:.86rem; font-weight:700; }
+    .option-flower-name .name-text { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .option-grade {
+      display:inline-flex; min-width:38px; justify-content:center; padding:3px 7px; border:1px solid #bbb;
+      border-radius:13px; background:#fafafa; font-size:.7rem; font-weight:700;
+    }
+    .option-flower-meta { margin-top:4px; color:#777; font-size:.72rem; }
+    .option-select {
+      min-width:92px; min-height:38px; padding:7px 9px; border:1px solid #999; border-radius:7px;
+      background:#fff; font-size:.86rem; font-weight:700;
+    }
+    .option-empty { padding:28px 10px; text-align:center; color:#888; font-size:.84rem; }
+    .option-dialog-foot {
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:12px 18px; border-top:1px solid #eee; background:#fafafa;
+    }
+    .option-save-status { color:#777; font-size:.76rem; }
+    .option-foot-actions { display:flex; gap:8px; }
+    .option-secondary-btn, .option-save-btn {
+      min-height:38px; padding:7px 14px; border-radius:7px; font-size:.82rem; font-weight:700; cursor:pointer;
+    }
+    .option-secondary-btn { border:1px solid #aaa; background:#fff; }
+    .option-save-btn { border:1px solid #685b1f; background:#fff0a8; }
+    .option-save-btn:disabled { opacity:.55; cursor:not-allowed; }
+
+    .member-status { margin-top:10px; min-height:24px; padding:8px 10px; background:#fafafa; border:1px solid #e4e4e4; border-radius:7px; color:#666; font-size:.8rem; line-height:1.5; }
+    .member-status.error { background:#fff2f2; border-color:#e0a3a3; color:#9b3030; }
+
+    .action-row { margin-top:14px; display:flex; justify-content:flex-end; }
+    .calc-btn { min-width:160px; min-height:45px; padding:10px 18px; border:1px solid #555; border-radius:7px; background:#fff0f0; font-size:.95rem; font-weight:700; cursor:pointer; }
+    .calc-btn:hover { background:#fae0e0; transform:translateY(-1px); }
+    .calc-btn:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+
+    .result-card { display:none; }
+    .result-card.show { display:block; }
+    .result-head { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:12px; }
+    .result-head h2 { margin:0; font-size:1.12rem; }
+    .status-badge { display:inline-flex; align-items:center; min-height:27px; padding:3px 9px; border-radius:14px; border:1px solid #aaa; background:#f5f5f5; font-size:.75rem; font-weight:700; white-space:nowrap; }
+    .status-badge.ok { background:#edf8ed; border-color:#83ae83; color:#356035; }
+    .status-badge.warn { background:#fff5df; border-color:#d4a858; color:#7c591a; }
+    .status-badge.bad { background:#fff0f0; border-color:#cf8585; color:#8d3030; }
+
+    .summary-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-bottom:14px; }
+    .summary-item { border:1.5px solid #c7c7c7; border-radius:8px; padding:10px; background:#fafafa; text-align:center; }
+    .summary-label { display:block; color:#777; font-size:.7rem; margin-bottom:3px; }
+    .summary-value { display:block; font-size:1rem; font-weight:700; word-break:keep-all; }
+
+    .plan-title { margin:14px 0 8px; font-size:.9rem; font-weight:700; }
+    .plan-table-wrap { overflow-x:auto; border:1px solid #ddd; border-radius:8px; }
+    table { width:100%; border-collapse:collapse; background:#fff; }
+    th, td { padding:9px 10px; border-bottom:1px solid #e4e4e4; text-align:center; font-size:.82rem; vertical-align:middle; }
+    th { background:#fff9db; font-weight:700; }
+    tr:last-child td { border-bottom:0; }
+    .score-pill { display:inline-flex; align-items:center; justify-content:center; min-width:60px; padding:4px 8px; border-radius:14px; background:#f4f4f4; border:1px solid #ccc; font-weight:700; }
+    .empty-plan { padding:16px; border:1px dashed #ccc; border-radius:8px; background:#fafafa; color:#777; font-size:.86rem; line-height:1.6; }
+    .result-note { margin:11px 0 0; color:#777; font-size:.76rem; line-height:1.55; }
+
+    details { margin-top:14px; border-top:1px solid #eee; padding-top:11px; }
+    summary { cursor:pointer; font-weight:700; font-size:.82rem; }
+    .score-option-list { display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
+    .score-option { padding:6px 9px; border:1px solid #ddd; border-radius:7px; background:#fafafa; font-size:.76rem; }
+
+    #site-version { position:fixed; left:12px; bottom:10px; font-size:11px; color:#aaa; z-index:9999; pointer-events:none; user-select:none; }
+
+    @media (max-width:700px) {
+      body { margin:8px; }
+      .card { padding:14px; }
+      .header-title h1 { font-size:1.25rem; }
+      .subtitle { font-size:.76rem; }
+      .form-grid { grid-template-columns:1fr; gap:10px; }
+      .field.full { grid-column:auto; }
+      .summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .action-row { display:block; }
+      .calc-btn { width:100%; }
+      th, td { padding:8px 7px; font-size:.74rem; }
+      .flower-options-box { align-items:flex-start; flex-direction:column; }
+      .option-config-btn { width:100%; }
+      .option-modal { padding:8px; }
+      .option-dialog { max-height:92vh; }
+      .option-dialog-head, .option-toolbar, .option-dialog-foot { padding-left:12px; padding-right:12px; }
+      .option-list { padding-left:12px; padding-right:12px; }
+      .option-row { grid-template-columns:minmax(0,1fr) 82px; gap:8px; }
+      .option-select { min-width:82px; width:82px; }
+      .option-dialog-foot { align-items:flex-start; flex-direction:column; }
+      .option-foot-actions { width:100%; }
+      .option-secondary-btn, .option-save-btn { flex:1; }
+    }
+      @media (max-width:760px) {
+      .calc-row-two { grid-template-columns:1fr; }
+    }
+  </style>
 </head>
-
 <body>
+  <main class="page">
+    <header class="header">
+      <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기"><img src="images/ui/back-button.png" alt="뒤로가기" class="back-icon"></a>
+      <div class="header-title">
+        <h1>⚔️경쟁전 임무 계산⚔️</h1>
+        <p class="subtitle">선택한 길드원이 실제로 보유한 꽃과 꽃별 추가 옵션 점수를 함께 반영합니다.</p>
+      </div>
+      <button type="button" id="guideOpenBtn" class="guide-open-btn">📖 계산 기준</button>
+    </header>
 
-    <div class="container-full">
+    <section class="card">
+      <h2 class="section-title">계산 조건</h2>
 
-        <div class="header">
-            <div class="header-left">
-                <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기"><img src="images/ui/back-button.png" alt="뒤로가기" class="back-icon"></a>
-                <div class="guild-title-wrap">
-                    <h1 style="margin: 0; font-size: 1.5rem;">🌸길드 꽃 도감🌸</h1>
-                    <button type="button" class="guild-guide-btn" onclick="openGuildGuide()" title="길드 꽃 도감 가이드" aria-label="길드 꽃 도감 가이드 열기">
-                        <img src="images/ui/guide-default.png" alt="가이드">
-                    </button>
-                </div>
-            </div>
+      <div class="calc-condition-layout">
+        <!-- 1열 -->
+        <div class="field calc-row-full">
+          <label for="memberSelect">👤계산 대상 길드원</label>
+          <select id="memberSelect"><option value="">길드원 정보를 불러오는 중입니다…</option></select>
         </div>
 
-        <!-- 길드원 목록 관리 -->
-        <div class="member-manage-card">
-
-            <div class="manage-title">
-                📖 길드원 목록 관리
-                <span style="font-size: 0.82rem; font-weight: normal; color: #666;">
-                    (닉네임 태그 클릭: 선택 / 1명 선택 후 역할·닉네임 수정 가능)
-                </span>
+        <!-- 2열 -->
+        <div class="calc-row-two">
+          <div class="field">
+            <label>✖️점수 배율</label>
+            <div class="multiplier-wrap" role="group" aria-label="점수 배율 선택">
+              <button type="button" class="multiplier-btn" data-multiplier="1">1배</button>
+              <button type="button" class="multiplier-btn active" data-multiplier="2">2배</button>
             </div>
+          </div>
 
-            <div class="form-row">
-
-                <select id="inputRole">
-                    <option value="길드장">길드장</option>
-                    <option value="부길드장">부길드장</option>
-                    <option value="임원">임원</option>
-                    <option value="정예">정예</option>
-                    <option value="멤버" selected>멤버</option>
-                </select>
-
-                <input
-                    type="text"
-                    id="inputNickname"
-                    placeholder="닉네임 입력"
-                    onkeyup="if(event.keyCode==13) addMember()"
-                >
-
-                <button type="button" class="btn-add" onclick="addMember()">
-                    ➕ 추가
-                </button>
-
-                <button type="button" class="btn-member-action btn-member-rename" onclick="updateSelectedMemberInfo()">
-                    ✏️ 정보 수정
-                </button>
-
-                <div class="member-danger-actions">
-                    <button type="button" class="btn-member-action btn-member-delete" onclick="deleteSelectedMembers()">
-                        ❌ 삭제
-                    </button>
-
-                    <button type="button" class="btn-member-action btn-member-reset" onclick="resetSelectedMembers()">
-                        🔄 초기화
-                    </button>
-                </div>
-
-            </div>
-
-            <div class="member-tag-list" id="memberTagList"></div>
-
+          <div class="field">
+            <label>➕추가 임무</label>
+            <label class="extra-mission-toggle" for="maxExtraToggle">
+              <span class="toggle-copy">
+                <span class="toggle-title">임무 횟수 추가</span>
+                <span class="toggle-sub">(45💎 x 6회 =270💎)</span>
+              </span>
+              <input id="maxExtraToggle" type="checkbox">
+            </label>
+          </div>
         </div>
 
-
-        <!-- 꽃 검색 -->
-        <div class="flower-search-card">
-
-            <div class="flower-search-title">
-                🔎 꽃 검색
+        <div class="field calc-row-full">
+          <label>✨꽃 개량 옵션</label>
+          <div class="flower-options-box">
+            <div class="flower-options-copy">
+              <strong id="optionConfigStatus">길드원을 선택하면 꽃별 옵션을 설정할 수 있습니다.</strong>
+              <span>꽃마다 +0~+4점을 개별 저장하며, 옵션 뽑기 비용은 다이아 계산에 포함하지 않습니다.</span>
             </div>
-
-            <button
-                type="button"
-                class="btn-open-flower-search"
-                onclick="openFlowerSearch()"
-            >
-                꽃 검색창 열기
-            </button>
-
+            <button type="button" id="optionConfigBtn" class="option-config-btn" disabled>꽃 옵션 설정</button>
+          </div>
         </div>
 
-
-        <!-- 등급 선택 탭 -->
-        <div class="tab-container">
-
-            <button class="tab-btn active" data-grade="N" onclick="openGrade(event, 'grade-N')">
-                N <span class="grade-count" id="count-N"></span>
-            </button>
-
-            <button class="tab-btn" data-grade="R" onclick="openGrade(event, 'grade-R')">
-                R <span class="grade-count" id="count-R"></span>
-            </button>
-
-            <button class="tab-btn" data-grade="SR" onclick="openGrade(event, 'grade-SR')">
-                SR <span class="grade-count" id="count-SR"></span>
-            </button>
-
-            <button class="tab-btn" data-grade="SSR" onclick="openGrade(event, 'grade-SSR')">
-                SSR <span class="grade-count" id="count-SSR"></span>
-            </button>
-
-            <button class="tab-btn" data-grade="UR" onclick="openGrade(event, 'grade-UR')">
-                UR <span class="grade-count" id="count-UR"></span>
-            </button>
-
+        <!-- 3열 -->
+        <div class="field calc-row-full">
+          <label for="targetInput">🎯목표 점수</label>
+          <input id="targetInput" type="number" min="0" step="1" inputmode="numeric" placeholder="예: 1400">
         </div>
 
+        <!-- 4열 -->
+        <div class="calc-row-two">
+          <div class="field">
+            <label for="remainingInput">📋남은 임무 횟수</label>
+            <input id="remainingInput" type="number" min="0" max="24" step="1" inputmode="numeric" placeholder="예: 12">
+          </div>
 
-        <!-- N -->
-        <div id="grade-N" class="tab-content active">
-
-            <div class="table-wrapper">
-
-                <div class="top-scrollbar-container" id="top-scroll-N">
-                    <div class="top-scrollbar-content" id="top-scroll-content-N"></div>
-                </div>
-
-                <div class="table-scroll-body" id="body-scroll-N">
-
-                    <table class="sheet-table" id="table-N">
-
-                        <thead>
-                            <tr class="row-role">
-                                <th class="sticky-col"></th>
-                                <th class="flower-query-col">직위</th>
-                            </tr>
-
-                            <tr class="row-name">
-                                <th class="sticky-col">꽃 이름</th>
-                                <th class="flower-query-col">닉네임</th>
-                            </tr>
-                        </thead>
-
-                        <tbody></tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
-
+          <div class="field">
+            <label for="currentInput">📈현재 점수</label>
+            <input id="currentInput" type="number" min="0" step="1" inputmode="numeric" placeholder="예: 1120">
+          </div>
         </div>
+      </div>
 
+      <div id="memberStatus" class="member-status">D1의 꽃 정보와 길드 체크 정보를 불러오는 중입니다.</div>
+      <div class="action-row"><button type="button" id="calcBtn" class="calc-btn" disabled>계산하기</button></div>
+    </section>
 
-        <!-- R -->
-        <div id="grade-R" class="tab-content">
+    <section id="resultCard" class="card result-card" aria-live="polite">
+      <div class="result-head">
+        <h2 id="resultTitle">계산 결과</h2>
+        <span id="resultBadge" class="status-badge">대기</span>
+      </div>
+      <div id="summaryGrid" class="summary-grid"></div>
+      <div id="planArea"></div>
+      <p id="resultNote" class="result-note"></p>
+      <details id="scoreDetails">
+        <summary>계산에 사용된 보유 꽃 점수 보기</summary>
+        <div id="scoreOptionList" class="score-option-list"></div>
+      </details>
+    </section>
+  </main>
 
-            <div class="table-wrapper">
-
-                <div class="top-scrollbar-container" id="top-scroll-R">
-                    <div class="top-scrollbar-content" id="top-scroll-content-R"></div>
-                </div>
-
-                <div class="table-scroll-body" id="body-scroll-R">
-
-                    <table class="sheet-table" id="table-R">
-
-                        <thead>
-                            <tr class="row-role">
-                                <th class="sticky-col"></th>
-                                <th class="flower-query-col">직위</th>
-                            </tr>
-
-                            <tr class="row-name">
-                                <th class="sticky-col">꽃 이름</th>
-                                <th class="flower-query-col">닉네임</th>
-                            </tr>
-                        </thead>
-
-                        <tbody></tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
-
+  <div id="optionModal" class="option-modal" role="dialog" aria-modal="true" aria-labelledby="optionModalTitle">
+    <div class="option-dialog">
+      <div class="option-dialog-head">
+        <h2 id="optionModalTitle">✨ 꽃 옵션 설정</h2>
+        <button type="button" id="optionCloseBtn" class="option-close-btn" aria-label="닫기">×</button>
+      </div>
+      <div class="option-toolbar">
+        <div id="optionGradeFilters" class="option-grade-filters" aria-label="등급 필터">
+          <button type="button" class="option-filter-btn active" data-grade="ALL">전체</button>
+          <button type="button" class="option-filter-btn" data-grade="N">N</button>
+          <button type="button" class="option-filter-btn" data-grade="R">R</button>
+          <button type="button" class="option-filter-btn" data-grade="SR">SR</button>
+          <button type="button" class="option-filter-btn" data-grade="SSR">SSR</button>
+          <button type="button" class="option-filter-btn" data-grade="UR">UR</button>
         </div>
-
-
-        <!-- SR -->
-        <div id="grade-SR" class="tab-content">
-
-            <div class="table-wrapper">
-
-                <div class="top-scrollbar-container" id="top-scroll-SR">
-                    <div class="top-scrollbar-content" id="top-scroll-content-SR"></div>
-                </div>
-
-                <div class="table-scroll-body" id="body-scroll-SR">
-
-                    <table class="sheet-table" id="table-SR">
-
-                        <thead>
-                            <tr class="row-role">
-                                <th class="sticky-col"></th>
-                                <th class="flower-query-col">직위</th>
-                            </tr>
-
-                            <tr class="row-name">
-                                <th class="sticky-col">꽃 이름</th>
-                                <th class="flower-query-col">닉네임</th>
-                            </tr>
-                        </thead>
-
-                        <tbody></tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
-
+        <input id="optionSearchInput" class="option-search" type="search" placeholder="꽃 이름 검색" autocomplete="off">
+      </div>
+      <div id="optionFlowerList" class="option-list"></div>
+      <div class="option-dialog-foot">
+        <span id="optionSaveStatus" class="option-save-status">변경 사항 없음</span>
+        <div class="option-foot-actions">
+          <button type="button" id="optionCancelBtn" class="option-secondary-btn">취소</button>
+          <button type="button" id="optionSaveBtn" class="option-save-btn">저장</button>
         </div>
-
-
-        <!-- SSR -->
-        <div id="grade-SSR" class="tab-content">
-
-            <div class="table-wrapper">
-
-                <div class="top-scrollbar-container" id="top-scroll-SSR">
-                    <div class="top-scrollbar-content" id="top-scroll-content-SSR"></div>
-                </div>
-
-                <div class="table-scroll-body" id="body-scroll-SSR">
-
-                    <table class="sheet-table" id="table-SSR">
-
-                        <thead>
-                            <tr class="row-role">
-                                <th class="sticky-col"></th>
-                                <th class="flower-query-col">직위</th>
-                            </tr>
-
-                            <tr class="row-name">
-                                <th class="sticky-col">꽃 이름</th>
-                                <th class="flower-query-col">닉네임</th>
-                            </tr>
-                        </thead>
-
-                        <tbody></tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- UR -->
-        <div id="grade-UR" class="tab-content">
-
-            <div class="table-wrapper">
-
-                <div class="top-scrollbar-container" id="top-scroll-UR">
-                    <div class="top-scrollbar-content" id="top-scroll-content-UR"></div>
-                </div>
-
-                <div class="table-scroll-body" id="body-scroll-UR">
-
-                    <table class="sheet-table" id="table-UR">
-
-                        <thead>
-                            <tr class="row-role">
-                                <th class="sticky-col"></th>
-                                <th class="flower-query-col">직위</th>
-                            </tr>
-
-                            <tr class="row-name">
-                                <th class="sticky-col">꽃 이름</th>
-                                <th class="flower-query-col">닉네임</th>
-                            </tr>
-                        </thead>
-
-                        <tbody></tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
-
-        </div>
-
+      </div>
     </div>
+  </div>
 
+  <div id="guideModal" class="guide-modal" role="dialog" aria-modal="true" aria-labelledby="guideTitle">
+    <div class="guide-dialog">
+      <div class="guide-dialog-head">
+        <h2 id="guideTitle">📖 계산 기준</h2>
+        <button type="button" id="guideCloseBtn" class="guide-close-btn" aria-label="닫기">×</button>
+      </div>
 
-    <!-- 꽃 검색 모달 -->
-    <div class="modal-overlay" id="flowerSearchModal">
+      <p>• 해당 계산은 <strong>A랭크를 기준</strong>으로 합니다.</p>
+      <p>• 같은 꽃 임무를 여러 번 반복해서 수행할 수 있으므로 <strong>반복인 경우도 포함하여 최적으로 계산</strong>합니다.</p>
+      <p>• 최종 점수는 <strong>(기본 점수 + 해당 꽃 개량 점수) × 배율</strong>로 계산합니다.</p>
+      <p>• 단, 계산 결과가 60점을 넘으면 <strong>최대 60점으로 처리</strong>합니다. (경쟁전 최대 점수)</p>
+      <p>• 추천 조합은 입력한 남은 임무 횟수 안에서 <strong>N → R → SR → SSR → UR 순으로 낮은 등급을 최대한 우선 사용</strong>하고, 부족한 만큼만 상위 등급으로 올립니다. 같은 등급 구성이라면 업그레이드 다이아가 더 적은 조합을 선택합니다.</p>
 
-        <div class="search-modal-card">
+      <p>[✖️점수배율]</p>
+      <p>• 임무를 업그레이드 하지 않을 시, '1배'로 설정 / 업그레이드 진행 시, '2배'를 선택합니다.</p>
+      <p>• 임무 업그레이드 비용</p>
+      <p>&nbsp;- N | 27💎</p>
+      <p>&nbsp;- R | 42💎</p>
+      <p>&nbsp;- SR (21점) | 63💎 / (23점) | 69💎</p>
+      <p>&nbsp;- SSR | 75💎</p>
+      <p>&nbsp;- UR | 84💎</p>
 
-            <div class="modal-header">
+      <p>[➕추가 임무]</p>
+      <p>• <strong>임무 횟수 추가</strong>는 무조건 추가 임무 <strong>6회</strong>를 기준으로 합니다. 비용 270💎(45💎 × 6회)</p>
 
-                <div class="modal-title">
-                    🔎 꽃 검색
-                </div>
-
-                <button
-                    type="button"
-                    class="modal-close"
-                    onclick="closeFlowerSearch()"
-                >
-                    ✕
-                </button>
-
-            </div>
-
-            <div class="search-selected-member" id="flowerSearchSelectedMember">
-                현재 선택: <b>길드원 미선택</b>
-            </div>
-
-            <div class="flower-search-input-row">
-
-                <input
-                    type="text"
-                    id="flowerSearchInput"
-                    class="flower-search-input"
-                    placeholder="꽃 이름 또는 획득처를 검색해 주세요."
-                    autocomplete="off"
-                    oninput="searchFlowers()"
-                >
-
-                <button
-                    type="button"
-                    class="btn-search-clear"
-                    onclick="clearFlowerSearch()"
-                >
-                    초기화
-                </button>
-
-            </div>
-
-            <div class="flower-search-result" id="flowerSearchResult">
-
-                <div class="search-guide">
-                    검색할 꽃 이름을 입력해 주세요.
-                </div>
-
-            </div>
-
-        </div>
-
+      <p>[✨꽃 개량 옵션]</p>
+      <p>• 보유한 꽃마다 개별로 <strong>개량(절품:경쟁포인트 증가)의 옵션을 +0 ~ +4점으로 설정</strong>할 수 있습니다.</p>
+      <p>• 옵션 점수가 붙어도 <strong>임무 업그레이드 다이아는 변하지 않습니다.</strong> 옵션은 획득 점수에만 반영합니다.</p>
+      <p>• 꽃 개량에 사용된 다이아는 계산하지 않습니다.</p>
     </div>
+  </div>
 
+  <div id="site-version">demo_v39</div>
+  <script src="flower-data-all.js"></script>
+  <script>
+    const FLOWERS_API = '/api/flowers';
+    const GUILD_STATE_API = '/api/guild-state';
+    const BASE_SEED_VERSION = 'demo_v39_base_356';
+    const MASTER_FLOWERS = window.FLOWER_MASTER_DATA || [];
+    const roleOrder = { '길드장':1, '부길드장':2, '임원':3, '정예':4, '멤버':5 };
+    const gradeOrder = { 'N':1, 'R':2, 'SR':3, 'SSR':4, 'UR':5 };
+    const UPGRADE_DIAMOND_COST = { N:27, R:42, SSR:75, UR:84 };
+    const BASE_MISSION_LIMIT = 18;
+    const EXTRA_MISSION_LIMIT = 6;
+    const EXTRA_MISSION_COST = 45;
 
-    <!-- 꽃 상세 정보 모달 -->
-    <div class="modal-overlay" id="flowerDetailModal" style="z-index: 1200;">
-        <div class="flower-detail-card">
-            <div class="modal-header">
-                <div class="modal-title">🌹 꽃 정보</div>
-                <button type="button" class="modal-close" onclick="closeFlowerDetail()">✕</button>
-            </div>
-            <div class="flower-detail-layout">
-                <img id="flowerDetailImage" src="" alt="" class="flower-detail-image">
-                <div class="flower-detail-info">
-                    <div id="flowerDetailName" class="flower-detail-name"></div>
-                    <div class="flower-detail-row"><span class="flower-detail-label">등급</span><span id="flowerDetailGrade"></span></div>
-                    <div class="flower-detail-row"><span class="flower-detail-label">길드전</span><span id="flowerDetailScore"></span></div>
-                    <div class="flower-detail-row"><span class="flower-detail-label">획득</span><span id="flowerDetailAcquire"></span></div>
-                    <div class="flower-detail-row"><span class="flower-detail-label">비고</span><span id="flowerDetailNote"></span></div>
-                    <div class="flower-detail-source">이미지·꽃 정보 참고: 코지 꽃수첩 (thecozybook.pages.dev)</div>
-                </div>
-            </div>
-        </div>
-    </div>
+    let flowers = [];
+    let members = [];
+    let checks = {};
+    let flowerOptions = {};
+    let multiplier = 2;
+    let ready = false;
 
+    let optionDraft = new Map();
+    let optionFilterGrade = 'ALL';
+    let optionEditingMemberId = '';
 
-    <!-- 꽃 보유자 조회 모달 -->
-    <div class="modal-overlay" id="infoModal">
+    const memberSelect = document.getElementById('memberSelect');
+    const memberStatus = document.getElementById('memberStatus');
+    const targetInput = document.getElementById('targetInput');
+    const currentInput = document.getElementById('currentInput');
+    const remainingInput = document.getElementById('remainingInput');
+    const maxExtraToggle = document.getElementById('maxExtraToggle');
+    const optionConfigBtn = document.getElementById('optionConfigBtn');
+    const optionConfigStatus = document.getElementById('optionConfigStatus');
+    const optionModal = document.getElementById('optionModal');
+    const optionModalTitle = document.getElementById('optionModalTitle');
+    const optionCloseBtn = document.getElementById('optionCloseBtn');
+    const optionCancelBtn = document.getElementById('optionCancelBtn');
+    const optionSaveBtn = document.getElementById('optionSaveBtn');
+    const optionSaveStatus = document.getElementById('optionSaveStatus');
+    const optionGradeFilters = document.getElementById('optionGradeFilters');
+    const optionSearchInput = document.getElementById('optionSearchInput');
+    const optionFlowerList = document.getElementById('optionFlowerList');
+    const guideOpenBtn = document.getElementById('guideOpenBtn');
+    const guideCloseBtn = document.getElementById('guideCloseBtn');
+    const guideModal = document.getElementById('guideModal');
+    const calcBtn = document.getElementById('calcBtn');
+    const resultCard = document.getElementById('resultCard');
+    const resultTitle = document.getElementById('resultTitle');
+    const resultBadge = document.getElementById('resultBadge');
+    const summaryGrid = document.getElementById('summaryGrid');
+    const planArea = document.getElementById('planArea');
+    const resultNote = document.getElementById('resultNote');
+    const scoreOptionList = document.getElementById('scoreOptionList');
 
-        <div class="modal-card">
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
+    }
 
-            <div class="modal-header">
+    function formatNumber(value) {
+      return Number(value || 0).toLocaleString('ko-KR');
+    }
 
-                <div class="modal-title" id="modalFlowerTitle">
-                    🌸 꽃 이름
-                </div>
+    function checkKey(flowerKey, memberId) {
+      return `flower::${encodeURIComponent(flowerKey)}::${memberId}`;
+    }
 
-                <button class="modal-close" onclick="closeModal()">
-                    ✕
-                </button>
+    function optionKey(flowerKey, memberId) {
+      return `option::${encodeURIComponent(flowerKey)}::${memberId}`;
+    }
 
-            </div>
+    function getFlowerOption(memberId, flowerKey) {
+      const value = Number(flowerOptions[optionKey(flowerKey, memberId)] || 0);
+      return Number.isInteger(value) && value >= 0 && value <= 4 ? value : 0;
+    }
 
-            <div class="modal-body" id="modalHolderContent"></div>
+    function sortedMembers() {
+      return [...members].sort((a,b) => {
+        const roleDiff = (roleOrder[a.role] || 99) - (roleOrder[b.role] || 99);
+        if (roleDiff) return roleDiff;
+        return String(a.name || '').localeCompare(String(b.name || ''), 'ko-KR');
+      });
+    }
 
-        </div>
+    function renderMembers() {
+      // 계산기 페이지에 새로 들어왔을 때는 항상 '선택 없음'이 기본값입니다.
+      // 같은 페이지에서 데이터만 새로고침되는 경우에는 현재 선택을 유지합니다.
+      const previous = memberSelect.value || '';
+      const list = sortedMembers();
+      memberSelect.innerHTML = '<option value="">길드원을 선택해주세요</option>' + list.map(member =>
+        `<option value="${escapeHtml(member.id)}">${escapeHtml(member.role || '멤버')} · ${escapeHtml(member.name || '')}</option>`
+      ).join('');
+      memberSelect.value = list.some(member => member.id === previous) ? previous : '';
+      updateMemberStatus();
+    }
 
-    </div>
+    function getSelectedMember() {
+      return members.find(member => member.id === memberSelect.value) || null;
+    }
 
+    function getOwnedScoredFlowers(memberId) {
+      if (!memberId) return [];
+      return flowers.filter(flower => {
+        const baseScore = Number(flower.guildScore);
+        return flower?.key && Number.isFinite(baseScore) && baseScore > 0 && Boolean(checks[checkKey(flower.key, memberId)]);
+      });
+    }
 
-    <script src="flower-data-all.js"></script>
+    function getOwnedFlowerCount(memberId) {
+      if (!memberId) return 0;
+      return flowers.filter(flower => flower?.key && Boolean(checks[checkKey(flower.key, memberId)])).length;
+    }
 
-    <script>
+    function getUpgradeDiamondCost(flower) {
+      const grade = String(flower?.grade || '').toUpperCase();
+      const baseScore = Number(flower?.guildScore);
+      if (grade === 'SR') {
+        if (baseScore === 21) return 63;
+        if (baseScore === 23) return 69;
+        return null;
+      }
+      return Object.prototype.hasOwnProperty.call(UPGRADE_DIAMOND_COST, grade)
+        ? UPGRADE_DIAMOND_COST[grade]
+        : null;
+    }
 
-        const grades = ['N', 'R', 'SR', 'SSR', 'UR'];
+    function groupScoreOptions(memberId) {
+      const grouped = new Map();
+      let excludedUpgradeCost = 0;
 
-        const roleOrder = {
-            '길드장': 1,
-            '부길드장': 2,
-            '임원': 3,
-            '정예': 4,
-            '멤버': 5
-        };
+      getOwnedScoredFlowers(memberId).forEach(flower => {
+        const baseScore = Number(flower.guildScore);
+        const grade = String(flower.grade || '').toUpperCase();
+        const optionBonus = getFlowerOption(memberId, flower.key);
+        const diamondCost = multiplier === 1 ? 0 : getUpgradeDiamondCost(flower);
 
+        if (multiplier === 2 && diamondCost == null) {
+          excludedUpgradeCost += 1;
+          return;
+        }
 
-        /* =========================
-           꽃 데이터 - 전체 꽃 도감 기준
-           [분류] 이름 전체 문자열을 ko-KR 가나다순으로 정렬
-        ========================= */
+        const rawPoints = (baseScore + optionBonus) * multiplier;
+        const points = Math.min(rawPoints, 60);
+        const key = `${grade}|${baseScore}|${optionBonus}|${diamondCost}|${points}`;
 
-        const flowerLabelCollator = new Intl.Collator('ko-KR', {
-            usage: 'sort',
-            sensitivity: 'base',
-            numeric: true
+        if (!grouped.has(key)) grouped.set(key, {
+          grade,
+          baseScore,
+          optionBonus,
+          points,
+          rawPoints,
+          diamondCost,
+          flowers:[]
         });
 
-        function compareFlowerLabels(a, b) {
-            return flowerLabelCollator.compare(String(a), String(b));
+        grouped.get(key).flowers.push(flower);
+      });
+
+      const options = [...grouped.values()]
+        .map(option => ({
+          ...option,
+          flowers:[...option.flowers].sort((a,b) =>
+            String(a.listName || a.name || '').localeCompare(String(b.listName || b.name || ''), 'ko-KR')
+          )
+        }))
+        .sort((a,b) =>
+          (gradeOrder[a.grade] || 99) - (gradeOrder[b.grade] || 99) ||
+          a.diamondCost - b.diamondCost ||
+          a.points - b.points ||
+          a.baseScore - b.baseScore ||
+          a.optionBonus - b.optionBonus
+        );
+
+      return { options, excludedUpgradeCost };
+    }
+
+    function updateMemberStatus() {
+      const selected = getSelectedMember();
+      memberStatus.classList.remove('error');
+
+      if (!ready) {
+        memberStatus.textContent = 'D1의 꽃 정보와 길드 체크 정보를 불러오는 중입니다.';
+        optionConfigBtn.disabled = true;
+        optionConfigStatus.textContent = '데이터를 불러오는 중입니다.';
+        calcBtn.disabled = true;
+        return;
+      }
+
+      if (!selected) {
+        memberStatus.textContent = `현재 D1 꽃 ${flowers.length}종을 불러왔습니다. 계산할 길드원을 선택해주세요.`;
+        optionConfigBtn.disabled = true;
+        optionConfigStatus.textContent = '길드원을 선택하면 꽃별 옵션을 설정할 수 있습니다.';
+        calcBtn.disabled = true;
+        return;
+      }
+
+      const owned = getOwnedFlowerCount(selected.id);
+      const scoredFlowers = getOwnedScoredFlowers(selected.id);
+      const scored = scoredFlowers.length;
+      const optionCount = scoredFlowers.filter(flower => getFlowerOption(selected.id, flower.key) > 0).length;
+      const { options, excludedUpgradeCost } = groupScoreOptions(selected.id);
+
+      optionConfigBtn.disabled = false;
+      optionConfigStatus.textContent = optionCount
+        ? `${selected.name} · 옵션이 설정된 꽃 ${optionCount}종`
+        : `${selected.name} · 현재 모든 꽃 옵션 +0점`;
+
+      memberStatus.textContent = `${selected.name} · 보유 체크 ${owned}종 · 길드전 점수 등록 ${scored}종 · 사용 가능한 임무 유형 ${options.length}개`;
+      if (multiplier === 2 && excludedUpgradeCost) {
+        memberStatus.textContent += ` · 업그레이드 비용 기준이 없는 ${excludedUpgradeCost}종은 2배 계산에서 제외`;
+      }
+      if (!options.length) {
+        memberStatus.classList.add('error');
+        memberStatus.textContent += ' · 계산 가능한 꽃이 없습니다.';
+      }
+
+      calcBtn.disabled = !options.length;
+      renderScoreOptions(options);
+    }
+
+    function renderScoreOptions(options) {
+      scoreOptionList.innerHTML = options.length ? options.map(option => {
+        const costText = multiplier === 2 ? ` · ${option.diamondCost}💎/회` : ' · 0💎/회';
+        const optionText = option.optionBonus > 0 ? ` + 옵션 ${option.optionBonus}점` : '';
+        const capText = option.rawPoints > 60 ? ' · 60점 상한 적용' : '';
+        const names = option.flowers.slice(0, 3).map(flower => escapeHtml(flower.listName || flower.name || '')).join(', ');
+        const more = option.flowers.length > 3 ? ` 외 ${option.flowers.length - 3}종` : '';
+        return `<span class="score-option">${escapeHtml(option.grade)} · ⚔️ ${option.points}점 <small>(기본 ${option.baseScore}점${optionText}${costText}${capText} · ${names}${more})</small></span>`;
+      }).join('') : '<span class="score-option">사용 가능한 점수 없음</span>';
+    }
+
+    async function ensureBaseSeedIfNeeded() {
+      let remote = await fetchFlowers();
+      if (remote.length || MASTER_FLOWERS.length < 300) return remote;
+      const response = await fetch(`${FLOWERS_API}?seed=1`, {
+        method:'POST', headers:{'content-type':'application/json'},
+        body:JSON.stringify({ seedVersion:BASE_SEED_VERSION, flowers:MASTER_FLOWERS })
+      });
+      if (response.ok) remote = await fetchFlowers();
+      return remote;
+    }
+
+    async function fetchFlowers() {
+      const response = await fetch(FLOWERS_API, { cache:'no-store' });
+      if (!response.ok) throw new Error(`꽃 데이터 GET ${response.status}`);
+      const payload = await response.json();
+      return Array.isArray(payload.flowers) ? payload.flowers : [];
+    }
+
+    async function fetchGuildState() {
+      const response = await fetch(GUILD_STATE_API, { cache:'no-store' });
+      if (!response.ok) throw new Error(`길드 데이터 GET ${response.status}`);
+      const payload = await response.json();
+      if (payload.exists && payload.state) {
+        if (Array.isArray(payload.state.members)) members = payload.state.members;
+        if (payload.state.checks && typeof payload.state.checks === 'object') checks = payload.state.checks;
+        flowerOptions = payload.state.flowerOptions && typeof payload.state.flowerOptions === 'object'
+          ? payload.state.flowerOptions
+          : {};
+      } else {
+        members = JSON.parse(localStorage.getItem('guild_members') || '[]');
+        checks = JSON.parse(localStorage.getItem('guild_checks') || '{}');
+        flowerOptions = JSON.parse(localStorage.getItem('guild_flower_options') || '{}');
+      }
+    }
+
+    async function loadData(showError = true) {
+      try {
+        const [loadedFlowers] = await Promise.all([ensureBaseSeedIfNeeded(), fetchGuildState()]);
+        flowers = loadedFlowers;
+        localStorage.setItem('guild_members', JSON.stringify(members));
+        localStorage.setItem('guild_checks', JSON.stringify(checks));
+        localStorage.setItem('guild_flower_options', JSON.stringify(flowerOptions));
+        ready = true;
+        renderMembers();
+      } catch (error) {
+        console.warn('임무 계산기 데이터 조회 실패', error);
+        ready = false;
+        calcBtn.disabled = true;
+        memberStatus.classList.add('error');
+        memberStatus.textContent = showError ? `데이터를 불러오지 못했습니다. ${error.message || error}` : '데이터를 불러오지 못했습니다.';
+      }
+    }
+
+    function currentOptionFlowers(memberId) {
+      return getOwnedScoredFlowers(memberId)
+        .slice()
+        .sort((a,b) => {
+          const gradeDiff = (gradeOrder[String(a.grade || '').toUpperCase()] || 99) - (gradeOrder[String(b.grade || '').toUpperCase()] || 99);
+          if (gradeDiff) return gradeDiff;
+          return String(a.listName || a.name || '').localeCompare(String(b.listName || b.name || ''), 'ko-KR');
+        });
+    }
+
+    function updateOptionSaveStatus() {
+      if (!optionEditingMemberId) {
+        optionSaveStatus.textContent = '변경 사항 없음';
+        return;
+      }
+
+      const flowersForMember = currentOptionFlowers(optionEditingMemberId);
+      const changed = flowersForMember.reduce((count, flower) => {
+        const before = getFlowerOption(optionEditingMemberId, flower.key);
+        const after = Number(optionDraft.get(flower.key) || 0);
+        return count + (before !== after ? 1 : 0);
+      }, 0);
+
+      const configured = flowersForMember.reduce((count, flower) =>
+        count + (Number(optionDraft.get(flower.key) || 0) > 0 ? 1 : 0), 0);
+
+      optionSaveStatus.textContent = changed
+        ? `변경 ${changed}종 · 옵션 설정 ${configured}종`
+        : `변경 사항 없음 · 옵션 설정 ${configured}종`;
+    }
+
+    function renderOptionFlowerList() {
+      if (!optionEditingMemberId) {
+        optionFlowerList.innerHTML = '<div class="option-empty">길드원을 먼저 선택해주세요.</div>';
+        return;
+      }
+
+      const query = String(optionSearchInput.value || '').trim().toLocaleLowerCase('ko-KR');
+      const list = currentOptionFlowers(optionEditingMemberId).filter(flower => {
+        const grade = String(flower.grade || '').toUpperCase();
+        if (optionFilterGrade !== 'ALL' && grade !== optionFilterGrade) return false;
+        if (!query) return true;
+        const name = String(flower.listName || flower.name || '').toLocaleLowerCase('ko-KR');
+        return name.includes(query);
+      });
+
+      if (!list.length) {
+        optionFlowerList.innerHTML = '<div class="option-empty">조건에 맞는 보유 꽃이 없습니다.</div>';
+        updateOptionSaveStatus();
+        return;
+      }
+
+      optionFlowerList.innerHTML = list.map(flower => {
+        const grade = String(flower.grade || '').toUpperCase();
+        const baseScore = Number(flower.guildScore);
+        const value = Number(optionDraft.get(flower.key) || 0);
+        const raw1 = baseScore + value;
+        const raw2 = (baseScore + value) * 2;
+        const final2 = Math.min(raw2, 60);
+        const capText = raw2 > 60 ? ' · 2배 최대 60점 적용' : '';
+        const selectOptions = [0,1,2,3,4].map(score =>
+          `<option value="${score}"${score === value ? ' selected' : ''}>+${score}점</option>`
+        ).join('');
+
+        return `
+          <div class="option-row">
+            <div class="option-flower-main">
+              <div class="option-flower-name">
+                <span class="option-grade">${escapeHtml(grade)}</span>
+                <span class="name-text">${escapeHtml(flower.listName || flower.name || '')}</span>
+              </div>
+              <div class="option-flower-meta">기본 ${formatNumber(baseScore)}점 · 1배 ${formatNumber(raw1)}점 · 2배 ${formatNumber(final2)}점${capText}</div>
+            </div>
+            <select class="option-select" data-flower-key="${escapeHtml(flower.key)}" aria-label="${escapeHtml(flower.listName || flower.name || '')} 옵션 점수">
+              ${selectOptions}
+            </select>
+          </div>`;
+      }).join('');
+
+      updateOptionSaveStatus();
+    }
+
+    function openOptionModal() {
+      const selected = getSelectedMember();
+      if (!selected) {
+        alert('먼저 계산 대상 길드원을 선택해주세요.');
+        return;
+      }
+
+      optionEditingMemberId = selected.id;
+      optionDraft = new Map(
+        currentOptionFlowers(selected.id).map(flower => [
+          flower.key,
+          getFlowerOption(selected.id, flower.key)
+        ])
+      );
+
+      optionFilterGrade = 'ALL';
+      optionSearchInput.value = '';
+      optionGradeFilters.querySelectorAll('.option-filter-btn').forEach(button => {
+        button.classList.toggle('active', button.dataset.grade === 'ALL');
+      });
+
+      optionModalTitle.textContent = `✨ ${selected.name}님의 꽃 옵션 설정`;
+      optionModal.classList.add('show');
+      renderOptionFlowerList();
+      optionSearchInput.focus();
+    }
+
+    function closeOptionModal() {
+      optionModal.classList.remove('show');
+      optionEditingMemberId = '';
+      optionDraft = new Map();
+      optionConfigBtn.focus();
+    }
+
+    async function patchFlowerOptionChanges(optionChanges) {
+      const chunks = [];
+      for (let index = 0; index < optionChanges.length; index += 150) {
+        chunks.push(optionChanges.slice(index, index + 150));
+      }
+
+      for (const chunk of chunks) {
+        const response = await fetch(GUILD_STATE_API, {
+          method:'PATCH',
+          headers:{'content-type':'application/json'},
+          body:JSON.stringify({ optionChanges:chunk })
+        });
+        if (!response.ok) {
+          const detail = await response.text().catch(() => '');
+          throw new Error(`꽃 옵션 저장 실패 (${response.status}) ${detail}`);
         }
+      }
+    }
 
-        function getDefaultFlowersByGrade(grade) {
-            return (window.FLOWER_MASTER_DATA || [])
-                .filter(item => item.grade === grade)
-                .map(item => item.listName)
-                .sort(compareFlowerLabels);
+    async function saveOptionSettings() {
+      const selected = members.find(member => member.id === optionEditingMemberId);
+      if (!selected) return;
+
+      const changed = currentOptionFlowers(selected.id)
+        .map(flower => {
+          const before = getFlowerOption(selected.id, flower.key);
+          const after = Number(optionDraft.get(flower.key) || 0);
+          return before === after ? null : {
+            key: optionKey(flower.key, selected.id),
+            value: after
+          };
+        })
+        .filter(Boolean);
+
+      if (!changed.length) {
+        closeOptionModal();
+        return;
+      }
+
+      optionSaveBtn.disabled = true;
+      optionCancelBtn.disabled = true;
+      optionSaveStatus.textContent = `저장 중 · ${changed.length}종`;
+
+      try {
+        await patchFlowerOptionChanges(changed);
+
+        changed.forEach(change => {
+          if (change.value > 0) flowerOptions[change.key] = change.value;
+          else delete flowerOptions[change.key];
+        });
+        localStorage.setItem('guild_flower_options', JSON.stringify(flowerOptions));
+
+        optionSaveStatus.textContent = `저장 완료 · ${changed.length}종`;
+        optionModal.classList.remove('show');
+        optionEditingMemberId = '';
+        optionDraft = new Map();
+        updateMemberStatus();
+
+        if (resultCard.classList.contains('show') &&
+            targetInput.value !== '' &&
+            currentInput.value !== '' &&
+            remainingInput.value !== '') {
+          calculate();
         }
+      } catch (error) {
+        console.warn('꽃 옵션 저장 실패', error);
+        alert('꽃 옵션을 저장하지 못했습니다. 잠시 후 다시 시도해주세요.');
+        optionSaveStatus.textContent = '저장 실패';
+      } finally {
+        optionSaveBtn.disabled = false;
+        optionCancelBtn.disabled = false;
+      }
+    }
 
-        const defaultNFlowers = getDefaultFlowersByGrade('N');
-        const defaultRFlowers = getDefaultFlowersByGrade('R');
-        const defaultSRFlowers = getDefaultFlowersByGrade('SR');
-        const defaultSSRFlowers = getDefaultFlowersByGrade('SSR');
-        const defaultURFlowers = getDefaultFlowersByGrade('UR');
+    const HIGH_GRADE_PRIORITY = ['UR', 'SSR', 'SR', 'R'];
 
-        const flowersData = {
-            N: defaultNFlowers,
-            R: defaultRFlowers,
-            SR: defaultSRFlowers,
-            SSR: defaultSSRFlowers,
-            UR: defaultURFlowers
+    function emptyGradeCounts() {
+      return { N:0, R:0, SR:0, SSR:0, UR:0 };
+    }
+
+    function addGradeCount(counts, grade) {
+      const next = { ...counts };
+      const key = String(grade || '').toUpperCase();
+      if (Object.prototype.hasOwnProperty.call(next, key)) next[key] += 1;
+      return next;
+    }
+
+    // 상위 등급 사용 횟수를 먼저 비교합니다.
+    // UR → SSR → SR → R 순서로 적게 쓴 조합이 우선이므로,
+    // 결과적으로 N부터 최대한 사용하고 부족한 만큼만 상위 등급으로 교체합니다.
+    function compareGradeUsage(aCounts, bCounts) {
+      if (!bCounts) return -1;
+      for (const grade of HIGH_GRADE_PRIORITY) {
+        const diff = (aCounts?.[grade] || 0) - (bCounts?.[grade] || 0);
+        if (diff !== 0) return diff;
+      }
+      return 0;
+    }
+
+    function compareState(a, b) {
+      if (!b) return -1;
+
+      // 1순위: 낮은 등급 우선 (상위 등급 사용 최소)
+      const gradeDiff = compareGradeUsage(a.gradeCounts, b.gradeCounts);
+      if (gradeDiff !== 0) return gradeDiff;
+
+      // 2순위: 같은 등급 구성이라면 업그레이드 다이아 최소
+      if (a.upgradeCost !== b.upgradeCost) return a.upgradeCost - b.upgradeCost;
+
+      return 0;
+    }
+
+    function comparePlanCandidate(a, b) {
+      if (!b) return -1;
+
+      // 1순위: 낮은 등급부터 최대한 사용
+      const gradeDiff = compareGradeUsage(a.gradeCounts, b.gradeCounts);
+      if (gradeDiff !== 0) return gradeDiff;
+
+      // 2순위: 같은 등급 구성 안에서 업그레이드 다이아 최소
+      if (a.upgradeCost !== b.upgradeCost) return a.upgradeCost - b.upgradeCost;
+
+      // 3순위: 목표 초과 점수 최소
+      if (a.overshoot !== b.overshoot) return a.overshoot - b.overshoot;
+
+      // 4순위: 사용 임무 횟수 최소
+      if (a.count !== b.count) return a.count - b.count;
+
+      return a.sum - b.sum;
+    }
+
+    function findMinimumDiamondPlan(options, maxCount, needed) {
+      if (needed <= 0) {
+        return {
+          upgradeCost:0,
+          sum:0,
+          count:0,
+          counts:Array(options.length).fill(0),
+          gradeCounts:emptyGradeCounts()
         };
-
-        // v24 이전 길드 꽃 도감은 등급별 배열 index를 체크키로 사용했습니다.
-        // 가나다순 재정렬 이후에도 기존 체크가 다른 꽃으로 이동하지 않도록 1회 마이그레이션합니다.
-        const LEGACY_GUILD_FLOWER_ORDER_V24 = {
-            "N": [
-                        "[레벨 01 해제] 붉은 장미",
-                        "[레벨 01 해제] 은방울꽃",
-                        "[레벨 03 해제] 자색 도라지",
-                        "[레벨 04 해제] 노란 장미",
-                        "[레벨 05 해제] 카네이션",
-                        "[레벨 06 해제] 노란 튤립",
-                        "[레벨 07 해제] 제비꽃",
-                        "[레벨 08 해제] 분홍 튤립",
-                        "[레벨 09 해제] 호접란",
-                        "[레벨 10 해제] 분홍 장미",
-                        "[레벨 11 해제] 흰 백합",
-                        "[레벨 12 해제] 데이지",
-                        "[레벨 13 해제] 분홍 백합",
-                        "[레벨 14 해제] 푸른별꽃",
-                        "[레벨 15 해제] 노란 백합",
-                        "[레벨 16 해제] 자색 수국",
-                        "[레벨 17 해제] 동백꽃",
-                        "[레벨 18 해제] 분홍 수국",
-                        "[레벨 19 해제] 구즈마니아",
-                        "[레벨 20 해제] 파란 수국",
-                        "[레벨 21 해제] 해바라기",
-                        "[레벨 22 해제] 프리지아",
-                        "[레벨 23 해제] 금술 국화",
-                        "[레벨 24 해제] 수선화",
-                        "[레벨 25 해제] 거베라",
-                        "[레벨 26 해제] 붉은 카라",
-                        "[레벨 27 해제] 초롱꽃",
-                        "[레벨 28 해제] 노란 카라",
-                        "[레벨 29 해제] 민들레",
-                        "[레벨 30 해제] 자색 카라",
-                        "[레벨 31 해제] 연보라 히아신스",
-                        "[레벨 32 해제] 자귀나무꽃",
-                        "[레벨 33 해제] 연분홍 히아신스",
-                        "[레벨 34 해제] 재스민",
-                        "[레벨 35 해제] 연노랑 히아신스",
-                        "[레벨 36 해제] 황금 여의 국화",
-                        "[레벨 37 해제] 치자꽃",
-                        "[레벨 38 해제] 연분홍 여의 국화",
-                        "[레벨 39 해제] 분홍 복사꽃",
-                        "[레벨 40 해제] 연귤색 여의 국화",
-                        "[레벨 41 해제] 비취 리시안셔스",
-                        "[레벨 42 해제] 자운 라일락",
-                        "[레벨 43 해제] 붉은구름 리시안셔스",
-                        "[레벨 44 해제] 연노랑 라일락",
-                        "[레벨 45 해제] 호박 리시안셔스",
-                        "[레벨 46 해제] 자홍색 부겐빌레아",
-                        "[레벨 47 해제] 물망초",
-                        "[레벨 48 해제] 연노랑 부겐빌레아",
-                        "[레벨 49 해제] 설흔 구리향",
-                        "[레벨 50 해제] 연벚꽃 부겐빌레아",
-                        "[레벨 51 해제] 탐스러운 덩굴장미",
-                        "[레벨 52 해제] 성심 백합",
-                        "[레벨 53 해제] 자색 폭스테일",
-                        "[레벨 54 해제] 서리꽃 석곡",
-                        "[레벨 55 해제] 분홍색 폭스테일",
-                        "[레벨 56 해제] 청백 로벨리아",
-                        "[레벨 57 해제] 노란 폭스테일",
-                        "[레벨 58 해제] 자색 괭이밥",
-                        "[레벨 59 해제] 주황색 괭이밥",
-                        "[레벨 60 해제] 빛나는 노란 괭이밥",
-                        "[레벨 61 해제] 눈꽃 용토주",
-                        "[레벨 62 해제] 금잔 금관화",
-                        "[레벨 63 해제] 안개 분홍 신부화",
-                        "[레벨 64 해제] 진홍 벚꽃 용토주",
-                        "[레벨 65 해제] 주황 불꽃 금관화",
-                        "[레벨 66 해제] 구름 베일 신부화",
-                        "[레벨 67 해제] 보랏빛 베일 용토주",
-                        "[레벨 68 해제] 진홍 불꽃 금관화",
-                        "[레벨 69 해제] 노을빛 신부꽃"
-            ],
-            "R": [
-                        "[구름이 머무는 얕은 해변] 야자수 그늘",
-                        "[꽃시장 교환] 개상사화",
-                        "[꽃시장 교환] 구름빛 델피니움",
-                        "[꽃시장 교환] 귤빛 불꽃 시클라멘",
-                        "[꽃시장 교환] 그윽한 보랏빛 델피니움",
-                        "[꽃시장 교환] 금박 베고니아",
-                        "[꽃시장 교환] 금살구 진달래",
-                        "[꽃시장 교환] 금술 접시꽃",
-                        "[꽃시장 교환] 다투라",
-                        "[꽃시장 교환] 반쯤 핀 칼랑코에",
-                        "[꽃시장 교환] 보라솜털 시클라멘",
-                        "[꽃시장 교환] 보랏빛 아부틸론",
-                        "[꽃시장 교환] 복숭아빛 노루오줌",
-                        "[꽃시장 교환] 복숭아빛 델피니움",
-                        "[꽃시장 교환] 분홍솜털 안개꽃",
-                        "[꽃시장 교환] 붉은 노을 아부틸론",
-                        "[꽃시장 교환] 비취잎 소철",
-                        "[꽃시장 교환] 석산",
-                        "[꽃시장 교환] 아리따운 진달래",
-                        "[꽃시장 교환] 안개 자색 아프리칸바이올렛",
-                        "[꽃시장 교환] 연분홍 아프리칸바이올렛",
-                        "[꽃시장 교환] 연분홍 협죽도",
-                        "[꽃시장 교환] 연지 아프리칸바이올렛",
-                        "[꽃시장 교환] 자홍색 협죽도",
-                        "[꽃시장 교환] 진홍빛 아부틸론",
-                        "[꽃시장 교환] 촉영 해당화",
-                        "[꽃시장 교환] 취한뺨 해당화",
-                        "[꽃시장 교환] 파란 눈의 영광",
-                        "[꽃시장 교환] 핑크 심비디움",
-                        "[꽃시장 교환] 하늘빛 재클린",
-                        "[꽃시장 교환] 하얀 눈의 영광",
-                        "[꽃시장 현상금] 개나리",
-                        "[꽃시장 현상금] 극락조화",
-                        "[꽃시장 현상금] 금살구 페튜니아",
-                        "[꽃시장 현상금] 라이트 클레마티스",
-                        "[꽃시장 현상금] 수정빛 페튜니아",
-                        "[꽃시장 현상금] 순백 폼폼 국화",
-                        "[꽃시장 현상금] 스파티필룸",
-                        "[꽃시장 현상금] 안스리움",
-                        "[꽃시장 현상금] 연귤색 폼폼 국화",
-                        "[꽃시장 현상금] 연분홍 폼폼 국화",
-                        "[꽃시장 현상금] 향수 백합",
-                        "[꽃의 밀령] 먹물색 노루귀",
-                        "[꽃의 밀령] 보라 심장 물상추",
-                        "[꽃의 밀령] 복숭아빛 재클린",
-                        "[꽃의 밀령] 연보라 깃털초",
-                        "[꽃의 향기 조향] 붉은 심장 물상추",
-                        "[꽃자수 시간] 노란 심장 물상추",
-                        "[동심 축제] 분홍 방울",
-                        "[따스한 봄소풍] 라넌큘러스",
-                        "[미식 파티] 레트로 코코아",
-                        "[백화 기록] 연분홍 노루귀",
-                        "[별똥별의 향기] 금살구 온시디움",
-                        "[별똥별의 향기] 순백 코스모스",
-                        "[별똥별의 향기] 연노랑 녹용호",
-                        "[별이슬 드림] 몬스테라",
-                        "[별하늘의 기연] 황금 가시 장미",
-                        "[빛나는 별의 세계] 블루스타 납매",
-                        "[상방취화] 노란줄무늬 깃털초",
-                        "[상방취화] 백설 노루귀",
-                        "[설산의 기연] 스노우탑 크림슨",
-                        "[여름 음악회] 햇살 맞이 무궁화",
-                        "[응원 이벤트] 송이국화",
-                        "[천심 동등] 주사 비단 등불",
-                        "[커플 플라워 데이트] 눈 솜털 토끼꼬리",
-                        "[커플 플라워 데이트] 보라색 솜털 토끼꼬리",
-                        "[커플 플라워 데이트] 부드러운 분홍 토끼 꼬리",
-                        "[펫] 귤빛 불꽃 익소라",
-                        "[평화로운 우주 질서] 이슬에 물든 파란 나비",
-                        "[플로럴 심포니] 진홍빛 석류꽃",
-                        "[향기로운 회랑] 앵규다정",
-                        "[VIP 상점] 눈솜털 안개꽃",
-                        "[VIP 상점] 자홍깃 재클린",
-                        "[VIP 상점] 푸른 솜털 안개꽃",
-                        "[VIP 상점] 핑크화이트 시클라멘"
-            ],
-            "SR": [
-                        "[7일 접속] 윤생 호랑가시나무",
-                        "[금관의 빛나는 정원] 분홍 왕관 프로테아",
-                        "[금관의 빛나는 정원] 주황 노을 원추리",
-                        "[꽃 패키지] 귤홍 윙윙 장미",
-                        "[꽃 패키지] 레몬색 윙윙 장미",
-                        "[꽃 패키지] 벚꽃 핑크 설강화",
-                        "[꽃 패키지] 연분홍 마거리트",
-                        "[꽃 패키지] 옥가루 설강화",
-                        "[꽃 패키지] 주홍빛 윙윙 장미",
-                        "[꽃 패키지] 창공빛 등나무",
-                        "[꽃 패키지] 황혼 등나무",
-                        "[꽃시장 교환] 구름자수 작약",
-                        "[꽃시장 교환] 금서리 붓꽃",
-                        "[꽃시장 교환] 꿀처럼 부드러운 달맞이꽃",
-                        "[꽃시장 교환] 노을빛 산호꽃",
-                        "[꽃시장 교환] 노을빛 아마릴리스",
-                        "[꽃시장 교환] 달빛 아네모네",
-                        "[꽃시장 교환] 따뜻한 노랑 루위시아",
-                        "[꽃시장 교환] 먹술 아네모네",
-                        "[꽃시장 교환] 묵옥 아네모네",
-                        "[꽃시장 교환] 분홍 수레국화",
-                        "[꽃시장 교환] 분홍 수정 루위시아",
-                        "[꽃시장 교환] 분홍 스파티필룸",
-                        "[꽃시장 교환] 분홍안개 맥문동",
-                        "[꽃시장 교환] 붉은 눈 목향장미",
-                        "[꽃시장 교환] 붉은불꽃 아네모네",
-                        "[꽃시장 교환] 브룬펠시아",
-                        "[꽃시장 교환] 새벽빛 목향장미",
-                        "[꽃시장 교환] 서리꽃 맥문동",
-                        "[꽃시장 교환] 연분홍 조팝나무",
-                        "[꽃시장 교환] 연자색 산호꽃",
-                        "[꽃시장 교환] 연지 작약",
-                        "[꽃시장 교환] 연지빛 헬레보루스",
-                        "[꽃시장 교환] 연홍색 접시꽃",
-                        "[꽃시장 교환] 우아한 보라 코스모스",
-                        "[꽃시장 교환] 우아한 보라빛 알리움",
-                        "[꽃시장 교환] 유벽 메코놉시스",
-                        "[꽃시장 교환] 윤기나는 작약",
-                        "[꽃시장 교환] 진사 단목서",
-                        "[꽃시장 교환] 진홍색 달리아",
-                        "[꽃시장 교환] 차홍색 헬레보루스",
-                        "[꽃시장 교환] 창봉 은목서",
-                        "[꽃시장 교환] 타오르는 불꽃 레난테라",
-                        "[꽃시장 교환] 푸른 소철",
-                        "[꽃시장 교환] 홍시 칼랑코에",
-                        "[꽃시장 교환] 황금잎 금목서",
-                        "[꽃시장 교환] 흑수정 달리아",
-                        "[꽃시장 교환] 흑자색 메코놉시스",
-                        "[꽃시장 현상금] 연분홍 페튜니아",
-                        "[꽃의 밀령] 달계곡 등나무",
-                        "[꽃의 밀령] 연노랑 마거리트",
-                        "[꽃의 밀령] 연보라 마거리트",
-                        "[꽃의 밀령] 연보라 설강화",
-                        "[누적 충전] 베들레헴의 별",
-                        "[누적 충전] 별꿈 해파리",
-                        "[누적 충전] 붉은노을 접시꽃",
-                        "[누적 충전] 창공빛 산호초",
-                        "[누적 충전] 취한 별의 꿈",
-                        "[물결치는 별무리] 쌓인 옥빛 연꽃",
-                        "[물결치는 별무리] 유리빛 조류 연꽃",
-                        "[별똥별의 향기] 붉은 벚꽃 달맞이꽃",
-                        "[별똥별의 향기] 연지 아네모네",
-                        "[별똥별의 향기] 영롱한 얼음빛 납매",
-                        "[별똥별의 향기] 진홍 벚꽃 나비무 장미",
-                        "[별똥별의 향기] 푸른빛 달맞이꽃",
-                        "[성수쌍영] 방울의 가벼운 춤",
-                        "[성수쌍영] 초승달의 고요한 잠",
-                        "[성장의 길] 연지 무궁화",
-                        "[응원 이벤트] 연핑크 델피니움",
-                        "[응원 이벤트] 연하늘 델피니움",
-                        "[첫 충전 특별 선물] 반짝 솜토끼",
-                        "[커플 플라워 데이트] 별바다의 방울소리",
-                        "[패키지 화단] 구름빛 아스틸베",
-                        "[패키지 화단] 금빛 목련",
-                        "[패키지 화단] 금종 개나리",
-                        "[패키지 화단] 꾀꼬리 장미",
-                        "[패키지 화단] 꿈의 보라 으아리",
-                        "[패키지 화단] 눈꽃 금어초",
-                        "[패키지 화단] 단풍 온시디움",
-                        "[패키지 화단] 맑은 봉우리 장미",
-                        "[패키지 화단] 벚꽃 온시디움",
-                        "[패키지 화단] 병아리색 헬레보루스",
-                        "[패키지 화단] 봄빛 심비디움",
-                        "[패키지 화단] 분홍 복숭아 달리아",
-                        "[패키지 화단] 분홍구름 코스모스",
-                        "[패키지 화단] 분홍안개 붓꽃",
-                        "[패키지 화단] 붉은 깃털 아마릴리스",
-                        "[패키지 화단] 붉은태양 히비스커스",
-                        "[패키지 화단] 비홍 붓꽃",
-                        "[패키지 화단] 새하얀 조팝나무",
-                        "[패키지 화단] 아련한 자색 아스틸베",
-                        "[패키지 화단] 아지랑이빛 장미",
-                        "[패키지 화단] 연분홍 금어초",
-                        "[패키지 화단] 연분홍 버베나",
-                        "[패키지 화단] 연지빛 개양귀비",
-                        "[패키지 화단] 오렌지꿀 버베나",
-                        "[패키지 화단] 옥빛 글라디올러스",
-                        "[패키지 화단] 용금 아네모네",
-                        "[패키지 화단] 윤분홍 칼랑코에",
-                        "[패키지 화단] 자색 글라디올러스",
-                        "[패키지 화단] 자색 맥문동",
-                        "[패키지 화단] 자색 수레국화",
-                        "[패키지 화단] 주황 불꽃 글라디올러스",
-                        "[패키지 화단] 진홍 진달래",
-                        "[패키지 화단] 창벽 협죽도",
-                        "[패키지 화단] 청영 루위시아",
-                        "[패키지 화단] 푸른 수레국화",
-                        "[패키지 화단] 핑크화이트 심비디움",
-                        "[패키지 화단] 하늘색 금어초",
-                        "[패키지 화단] 햇살 개양귀비",
-                        "[패키지 화단] 향설 목향장미",
-                        "[패키지 화단] 황금목 아마릴리스",
-                        "[패키지 화단] 흑자색 개양귀비",
-                        "[패키지 화단] 흑자색 목련",
-                        "[풍요의 별그림] 따스한 여름 햇살",
-                        "[풍요의 별그림] 진주 제비난",
-                        "[해 질 녘의 장원] 고택 성자",
-                        "[해 질 녘의 장원] 옛뜰 잔향"
-            ],
-            "SSR": [
-                        "[구름이 머무는 얕은 해변] 해변 오리의 시원한 여름",
-                        "[꽃 패키지] 바다색 꿈의 조개",
-                        "[꽃 패키지] 백자 환상 벚꽃",
-                        "[꽃 패키지] 빛을 추적하는 꽃 모래시계",
-                        "[꽃 패키지] 연보라 환상 벚꽃",
-                        "[꽃 패키지] 연분홍 환상 벚꽃",
-                        "[꽃 패키지] 파스텔 꿈의 조개",
-                        "[꽃패키지] 불꽃심장 꿈조개",
-                        "[누적 충전] 발달의 현",
-                        "[누적 충전] 별빛 꿈의 방주",
-                        "[누적 충전] 위엄 있는 분홍색 왕관",
-                        "[동심 축제] 냥이의 즐거운 노래",
-                        "[동심 축제] 무지개 오리의 즐거운 산책",
-                        "[따스한 봄 소풍] 꽃케이크 바구니",
-                        "[따스한 봄 소풍] 차와 야옹 이야기",
-                        "[미식 파티] 심쿵 스위트 베리",
-                        "[별똥별의 향기] 옥구슬 목련",
-                        "[별이슬 드림] 꽃바다 환상꿈",
-                        "[별이슬 드림] 별 그림자 수정",
-                        "[별하늘의 기연] 우주 토끼 여행",
-                        "[별하늘의 기연] 우주선 댕댕이",
-                        "[빛나는 별의 세계] 별빛 입맞춤 구름 양",
-                        "[설산의 기연] 별빛 레몬 토끼잔",
-                        "[설산의 기연] 스노우 씰 샤베트",
-                        "[설산의 기연] 핑크 치즈 컵",
-                        "[스타소울 상점] 가을빛 단풍",
-                        "[스타소울 상점] 크리스마스의 밤",
-                        "[스타소울 상점] 행운의 올리브",
-                        "[여름 음악회] 맑은 날의 노래 무대",
-                        "[여름 음악회] 얕은 여울의 모래성",
-                        "[응원 이벤트] 골든 스프링",
-                        "[천심 동등] 수박 스위트덕",
-                        "[커플 플라워 데이트] 구름 무지개 편지",
-                        "[커플 플라워 데이트] 성란화의 언약",
-                        "[커플 플라워 데이트] 학월성덩굴",
-                        "[패키지 화단] 귤빛 불꽃 부용",
-                        "[패키지 화단] 달빛 모란",
-                        "[패키지 화단] 먹빛 모란",
-                        "[패키지 화단] 몽롱한 청아",
-                        "[패키지 화단] 보랏빛 꿈 부용",
-                        "[패키지 화단] 봄 살구빛 옷자락",
-                        "[패키지 화단] 분홍빛 물결꽃",
-                        "[패키지 화단] 분홍옥 부용",
-                        "[패키지 화단] 비령추란",
-                        "[패키지 화단] 선녀의 춤",
-                        "[패키지 화단] 수정빛 나비춤 장미",
-                        "[패키지 화단] 자색 여운",
-                        "[패키지 화단] 진홍빛 납매",
-                        "[패키지 화단] 푸른안개 모란",
-                        "[패키지 화단] 홍운 납매",
-                        "[패키지 화단] 황금 장미",
-                        "[평화로운 우주 질서] 햇살구름 양털",
-                        "[플로럴 삼포니] 곰 보이스 박스",
-                        "[플로럴 삼포니] 꽃밭 지저귐",
-                        "[플로럴 삼포니] 조화로운 꽃",
-                        "[해 질 녘의 장원] 적염 괴화",
-                        "[향기로운 회랑] 보랏빛 구름의 안식",
-                        "[향기로운 회랑] 푸른 물결의 춤",
-                        "[향기로운 회랑] 황금빛 단꿈"
-            ],
-            "UR": [
-                        "[누적 충전] 서리구름마",
-                        "[누적 충전] 푸른 사슴 그림자",
-                        "[따스한 봄 소풍] 나른한 시간",
-                        "[별똥별의 향기] 별똥별의 향기",
-                        "[별이슬 드림] 꽃나무 정원",
-                        "[별자리] 게자리•물결치는 별무리",
-                        "[별자리] 사자자리•금관의 빛나는 정원",
-                        "[별자리] 쌍둥이자리•성수쌍영",
-                        "[별자리] 황소자리•풍요의 별그림",
-                        "[별하늘의 기연] 별을 쫓는 달토끼",
-                        "[설산의 기연] 수정 서리의 아름다움",
-                        "[스타소울 상점] 구름꿈 고래의 노래",
-                        "[스타소울 상점] 동화의 성",
-                        "[여름 음악회] 여름 섬의 음파",
-                        "[구름이 머무는 얕은 해변] 파도 타는 여름 마녀",
-                        "[동심 축제] 피어나는 동심",
-                        "[미식 파티] 프로스팅 마녀",
-                        "[빛나는 별의 세계] 별의 마녀",
-                        "[평화로운 우주 질서] 구름빛 사절",
-                        "[플로럴 심포니] 구름 조류 꽃무늬 배",
-                        "[향기로운 회랑] 성스러운 깃털의 수호"
-            ]
-};
-        const LEGACY_FLOWER_LABEL_ALIASES = {
-            "[레벨 14 해제] 푸른별꽃": "[레벨 14 해제] 푸른벌꽃",
-            "[꽃의 밀령] 보라 심장 물상추": "[꽃의 밀령] 보라심장 물상추",
-            "[별똥별의 향기] 연노랑 녹용호": "[별똥별의 향기] 연노랑 녹융호",
-            "[꽃시장 교환] 분홍안개 맥문동": "[꽃시장 교환] 분홍 안개 맥문동",
-            "[꽃시장 교환] 우아한 보라빛 알리움": "[꽃시장 교환] 우아한 보랏빛 알리움",
-            "[패키지 화단] 옥빛 글라디올러스": "[패키지 화단] 옥빛 그라디올러스",
-            "[꽃 패키지] 빛을 추적하는 꽃 모래시계": "[꽃 패키지] 빛을 추적하는 꽃 모래시계",
-            "[누적 충전] 발달의 현": "[누적 충전] 별달의 현",
-            "[스타소울 상점] 행운의 올리브": "[스타소울 상점] 헹운의 올리브",
-            "[플로럴 삼포니] 곰 보이스 박스": "[플로럴 심포니] 곰 보이스 박스",
-            "[플로럴 삼포니] 꽃밭 지저귐": "[플로럴 심포니] 꽃밭 지저귐",
-            "[플로럴 삼포니] 조화로운 꽃": "[플로럴 심포니] 조화로운 꽃",
-            "[별자리] 게자리•물결치는 별무리": "[별자리] 게자리 · 물결치는 별무리",
-            "[별자리] 사자자리•금관의 빛나는 정원": "[별자리] 사자자리 · 금관의 빛나는 정원",
-            "[별자리] 쌍둥이자리•성수쌍영": "[별자리] 쌍둥이자리 · 성수쌍영",
-            "[별자리] 황소자리•풍요의 별그림": "[별자리] 황소자리 · 풍요의 별그림",
-            "[평화로운 우주 질서] 구름빛 사절": "[평화로운 우주 질서] 평화로운 우주 질서"
-};
-
-        function getLegacyFlowerList(grade) {
-            const base = [...(LEGACY_GUILD_FLOWER_ORDER_V24[grade] || [])];
-            const seen = new Set(base);
-            (Array.isArray(customFlowers) ? customFlowers : [])
-                .filter(item => item && item.grade === grade && typeof item.name === 'string')
-                .forEach(item => {
-                    if (!seen.has(item.name)) {
-                        seen.add(item.name);
-                        base.push(item.name);
-                    }
-                });
-            return base;
-        }
-
-        function getFlowerRecordByLabel(grade, flowerName) {
-            return (remoteFlowerDetails || []).find(item =>
-                item && item.grade === grade && item.listName === flowerName
-            ) || (window.FLOWER_MASTER_DATA || []).find(item =>
-                item && item.grade === grade && item.listName === flowerName
-            );
-        }
-
-        function getFlowerCheckKey(grade, flowerName, memberId) {
-            const flower = getFlowerRecordByLabel(grade, flowerName);
-            if (flower && flower.key) {
-                return `flower::${encodeURIComponent(flower.key)}::${memberId}`;
-            }
-            return `${grade}::${encodeURIComponent(flowerName)}::${memberId}`;
-        }
-
-        function isCheckKeyForMember(key, memberId) {
-            return String(key).endsWith(`::${memberId}`) || String(key).endsWith(`_${memberId}`);
-        }
-
-        function isCheckKeyForGrade(key, grade) {
-            const text = String(key);
-            if (text.startsWith('flower::')) {
-                const parts = text.split('::');
-                const flowerKey = parts.length >= 3 ? decodeURIComponent(parts[1]) : '';
-                const flower = (remoteFlowerDetails || []).find(item => item && item.key === flowerKey)
-                    || (window.FLOWER_MASTER_DATA || []).find(item => item && item.key === flowerKey);
-                return Boolean(flower && flower.grade === grade);
-            }
-            return text.startsWith(`${grade}::`) || text.startsWith(`${grade}_`);
-        }
-
-        function migrateFlowerCheckKeysToStableIds() {
-            if (!Array.isArray(remoteFlowerDetails) || !remoteFlowerDetails.length) return false;
-            const flowerMap = new Map(remoteFlowerDetails.map(item => [`${item.grade}\u0000${item.listName}`, item]));
-            const migrated = { ...checks };
-            let changed = false;
-
-            Object.entries(checks).forEach(([key, value]) => {
-                if (String(key).startsWith('flower::')) return;
-                const parts = String(key).split('::');
-                if (parts.length !== 3 || !grades.includes(parts[0])) return;
-
-                const grade = parts[0];
-                let flowerName = '';
-                try { flowerName = decodeURIComponent(parts[1]); } catch (_) { flowerName = parts[1]; }
-                const memberId = parts[2];
-                const flower = flowerMap.get(`${grade}\u0000${flowerName}`);
-                if (!flower || !flower.key) return;
-
-                const stableKey = `flower::${encodeURIComponent(flower.key)}::${memberId}`;
-                if (!(stableKey in migrated)) migrated[stableKey] = value;
-                delete migrated[key];
-                changed = true;
-            });
-
-            if (changed) {
-                checks = migrated;
-                localStorage.setItem('guild_checks', JSON.stringify(checks));
-                guildCheckMigrationPending = true;
-            }
-            return changed;
-        }
-
-        let guildCheckMigrationPending = false;
-
-        function migrateLegacyGuildCheckKeys() {
-            if (!checks || typeof checks !== 'object' || Array.isArray(checks)) return false;
-
-            let changed = false;
-            const migrated = {};
-
-            Object.entries(checks).forEach(([key, value]) => {
-                const match = String(key).match(/^(N|R|SR|SSR|UR)_(\d+)_(.+)$/);
-                if (!match) {
-                    migrated[key] = value;
-                    return;
-                }
-
-                const grade = match[1];
-                const legacyIndex = Number(match[2]);
-                const memberId = match[3];
-                const legacyList = getLegacyFlowerList(grade);
-                const oldLabel = legacyList[legacyIndex];
-
-                if (!oldLabel) {
-                    migrated[key] = value;
-                    return;
-                }
-
-                const currentLabel = LEGACY_FLOWER_LABEL_ALIASES[oldLabel] || oldLabel;
-                const currentList = getFlowerList(grade);
-
-                if (!currentList.includes(currentLabel)) {
-                    migrated[key] = value;
-                    return;
-                }
-
-                migrated[getFlowerCheckKey(grade, currentLabel, memberId)] = value;
-                changed = true;
-            });
-
-            if (changed) {
-                checks = migrated;
-                localStorage.setItem('guild_checks', JSON.stringify(checks));
-                guildCheckMigrationPending = true;
-            }
-
-            return changed;
-        }
-
-        let customFlowers = [];
-        let remoteFlowerDetails = [];
-
-
-
-        function getCustomFlowers() {
-            return Array.isArray(customFlowers) ? customFlowers : [];
-        }
-
-
-        function getFlowerList(grade) {
-            const baseList = flowersData[grade] || [];
-            const merged = [...baseList];
-            const seen = new Set(baseList);
-
-            getCustomFlowers()
-                .filter(item => item && item.grade === grade && typeof item.name === 'string')
-                .forEach(item => {
-                    if (!seen.has(item.name)) {
-                        seen.add(item.name);
-                        merged.push(item.name);
-                    }
-                });
-
-            return merged.sort(compareFlowerLabels);
-        }
-
-
-        function updateGradeCounts() {
-            grades.forEach(grade => {
-                const countEl = document.getElementById(`count-${grade}`);
-                if (countEl) {
-                    countEl.textContent = `(${getFlowerList(grade).length})`;
-                }
-            });
-        }
-
-
-        let members =
-            JSON.parse(localStorage.getItem('guild_members'))
-            ||
-            [
-                { id: 'm1', role: '길드장', name: '이지' },
-                { id: 'm2', role: '부길드장', name: '담당' },
-                { id: 'm3', role: '임원', name: 'NaNaJ' }
-            ];
-
-
-        let checks =
-            JSON.parse(localStorage.getItem('guild_checks'))
-            || {};
-
-        migrateLegacyGuildCheckKeys();
-
-
-        let selectedMemberIds = new Set();
-
-        const GUILD_STATE_API = '/api/guild-state';
-        const FLOWERS_API = '/api/flowers';
-        const BASE_SEED_VERSION = 'demo_v38_base_356';
-        let remoteSyncReady = false;
-        let remoteSaveTimer = null;
-        let remotePollTimer = null;
-        let lastRemoteUpdatedAt = 0;
-        let remoteRequestInFlight = false;
-
-        window.onload = async function () {
-            renderAll();
-            setupScrollSync();
-            await initializeRemoteGuildState();
-            try {
-                await ensureBaseFlowerSeed();
-            } catch (error) {
-                console.warn('기본 356개 D1 이전 실패 - 기존 정적 데이터를 임시 사용합니다.', error);
-            }
-            await syncRemoteFlowers(true);
-            if (guildCheckMigrationPending && remoteSyncReady) {
-                await saveGuildStatePatchToRemote({ checks }, true);
-                guildCheckMigrationPending = false;
-            }
-            renderAll();
-            startRemoteGuildStatePolling();
-            startRemoteFlowerPolling();
-        };
-
-
-
-
-        function getSortedMembers(memberList) {
-
-            return [...memberList].sort(
-                (a, b) =>
-                    (roleOrder[a.role] || 99)
-                    -
-                    (roleOrder[b.role] || 99)
-            );
-
-        }
-
-
-        function openGrade(evt, gradeId) {
-
-            const contents =
-                document.getElementsByClassName("tab-content");
-
-            for (let i = 0; i < contents.length; i++) {
-                contents[i].classList.remove("active");
-            }
-
-
-            const buttons =
-                document.getElementsByClassName("tab-btn");
-
-            for (let i = 0; i < buttons.length; i++) {
-                buttons[i].classList.remove("active");
-            }
-
-
-            document
-                .getElementById(gradeId)
-                .classList.add("active");
-
-
-            evt.currentTarget
-                .classList.add("active");
-
-
-            updateScrollWidths();
-
-        }
-
-
-        function addMember() {
-
-            const roleSelect =
-                document.getElementById('inputRole');
-
-
-            const nameInput =
-                document.getElementById('inputNickname');
-
-
-            const name =
-                nameInput.value.trim();
-
-
-            const role =
-                roleSelect.value;
-
-
-            if (!name) {
-
-                alert('닉네임을 입력해 주세요!');
-
-                return;
-
-            }
-
-
-            members.push({
-                id: 'm_' + Date.now(),
-                role,
-                name
-            });
-
-
-            saveData();
-
-            renderAll();
-
-            nameInput.value = '';
-
-        }
-
-
-        function deleteMember(id, event) {
-
-            event.stopPropagation();
-
-
-            if (
-                confirm('해당 길드원을 삭제하시겠습니까?')
-            ) {
-
-                members =
-                    members.filter(
-                        m => m.id !== id
-                    );
-
-
-                selectedMemberIds.delete(id);
-
-
-                for (let key in checks) {
-
-                    if (
-                        isCheckKeyForMember(key, id)
-                    ) {
-
-                        delete checks[key];
-
-                    }
-
-                }
-
-
-                saveData();
-
-                renderAll();
-
-            }
-
-        }
-
-
-        function getActiveGrade() {
-
-            const activeButton =
-                document.querySelector('.tab-btn.active');
-
-            if (
-                activeButton &&
-                activeButton.dataset.grade
-            ) {
-
-                return activeButton.dataset.grade;
-
-            }
-
-
-            const activeContent =
-                document.querySelector('.tab-content.active');
-
-            if (
-                activeContent &&
-                activeContent.id
-            ) {
-
-                return activeContent.id.replace('grade-', '');
-
-            }
-
-
-            return 'N';
-
-        }
-
-
-        function resetMemberChecks(
-            memberId,
-            memberName,
-            event
-        ) {
-
-            event.stopPropagation();
-
-
-            const activeGrade =
-                getActiveGrade();
-
-
-            if (
-                confirm(
-                    `'${memberName}'님의 '${activeGrade}' 등급 꽃 체크 표시를 초기화하시겠습니까?`
-                )
-            ) {
-
-                const gradePrefix =
-                    activeGrade + '_';
-
-                const memberSuffix =
-                    '_' + memberId;
-
-
-                for (let key in checks) {
-
-                    if (
-                        isCheckKeyForGrade(key, activeGrade) &&
-                        isCheckKeyForMember(key, memberId)
-                    ) {
-
-                        delete checks[key];
-
-                    }
-
-                }
-
-
-                saveData();
-
-                renderAll();
-
-
-                alert(
-                    `'${memberName}'님의 '${activeGrade}' 등급 꽃 체크 표시가 초기화되었습니다.`
-                );
-
-            }
-
-        }
-
-
-        function getSelectedMembers() {
-            return getSortedMembers(members)
-                .filter(member => selectedMemberIds.has(member.id));
-        }
-
-
-        function resetSelectedMembers() {
-            const selectedMembers = getSelectedMembers();
-
-            if (selectedMembers.length === 0) {
-                alert('먼저 초기화할 길드원을 선택해 주세요.');
-                return;
-            }
-
-            const activeGrade = getActiveGrade();
-            const names = selectedMembers.map(member => member.name).join(', ');
-
-            if (!confirm(`선택한 ${selectedMembers.length}명(${names})의 '${activeGrade}' 등급 꽃 체크 표시를 초기화하시겠습니까?`)) {
-                return;
-            }
-
-            const gradePrefix = activeGrade + '_';
-            const selectedIds = new Set(selectedMembers.map(member => member.id));
-
-            for (const key in checks) {
-                if (!isCheckKeyForGrade(key, activeGrade)) continue;
-
-                for (const memberId of selectedIds) {
-                    if (isCheckKeyForMember(key, memberId)) {
-                        delete checks[key];
-                        break;
-                    }
-                }
-            }
-
-            saveData();
-            renderAll();
-            alert(`선택한 ${selectedMembers.length}명의 '${activeGrade}' 등급 꽃 체크 표시가 초기화되었습니다.`);
-        }
-
-
-        async function updateSelectedMemberInfo() {
-            const selectedMembers = getSelectedMembers();
-
-            if (selectedMembers.length === 0) {
-                alert('정보를 수정할 길드원 1명을 먼저 선택해 주세요.');
-                return;
-            }
-
-            if (selectedMembers.length !== 1) {
-                alert('정보 수정은 한 번에 1명만 가능합니다. 1명만 선택해 주세요.');
-                return;
-            }
-
-            const member = selectedMembers[0];
-            const roleSelect = document.getElementById('inputRole');
-            const nameInput = document.getElementById('inputNickname');
-            const newRole = roleSelect.value;
-            const newName = nameInput.value.trim();
-
-            if (!newName) {
-                alert('닉네임을 입력해 주세요.');
-                nameInput.focus();
-                return;
-            }
-
-            const duplicate = members.some(item =>
-                item.id !== member.id &&
-                String(item.name || '').trim().toLocaleLowerCase('ko-KR') === newName.toLocaleLowerCase('ko-KR')
-            );
-
-            if (duplicate) {
-                alert('이미 사용 중인 닉네임입니다. 다른 닉네임을 입력해 주세요.');
-                return;
-            }
-
-            if (newName === member.name && newRole === member.role) {
-                alert('변경된 정보가 없습니다.');
-                return;
-            }
-
-            const oldRole = member.role;
-            const oldName = member.name;
-
-            // member.id는 변경하지 않습니다. 따라서 기존 꽃 체크 기록은 그대로 유지됩니다.
-            member.role = newRole;
-            member.name = newName;
-            localStorage.setItem('guild_members', JSON.stringify(members));
-            renderAll();
-            updateFlowerSearchSelectedMember();
-
-            // 체크 데이터 전체를 덮어쓰지 않고 길드원 목록만 D1에 부분 저장합니다.
-            await saveGuildStatePatchToRemote({ members }, true);
-
-            alert(`[${oldRole}] ${oldName} → [${newRole}] ${newName}\n정보를 수정했습니다. 기존 꽃 체크 기록은 그대로 유지됩니다.`);
-        }
-
-        function syncMemberEditInputs() {
-            const selectedMembers = getSelectedMembers();
-            if (selectedMembers.length !== 1) return;
-
-            const member = selectedMembers[0];
-            const roleSelect = document.getElementById('inputRole');
-            const nameInput = document.getElementById('inputNickname');
-
-            if (roleSelect) roleSelect.value = member.role || '멤버';
-            if (nameInput) nameInput.value = member.name || '';
-        }
-
-
-        function deleteSelectedMembers() {
-            const selectedMembers = getSelectedMembers();
-
-            if (selectedMembers.length === 0) {
-                alert('먼저 삭제할 길드원을 선택해 주세요.');
-                return;
-            }
-
-            const names = selectedMembers.map(member => member.name).join(', ');
-
-            if (!confirm(`선택한 ${selectedMembers.length}명(${names})의 길드원을 삭제하시겠습니까?\n해당 길드원의 모든 꽃 체크 기록도 함께 삭제됩니다.`)) {
-                return;
-            }
-
-            const selectedIds = new Set(selectedMembers.map(member => member.id));
-
-            members = members.filter(member => !selectedIds.has(member.id));
-
-            for (const memberId of selectedIds) {
-                selectedMemberIds.delete(memberId);
-            }
-
-            for (const key in checks) {
-                for (const memberId of selectedIds) {
-                    if (isCheckKeyForMember(key, memberId)) {
-                        delete checks[key];
-                        break;
-                    }
-                }
-            }
-
-            saveData();
-            renderAll();
-        }
-
-
-        function toggleFilterMember(id) {
-
-            if (selectedMemberIds.has(id)) {
-                selectedMemberIds.delete(id);
-            } else {
-                selectedMemberIds.add(id);
-            }
-
-            renderAll();
-            syncMemberEditInputs();
-            updateFlowerSearchSelectedMember();
-
-            const searchModal =
-                document.getElementById('flowerSearchModal');
-
-            if (
-                searchModal &&
-                searchModal.classList.contains('active')
-            ) {
-                searchFlowers();
-            }
-
-        }
-
-
-        function onCheckChange(
-            key,
-            isChecked
-        ) {
-
-            if (isChecked) {
-                checks[key] = true;
-            } else {
-                delete checks[key];
-            }
-
-            saveCheckboxesLocally();
-            saveCheckChangesToRemote([{ key, checked: isChecked }]);
-            renderAll();
-
-        }
-
-
-        function saveCheckboxesLocally() {
-            localStorage.setItem(
-                'guild_members',
-                JSON.stringify(members)
-            );
-            localStorage.setItem(
-                'guild_checks',
-                JSON.stringify(checks)
-            );
-        }
-
-
-        async function saveCheckChangesToRemote(changes) {
-            if (!remoteSyncReady || !Array.isArray(changes) || changes.length === 0) return;
-
-            try {
-                const response = await fetch(GUILD_STATE_API, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ changes })
-                });
-
-                if (!response.ok) throw new Error(`PATCH ${response.status}`);
-
-                const payload = await response.json();
-                lastRemoteUpdatedAt = Number(payload.updatedAt || Date.now());
-                remoteSyncReady = true;
-            } catch (error) {
-                console.warn('D1 체크박스 개별 저장 실패 - 로컬에는 저장되었습니다.', error);
-                // 서버 저장이 실패한 경우에만 기존 전체 저장 방식으로 재시도합니다.
-                queueRemoteGuildStateSave();
-            }
-        }
-
-
-        function saveData() {
-
-            localStorage.setItem(
-                'guild_members',
-                JSON.stringify(members)
-            );
-
-
-            localStorage.setItem(
-                'guild_checks',
-                JSON.stringify(checks)
-            );
-
-            queueRemoteGuildStateSave();
-        }
-
-
-        function getGuildStateSnapshot() {
-            return {
-                members,
-                checks
-            };
-        }
-
-
-        function applyGuildStateSnapshot(state) {
-            if (!state || typeof state !== 'object') {
-                return false;
-            }
-
-            let changed = false;
-
-            if (Array.isArray(state.members)) {
-                members = state.members;
-                localStorage.setItem('guild_members', JSON.stringify(members));
-                changed = true;
-            }
-
-            if (state.checks && typeof state.checks === 'object' && !Array.isArray(state.checks)) {
-                checks = state.checks;
-                localStorage.setItem('guild_checks', JSON.stringify(checks));
-                changed = true;
-            }
-
-
-            if (migrateLegacyGuildCheckKeys()) {
-                changed = true;
-            }
-
-            const validMemberIds = new Set(members.map(member => member.id));
-            selectedMemberIds = new Set(
-                [...selectedMemberIds].filter(id => validMemberIds.has(id))
-            );
-
-            if (changed) {
-                renderAll();
-                updateFlowerSearchSelectedMember();
-            }
-
-            return changed;
-        }
-
-
-        async function initializeRemoteGuildState() {
-            try {
-                const response = await fetch(GUILD_STATE_API, { cache: 'no-store' });
-                if (!response.ok) throw new Error(`GET ${response.status}`);
-                const payload = await response.json();
-                if (payload && payload.exists && payload.state) {
-                    applyGuildStateSnapshot(payload.state);
-                    migrateLegacyGuildCheckKeys();
-                    lastRemoteUpdatedAt = Number(payload.updatedAt || 0);
-                } else {
-                    await saveGuildStateToRemote(true);
-                }
-                if (guildCheckMigrationPending) {
-                    await saveGuildStatePatchToRemote({ checks }, true);
-                    guildCheckMigrationPending = false;
-                }
-                remoteSyncReady = true;
-            } catch (error) {
-                console.warn('D1 공용 저장 연결 실패 - 현재 브라우저 저장을 사용합니다.', error);
-                remoteSyncReady = false;
-            }
-        }
-
-        async function ensureBaseFlowerSeed() {
-            const response = await fetch(`${FLOWERS_API}?seed=1`, {
-                method: 'POST',
-                headers: { 'content-type': 'application/json' },
-                body: JSON.stringify({
-                    seedVersion: BASE_SEED_VERSION,
-                    flowers: window.FLOWER_MASTER_DATA || []
-                })
-            });
-            const payload = await response.json().catch(() => ({}));
-            if (!response.ok) throw new Error(payload.error || `SEED ${response.status}`);
-            return payload;
-        }
-
-        async function syncRemoteFlowers(silent = true) {
-            try {
-                const response = await fetch(FLOWERS_API, { cache:'no-store' });
-                if (!response.ok) throw new Error(`GET ${response.status}`);
-                const payload = await response.json();
-                remoteFlowerDetails = Array.isArray(payload.flowers) ? payload.flowers : [];
-
-                // v28부터 D1이 전체 꽃 도감의 기준입니다. API 성공 시 기존 정적 목록을 대체합니다.
-                grades.forEach(grade => {
-                    flowersData[grade] = remoteFlowerDetails
-                        .filter(item => item && item.grade === grade)
-                        .map(item => item.listName)
-                        .sort(compareFlowerLabels);
-                });
-                customFlowers = [];
-                migrateFlowerCheckKeysToStableIds();
-                renderAll();
-            } catch (error) {
-                console.warn('D1 꽃 데이터 불러오기 실패', error);
-                if (!silent) alert('꽃 목록을 불러오지 못했습니다.');
-            }
-        }
-
-        function startRemoteFlowerPolling() {
-            setInterval(() => syncRemoteFlowers(true), 5000);
-            window.addEventListener('focus', () => syncRemoteFlowers(true));
-            document.addEventListener('visibilitychange', () => { if (!document.hidden) syncRemoteFlowers(true); });
-        }
-
-        function queueRemoteGuildStateSave() {
-            if (!remoteSyncReady) return;
-
-            clearTimeout(remoteSaveTimer);
-            remoteSaveTimer = setTimeout(() => {
-                saveGuildStateToRemote(false);
-            }, 250);
-        }
-
-
-        async function saveGuildStatePatchToRemote(patch, force = false) {
-            if (!force && !remoteSyncReady) return;
-
-            try {
-                const response = await fetch(GUILD_STATE_API, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ state: patch })
-                });
-
-                if (!response.ok) throw new Error(`PUT ${response.status}`);
-
-                const payload = await response.json();
-                lastRemoteUpdatedAt = Number(payload.updatedAt || Date.now());
-                remoteSyncReady = true;
-            } catch (error) {
-                console.warn('D1 공용 부분 저장 실패 - 로컬에는 저장되었습니다.', error);
-            }
-        }
-
-
-        async function saveGuildStateToRemote(force = false) {
-            if (!force && !remoteSyncReady) return;
-
-            try {
-                const response = await fetch(GUILD_STATE_API, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ state: getGuildStateSnapshot() })
-                });
-
-                if (!response.ok) throw new Error(`PUT ${response.status}`);
-
-                const payload = await response.json();
-                lastRemoteUpdatedAt = Number(payload.updatedAt || Date.now());
-                remoteSyncReady = true;
-            } catch (error) {
-                console.warn('D1 공용 저장 실패 - 로컬에는 저장되었습니다.', error);
-            }
-        }
-
-
-        async function pullGuildStateFromRemote() {
-            if (!remoteSyncReady || remoteRequestInFlight || remoteSaveTimer) return;
-
-            remoteRequestInFlight = true;
-            try {
-                const response = await fetch(GUILD_STATE_API, { cache: 'no-store' });
-                if (!response.ok) throw new Error(`GET ${response.status}`);
-
-                const payload = await response.json();
-                const updatedAt = Number(payload.updatedAt || 0);
-
-                if (payload.exists && payload.state && updatedAt > lastRemoteUpdatedAt) {
-                    if (applyGuildStateSnapshot(payload.state)) {
-                        lastRemoteUpdatedAt = updatedAt;
-                    }
-                }
-            } catch (error) {
-                console.warn('D1 공용 상태 확인 실패', error);
-            } finally {
-                remoteRequestInFlight = false;
-            }
-        }
-
-
-        function startRemoteGuildStatePolling() {
-            if (remotePollTimer) clearInterval(remotePollTimer);
-            remotePollTimer = setInterval(pullGuildStateFromRemote, 1000);
-        }
-
-
-        function renderAll() {
-
-            updateGradeCounts();
-
-            renderTags();
-
-            grades.forEach(
-                g => renderTable(g)
-            );
-
-            updateScrollWidths();
-
-        }
-
-
-        function setupScrollSync() {
-
-            grades.forEach(g => {
-
-                const topScroll =
-                    document.getElementById(
-                        `top-scroll-${g}`
-                    );
-
-
-                const bodyScroll =
-                    document.getElementById(
-                        `body-scroll-${g}`
-                    );
-
-
-                let isSyncingTop = false;
-                let isSyncingBody = false;
-
-
-                topScroll.addEventListener(
-                    'scroll',
-                    () => {
-
-                        if (!isSyncingTop) {
-
-                            isSyncingBody = true;
-
-                            bodyScroll.scrollLeft =
-                                topScroll.scrollLeft;
-
-                        }
-
-                        isSyncingTop = false;
-
-                    }
-                );
-
-
-                bodyScroll.addEventListener(
-                    'scroll',
-                    () => {
-
-                        if (!isSyncingBody) {
-
-                            isSyncingTop = true;
-
-                            topScroll.scrollLeft =
-                                bodyScroll.scrollLeft;
-
-                        }
-
-                        isSyncingBody = false;
-
-                    }
-                );
-
-            });
-
-        }
-
-
-        function updateScrollWidths() {
-
-            grades.forEach(g => {
-
-                const table =
-                    document.getElementById(
-                        `table-${g}`
-                    );
-
-
-                const topContent =
-                    document.getElementById(
-                        `top-scroll-content-${g}`
-                    );
-
-
-                if (
-                    table &&
-                    topContent
-                ) {
-
-                    topContent.style.width =
-                        table.scrollWidth + 'px';
-
-                }
-
-            });
-
-        }
-
-
-        function renderTags() {
-
-            const container =
-                document.getElementById(
-                    'memberTagList'
-                );
-
-
-            container.innerHTML = '';
-
-
-            if (
-                members.length === 0
-            ) {
-
-                container.innerHTML =
-                    '<span style="color:#888; font-size:0.85rem;">' +
-                    '등록된 길드원이 없습니다. 위에서 길드원을 추가해 주세요.' +
-                    '</span>';
-
-
-                return;
-
-            }
-
-
-            getSortedMembers(members)
-                .forEach(m => {
-
-                    const isSelected =
-                        selectedMemberIds.has(m.id);
-
-
-                    const tag =
-                        document.createElement(
-                            'span'
-                        );
-
-
-                    tag.className =
-                        `member-tag tag-${m.role} ${isSelected ? 'selected' : ''}`;
-
-
-                    tag.addEventListener('click', () => {
-                        toggleFilterMember(m.id);
-                    });
-
-
-                    const text = document.createElement('span');
-                    text.textContent = `[${m.role}] ${m.name}`;
-
-                    tag.appendChild(text);
-
-
-                    container.appendChild(tag);
-
-                });
-
-        }
-
-
-        function getMemberGradeCheckCount(grade, memberId) {
-
-            const flowerList = getFlowerList(grade);
-            let count = 0;
-
-            flowerList.forEach((flower, index) => {
-                const checkKey = getFlowerCheckKey(grade, flower, memberId);
-                if (checks[checkKey]) {
-                    count += 1;
-                }
-            });
-
-            return count;
-        }
-
-
-        function renderTable(grade) {
-
-            const table =
-                document.getElementById(
-                    `table-${grade}`
-                );
-
-
-            if (!table) {
-                return;
-            }
-
-
-            const thead =
-                table.querySelector('thead');
-
-
-            const tbody =
-                table.querySelector('tbody');
-
-
-            const sortedMembers =
-                getSortedMembers(members);
-
-
-            const activeMembers =
-                selectedMemberIds.size > 0
-                    ? sortedMembers.filter(
-                        m => selectedMemberIds.has(m.id)
-                    )
-                    : sortedMembers;
-
-
-            /* ==============================
-               길드원 필터 시 표 너비 축소
-            ============================== */
-
-            table.classList.toggle(
-                'filtered',
-                selectedMemberIds.size > 0
-            );
-
-
-            let roleRowHtml =
-                `<th class="sticky-col"></th><th class="flower-query-col">직위</th>`;
-
-
-            let nameRowHtml =
-                `<th class="sticky-col">꽃 이름</th><th class="flower-query-col">닉네임</th>`;
-
-
-            activeMembers.forEach(m => {
-
-                roleRowHtml += `
-                    <th class="role-${m.role}">
-                        ${m.role}
-                    </th>
-                `;
-
-
-                const checkedCount =
-                    getMemberGradeCheckCount(grade, m.id);
-
-
-                nameRowHtml += `
-                    <th class="role-${m.role}">
-                        ${m.name} (${checkedCount})
-                    </th>
-                `;
-
-            });
-
-
-            thead
-                .querySelector('.row-role')
-                .innerHTML =
-                    roleRowHtml;
-
-
-            thead
-                .querySelector('.row-name')
-                .innerHTML =
-                    nameRowHtml;
-
-
-            tbody.innerHTML = '';
-
-
-            const flowerList =
-                getFlowerList(grade);
-
-
-            flowerList.forEach(
-                (flower, index) => {
-
-                    const tr =
-                        document.createElement(
-                            'tr'
-                        );
-
-
-                    let rowHtml = `
-
-                        <td
-                            class="
-                                sticky-col
-                                flower-name
-                                flower-${grade}
-                            "
-                        >
-
-                            ${getMasterFlowerByListName(grade, flower) ? `
-                                <span class="flower-action-group">
-                                    <button
-                                        type="button"
-                                        class="btn-search-open"
-                                        onclick="openFlowerDetail('${grade}', '${flower.replace(/'/g, "\\'")}')"
-                                    >
-                                        정보
-                                    </button>
-                                </span>
-                            ` : ''}
-
-                            <span>
-                                ${flower}
-                            </span>
-
-                        </td>
-
-                        <td class="flower-query-col">
-                            <button
-                                type="button"
-                                class="btn-flower-info"
-                                onclick="
-                                    showFlowerHolders(
-                                        '${grade}',
-                                        ${index},
-                                        '${flower.replace(/'/g, "\\'")}'
-                                    )
-                                "
-                            >
-                                조회
-                            </button>
-                        </td>
-
-                    `;
-
-
-                    activeMembers.forEach(m => {
-
-                        const checkKey =
-                            getFlowerCheckKey(grade, flower, m.id);
-
-
-                        const isChecked =
-                            checks[checkKey]
-                                ? 'checked'
-                                : '';
-
-
-                        rowHtml += `
-
-                            <td>
-
-                                <input
-                                    type="checkbox"
-                                    class="chk-box"
-                                    ${isChecked}
-                                    onchange="
-                                        onCheckChange(
-                                            '${checkKey}',
-                                            this.checked
-                                        )
-                                    "
-                                >
-
-                            </td>
-
-                        `;
-
-                    });
-
-
-                    tr.innerHTML =
-                        rowHtml;
-
-
-                    tbody.appendChild(
-                        tr
-                    );
-
-                }
-            );
-
-        }
-
-
-        /* ==============================
-           꽃 검색
-        ============================== */
-
-
-        function getSelectedMembers() {
-
-            const sortedMembers = getSortedMembers(members);
-
-            return sortedMembers.filter(
-                member => selectedMemberIds.has(member.id)
-            );
-
-        }
-
-
-        function updateFlowerSearchSelectedMember() {
-
-            const display =
-                document.getElementById(
-                    'flowerSearchSelectedMember'
-                );
-
-            if (!display) {
-                return;
-            }
-
-            const selectedMembers =
-                getSelectedMembers();
-
-            if (selectedMembers.length > 0) {
-                display.innerHTML =
-                    `현재 선택 (${selectedMembers.length}명): <b>${selectedMembers.map(member => escapeHtml(member.name)).join(', ')}</b>`;
-            } else {
-                display.innerHTML =
-                    '현재 선택: <b>길드원 미선택</b>';
-            }
-
-        }
-
-
-        function getSearchCheckState(grade, flowerIdx) {
-
-            const flower = getFlowerList(grade)[flowerIdx];
-            if (!flower) return 'none';
-
-            const selectedMembers =
-                getSelectedMembers();
-
-            if (selectedMembers.length === 0) {
-                return 'none';
-            }
-
-            const checkedCount = selectedMembers.filter(member => {
-                const checkKey = getFlowerCheckKey(grade, flower, member.id);
-                return Boolean(checks[checkKey]);
-            }).length;
-
-            if (checkedCount === 0) {
-                return 'none';
-            }
-
-            if (checkedCount === selectedMembers.length) {
-                return 'all';
-            }
-
-            return 'partial';
-
-        }
-
-
-        function toggleFlowerCheckFromSearch(
-            grade,
-            flowerIdx
-        ) {
-
-            const selectedMembers =
-                getSelectedMembers();
-
-            const flower = getFlowerList(grade)[flowerIdx];
-            if (!flower) return;
-
-            if (selectedMembers.length === 0) {
-                alert(
-                    '먼저 목록 관리에서 길드원을 선택해주세요.'
-                );
-                return;
-            }
-
-            const currentState =
-                getSearchCheckState(grade, flowerIdx);
-
-            const shouldCheck =
-                currentState !== 'all';
-
-            const changes = [];
-
-            selectedMembers.forEach(member => {
-                const checkKey =
-                    getFlowerCheckKey(grade, flower, member.id);
-
-                if (shouldCheck) {
-                    checks[checkKey] = true;
-                } else {
-                    delete checks[checkKey];
-                }
-
-                changes.push({ key: checkKey, checked: shouldCheck });
-            });
-
-            saveCheckboxesLocally();
-            saveCheckChangesToRemote(changes);
-            renderAll();
-            updateFlowerSearchSelectedMember();
-            searchFlowers();
-
-        }
-
-
-        function openFlowerSearch() {
-
-            const modal =
-                document.getElementById(
-                    'flowerSearchModal'
-                );
-
-
-            const input =
-                document.getElementById(
-                    'flowerSearchInput'
-                );
-
-
-            modal.classList.add(
-                'active'
-            );
-
-            updateFlowerSearchSelectedMember();
-            searchFlowers();
-
-
-            setTimeout(
-                () => input.focus(),
-                50
-            );
-
-        }
-
-
-        function closeFlowerSearch() {
-
-            document
-                .getElementById(
-                    'flowerSearchModal'
-                )
-                .classList
-                .remove(
-                    'active'
-                );
-
-        }
-
-
-        function clearFlowerSearch() {
-
-            const input =
-                document.getElementById(
-                    'flowerSearchInput'
-                );
-
-
-            const result =
-                document.getElementById(
-                    'flowerSearchResult'
-                );
-
-
-            input.value = '';
-
-
-            result.innerHTML = `
-                <div class="search-guide">
-                    검색할 꽃 이름을 입력해 주세요.
-                </div>
-            `;
-
-
-            input.focus();
-
-        }
-
-
-        function searchFlowers() {
-
-            const keyword =
-                document
-                    .getElementById(
-                        'flowerSearchInput'
-                    )
-                    .value
-                    .trim()
-                    .toLowerCase();
-
-
-            const resultContainer =
-                document.getElementById(
-                    'flowerSearchResult'
-                );
-
-
-            if (!keyword) {
-
-                resultContainer.innerHTML = `
-                    <div class="search-guide">
-                        검색할 꽃 이름을 입력해 주세요.
-                    </div>
-                `;
-
-
-                return;
-
-            }
-
-
-            const results = [];
-
-
-            grades.forEach(grade => {
-
-                const flowerList =
-                    getFlowerList(grade);
-
-
-                flowerList.forEach(
-                    (flower, index) => {
-
-                        if (
-                            flower
-                                .toLowerCase()
-                                .includes(keyword)
-                        ) {
-
-                            results.push({
-                                grade,
-                                index,
-                                flower
-                            });
-
-                        }
-
-                    }
-                );
-
-            });
-
-
-            if (
-                results.length === 0
-            ) {
-
-                resultContainer.innerHTML = `
-                    <div class="search-guide">
-                        검색 결과가 없습니다.
-                    </div>
-                `;
-
-
-                return;
-
-            }
-
-
-            let html = `
-                <div class="search-result-count">
-                    검색 결과
-                    <b>${results.length}개</b>
-                </div>
-            `;
-
-
-            results.forEach(item => {
-
-                html += `
-
-                    <div class="search-result-item">
-
-                        <span
-                            class="
-                                search-result-grade
-                                search-grade-${item.grade}
-                            "
-                        >
-                            ${item.grade}
-                        </span>
-
-
-                        <div class="search-result-name">
-                            ${escapeHtml(item.flower)}
-                        </div>
-
-
-                        ${(() => {
-                            const checkState =
-                                getSearchCheckState(item.grade, item.index);
-
-                            const checkClass =
-                                checkState === 'all'
-                                    ? 'checked'
-                                    : checkState === 'partial'
-                                        ? 'partial'
-                                        : '';
-
-                            const checkLabel =
-                                checkState === 'all'
-                                    ? '체크됨 ✓'
-                                    : checkState === 'partial'
-                                        ? '일부 체크'
-                                        : '체크';
-
-                            return `
-                                <button
-                                    type="button"
-                                    class="btn-search-check ${checkClass}"
-                                    data-grade="${item.grade}"
-                                    data-index="${item.index}"
-                                >
-                                    ${checkLabel}
-                                </button>
-                            `;
-                        })()}
-
-                        <button
-                            type="button"
-                            class="btn-search-holder"
-                            data-grade="${item.grade}"
-                            data-index="${item.index}"
-                        >
-                            조회
-                        </button>
-
-                    </div>
-
-                `;
-
-            });
-
-
-            resultContainer.innerHTML =
-                html;
-
-
-            resultContainer
-                .querySelectorAll(
-                    '.btn-search-check'
-                )
-                .forEach(button => {
-
-                    button.addEventListener(
-                        'click',
-                        function () {
-
-                            toggleFlowerCheckFromSearch(
-                                this.dataset.grade,
-                                Number(this.dataset.index)
-                            );
-
-                        }
-                    );
-
-                });
-
-
-            resultContainer
-                .querySelectorAll(
-                    '.btn-search-holder'
-                )
-                .forEach(button => {
-
-                    button.addEventListener(
-                        'click',
-                        function () {
-
-                            const grade =
-                                this.dataset.grade;
-
-
-                            const flowerIdx =
-                                Number(
-                                    this.dataset.index
-                                );
-
-
-                            const flowerName =
-                                getFlowerList(grade)[flowerIdx];
-
-
-                            closeFlowerSearch();
-
-
-                            showFlowerHolders(
-                                grade,
-                                flowerIdx,
-                                flowerName
-                            );
-
-                        }
-                    );
-
-                });
-
-        }
-
-
-        function escapeHtml(text) {
-
-            return String(text)
-
-                .replace(
-                    /&/g,
-                    '&amp;'
-                )
-
-                .replace(
-                    /</g,
-                    '&lt;'
-                )
-
-                .replace(
-                    />/g,
-                    '&gt;'
-                )
-
-                .replace(
-                    /"/g,
-                    '&quot;'
-                )
-
-                .replace(
-                    /'/g,
-                    '&#039;'
-                );
-
-        }
-
-
-        function getMasterFlowerByListName(grade, flowerListName) {
-            const remote = (remoteFlowerDetails || []).find(item =>
-                item.grade === grade && item.listName === flowerListName
-            );
-            if (remote) return remote;
-            return (window.FLOWER_MASTER_DATA || []).find(item =>
-                item.grade === grade && item.listName === flowerListName
-            );
-        }
-
-
-        function openFlowerDetail(grade, flowerListName) {
-            const flower = getMasterFlowerByListName(grade, flowerListName);
-            if (!flower) return;
-
-            const image = document.getElementById('flowerDetailImage');
-            image.src = flower.image;
-            image.alt = flower.name;
-            image.onerror = function () { this.onerror = null; this.style.opacity = '.15'; };
-
-            document.getElementById('flowerDetailName').textContent = flower.name;
-            document.getElementById('flowerDetailGrade').textContent = flower.grade;
-            document.getElementById('flowerDetailScore').textContent = flower.guildScore == null ? '-' : `${flower.guildScore}점`;
-            document.getElementById('flowerDetailAcquire').textContent = flower.acquire;
-            document.getElementById('flowerDetailNote').textContent = flower.note;
-            document.getElementById('flowerDetailModal').classList.add('active');
-        }
-
-
-        function closeFlowerDetail() {
-            document.getElementById('flowerDetailModal').classList.remove('active');
-        }
-
-
-        /* ==============================
-           꽃 보유 길드원 조회
-        ============================== */
-
-
-        function showFlowerHolders(
-            grade,
-            flowerIdx,
-            flowerName
-        ) {
-
-            const modal =
-                document.getElementById(
-                    'infoModal'
-                );
-
-
-            const modalTitle =
-                document.getElementById(
-                    'modalFlowerTitle'
-                );
-
-
-            const modalContent =
-                document.getElementById(
-                    'modalHolderContent'
-                );
-
-
-            modalTitle.textContent =
-                `🌸 ${flowerName}`;
-
-
-            const sortedMembers =
-                getSortedMembers(
-                    members
-                );
-
-
-            const holders =
-                sortedMembers.filter(m => {
-
-                    const key =
-                        getFlowerCheckKey(grade, flowerName, m.id);
-
-
-                    return !!checks[key];
-
-                });
-
-
-            if (
-                holders.length === 0
-            ) {
-
-                modalContent.innerHTML = `
-                    <div class="empty-holder">
-                        이 꽃을 보유한 길드원이 없습니다.
-                    </div>
-                `;
-
-            }
-
-            else {
-
-                let html = `
-
-                    <div
-                        style="
-                            font-size:0.85rem;
-                            color:#666;
-                            margin-bottom:10px;
-                        "
-                    >
-                        총
-                        <b>${holders.length}명</b>
-                        보유 중:
-                    </div>
-
-                `;
-
-
-                html +=
-                    `<div class="holder-tag-list">`;
-
-
-                holders.forEach(m => {
-
-                    html += `
-                        <div class="holder-list-item">
-                            <span class="holder-role holder-role-${m.role}">[${m.role}]</span>${m.name}
-                        </div>
-                    `;
-
-                });
-
-
-                html +=
-                    `</div>`;
-
-
-                modalContent.innerHTML =
-                    html;
-
-            }
-
-
-            modal.classList.add(
-                'active'
-            );
-
-        }
-
-
-        function closeModal() {
-
-            document
-                .getElementById(
-                    'infoModal'
-                )
-                .classList
-                .remove(
-                    'active'
-                );
-
-        }
-
-
-        window.onclick =
-            function (event) {
-
-                const infoModal =
-                    document.getElementById(
-                        'infoModal'
-                    );
-
-
-                const searchModal =
-                    document.getElementById(
-                        'flowerSearchModal'
-                    );
-
-
-                if (
-                    event.target ===
-                    infoModal
-                ) {
-
-                    closeModal();
-
-                }
-
-
-                if (
-                    event.target ===
-                    searchModal
-                ) {
-
-                    closeFlowerSearch();
-
-                }
-
+      }
+      if (!options.length || maxCount <= 0) return null;
+
+      const minPoints = Math.min(...options.map(option => option.points));
+      const maxPoints = Math.max(...options.map(option => option.points));
+      if (maxPoints * maxCount < needed) return null;
+
+      const scoreCap = needed + maxPoints - 1;
+      const usefulCount = Math.min(maxCount, Math.floor(scoreCap / minPoints));
+
+      // 같은 횟수/점수에서는 "낮은 등급 우선 → 다이아 최소" 상태만 유지합니다.
+      const layers = [
+        new Map([[0, {
+          upgradeCost:0,
+          gradeCounts:emptyGradeCounts(),
+          prevSum:null,
+          optionIndex:null
+        }]])
+      ];
+      let best = null;
+
+      for (let count = 1; count <= usefulCount; count++) {
+        const previous = layers[count - 1];
+        const current = new Map();
+
+        for (const [sum, state] of previous) {
+          for (let optionIndex = 0; optionIndex < options.length; optionIndex++) {
+            const option = options[optionIndex];
+            const nextSum = sum + option.points;
+            if (nextSum > scoreCap) continue;
+
+            const nextState = {
+              upgradeCost: state.upgradeCost + option.diamondCost,
+              gradeCounts: addGradeCount(state.gradeCounts, option.grade),
+              prevSum: sum,
+              optionIndex
             };
 
-    </script>
-
-
-
-<!-- ===== 뷰포트 고정 직위/닉네임 + 횡스크롤 테스트 ===== -->
-<style>
-    #viewportFixedGuildHeader {
-        display: none;
-        position: fixed;
-        z-index: 500;
-        background: #fff;
-        border: 1px solid #333;
-        border-radius: 0 0 8px 8px;
-        box-shadow: 0 3px 10px rgba(0,0,0,.16);
-        overflow: hidden;
-    }
-    #viewportFixedGuildHeader.is-visible { display: block; }
-    #viewportFixedGuildToolbar {
-        display: flex;
-        gap: 8px;
-        padding: 8px 10px;
-        background: #f9f9f9;
-        border-bottom: 1px solid #aaa;
-    }
-    #viewportFixedGuildToolbar button {
-        padding: 7px 12px;
-        border: 1px solid #333;
-        border-radius: 6px;
-        font-family: 'Gowun Batang', serif;
-        font-size: .85rem;
-        font-weight: bold;
-        cursor: pointer;
-    }
-    #viewportFixedSearchButton {
-        flex: 1;
-        background: #fff0f0;
-    }
-    #viewportFixedSearchButton:hover { background: #fae0e0; }
-    #viewportFixedTopButton {
-        flex: 0 0 auto;
-        background: #fff;
-    }
-    #viewportFixedTopButton:hover { background: #f1f1f1; }
-    #viewportFixedGuildScroll {
-        overflow-x: auto;
-        overflow-y: hidden;
-        height: 18px;
-        background: #f1f1f1;
-        border-bottom: 1px solid #aaa;
-    }
-    #viewportFixedGuildScrollContent { height: 1px; }
-    #viewportFixedGuildRows {
-        overflow-x: auto;
-        overflow-y: hidden;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-        background: #fff;
-    }
-    #viewportFixedGuildRows::-webkit-scrollbar { display: none; }
-    #viewportFixedGuildTable {
-        border-collapse: separate;
-        border-spacing: 0;
-        white-space: nowrap;
-        background: #fff;
-    }
-    #viewportFixedGuildTable th {
-        border-right: 1px solid #ccc;
-        border-bottom: 1px solid #ccc;
-        padding: 8px 12px;
-        text-align: center;
-        font-size: .9rem;
-        min-width: 90px;
-        box-sizing: border-box;
-        background: #fff;
-    }
-    #viewportFixedGuildTable th.sticky-col {
-        position: sticky;
-        left: 0;
-        z-index: 3;
-        min-width: 230px;
-        width: 230px;
-        background: #f8f9fa !important;
-        border-right: 2px solid #333 !important;
-    }
-    #viewportFixedGuildTable th.flower-query-col {
-        position: sticky;
-        left: 230px;
-        z-index: 3;
-        min-width: 64px;
-        width: 64px;
-        padding-left: 6px;
-        padding-right: 6px;
-        background: #f8f9fa !important;
-        border-right: 1px solid #ccc !important;
-    }
-    .back-icon { width: 100%; height: 100%; object-fit: contain; display: block; }
-
-        /* 길드 꽃 도감 가이드 아이콘 */
-        .guild-title-wrap {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .guild-guide-btn {
-            width: 48px;
-            height: 48px;
-            padding: 0;
-            border: 0;
-            outline: 0;
-            background: transparent;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            flex: 0 0 auto;
-            transition: transform .15s ease, filter .15s ease, opacity .15s ease;
-        }
-        .guild-guide-btn:hover {
-            transform: translateY(-1px);
-            filter: brightness(.72);
-        }
-        .guild-guide-btn:active {
-            transform: translateY(0) scale(.96);
-            filter: brightness(.55);
-        }
-        .guild-guide-btn img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
+            const existing = current.get(nextSum);
+            if (!existing || compareState(nextState, existing) < 0) {
+              current.set(nextSum, nextState);
+            }
+          }
         }
 
-        .guide-modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 10050;
-            background: rgba(0,0,0,.42);
-            align-items: center;
-            justify-content: center;
-            padding: 18px;
-            box-sizing: border-box;
-        }
-        .guide-modal-overlay.active { display: flex; }
-        .guide-modal-box {
-            width: min(680px, 100%);
-            max-height: min(78vh, 760px);
-            overflow-y: auto;
-            background: #fff;
-            border: 1px solid #d7d7d7;
-            border-radius: 12px;
-            box-shadow: 0 12px 36px rgba(0,0,0,.18);
-            padding: 24px;
-            box-sizing: border-box;
-            color: #222;
-        }
-        .guide-modal-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-        .guide-modal-top h2 { margin: 0; font-size: 1.35rem; }
-        .guide-modal-close {
-            border: 0;
-            background: transparent;
-            font-size: 1.6rem;
-            line-height: 1;
-            cursor: pointer;
-            padding: 4px 7px;
-        }
-        .guide-step {
-            padding: 12px 0;
-            border-top: 1px solid #eee;
-            line-height: 1.65;
-        }
-        .guide-step:first-of-type { border-top: 0; padding-top: 0; }
-        .guide-step b { color: #423638; }
-        .guide-tip {
-            margin-top: 12px;
-            padding: 12px 14px;
-            background: #fff8e8;
-            border-radius: 8px;
-            line-height: 1.6;
-        }
-        @media (max-width: 480px) {
-            .guild-title-wrap { gap: 4px; }
-            .guild-guide-btn { width: 40px; height: 40px; }
-            .guide-modal-box { padding: 18px; max-height: 82vh; }
-            .guide-modal-top h2 { font-size: 1.15rem; }
-        }
+        layers.push(current);
 
-        /* 이미지 전용 뒤로가기 버튼 */
-        .nav-btn-home {
-            border: none !important;
-            outline: none !important;
-            background: transparent !important;
-            box-shadow: none !important;
-            padding: 0 !important;
-            overflow: visible !important;
+        for (const [sum, state] of current) {
+          if (sum < needed) continue;
+
+          const candidate = {
+            upgradeCost: state.upgradeCost,
+            gradeCounts: state.gradeCounts,
+            sum,
+            count,
+            overshoot: sum - needed
+          };
+
+          if (comparePlanCandidate(candidate, best) < 0) best = candidate;
         }
-        .nav-btn-home:hover {
-            border: none !important;
-            background: transparent !important;
-            box-shadow: none !important;
-            filter: brightness(.78);
-        }
-        .nav-btn-home:active { filter: brightness(.6); }
-        .nav-btn-home .back-icon {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-            border: 0;
-        }
-</style>
+      }
 
-<div id="viewportFixedGuildHeader" aria-hidden="true">
-    <div id="viewportFixedGuildToolbar">
-        <button type="button" id="viewportFixedSearchButton">🔎 꽃 검색창 열기</button>
-        <button type="button" id="viewportFixedTopButton" title="페이지 최상단으로 이동">⬆ 맨 위로</button>
-    </div>
-    <div id="viewportFixedGuildScroll"><div id="viewportFixedGuildScrollContent"></div></div>
-    <div id="viewportFixedGuildRows">
-        <table id="viewportFixedGuildTable"><thead></thead></table>
-    </div>
-</div>
+      if (!best) return null;
 
-<script>
-(function () {
-    const fixedBox = document.getElementById('viewportFixedGuildHeader');
-    const fixedScroll = document.getElementById('viewportFixedGuildScroll');
-    const fixedScrollContent = document.getElementById('viewportFixedGuildScrollContent');
-    const fixedRows = document.getElementById('viewportFixedGuildRows');
-    const fixedTable = document.getElementById('viewportFixedGuildTable');
-    const fixedSearchButton = document.getElementById('viewportFixedSearchButton');
-    const fixedTopButton = document.getElementById('viewportFixedTopButton');
-    let syncing = false;
-    let currentBody = null;
+      const counts = Array(options.length).fill(0);
+      let sum = best.sum;
+      for (let count = best.count; count > 0; count--) {
+        const state = layers[count].get(sum);
+        if (!state) return null;
+        counts[state.optionIndex] += 1;
+        sum = state.prevSum;
+      }
 
-    // 고정 툴바 버튼
-    fixedSearchButton.addEventListener('click', function () {
-        // 원본 openFlowerSearch 함수 호출 여부와 상관없이
-        // 고정 버튼에서 검색 모달을 직접 열도록 처리
-        const modal = document.getElementById('flowerSearchModal');
-        const input = document.getElementById('flowerSearchInput');
-        if (!modal) return;
-
-        modal.classList.add('active');
-        // 고정 헤더보다 검색 모달이 항상 위에 표시되도록 보장
-        modal.style.zIndex = '2000';
-
-        if (input) {
-            setTimeout(function () {
-                input.focus();
-            }, 50);
-        }
-    });
-
-    fixedTopButton.addEventListener('click', function () {
-        // 브라우저/로컬 HTML 환경에서도 확실하게 최상단으로 이동
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-        window.scrollTo(0, 0);
-        requestAnimationFrame(updateFixedHeader);
-    });
-
-    function getActiveGrade() {
-        const active = document.querySelector('.tab-content.active');
-        return active ? active.id.replace('grade-', '') : null;
+      return { ...best, counts };
     }
 
-    function copyHeader(table) {
-        const thead = table.querySelector('thead');
-        if (!thead) return;
-        fixedTable.querySelector('thead').innerHTML = thead.innerHTML;
-        fixedTable.style.width = table.scrollWidth + 'px';
-        fixedScrollContent.style.width = table.scrollWidth + 'px';
-
-        // 실제 표의 열 너비를 그대로 복제
-        const sourceRows = thead.querySelectorAll('tr');
-        const cloneRows = fixedTable.querySelectorAll('tr');
-        sourceRows.forEach((row, r) => {
-            const srcCells = row.children;
-            const dstCells = cloneRows[r] ? cloneRows[r].children : [];
-            Array.from(srcCells).forEach((cell, i) => {
-                if (dstCells[i]) {
-                    const w = cell.getBoundingClientRect().width;
-                    dstCells[i].style.width = w + 'px';
-                    dstCells[i].style.minWidth = w + 'px';
-                    dstCells[i].style.maxWidth = w + 'px';
-                }
-            });
-        });
+    function summaryItem(label, value) {
+      return `<div class="summary-item"><span class="summary-label">${escapeHtml(label)}</span><strong class="summary-value">${escapeHtml(value)}</strong></div>`;
     }
 
-    function syncFromBody() {
-        if (!currentBody || syncing) return;
-        syncing = true;
-        fixedScroll.scrollLeft = currentBody.scrollLeft;
-        fixedRows.scrollLeft = currentBody.scrollLeft;
-        syncing = false;
+    function setResultBadge(text, type) {
+      resultBadge.textContent = text;
+      resultBadge.className = `status-badge ${type || ''}`.trim();
     }
 
-    function updateFixedHeader() {
-        const grade = getActiveGrade();
-        if (!grade) return;
-        const wrapper = document.querySelector('#grade-' + grade + ' .table-wrapper');
-        const table = document.getElementById('table-' + grade);
-        const body = document.getElementById('body-scroll-' + grade);
-        if (!wrapper || !table || !body) return;
 
-        currentBody = body;
-        const rect = wrapper.getBoundingClientRect();
-        const headerHeight = table.querySelector('thead')?.getBoundingClientRect().height || 70;
-        const shouldShow = rect.top < 0 && rect.bottom > (headerHeight + 22);
+    function calculate() {
+      const selected = getSelectedMember();
+      if (!selected) return alert('계산할 길드원을 선택해주세요.');
 
-        if (!shouldShow) {
-            fixedBox.classList.remove('is-visible');
-            return;
-        }
+      const target = Number(targetInput.value);
+      const current = Number(currentInput.value);
+      const basicRemaining = Number(remainingInput.value);
+      const useMissionAdd = Boolean(maxExtraToggle.checked);
+      const addedMissionCost = useMissionAdd ? EXTRA_MISSION_LIMIT * EXTRA_MISSION_COST : 0;
+      const maxMissionCount = basicRemaining;
 
-        fixedBox.style.left = rect.left + 'px';
-        fixedBox.style.top = '0px';
-        fixedBox.style.width = rect.width + 'px';
-        copyHeader(table);
-        fixedBox.classList.add('is-visible');
-        syncFromBody();
-    }
+      if (!Number.isInteger(target) || target < 0 || !Number.isInteger(current) || current < 0) {
+        return alert('목표 점수와 현재 점수를 0 이상의 정수로 입력해주세요.');
+      }
+      if (!Number.isInteger(basicRemaining) || basicRemaining < 0 || basicRemaining > 24) {
+        return alert('남은 임무 횟수는 0~24 사이의 정수로 입력해주세요.');
+      }
 
-    fixedScroll.addEventListener('scroll', function () {
-        if (!currentBody || syncing) return;
-        syncing = true;
-        currentBody.scrollLeft = fixedScroll.scrollLeft;
-        fixedRows.scrollLeft = fixedScroll.scrollLeft;
-        const grade = getActiveGrade();
-        const top = grade && document.getElementById('top-scroll-' + grade);
-        if (top) top.scrollLeft = fixedScroll.scrollLeft;
-        syncing = false;
-    });
+      const { options, excludedUpgradeCost } = groupScoreOptions(selected.id);
+      resultCard.classList.add('show');
+      resultTitle.textContent = `${selected.name}님의 계산 결과`;
+      renderScoreOptions(options);
 
-    fixedRows.addEventListener('scroll', function () {
-        if (!currentBody || syncing) return;
-        syncing = true;
-        currentBody.scrollLeft = fixedRows.scrollLeft;
-        fixedScroll.scrollLeft = fixedRows.scrollLeft;
-        syncing = false;
-    });
+      const needed = Math.max(0, target - current);
 
-    grades.forEach(g => {
-        const body = document.getElementById('body-scroll-' + g);
-        if (body) body.addEventListener('scroll', syncFromBody);
-    });
+      if (needed === 0) {
+        setResultBadge('목표 달성', 'ok');
+        summaryGrid.innerHTML = [
+          summaryItem('🎯필요 점수', '0점'),
+          summaryItem('💡추천 조합 획득 점수', '0점'),
+          summaryItem('🏆예상 최종', `${formatNumber(current)}점`),
+          summaryItem('🚀목표 초과', `+${formatNumber(Math.max(0, current-target))}점`),
 
-    window.addEventListener('scroll', updateFixedHeader, {passive:true});
-    window.addEventListener('resize', updateFixedHeader);
-    document.addEventListener('click', () => setTimeout(updateFixedHeader, 0));
+          summaryItem('⚔️사용 임무', '0회'),
+          summaryItem('➕임무 추가 비용', '0💎'),
+          summaryItem('⬆️임무 업그레이드 비용', '0💎'),
+          summaryItem('💎총 사용 다이아', '0💎')
+        ].join('');
+        planArea.innerHTML = '<div class="empty-plan">🎉 이미 목표 점수에 도달했습니다. 추가 계산이 필요하지 않습니다.</div>';
+        resultNote.textContent = '현재 점수가 목표 점수 이상이면 꽃 옵션 및 임무 추가 여부와 관계없이 비용을 계산하지 않습니다.';
+        return;
+      }
 
-    const oldRenderAll = window.renderAll;
-    if (typeof oldRenderAll === 'function') {
-        window.renderAll = function () {
-            oldRenderAll.apply(this, arguments);
-            setTimeout(updateFixedHeader, 0);
-        };
-    }
+      if (!options.length) {
+        setResultBadge('계산 불가', 'bad');
+        summaryGrid.innerHTML = [
+          summaryItem('필요 점수', `${formatNumber(needed)}점`),
+          summaryItem('계산 배율', `${multiplier}배`)
+        ].join('');
+        planArea.innerHTML = '<div class="empty-plan">길드전 점수가 등록되고 현재 배율에서 비용 계산이 가능한 보유 꽃이 없어 계산할 수 없습니다.</div>';
+        resultNote.textContent = multiplier === 2 && excludedUpgradeCost
+          ? `업그레이드 비용 기준이 없는 보유 꽃 ${excludedUpgradeCost}종은 제외되었습니다.`
+          : '';
+        return;
+      }
 
-    setTimeout(updateFixedHeader, 0);
-})();
-</script>
+      const maxOption = options.reduce((best, option) => option.points > best.points ? option : best, options[0]);
+      const maxPossible = maxOption.points * maxMissionCount;
 
+      if (maxPossible < needed) {
+        const maxFinal = current + maxPossible;
+        setResultBadge('목표 달성 불가', 'bad');
+        summaryGrid.innerHTML = [
+          summaryItem('필요 점수', `${formatNumber(needed)}점`),
+          summaryItem('사용 가능 임무', `${formatNumber(maxMissionCount)}회`),
+          summaryItem('최대 획득', `${formatNumber(maxPossible)}점`),
+          summaryItem('부족 점수', `${formatNumber(Math.max(0, target-maxFinal))}점`)
+        ].join('');
+        planArea.innerHTML = `<div class="empty-plan">⚠️ ${escapeHtml(selected.name)}님의 현재 보유 꽃으로 사용 가능한 ${formatNumber(maxMissionCount)}회 안에는 목표에 도달할 수 없습니다.<br>가장 높은 사용 가능 점수는 회당 ${formatNumber(maxOption.points)}점입니다.</div>`;
+        resultNote.textContent = `${multiplier}배 기준 · 꽃별 옵션 적용 · 입력한 남은 임무 ${basicRemaining}회 안에서 계산합니다.` +
+          `${useMissionAdd ? ' 임무 횟수 추가 비용 270💎는 총 비용에 합산됩니다.' : ''}`;
+        return;
+      }
 
-    <!-- 길드 꽃 도감 사용 가이드 -->
-    <div id="guildGuideModal" class="guide-modal-overlay" onclick="if(event.target===this) closeGuildGuide()">
-        <div class="guide-modal-box" role="dialog" aria-modal="true" aria-labelledby="guildGuideTitle">
-            <div class="guide-modal-top">
-                <h2 id="guildGuideTitle">🌸 길드 꽃 도감 사용 가이드 🌸</h2>
-                <button type="button" class="guide-modal-close" onclick="closeGuildGuide()" aria-label="가이드 닫기">×</button>
-            </div>
-            <div class="guide-step"><b>① 내 닉네임 선택하기</b><br>상단 목록 관리에서 자신의 닉네임을 클릭해주세요. 여러 명을 선택하면 여러 길드원의 보유 현황을 함께 비교할 수도 있습니다.</div>
-            <div class="guide-step"><b>② 보유하고 있는 꽃 체크하기</b><br>N / R / SR / SSR / UR 등급을 선택한 뒤 보유 중인 꽃의 체크박스를 눌러주세요. 체크한 내용은 자동으로 저장됩니다.</div>
-            <div class="guide-step"><b>③ 꽃을 빠르게 찾고 싶다면</b><br>꽃 검색을 이용하면 원하는 꽃을 찾아 바로 체크하거나 조회할 수 있습니다.</div>
-            <div class="guide-step"><b>④ 누가 가지고 있는지 확인하기</b><br>꽃 목록의 <b>조회</b> 버튼으로 보유 길드원을 확인하고, <b>정보</b> 버튼으로 꽃의 상세 정보를 확인할 수 있습니다.</div>
-            <div class="guide-tip">⚠️ 체크 상태는 길드원 모두에게 공유됩니다. 자신의 닉네임이 선택되어 있는지 확인한 뒤 체크해주세요. 잘못 체크했다면 같은 체크박스를 다시 눌러 해제하면 됩니다.</div>
+      const plan = findMinimumDiamondPlan(options, maxMissionCount, needed);
+      if (!plan) {
+        setResultBadge('계산 불가', 'bad');
+        summaryGrid.innerHTML = [
+          summaryItem('필요 점수', `${formatNumber(needed)}점`),
+          summaryItem('계산 배율', `${multiplier}배`)
+        ].join('');
+        planArea.innerHTML = '<div class="empty-plan">조건에 맞는 임무 조합을 찾지 못했습니다.</div>';
+        resultNote.textContent = '';
+        return;
+      }
+
+      const finalScore = current + plan.sum;
+      const over = Math.max(0, finalScore - target);
+      const totalCost = plan.upgradeCost + addedMissionCost;
+
+      setResultBadge(over === 0 ? '정확히 달성' : '달성 가능', 'ok');
+      summaryGrid.innerHTML = [
+        summaryItem('🎯필요 점수', `${formatNumber(needed)}점`),
+        summaryItem('💡추천 조합 획득 점수', `${formatNumber(plan.sum)}점`),
+        summaryItem('🏆예상 최종', `${formatNumber(finalScore)}점`),
+        summaryItem('🚀목표 초과', `+${formatNumber(over)}점`),
+
+        summaryItem('⚔️사용 임무', `${formatNumber(plan.count)} / ${formatNumber(maxMissionCount)}회`),
+        summaryItem('➕임무 추가 비용', `${formatNumber(addedMissionCost)}💎`),
+        summaryItem('⬆️임무 업그레이드 비용', `${formatNumber(plan.upgradeCost)}💎`),
+        summaryItem('💎총 사용 다이아', `${formatNumber(totalCost)}💎`)
+      ].join('');
+
+      const rows = plan.counts
+        .map((count, index) => ({ count, option:options[index] }))
+        .filter(row => row.count > 0);
+
+      planArea.innerHTML = `
+        <div class="plan-title">🌱 추천 조합 · 총 ${formatNumber(plan.count)}회 · ${formatNumber(totalCost)}💎</div>
+        <div class="empty-plan" style="margin-bottom:10px;">
+          입력한 남은 임무 ${formatNumber(basicRemaining)}회
+          ${useMissionAdd
+            ? ` · 임무 횟수 추가 비용 ${formatNumber(addedMissionCost)}💎 포함`
+            : ' · 임무 횟수 추가 비용 없음'}
         </div>
-    </div>
+        <div class="plan-table-wrap">
+          <table>
+            <thead>
+              <tr><th>등급</th><th>회당 점수</th><th>횟수</th><th>점수 소계</th><th>업그레이드 비용</th></tr>
+            </thead>
+            <tbody>${rows.map(row => `
+              <tr>
+                <td><strong>${escapeHtml(row.option.grade)}</strong></td>
+                <td><span class="score-pill">⚔️ ${formatNumber(row.option.points)}점</span><br><small>기본 ${formatNumber(row.option.baseScore)}점${row.option.optionBonus > 0 ? ` + 옵션 ${formatNumber(row.option.optionBonus)}점` : ''}${row.option.rawPoints > 60 ? ' · 최대 60점 적용' : ''}</small></td>
+                <td><strong>${formatNumber(row.count)}회</strong></td>
+                <td>${formatNumber(row.option.points * row.count)}점</td>
+                <td>${multiplier === 2
+                  ? `${formatNumber(row.option.diamondCost)}💎 × ${formatNumber(row.count)} = <strong>${formatNumber(row.option.diamondCost * row.count)}💎</strong>`
+                  : '<strong>0💎</strong>'}</td>
+              </tr>`).join('')}</tbody>
+          </table>
+        </div>`;
+
+      const excludedText = multiplier === 2 && excludedUpgradeCost
+        ? ` 업그레이드 비용 기준이 없는 보유 꽃 ${excludedUpgradeCost}종은 계산에서 제외되었습니다.`
+        : '';
+
+      resultNote.textContent =
+        `${multiplier}배 기준 · 꽃별 옵션 적용 · 입력한 남은 임무 ${maxMissionCount}회 안에서 계산 · ` +
+        `추천 조합은 낮은 등급 우선 → 같은 등급 구성에서 업그레이드 다이아 최소 → 목표 초과 점수 최소 → 사용 임무 횟수 최소 순입니다. 옵션 점수는 획득 점수에만 반영되며 업그레이드 다이아는 기존 비용 그대로입니다.` +
+        `${useMissionAdd ? ` 임무 횟수 추가 비용 ${formatNumber(addedMissionCost)}💎가 총 비용에 합산됩니다.` : ''}${excludedText}`;
+    }
 
 
-    <script>
-        function openGuildGuide() {
-            const modal = document.getElementById('guildGuideModal');
-            if (modal) modal.classList.add('active');
-        }
-        function closeGuildGuide() {
-            const modal = document.getElementById('guildGuideModal');
-            if (modal) modal.classList.remove('active');
-        }
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape') closeGuildGuide();
-        });
-    </script>
-
-
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').catch((err) => console.warn('PWA service worker registration failed:', err));
+    document.querySelectorAll('.multiplier-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        multiplier = Number(button.dataset.multiplier) === 1 ? 1 : 2;
+        document.querySelectorAll('.multiplier-btn').forEach(btn => btn.classList.toggle('active', btn === button));
+        updateMemberStatus();
+        if (resultCard.classList.contains('show') && targetInput.value !== '' && currentInput.value !== '' && remainingInput.value !== '') calculate();
+      });
     });
-  }
-</script>
 
+    optionConfigBtn.addEventListener('click', openOptionModal);
+    optionCloseBtn.addEventListener('click', closeOptionModal);
+    optionCancelBtn.addEventListener('click', closeOptionModal);
+    optionSaveBtn.addEventListener('click', saveOptionSettings);
+
+    optionModal.addEventListener('click', event => {
+      if (event.target === optionModal) closeOptionModal();
+    });
+
+    optionGradeFilters.addEventListener('click', event => {
+      const button = event.target.closest('.option-filter-btn');
+      if (!button) return;
+      optionFilterGrade = button.dataset.grade || 'ALL';
+      optionGradeFilters.querySelectorAll('.option-filter-btn').forEach(item => {
+        item.classList.toggle('active', item === button);
+      });
+      renderOptionFlowerList();
+    });
+
+    optionSearchInput.addEventListener('input', renderOptionFlowerList);
+
+    optionFlowerList.addEventListener('change', event => {
+      const select = event.target.closest('.option-select');
+      if (!select) return;
+      optionDraft.set(select.dataset.flowerKey, Number(select.value || 0));
+      renderOptionFlowerList();
+    });
+
+    memberSelect.addEventListener('change', () => {
+      if (optionModal.classList.contains('show')) {
+        optionModal.classList.remove('show');
+        optionEditingMemberId = '';
+        optionDraft = new Map();
+      }
+      resultCard.classList.remove('show');
+      updateMemberStatus();
+    });
+
+    maxExtraToggle.addEventListener('change', () => {
+      if (resultCard.classList.contains('show') && targetInput.value !== '' && currentInput.value !== '' && remainingInput.value !== '') calculate();
+    });
+
+    function openGuide() {
+      guideModal.classList.add('show');
+      guideCloseBtn.focus();
+    }
+    function closeGuide() {
+      guideModal.classList.remove('show');
+      guideOpenBtn.focus();
+    }
+    guideOpenBtn.addEventListener('click', openGuide);
+    guideCloseBtn.addEventListener('click', closeGuide);
+    guideModal.addEventListener('click', event => {
+      if (event.target === guideModal) closeGuide();
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key !== 'Escape') return;
+      if (optionModal.classList.contains('show')) {
+        closeOptionModal();
+        return;
+      }
+      if (guideModal.classList.contains('show')) closeGuide();
+    });
+
+    calcBtn.addEventListener('click', calculate);
+    [targetInput, currentInput, remainingInput].forEach(input => input.addEventListener('keydown', event => {
+      if (event.key === 'Enter' && !calcBtn.disabled) calculate();
+    }));
+
+    localStorage.removeItem('mission_calc_member');
+    loadData(true);
+    window.addEventListener('focus', () => loadData(false));
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) loadData(false); });
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(err => console.warn('PWA service worker registration failed:', err)));
+    }
+  </script>
 </body>
-
 </html>
