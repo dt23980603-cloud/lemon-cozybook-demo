@@ -232,7 +232,7 @@
       .flower-detail-image { width:min(180px, 100%); }
     }
   
-    /* demo_v32: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
+    /* demo_v33: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
     .flower-grid {
       grid-template-columns:repeat(2,minmax(0,1fr));
       gap:14px;
@@ -409,6 +409,39 @@
       }
     }
 
+  
+    /* demo_v33 통합 도감 보완 */
+    .guild-check-row{position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:7px;}
+    .guild-check-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .guild-manage-link{padding:5px 9px;border:1px solid #aaa;border-radius:6px;background:#fff;color:#555;text-decoration:none;font-size:.72rem;font-weight:700;}
+    .guild-manage-link:hover{background:#fff9db;}
+    .guild-member-select-native{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;}
+    .guild-member-picker{position:relative;width:100%;}
+    .guild-member-picker-btn{width:100%;min-height:43px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 11px;border:1px solid #aaa;border-radius:7px;background:#fff;color:#333;text-align:left;font-size:.88rem;cursor:pointer;}
+    .guild-member-picker-btn.open{border-color:#74662a;box-shadow:0 0 0 2px rgba(243,223,118,.45);}
+    .picker-placeholder{color:#777}.picker-selected{display:inline-flex;align-items:center;gap:7px;min-width:0;font-weight:700}.picker-arrow{color:#666;}
+    .picker-role-dot{width:9px;height:9px;flex:0 0 9px;border-radius:50%;background:#999;}
+    .role-dot-길드장{background:#b3261e}.role-dot-부길드장{background:#c28b00}.role-dot-임원{background:#7b3f98}.role-dot-정예{background:#1976a3}.role-dot-멤버{background:#3f7d3a}
+    .guild-member-picker-menu{position:absolute;z-index:1150;left:0;right:0;top:calc(100% + 5px);display:none;max-height:300px;overflow:auto;padding:6px;border:1px solid #aaa;border-radius:8px;background:#fff;box-shadow:0 8px 22px rgba(0,0,0,.16);}
+    .guild-member-picker-menu.open{display:block;}
+    .picker-option{width:100%;min-height:39px;display:flex;align-items:center;gap:9px;padding:7px 9px;border:0;border-radius:6px;background:#fff;color:#333;text-align:left;font-size:.82rem;cursor:pointer;}
+    .picker-option:hover,.picker-option.selected{background:#fff9db}.picker-option-none{color:#777}.picker-option-role{min-width:58px;font-weight:700}.picker-option-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .picker-option.role-길드장 .picker-option-role{color:#b3261e}.picker-option.role-부길드장 .picker-option-role{color:#9a6700}.picker-option.role-임원 .picker-option-role{color:#7b3f98}.picker-option.role-정예 .picker-option-role{color:#1976a3}.picker-option.role-멤버 .picker-option-role{color:#3f7d3a}
+    .guild-owner-tags .owner-extra{display:none}.guild-owner-tags.expanded .owner-extra{display:inline-flex;}
+    .owner-more-btn{display:inline-flex;align-items:center;min-height:25px;padding:3px 8px;border:1px dashed #999;border-radius:13px;background:#fff9db;color:#555;font-size:.7rem;font-weight:700;cursor:pointer;}
+    .image-wrap{justify-content:center!important;padding:8px!important;position:relative;}
+    .card-top-row{position:absolute!important;z-index:3;left:10px;right:10px;top:10px;min-height:26px;pointer-events:none;}
+    .grade-badge,.score-badge{padding-left:7px;padding-right:7px;border-radius:13px;}
+    .score-badge{background:rgba(255,255,255,.90);}
+    .grade-image-crop{width:100%;max-height:100%;margin:auto 0;}
+    @media(max-width:620px){
+      .guild-check-row{padding:8px!important}.guild-check-label{font-size:.72rem!important}.guild-manage-link{font-size:.64rem;padding:4px 7px}
+      .guild-member-picker-btn{min-height:39px;padding:8px 9px;font-size:.72rem}.guild-member-picker-menu{max-height:330px}.picker-option{min-height:38px;font-size:.72rem}.picker-option-role{min-width:54px}
+      .flower-card{grid-template-columns:145px minmax(0,1fr)!important;min-height:170px!important}.image-wrap{padding:5px!important}
+      .card-top-row{left:7px;right:7px;top:7px;min-height:20px}.grade-badge{min-width:30px;height:20px;padding:0 5px;font-size:.62rem}.score-badge{min-height:20px;padding:0 5px;font-size:.56rem}
+      .guild-owner-tag,.owner-more-btn{min-height:20px;padding:2px 5px;font-size:.58rem}
+    }
+
   </style>
 
     <link rel="manifest" href="/manifest.webmanifest">
@@ -436,16 +469,26 @@
     </div>
 
     <div class="control-card">
-      <div class="search-row">
-        <input id="flowerSearch" class="search-input" type="search" placeholder="🔍 꽃 이름 검색..." autocomplete="off">
-        <button id="clearSearch" class="btn-clear" type="button">초기화</button>
-      </div>
       <div class="guild-check-row">
-        <span class="guild-check-label">👤 보유 체크 대상 길드원</span>
-        <select id="guildMemberSelect" class="guild-member-select" aria-label="체크 대상 길드원">
+        <div class="guild-check-title-row">
+          <span class="guild-check-label">👤 체크 대상 길드원</span>
+          <a href="page7.html" class="guild-manage-link">⚙️ 길드원 관리</a>
+        </div>
+        <div class="guild-member-picker" id="guildMemberPicker">
+          <button type="button" id="guildMemberPickerBtn" class="guild-member-picker-btn" aria-haspopup="listbox" aria-expanded="false">
+            <span id="guildMemberPickerValue" class="picker-placeholder">길드원을 선택해주세요</span>
+            <span class="picker-arrow">⌄</span>
+          </button>
+          <div id="guildMemberPickerMenu" class="guild-member-picker-menu" role="listbox" aria-label="체크 대상 길드원"></div>
+        </div>
+        <select id="guildMemberSelect" class="guild-member-select-native" aria-hidden="true" tabindex="-1">
           <option value="">길드원을 선택해주세요</option>
         </select>
         <span id="guildCheckHelp" class="guild-check-help">선택 후 꽃 카드에서 바로 보유 체크할 수 있습니다.</span>
+      </div>
+      <div class="search-row">
+        <input id="flowerSearch" class="search-input" type="search" placeholder="🔍 꽃 이름 검색..." autocomplete="off">
+        <button id="clearSearch" class="btn-clear" type="button">초기화</button>
       </div>
       <div class="tab-container">
         <button class="tab-btn active" data-grade="ALL">전체 <span class="count">(69)</span></button>
@@ -547,7 +590,7 @@
     const masterFlowers = window.FLOWER_MASTER_DATA || [];
     const FLOWERS_API = '/api/flowers';
     const GUILD_STATE_API = '/api/guild-state';
-    const BASE_SEED_VERSION = 'demo_v32_base_356';
+    const BASE_SEED_VERSION = 'demo_v33_base_356';
     let remoteFlowers = [];
     let d1Ready = false;
     let activeGrade = 'ALL';
@@ -560,6 +603,8 @@
     let guildStateReady = false;
     let guildStateUpdatedAt = 0;
     let guildStateRequestInFlight = false;
+    let lastGuildMemberSignature = '';
+    const expandedOwnerFlowerKeys = new Set();
     const guildRoleOrder = { '길드장':1, '부길드장':2, '임원':3, '정예':4, '멤버':5 };
 
     const grid = document.getElementById('flowerGrid');
@@ -576,6 +621,10 @@
     const editFlowerStatus = document.getElementById('editFlowerStatus');
     const guildMemberSelect = document.getElementById('guildMemberSelect');
     const guildCheckHelp = document.getElementById('guildCheckHelp');
+    const guildMemberPicker = document.getElementById('guildMemberPicker');
+    const guildMemberPickerBtn = document.getElementById('guildMemberPickerBtn');
+    const guildMemberPickerValue = document.getElementById('guildMemberPickerValue');
+    const guildMemberPickerMenu = document.getElementById('guildMemberPickerMenu');
 
     function escapeHtml(value) {
       return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
@@ -613,12 +662,20 @@
       const owners = getFlowerOwners(flower);
       const totalMembers = guildMembers.length;
       const countLabel = `${owners.length} / ${totalMembers}명`;
+      const previewLimit = window.matchMedia('(max-width:620px)').matches ? 5 : 7;
+      const expanded = expandedOwnerFlowerKeys.has(flower.key);
 
-      const tags = owners.length
-        ? owners.map(member =>
-            `<span class="guild-owner-tag" data-role="${escapeHtml(member.role || '멤버')}" title="${escapeHtml(member.role || '멤버')}">${escapeHtml(member.name || '')}</span>`
-          ).join('')
-        : '<span class="guild-owner-empty">현재 보유 체크된 길드원이 없습니다.</span>';
+      let tags = '';
+      if (owners.length) {
+        tags = owners.map((member, index) =>
+          `<span class="guild-owner-tag ${index >= previewLimit ? 'owner-extra' : ''}" data-role="${escapeHtml(member.role || '멤버')}" title="${escapeHtml(member.role || '멤버')}">${escapeHtml(member.name || '')}</span>`
+        ).join('');
+        if (owners.length > previewLimit) {
+          tags += `<button type="button" class="owner-more-btn" data-owner-key="${escapeHtml(flower.key)}">${expanded ? '접기' : `더보기 +${owners.length - previewLimit}`}</button>`;
+        }
+      } else {
+        tags = '<span class="guild-owner-empty">현재 보유 체크된 길드원이 없습니다.</span>';
+      }
 
       return `
         <div class="guild-owner-box">
@@ -626,22 +683,72 @@
             <span class="guild-owner-title">👥 길드 보유 현황</span>
             <span class="guild-owner-count">${escapeHtml(countLabel)}</span>
           </div>
-          <div class="guild-owner-tags">${tags}</div>
+          <div class="guild-owner-tags ${expanded ? 'expanded' : ''}" data-owner-tags="${escapeHtml(flower.key)}">${tags}</div>
         </div>`;
     }
 
-    function renderGuildMemberSelect() {
+    function memberSignature(memberList = guildMembers) {
+      return JSON.stringify(
+        [...memberList]
+          .sort((a,b) =>
+            (guildRoleOrder[a.role] || 99) - (guildRoleOrder[b.role] || 99) ||
+            String(a.name || '').localeCompare(String(b.name || ''), 'ko-KR')
+          )
+          .map(member => [member.id, member.role || '', member.name || ''])
+      );
+    }
+
+    function closeGuildMemberPicker() {
+      guildMemberPickerMenu.classList.remove('open');
+      guildMemberPickerBtn.classList.remove('open');
+      guildMemberPickerBtn.setAttribute('aria-expanded', 'false');
+    }
+
+    function openGuildMemberPicker() {
+      guildMemberPickerMenu.classList.add('open');
+      guildMemberPickerBtn.classList.add('open');
+      guildMemberPickerBtn.setAttribute('aria-expanded', 'true');
+    }
+
+    function renderGuildMemberSelect(force = false) {
       const sorted = getSortedGuildMembers();
+      const signature = memberSignature(sorted);
       const validIds = new Set(sorted.map(member => member.id));
+
       if (selectedGuildMemberId && !validIds.has(selectedGuildMemberId)) {
         selectedGuildMemberId = '';
         localStorage.removeItem('all_flower_selected_member');
       }
-      guildMemberSelect.innerHTML = '<option value="">길드원을 선택해주세요</option>' + sorted.map(member =>
-        `<option value="${escapeHtml(member.id)}">${escapeHtml(member.role || '멤버')} · ${escapeHtml(member.name || '')}</option>`
-      ).join('');
+
+      if (force || signature !== lastGuildMemberSignature) {
+        guildMemberSelect.innerHTML = '<option value="">길드원을 선택해주세요</option>' + sorted.map(member =>
+          `<option value="${escapeHtml(member.id)}">${escapeHtml(member.role || '멤버')} · ${escapeHtml(member.name || '')}</option>`
+        ).join('');
+
+        guildMemberPickerMenu.innerHTML =
+          `<button type="button" class="picker-option picker-option-none ${selectedGuildMemberId ? '' : 'selected'}" data-member-id="">선택 안 함</button>` +
+          sorted.map(member => `
+            <button type="button" class="picker-option role-${escapeHtml(member.role || '멤버')} ${member.id === selectedGuildMemberId ? 'selected' : ''}" data-member-id="${escapeHtml(member.id)}">
+              <span class="picker-role-dot role-dot-${escapeHtml(member.role || '멤버')}"></span>
+              <span class="picker-option-role">${escapeHtml(member.role || '멤버')}</span>
+              <span class="picker-option-name">${escapeHtml(member.name || '')}</span>
+            </button>`
+          ).join('');
+
+        lastGuildMemberSignature = signature;
+      }
+
       guildMemberSelect.value = selectedGuildMemberId;
       const selected = getSelectedGuildMember();
+      guildMemberPickerValue.className = selected ? 'picker-selected' : 'picker-placeholder';
+      guildMemberPickerValue.innerHTML = selected
+        ? `<span class="picker-role-dot role-dot-${escapeHtml(selected.role || '멤버')}"></span><span>${escapeHtml(selected.role || '멤버')} · ${escapeHtml(selected.name || '')}</span>`
+        : '길드원을 선택해주세요';
+
+      guildMemberPickerMenu.querySelectorAll('.picker-option').forEach(option => {
+        option.classList.toggle('selected', option.dataset.memberId === selectedGuildMemberId);
+      });
+
       guildCheckHelp.textContent = selected
         ? `${selected.name}님의 보유 현황을 카드에서 바로 체크합니다.`
         : '선택 후 꽃 카드에서 바로 보유 체크할 수 있습니다.';
@@ -649,21 +756,30 @@
 
     function applyGuildState(state, updatedAt = 0) {
       if (!state || typeof state !== 'object') return false;
-      let changed = false;
+
+      let membersChanged = false;
+      let checksChanged = false;
+
       if (Array.isArray(state.members)) {
-        guildMembers = state.members;
-        localStorage.setItem('guild_members', JSON.stringify(guildMembers));
-        changed = true;
+        if (memberSignature(state.members) !== memberSignature(guildMembers)) {
+          guildMembers = state.members;
+          localStorage.setItem('guild_members', JSON.stringify(guildMembers));
+          membersChanged = true;
+        }
       }
+
       if (state.checks && typeof state.checks === 'object' && !Array.isArray(state.checks)) {
-        guildChecks = state.checks;
-        localStorage.setItem('guild_checks', JSON.stringify(guildChecks));
-        changed = true;
+        if (JSON.stringify(state.checks) !== JSON.stringify(guildChecks)) {
+          guildChecks = state.checks;
+          localStorage.setItem('guild_checks', JSON.stringify(guildChecks));
+          checksChanged = true;
+        }
       }
+
       guildStateUpdatedAt = Math.max(guildStateUpdatedAt, Number(updatedAt || 0));
-      renderGuildMemberSelect();
-      if (changed) renderFlowers();
-      return changed;
+      renderGuildMemberSelect(membersChanged);
+      if (membersChanged || checksChanged) renderFlowers();
+      return membersChanged || checksChanged;
     }
 
     async function fetchGuildState(force = false) {
@@ -691,7 +807,7 @@
     async function toggleSelectedMemberFlower(flowerKey) {
       if (!selectedGuildMemberId) {
         alert('먼저 체크 대상 길드원을 선택해주세요.');
-        guildMemberSelect.focus();
+        guildMemberPickerBtn.focus();
         return;
       }
       const flower = findFlowerByKey(flowerKey);
@@ -767,6 +883,17 @@
         </article>`).join('');
       document.querySelectorAll('.btn-open').forEach(btn => btn.addEventListener('click', openDetail));
       document.querySelectorAll('.btn-own-check').forEach(btn => btn.addEventListener('click', () => toggleSelectedMemberFlower(btn.dataset.key)));
+      document.querySelectorAll('.owner-more-btn').forEach(btn => btn.addEventListener('click', () => {
+        const key = btn.dataset.ownerKey;
+        const tagBox = [...grid.querySelectorAll('[data-owner-tags]')].find(el => el.dataset.ownerTags === key);
+        if (!tagBox) return;
+        const willExpand = !tagBox.classList.contains('expanded');
+        tagBox.classList.toggle('expanded', willExpand);
+        if (willExpand) expandedOwnerFlowerKeys.add(key);
+        else expandedOwnerFlowerKeys.delete(key);
+        const hiddenCount = tagBox.querySelectorAll('.owner-extra').length;
+        btn.textContent = willExpand ? '접기' : `더보기 +${hiddenCount}`;
+      }));
     }
 
     function findFlowerByKey(key) {
@@ -1069,6 +1196,24 @@
       renderFlowers();
     });
 
+    guildMemberPickerBtn.addEventListener('click', event => {
+      event.stopPropagation();
+      if (guildMemberPickerMenu.classList.contains('open')) closeGuildMemberPicker();
+      else openGuildMemberPicker();
+    });
+
+    guildMemberPickerMenu.addEventListener('click', event => {
+      const option = event.target.closest('.picker-option');
+      if (!option) return;
+      guildMemberSelect.value = option.dataset.memberId || '';
+      guildMemberSelect.dispatchEvent(new Event('change'));
+      closeGuildMemberPicker();
+    });
+
+    document.addEventListener('click', event => {
+      if (!guildMemberPicker.contains(event.target)) closeGuildMemberPicker();
+    });
+
     searchInput.addEventListener('input', renderFlowers);
     document.getElementById('clearSearch').addEventListener('click', () => {
       searchInput.value=''; activeGrade='ALL';
@@ -1091,7 +1236,7 @@
     });
 
     async function initializeFlowers() {
-      renderGuildMemberSelect();
+      renderGuildMemberSelect(true);
       renderFlowers();
       await fetchGuildState(true);
       try {

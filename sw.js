@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v32-integrated-flower-catalog';
+const CACHE_NAME = 'lemon-demo-v33-integrated-catalog-members';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -8,6 +8,7 @@ const APP_SHELL = [
   '/page4.html',
   '/page5.html',
   '/page6.html',
+  '/page7.html',
   '/flower-data-all.js',
   '/images/branding/lemon-favicon.png',
   '/images/banners/lemon-banner-pc.png',
