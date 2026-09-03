@@ -184,7 +184,7 @@
             border: 0;
         }
 
-    /* demo_v28 N등급: 450×350 가로형 이미지 프레임 */
+    /* main_v31 N등급: 450×350 가로형 이미지 프레임 */
     .flower-card.grade-N .grade-image-crop {
       aspect-ratio:9 / 7;
       border-radius:8px;
@@ -208,7 +208,7 @@
       .flower-detail-image.grade-N-detail { width:min(180px, 100%); }
     }
 
-    /* demo_v28 전체 등급: 가로형 꽃 이미지 프레임 */
+    /* main_v31 전체 등급: 가로형 꽃 이미지 프레임 */
     .grade-image-crop {
       aspect-ratio:9 / 7;
       border-radius:8px;
@@ -231,6 +231,184 @@
       .grade-image-crop { border-radius:8px; }
       .flower-detail-image { width:min(180px, 100%); }
     }
+  
+    /* demo_v32: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
+    .flower-grid {
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+    }
+    .flower-card {
+      display:grid;
+      grid-template-columns:190px minmax(0,1fr);
+      min-height:220px;
+      overflow:hidden;
+    }
+    .image-wrap {
+      border-bottom:0;
+      border-right:1px solid #ddd;
+      padding:10px;
+    }
+    .grade-image-crop {
+      width:100%;
+      aspect-ratio:9 / 7;
+      border-radius:8px;
+    }
+    .card-body {
+      min-width:0;
+      padding:12px 13px;
+      text-align:left;
+      display:flex;
+      flex-direction:column;
+    }
+    .flower-name {
+      margin-bottom:8px;
+      min-height:auto;
+      font-size:.98rem;
+      line-height:1.35;
+      word-break:keep-all;
+    }
+    .guild-owner-box {
+      flex:1;
+      min-height:0;
+      padding:9px 10px;
+      margin-bottom:10px;
+      border:1px solid #dedede;
+      border-radius:8px;
+      background:#fafafa;
+    }
+    .guild-owner-head {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-bottom:7px;
+      font-size:.78rem;
+      line-height:1.3;
+    }
+    .guild-owner-title {
+      font-weight:700;
+      color:#444;
+    }
+    .guild-owner-count {
+      flex:0 0 auto;
+      color:#666;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .guild-owner-tags {
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:5px;
+    }
+    .guild-owner-tag {
+      display:inline-flex;
+      align-items:center;
+      max-width:100%;
+      min-height:25px;
+      padding:3px 8px;
+      border:1px solid #c9c9c9;
+      border-radius:13px;
+      background:#fff;
+      color:#444;
+      font-size:.72rem;
+      line-height:1.2;
+      white-space:nowrap;
+    }
+    .guild-owner-tag[data-role="길드장"] { border-color:#d6a6a2; background:#fff5f4; }
+    .guild-owner-tag[data-role="부길드장"] { border-color:#dec981; background:#fffbea; }
+    .guild-owner-tag[data-role="임원"] { border-color:#c9b0d8; background:#fbf5ff; }
+    .guild-owner-tag[data-role="정예"] { border-color:#a9cddd; background:#f3fbff; }
+    .guild-owner-tag[data-role="멤버"] { border-color:#b7d0b3; background:#f5fff3; }
+    .guild-owner-empty {
+      color:#999;
+      font-size:.73rem;
+      line-height:1.5;
+    }
+    .card-action-row {
+      grid-template-columns:1fr 1fr;
+      margin-top:auto;
+      gap:7px;
+    }
+    .btn-open, .btn-own-check {
+      min-height:36px;
+      padding:7px 6px;
+      font-size:.76rem;
+    }
+
+    @media (max-width:980px) {
+      .flower-grid { grid-template-columns:1fr; }
+      .flower-card { grid-template-columns:210px minmax(0,1fr); }
+    }
+
+    @media (max-width:620px) {
+      .flower-grid {
+        grid-template-columns:1fr !important;
+        gap:9px;
+      }
+      .flower-card {
+        grid-template-columns:118px minmax(0,1fr);
+        min-height:168px;
+        border-radius:8px;
+      }
+      .image-wrap {
+        padding:7px;
+        gap:5px;
+      }
+      .card-top-row {
+        min-height:20px;
+        gap:3px;
+      }
+      .grade-badge {
+        min-width:30px;
+        height:20px;
+        padding:0 5px;
+        font-size:.62rem;
+      }
+      .score-badge {
+        min-height:20px;
+        font-size:.56rem;
+      }
+      .grade-image-crop {
+        border-radius:7px;
+      }
+      .card-body {
+        padding:8px;
+      }
+      .flower-name {
+        font-size:.76rem;
+        margin-bottom:6px;
+      }
+      .guild-owner-box {
+        padding:6px 7px;
+        margin-bottom:6px;
+        border-radius:6px;
+      }
+      .guild-owner-head {
+        margin-bottom:5px;
+        font-size:.64rem;
+      }
+      .guild-owner-tags {
+        gap:3px;
+      }
+      .guild-owner-tag {
+        min-height:20px;
+        padding:2px 5px;
+        font-size:.58rem;
+      }
+      .guild-owner-empty {
+        font-size:.6rem;
+      }
+      .card-action-row {
+        gap:4px;
+      }
+      .btn-open, .btn-own-check {
+        min-height:30px;
+        padding:5px 2px;
+        font-size:.62rem;
+      }
+    }
+
   </style>
 
     <link rel="manifest" href="/manifest.webmanifest">
@@ -248,7 +426,7 @@
         <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기"><img src="images/ui/back-button.png" alt="뒤로가기" class="back-icon"></a>
         <div>
           <h1 style="margin:0; font-size:1.5rem;">🌷전체 꽃 도감🌷</h1>
-          <p class="subtitle">더 코지 플로리스트의 모든 꽃을 사진으로 확인할 수 있습니다.</p>
+          <p class="subtitle">꽃 이미지·상세 정보와 길드 보유 현황을 한 화면에서 확인할 수 있습니다.</p>
         </div>
       </div>
       <div class="header-actions">
@@ -263,7 +441,7 @@
         <button id="clearSearch" class="btn-clear" type="button">초기화</button>
       </div>
       <div class="guild-check-row">
-        <span class="guild-check-label">✅ 체크 대상 길드원</span>
+        <span class="guild-check-label">👤 보유 체크 대상 길드원</span>
         <select id="guildMemberSelect" class="guild-member-select" aria-label="체크 대상 길드원">
           <option value="">길드원을 선택해주세요</option>
         </select>
@@ -369,7 +547,7 @@
     const masterFlowers = window.FLOWER_MASTER_DATA || [];
     const FLOWERS_API = '/api/flowers';
     const GUILD_STATE_API = '/api/guild-state';
-    const BASE_SEED_VERSION = 'demo_v28_base_356';
+    const BASE_SEED_VERSION = 'demo_v32_base_356';
     let remoteFlowers = [];
     let d1Ready = false;
     let activeGrade = 'ALL';
@@ -422,6 +600,34 @@
     function isFlowerOwnedBySelectedMember(flower) {
       if (!selectedGuildMemberId || !flower?.key) return false;
       return Boolean(guildChecks[getGuildFlowerCheckKey(flower.key, selectedGuildMemberId)]);
+    }
+
+    function getFlowerOwners(flower) {
+      if (!flower?.key) return [];
+      return getSortedGuildMembers().filter(member =>
+        Boolean(guildChecks[getGuildFlowerCheckKey(flower.key, member.id)])
+      );
+    }
+
+    function renderFlowerOwnerTags(flower) {
+      const owners = getFlowerOwners(flower);
+      const totalMembers = guildMembers.length;
+      const countLabel = `${owners.length} / ${totalMembers}명`;
+
+      const tags = owners.length
+        ? owners.map(member =>
+            `<span class="guild-owner-tag" data-role="${escapeHtml(member.role || '멤버')}" title="${escapeHtml(member.role || '멤버')}">${escapeHtml(member.name || '')}</span>`
+          ).join('')
+        : '<span class="guild-owner-empty">현재 보유 체크된 길드원이 없습니다.</span>';
+
+      return `
+        <div class="guild-owner-box">
+          <div class="guild-owner-head">
+            <span class="guild-owner-title">👥 길드 보유 현황</span>
+            <span class="guild-owner-count">${escapeHtml(countLabel)}</span>
+          </div>
+          <div class="guild-owner-tags">${tags}</div>
+        </div>`;
     }
 
     function renderGuildMemberSelect() {
@@ -518,15 +724,7 @@
     }
 
     function updateGradeCounts(flowers) {
-      guildMemberSelect.addEventListener('change', () => {
-      selectedGuildMemberId = guildMemberSelect.value;
-      if (selectedGuildMemberId) localStorage.setItem('all_flower_selected_member', selectedGuildMemberId);
-      else localStorage.removeItem('all_flower_selected_member');
-      renderGuildMemberSelect();
-      renderFlowers();
-    });
-
-    document.querySelectorAll('.tab-btn').forEach(btn => {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
         const grade = btn.dataset.grade;
         const count = grade === 'ALL' ? flowers.length : flowers.filter(f => f.grade === grade).length;
         const countEl = btn.querySelector('.count');
@@ -560,9 +758,10 @@
           </div>
           <div class="card-body">
             <div class="flower-name">${escapeHtml(f.name)}</div>
+            ${renderFlowerOwnerTags(f)}
             <div class="card-action-row">
               <button class="btn-own-check ${isFlowerOwnedBySelectedMember(f) ? 'checked' : ''}" type="button" data-key="${escapeHtml(f.key)}" ${selectedGuildMemberId ? '' : 'disabled'}>${isFlowerOwnedBySelectedMember(f) ? '✓ 보유' : '□ 보유'}</button>
-              <button class="btn-open" type="button" data-key="${escapeHtml(f.key)}">열기</button>
+              <button class="btn-open" type="button" data-key="${escapeHtml(f.key)}">정보 보기</button>
             </div>
           </div>
         </article>`).join('');
@@ -862,6 +1061,14 @@
         renderFlowers();
       });
     });
+    guildMemberSelect.addEventListener('change', () => {
+      selectedGuildMemberId = guildMemberSelect.value;
+      if (selectedGuildMemberId) localStorage.setItem('all_flower_selected_member', selectedGuildMemberId);
+      else localStorage.removeItem('all_flower_selected_member');
+      renderGuildMemberSelect();
+      renderFlowers();
+    });
+
     searchInput.addEventListener('input', renderFlowers);
     document.getElementById('clearSearch').addEventListener('click', () => {
       searchInput.value=''; activeGrade='ALL';

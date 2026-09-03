@@ -359,7 +359,7 @@
         <button type="button" id="guideCloseBtn" class="guide-close-btn" aria-label="닫기">×</button>
       </div>
 
-      <p>• 해당 계산은 A랭크를 기준으로 합니다.</p>
+      <p>• 해당 계산은 <strong>A랭크를 기준</strong>으로 합니다.</p>
       <p>• 같은 꽃 임무를 여러 번 반복해서 수행할 수 있으므로 <strong>반복인 경우도 포함하여 최적으로 계산</strong>합니다.</p>
       <p>• 최종 점수는 <strong>(기본 점수 + 해당 꽃 개량 점수) × 배율</strong>로 계산합니다.</p>
       <p>• 단, 계산 결과가 60점을 넘으면 <strong>최대 60점으로 처리</strong>합니다. (경쟁전 최대 점수)</p>
@@ -384,12 +384,12 @@
     </div>
   </div>
 
-  <div id="site-version">demo_v31</div>
+  <div id="site-version">demo_v32</div>
   <script src="flower-data-all.js"></script>
   <script>
     const FLOWERS_API = '/api/flowers';
     const GUILD_STATE_API = '/api/guild-state';
-    const BASE_SEED_VERSION = 'demo_v28_base_356';
+    const BASE_SEED_VERSION = 'demo_v32_base_356';
     const MASTER_FLOWERS = window.FLOWER_MASTER_DATA || [];
     const roleOrder = { '길드장':1, '부길드장':2, '임원':3, '정예':4, '멤버':5 };
     const gradeOrder = { 'N':1, 'R':2, 'SR':3, 'SSR':4, 'UR':5 };
@@ -468,12 +468,14 @@
     }
 
     function renderMembers() {
-      const previous = memberSelect.value || localStorage.getItem('mission_calc_member') || localStorage.getItem('all_flower_selected_member') || '';
+      // 계산기 페이지에 새로 들어왔을 때는 항상 '선택 없음'이 기본값입니다.
+      // 같은 페이지에서 데이터만 새로고침되는 경우에는 현재 선택을 유지합니다.
+      const previous = memberSelect.value || '';
       const list = sortedMembers();
       memberSelect.innerHTML = '<option value="">길드원을 선택해주세요</option>' + list.map(member =>
         `<option value="${escapeHtml(member.id)}">${escapeHtml(member.role || '멤버')} · ${escapeHtml(member.name || '')}</option>`
       ).join('');
-      if (list.some(member => member.id === previous)) memberSelect.value = previous;
+      memberSelect.value = list.some(member => member.id === previous) ? previous : '';
       updateMemberStatus();
     }
 
@@ -1194,8 +1196,6 @@
         optionEditingMemberId = '';
         optionDraft = new Map();
       }
-      if (memberSelect.value) localStorage.setItem('mission_calc_member', memberSelect.value);
-      else localStorage.removeItem('mission_calc_member');
       resultCard.classList.remove('show');
       updateMemberStatus();
     });
@@ -1231,6 +1231,7 @@
       if (event.key === 'Enter' && !calcBtn.disabled) calculate();
     }));
 
+    localStorage.removeItem('mission_calc_member');
     loadData(true);
     window.addEventListener('focus', () => loadData(false));
     document.addEventListener('visibilitychange', () => { if (!document.hidden) loadData(false); });
