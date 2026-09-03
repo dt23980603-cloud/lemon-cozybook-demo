@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v34-member-row-mobile';
+const CACHE_NAME = 'lemon-demo-v35-member-owned-filter';
 const APP_SHELL = [
   '/',
   '/index.html',

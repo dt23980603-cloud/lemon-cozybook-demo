@@ -232,7 +232,7 @@
       .flower-detail-image { width:min(180px, 100%); }
     }
   
-    /* demo_v34: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
+    /* demo_v35: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
     .flower-grid {
       grid-template-columns:repeat(2,minmax(0,1fr));
       gap:14px;
@@ -410,7 +410,7 @@
     }
 
   
-    /* demo_v34 통합 도감 보완 */
+    /* demo_v35 통합 도감 보완 */
     .guild-check-row{position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:7px;}
     .guild-check-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
     .guild-manage-link{padding:5px 9px;border:1px solid #aaa;border-radius:6px;background:#fff;color:#555;text-decoration:none;font-size:.72rem;font-weight:700;}
@@ -440,6 +440,37 @@
       .flower-card{grid-template-columns:145px minmax(0,1fr)!important;min-height:170px!important}.image-wrap{padding:5px!important}
       .card-top-row{left:7px;right:7px;top:7px;min-height:20px}.grade-badge{min-width:30px;height:20px;padding:0 5px;font-size:.62rem}.score-badge{min-height:20px;padding:0 5px;font-size:.56rem}
       .guild-owner-tag,.owner-more-btn{min-height:20px;padding:2px 5px;font-size:.58rem}
+    }
+
+  
+    .member-ownership-filters{
+      display:flex;
+      gap:7px;
+      width:100%;
+    }
+    .member-ownership-filters[hidden]{display:none!important;}
+    .ownership-filter-btn{
+      flex:1;
+      min-height:36px;
+      padding:7px 10px;
+      border:1px solid #aaa;
+      border-radius:7px;
+      background:#fff;
+      color:#555;
+      font-size:.78rem;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .ownership-filter-btn:hover{background:#fff9db;}
+    .ownership-filter-btn.active{
+      background:#fff0a8;
+      border-color:#74662a;
+      box-shadow:inset 0 -2px 0 #74662a;
+      color:#493f13;
+    }
+    @media(max-width:620px){
+      .member-ownership-filters{gap:5px;}
+      .ownership-filter-btn{min-height:32px;padding:5px 7px;font-size:.67rem;}
     }
 
   </style>
@@ -480,6 +511,10 @@
             <span class="picker-arrow">⌄</span>
           </button>
           <div id="guildMemberPickerMenu" class="guild-member-picker-menu" role="listbox" aria-label="체크 대상 길드원"></div>
+        </div>
+        <div id="memberOwnershipFilters" class="member-ownership-filters" hidden>
+          <button type="button" class="ownership-filter-btn" data-ownership-filter="OWNED">✓ 보유만</button>
+          <button type="button" class="ownership-filter-btn" data-ownership-filter="MISSING">□ 미보유만</button>
         </div>
         <select id="guildMemberSelect" class="guild-member-select-native" aria-hidden="true" tabindex="-1">
           <option value="">길드원을 선택해주세요</option>
@@ -590,7 +625,7 @@
     const masterFlowers = window.FLOWER_MASTER_DATA || [];
     const FLOWERS_API = '/api/flowers';
     const GUILD_STATE_API = '/api/guild-state';
-    const BASE_SEED_VERSION = 'demo_v34_base_356';
+    const BASE_SEED_VERSION = 'demo_v35_base_356';
     let remoteFlowers = [];
     let d1Ready = false;
     let activeGrade = 'ALL';
@@ -604,6 +639,7 @@
     let guildStateUpdatedAt = 0;
     let guildStateRequestInFlight = false;
     let lastGuildMemberSignature = '';
+    let memberOwnershipFilter = 'ALL';
     const expandedOwnerFlowerKeys = new Set();
     const guildRoleOrder = { '길드장':1, '부길드장':2, '임원':3, '정예':4, '멤버':5 };
 
@@ -625,6 +661,7 @@
     const guildMemberPickerBtn = document.getElementById('guildMemberPickerBtn');
     const guildMemberPickerValue = document.getElementById('guildMemberPickerValue');
     const guildMemberPickerMenu = document.getElementById('guildMemberPickerMenu');
+    const memberOwnershipFilters = document.getElementById('memberOwnershipFilters');
 
     function escapeHtml(value) {
       return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
@@ -717,6 +754,7 @@
 
       if (selectedGuildMemberId && !validIds.has(selectedGuildMemberId)) {
         selectedGuildMemberId = '';
+        memberOwnershipFilter = 'ALL';
         localStorage.removeItem('all_flower_selected_member');
       }
 
@@ -747,6 +785,12 @@
 
       guildMemberPickerMenu.querySelectorAll('.picker-option').forEach(option => {
         option.classList.toggle('selected', option.dataset.memberId === selectedGuildMemberId);
+      });
+
+      memberOwnershipFilters.hidden = !selected;
+      if (!selected) memberOwnershipFilter = 'ALL';
+      memberOwnershipFilters.querySelectorAll('.ownership-filter-btn').forEach(button => {
+        button.classList.toggle('active', button.dataset.ownershipFilter === memberOwnershipFilter);
       });
 
       guildCheckHelp.textContent = selected
@@ -851,11 +895,25 @@
     function renderFlowers() {
       const flowers = getAllFlowers();
       const keyword = searchInput.value.trim().toLocaleLowerCase('ko-KR');
-      const filtered = flowers.filter(f =>
-        (activeGrade === 'ALL' || f.grade === activeGrade) &&
-        (`${f.listName || ''} ${f.name || ''}`).toLocaleLowerCase('ko-KR').includes(keyword)
-      );
-      resultText.textContent = `총 ${filtered.length}개의 꽃`;
+      const filtered = flowers.filter(f => {
+        if (activeGrade !== 'ALL' && f.grade !== activeGrade) return false;
+        if (!(`${f.listName || ''} ${f.name || ''}`).toLocaleLowerCase('ko-KR').includes(keyword)) return false;
+
+        if (selectedGuildMemberId && memberOwnershipFilter === 'OWNED' && !isFlowerOwnedBySelectedMember(f)) return false;
+        if (selectedGuildMemberId && memberOwnershipFilter === 'MISSING' && isFlowerOwnedBySelectedMember(f)) return false;
+
+        return true;
+      });
+
+      const selected = getSelectedGuildMember();
+      const filterLabel = memberOwnershipFilter === 'OWNED'
+        ? ' · 보유 꽃만'
+        : memberOwnershipFilter === 'MISSING'
+          ? ' · 미보유 꽃만'
+          : '';
+      resultText.textContent = selected
+        ? `${selected.name} · 총 ${filtered.length}개의 꽃${filterLabel}`
+        : `총 ${filtered.length}개의 꽃`;
       updateGradeCounts(flowers);
       if (!filtered.length) {
         grid.innerHTML = '<div class="empty-result">조건에 맞는 꽃이 없습니다.</div>';
@@ -1190,9 +1248,24 @@
     });
     guildMemberSelect.addEventListener('change', () => {
       selectedGuildMemberId = guildMemberSelect.value;
+      memberOwnershipFilter = 'ALL';
       if (selectedGuildMemberId) localStorage.setItem('all_flower_selected_member', selectedGuildMemberId);
       else localStorage.removeItem('all_flower_selected_member');
       renderGuildMemberSelect();
+      renderFlowers();
+    });
+
+    memberOwnershipFilters.addEventListener('click', event => {
+      const button = event.target.closest('.ownership-filter-btn');
+      if (!button || !selectedGuildMemberId) return;
+
+      const requested = button.dataset.ownershipFilter || 'ALL';
+      memberOwnershipFilter = memberOwnershipFilter === requested ? 'ALL' : requested;
+
+      memberOwnershipFilters.querySelectorAll('.ownership-filter-btn').forEach(item => {
+        item.classList.toggle('active', item.dataset.ownershipFilter === memberOwnershipFilter);
+      });
+
       renderFlowers();
     });
 
