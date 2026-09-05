@@ -176,6 +176,19 @@ function jsonPathForOptionKey(key) {
   return `$.flowerOptions."${escaped}"`;
 }
 
+function isValidMissionChange(change) {
+  return change && typeof change === 'object'
+    && typeof change.memberId === 'string'
+    && change.memberId.length > 0
+    && change.memberId.length <= 200
+    && typeof change.completed === 'boolean';
+}
+
+function jsonPathForMissionMember(memberId) {
+  const escaped = memberId.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  return `$.competitionMissionDone."${escaped}"`;
+}
+
 async function ensureStateRow(db, stateId) {
   const now = Date.now();
   await db.prepare(`
@@ -212,10 +225,15 @@ export async function onRequestPatch(context) {
     ? body.optionChanges.filter(isValidOptionChange)
     : [];
 
-  if ((changes.length === 0 && optionChanges.length === 0) ||
+  const missionChanges = Array.isArray(body?.missionChanges)
+    ? body.missionChanges.filter(isValidMissionChange)
+    : [];
+
+  if ((changes.length === 0 && optionChanges.length === 0 && missionChanges.length === 0) ||
       changes.length > 200 ||
       optionChanges.length > 200 ||
-      changes.length + optionChanges.length > 250) {
+      missionChanges.length > 200 ||
+      changes.length + optionChanges.length + missionChanges.length > 250) {
     return new Response(JSON.stringify({ error: 'No valid guild state changes were provided.' }), {
       status: 400,
       headers: JSON_HEADERS
@@ -316,13 +334,49 @@ export async function onRequestPatch(context) {
     `).bind(stateId, path, updatedAt));
   });
 
+  // Competition mission completion is stored sparsely by member id.
+  missionChanges.forEach(change => {
+    const path = jsonPathForMissionMember(change.memberId);
+
+    if (change.completed) {
+      statements.push(env.DB.prepare(`
+        UPDATE guild_state
+        SET state_json = json_set(
+              CASE
+                WHEN json_type(state_json, '$.competitionMissionDone') = 'object' THEN state_json
+                ELSE json_set(state_json, '$.competitionMissionDone', json('{}'))
+              END,
+              ?2,
+              json('true')
+            ),
+            updated_at = ?3
+        WHERE id = ?1
+      `).bind(stateId, path, updatedAt));
+      return;
+    }
+
+    statements.push(env.DB.prepare(`
+      UPDATE guild_state
+      SET state_json = json_remove(
+            CASE
+              WHEN json_type(state_json, '$.competitionMissionDone') = 'object' THEN state_json
+              ELSE json_set(state_json, '$.competitionMissionDone', json('{}'))
+            END,
+            ?2
+          ),
+          updated_at = ?3
+      WHERE id = ?1
+    `).bind(stateId, path, updatedAt));
+  });
+
   await env.DB.batch(statements);
 
   return new Response(JSON.stringify({
     ok: true,
     updatedAt,
     changedChecks: changes.length,
-    changedOptions: optionChanges.length
+    changedOptions: optionChanges.length,
+    changedMissions: missionChanges.length
   }), { headers: JSON_HEADERS });
 }
 

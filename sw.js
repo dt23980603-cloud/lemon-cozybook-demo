@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.1-rounded-main-buttons';
+const CACHE_NAME = 'lemon-demo-v4.2-competition-mission-status';
 const APP_SHELL = [
   '/',
   '/index.html',

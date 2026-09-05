@@ -232,7 +232,7 @@
       .flower-detail-image { width:min(180px, 100%); }
     }
   
-    /* demo_v4.1: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
+    /* demo_v4.2: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
     .flower-grid {
       grid-template-columns:repeat(2,minmax(0,1fr));
       gap:14px;
@@ -320,6 +320,12 @@
     .guild-owner-tag[data-role="임원"] { border-color:#c9b0d8; background:#fbf5ff; }
     .guild-owner-tag[data-role="정예"] { border-color:#a9cddd; background:#f3fbff; }
     .guild-owner-tag[data-role="멤버"] { border-color:#b7d0b3; background:#f5fff3; }
+    .guild-owner-tag.mission-done {
+      opacity:.48;
+      border-style:dashed;
+      filter:saturate(.65);
+    }
+    .guild-owner-tag.mission-done:hover { opacity:.72; }
     .guild-owner-empty {
       color:#999;
       font-size:.73rem;
@@ -410,9 +416,16 @@
     }
 
   
-    /* demo_v4.1 통합 도감 보완 */
+    /* demo_v4.2 통합 도감 보완 */
     .guild-check-row{position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:7px;}
     .guild-check-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .guild-title-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap;}
+    .competition-mission-open{
+      padding:5px 9px;border:1px solid #9a8a52;border-radius:6px;background:#fff9db;
+      color:#554b2a;font-size:.72rem;font-weight:700;cursor:pointer;white-space:nowrap;
+    }
+    .competition-mission-open:hover{background:#fff1aa;}
+    .competition-mission-open span{font-size:.68rem;color:#786c48;}
     .guild-manage-link{padding:5px 9px;border:1px solid #aaa;border-radius:6px;background:#fff;color:#555;text-decoration:none;font-size:.72rem;font-weight:700;}
     .guild-manage-link:hover{background:#fff9db;}
     .guild-member-select-native{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;}
@@ -474,7 +487,7 @@
     }
 
   
-    /* demo_v4.1: 선택 길드원 보유 수량 / 필터 안내 / 카드 가독성 */
+    /* demo_v4.2: 선택 길드원 보유 수량 / 필터 안내 / 카드 가독성 */
     .member-ownership-filter-wrap{
       display:grid;
       gap:5px;
@@ -540,7 +553,7 @@
     }
 
   
-    /* demo_v4.1: 보유/미보유 필터 색상 */
+    /* demo_v4.2: 보유/미보유 필터 색상 */
     .ownership-filter-btn[data-ownership-filter="OWNED"]{
       background:#e4f4df;
       border-color:#76946b;
@@ -582,7 +595,7 @@
     }
 
   
-    /* demo_v4.1: 통합 도감 헤더 / 가이드 / 관리 버튼 */
+    /* demo_v4.2: 통합 도감 헤더 / 가이드 / 관리 버튼 */
     .catalog-title-block{min-width:0;}
     .catalog-title-row{display:inline-flex;align-items:center;gap:6px;}
     .catalog-guide-btn{
@@ -630,6 +643,65 @@
       .guide-tip{font-size:.75rem;}
     }
 
+  
+    /* demo_v4.2: 경쟁전 임무 완료 현황 */
+    .competition-mission-card{
+      width:min(560px,100%);max-height:min(82vh,760px);display:flex;flex-direction:column;
+      background:#fff;border:2px solid #333;border-radius:12px;padding:18px;
+      box-shadow:0 8px 28px rgba(0,0,0,.18);
+    }
+    .competition-mission-summary{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:10px 12px;margin-bottom:9px;border:1px solid #e1d7ac;border-radius:8px;background:#fff9db;
+      font-size:.82rem;font-weight:700;
+    }
+    .competition-mission-help{margin:0 0 10px;color:#777;font-size:.75rem;line-height:1.55;}
+    .competition-mission-list{
+      overflow:auto;border:1px solid #ddd;border-radius:8px;background:#fafafa;
+    }
+    .competition-mission-row{
+      display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;
+      padding:9px 10px;border-bottom:1px solid #e7e7e7;background:#fff;
+    }
+    .competition-mission-row:last-child{border-bottom:0;}
+    .competition-mission-person{min-width:0;display:flex;align-items:center;gap:8px;}
+    .competition-mission-role{min-width:58px;font-size:.7rem;font-weight:700;}
+    .competition-mission-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.82rem;font-weight:700;}
+    .competition-mission-role[data-role="길드장"]{color:#b3261e}
+    .competition-mission-role[data-role="부길드장"]{color:#9a6700}
+    .competition-mission-role[data-role="임원"]{color:#7b3f98}
+    .competition-mission-role[data-role="정예"]{color:#1976a3}
+    .competition-mission-role[data-role="멤버"]{color:#3f7d3a}
+    .competition-mission-toggle{
+      min-width:78px;min-height:32px;padding:5px 9px;border:1px solid #aaa;border-radius:16px;
+      background:#fff;color:#666;font-size:.72rem;font-weight:700;cursor:pointer;
+    }
+    .competition-mission-toggle.done{
+      border-color:#76946b;background:#e4f4df;color:#35572e;
+    }
+    .competition-mission-footer{
+      display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:12px;
+    }
+    .competition-mission-reset{
+      min-height:34px;padding:6px 11px;border:1px solid #c68c8c;border-radius:7px;
+      background:#fff0f0;color:#8a3434;font-size:.72rem;font-weight:700;cursor:pointer;
+    }
+    .competition-mission-reset:hover{background:#fae0e0;}
+    .competition-mission-empty{padding:28px 12px;text-align:center;color:#888;font-size:.8rem;}
+    @media(max-width:620px){
+      .guild-check-title-row{align-items:flex-start;}
+      .guild-title-actions{gap:4px;}
+      .competition-mission-open,.guild-manage-link{font-size:.6rem!important;padding:4px 6px!important;}
+      .competition-mission-card{padding:13px;max-height:86vh;}
+      .competition-mission-summary{font-size:.7rem;padding:8px 9px;}
+      .competition-mission-help{font-size:.66rem;}
+      .competition-mission-row{padding:8px 7px;gap:6px;}
+      .competition-mission-role{min-width:48px;font-size:.6rem;}
+      .competition-mission-name{font-size:.7rem;}
+      .competition-mission-toggle{min-width:68px;min-height:29px;font-size:.62rem;padding:4px 7px;}
+      .competition-mission-reset{font-size:.64rem;}
+    }
+
   </style>
 
     <link rel="manifest" href="/manifest.webmanifest">
@@ -664,7 +736,10 @@
       <div class="guild-check-row">
         <div class="guild-check-title-row">
           <span class="guild-check-label">👤 체크 대상 길드원</span>
-          <a href="page7.html" class="guild-manage-link">⚙️ 길드원 관리</a>
+          <div class="guild-title-actions">
+            <button type="button" id="openCompetitionMission" class="competition-mission-open">⚔️ 임무 현황 <span id="competitionMissionMiniCount"></span></button>
+            <a href="page7.html" class="guild-manage-link">⚙️ 길드원 관리</a>
+          </div>
         </div>
         <div class="guild-member-picker" id="guildMemberPicker">
           <button type="button" id="guildMemberPickerBtn" class="guild-member-picker-btn" aria-haspopup="listbox" aria-expanded="false">
@@ -720,9 +795,29 @@
       <div class="guide-step"><b>③ 보유한 꽃만 빠르게 보기</b><br>길드원을 선택하면 <b>✓ 보유만</b>과 <b>□ 미보유만</b> 버튼이 나타납니다. 같은 버튼을 한 번 더 누르면 필터가 해제되어 전체 꽃이 다시 표시됩니다.</div>
       <div class="guide-step"><b>④ 등급별 보유 수 확인</b><br>길드원을 선택한 상태에서 N / R / SR / SSR / UR 등급을 누르면 현재 등급의 <b>보유 꽃 수 / 전체 꽃 수</b>를 바로 확인할 수 있습니다.</div>
       <div class="guide-step"><b>⑤ 길드 전체 보유 현황 확인</b><br>각 꽃 카드의 <b>👥 길드 보유 현황</b>에는 현재 그 꽃을 보유한 길드원이 표시됩니다. 인원이 많으면 <b>더보기</b>를 눌러 전체 명단을 펼칠 수 있습니다.</div>
-      <div class="guide-step"><b>⑥ 꽃 검색과 상세 정보</b><br>꽃 이름 검색과 등급 필터를 함께 사용할 수 있습니다. <b>정보 보기</b>에서는 분류, 길드전 점수, 획득 방법, 비고를 확인할 수 있습니다.</div>
-      <div class="guide-step"><b>⑦ 길드원 정보 관리</b><br>상단의 <b>⚙️ 길드원 관리</b>에서 길드원 추가, 직위·닉네임 수정, 삭제를 할 수 있습니다.</div>
+      <div class="guide-step"><b>⑥ 경쟁전 임무 완료 표시</b><br>상단의 <b>⚔️ 임무 현황</b>에서 길드원별 경쟁전 임무 완료 여부를 체크할 수 있습니다. 완료한 길드원은 꽃 보유자 태그에 <b>✓ 표시</b>가 붙고 조금 흐리게 표시됩니다.</div>
+      <div class="guide-step"><b>⑦ 꽃 검색과 상세 정보</b><br>꽃 이름 검색과 등급 필터를 함께 사용할 수 있습니다. <b>정보 보기</b>에서는 분류, 길드전 점수, 획득 방법, 비고를 확인할 수 있습니다.</div>
+      <div class="guide-step"><b>⑧ 길드원 정보 관리</b><br>상단의 <b>⚙️ 길드원 관리</b>에서 길드원 추가, 직위·닉네임 수정, 삭제를 할 수 있습니다.</div>
       <div class="guide-tip">⚠️ 보유 체크는 길드원 모두에게 공유됩니다. 꽃을 체크하기 전에 선택된 닉네임이 맞는지 확인해주세요. 잘못 체크했다면 같은 꽃의 보유 버튼을 다시 눌러 해제하면 됩니다.</div>
+    </div>
+  </div>
+
+  <!-- 경쟁전 임무 완료 현황 -->
+  <div class="modal-overlay" id="competitionMissionModal" aria-hidden="true">
+    <div class="competition-mission-card" role="dialog" aria-modal="true" aria-labelledby="competitionMissionTitle">
+      <div class="modal-header">
+        <div class="modal-title" id="competitionMissionTitle">⚔️ 경쟁전 임무 현황</div>
+        <button class="modal-close" type="button" id="closeCompetitionMission" aria-label="닫기">✕</button>
+      </div>
+      <div class="competition-mission-summary">
+        <span>임무 완료 현황</span>
+        <span id="competitionMissionSummary">0 / 0명 완료</span>
+      </div>
+      <p class="competition-mission-help">임무 횟수를 모두 채운 길드원을 완료로 체크해주세요. 완료한 길드원은 전체 꽃 도감의 보유자 닉네임 태그에 ✓ 표시가 붙고 흐리게 표시됩니다.</p>
+      <div id="competitionMissionList" class="competition-mission-list"></div>
+      <div class="competition-mission-footer">
+        <button type="button" id="resetCompetitionMission" class="competition-mission-reset">완료 상태 전체 초기화</button>
+      </div>
     </div>
   </div>
 
@@ -817,6 +912,7 @@
     let requestedFlowerHandled = false;
     let guildMembers = JSON.parse(localStorage.getItem('guild_members') || '[]');
     let guildChecks = JSON.parse(localStorage.getItem('guild_checks') || '{}');
+    let competitionMissionDone = JSON.parse(localStorage.getItem('competition_mission_done') || '{}');
     let selectedGuildMemberId = localStorage.getItem('all_flower_selected_member') || '';
     let guildStateReady = false;
     let guildStateUpdatedAt = 0;
@@ -846,6 +942,10 @@
     const guildMemberPickerMenu = document.getElementById('guildMemberPickerMenu');
     const memberOwnershipFilters = document.getElementById('memberOwnershipFilters');
     const selectedGradeOwnership = document.getElementById('selectedGradeOwnership');
+    const competitionMissionModal = document.getElementById('competitionMissionModal');
+    const competitionMissionList = document.getElementById('competitionMissionList');
+    const competitionMissionSummary = document.getElementById('competitionMissionSummary');
+    const competitionMissionMiniCount = document.getElementById('competitionMissionMiniCount');
 
     function escapeHtml(value) {
       return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
@@ -888,9 +988,13 @@
 
       let tags = '';
       if (owners.length) {
-        tags = owners.map((member, index) =>
-          `<span class="guild-owner-tag ${index >= previewLimit ? 'owner-extra' : ''}" data-role="${escapeHtml(member.role || '멤버')}" title="${escapeHtml(member.role || '멤버')}">${escapeHtml(member.name || '')}</span>`
-        ).join('');
+        tags = owners.map((member, index) => {
+          const missionDone = Boolean(competitionMissionDone[member.id]);
+          const title = missionDone
+            ? `${member.role || '멤버'} · 경쟁전 임무 완료`
+            : `${member.role || '멤버'} · 경쟁전 임무 미완료`;
+          return `<span class="guild-owner-tag ${missionDone ? 'mission-done' : ''} ${index >= previewLimit ? 'owner-extra' : ''}" data-role="${escapeHtml(member.role || '멤버')}" title="${escapeHtml(title)}">${missionDone ? '✓ ' : ''}${escapeHtml(member.name || '')}</span>`;
+        }).join('');
         if (owners.length > previewLimit) {
           tags += `<button type="button" class="owner-more-btn" data-owner-key="${escapeHtml(flower.key)}">${expanded ? '접기' : `더보기 +${owners.length - previewLimit}`}</button>`;
         }
@@ -906,6 +1010,116 @@
           </div>
           <div class="guild-owner-tags ${expanded ? 'expanded' : ''}" data-owner-tags="${escapeHtml(flower.key)}">${tags}</div>
         </div>`;
+    }
+
+    function getCompetitionMissionDoneCount() {
+      return guildMembers.filter(member => Boolean(competitionMissionDone[member.id])).length;
+    }
+
+    function updateCompetitionMissionMiniCount() {
+      if (!competitionMissionMiniCount) return;
+      competitionMissionMiniCount.textContent = `(${getCompetitionMissionDoneCount()}/${guildMembers.length})`;
+    }
+
+    function renderCompetitionMissionModal() {
+      const sorted = getSortedGuildMembers();
+      const doneCount = getCompetitionMissionDoneCount();
+      competitionMissionSummary.textContent = `${doneCount} / ${guildMembers.length}명 완료`;
+      updateCompetitionMissionMiniCount();
+
+      if (!sorted.length) {
+        competitionMissionList.innerHTML = '<div class="competition-mission-empty">등록된 길드원이 없습니다.</div>';
+        return;
+      }
+
+      competitionMissionList.innerHTML = sorted.map(member => {
+        const done = Boolean(competitionMissionDone[member.id]);
+        return `
+          <div class="competition-mission-row">
+            <div class="competition-mission-person">
+              <span class="competition-mission-role" data-role="${escapeHtml(member.role || '멤버')}">${escapeHtml(member.role || '멤버')}</span>
+              <span class="competition-mission-name">${escapeHtml(member.name || '')}</span>
+            </div>
+            <button type="button" class="competition-mission-toggle ${done ? 'done' : ''}" data-mission-member="${escapeHtml(member.id)}">${done ? '✓ 완료' : '□ 미완료'}</button>
+          </div>`;
+      }).join('');
+
+      competitionMissionList.querySelectorAll('[data-mission-member]').forEach(button => {
+        button.addEventListener('click', () => toggleCompetitionMission(button.dataset.missionMember));
+      });
+    }
+
+    function openCompetitionMissionModal() {
+      renderCompetitionMissionModal();
+      competitionMissionModal.classList.add('active');
+      competitionMissionModal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeCompetitionMissionModal() {
+      competitionMissionModal.classList.remove('active');
+      competitionMissionModal.setAttribute('aria-hidden', 'true');
+    }
+
+    async function toggleCompetitionMission(memberId) {
+      const member = guildMembers.find(item => item.id === memberId);
+      if (!member) return;
+
+      const completed = !Boolean(competitionMissionDone[memberId]);
+      if (completed) competitionMissionDone[memberId] = true;
+      else delete competitionMissionDone[memberId];
+
+      localStorage.setItem('competition_mission_done', JSON.stringify(competitionMissionDone));
+      renderCompetitionMissionModal();
+      renderFlowers();
+
+      try {
+        const response = await fetch(GUILD_STATE_API, {
+          method:'PATCH',
+          headers:{ 'Content-Type':'application/json' },
+          body:JSON.stringify({ missionChanges:[{ memberId, completed }] })
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(payload.error || `PATCH ${response.status}`);
+        guildStateUpdatedAt = Number(payload.updatedAt || Date.now());
+      } catch (error) {
+        console.warn('경쟁전 임무 완료 상태 저장 실패', error);
+        alert('임무 완료 상태 저장에 실패했습니다. 서버 상태를 다시 불러옵니다.');
+        await fetchGuildState(true);
+      }
+    }
+
+    async function resetCompetitionMissionState() {
+      const completedIds = guildMembers
+        .map(member => member.id)
+        .filter(memberId => Boolean(competitionMissionDone[memberId]));
+
+      if (!completedIds.length) {
+        alert('초기화할 임무 완료 상태가 없습니다.');
+        return;
+      }
+      if (!confirm(`현재 완료로 표시된 ${completedIds.length}명의 상태를 모두 초기화할까요?`)) return;
+
+      completedIds.forEach(memberId => delete competitionMissionDone[memberId]);
+      localStorage.setItem('competition_mission_done', JSON.stringify(competitionMissionDone));
+      renderCompetitionMissionModal();
+      renderFlowers();
+
+      try {
+        const response = await fetch(GUILD_STATE_API, {
+          method:'PATCH',
+          headers:{ 'Content-Type':'application/json' },
+          body:JSON.stringify({
+            missionChanges: completedIds.map(memberId => ({ memberId, completed:false }))
+          })
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(payload.error || `PATCH ${response.status}`);
+        guildStateUpdatedAt = Number(payload.updatedAt || Date.now());
+      } catch (error) {
+        console.warn('경쟁전 임무 완료 상태 초기화 실패', error);
+        alert('전체 초기화 저장에 실패했습니다. 서버 상태를 다시 불러옵니다.');
+        await fetchGuildState(true);
+      }
     }
 
     function memberSignature(memberList = guildMembers) {
@@ -980,6 +1194,7 @@
       guildCheckHelp.textContent = selected
         ? `${selected.name}님의 보유 현황을 카드에서 바로 체크합니다.`
         : '선택 후 꽃 카드에서 바로 보유 체크할 수 있습니다.';
+      updateCompetitionMissionMiniCount();
     }
 
     function applyGuildState(state, updatedAt = 0) {
@@ -987,6 +1202,7 @@
 
       let membersChanged = false;
       let checksChanged = false;
+      let missionChanged = false;
 
       if (Array.isArray(state.members)) {
         if (memberSignature(state.members) !== memberSignature(guildMembers)) {
@@ -1004,10 +1220,21 @@
         }
       }
 
+      const remoteMissionDone = state.competitionMissionDone && typeof state.competitionMissionDone === 'object' && !Array.isArray(state.competitionMissionDone)
+        ? state.competitionMissionDone
+        : {};
+      if (JSON.stringify(remoteMissionDone) !== JSON.stringify(competitionMissionDone)) {
+        competitionMissionDone = remoteMissionDone;
+        localStorage.setItem('competition_mission_done', JSON.stringify(competitionMissionDone));
+        missionChanged = true;
+      }
+
       guildStateUpdatedAt = Math.max(guildStateUpdatedAt, Number(updatedAt || 0));
       renderGuildMemberSelect(membersChanged);
-      if (membersChanged || checksChanged) renderFlowers();
-      return membersChanged || checksChanged;
+      updateCompetitionMissionMiniCount();
+      if (competitionMissionModal.classList.contains('active') && (membersChanged || missionChanged)) renderCompetitionMissionModal();
+      if (membersChanged || checksChanged || missionChanged) renderFlowers();
+      return membersChanged || checksChanged || missionChanged;
     }
 
     async function fetchGuildState(force = false) {
@@ -1495,6 +1722,13 @@
       if (!guildMemberPicker.contains(event.target)) closeGuildMemberPicker();
     });
 
+    document.getElementById('openCompetitionMission').addEventListener('click', openCompetitionMissionModal);
+    document.getElementById('closeCompetitionMission').addEventListener('click', closeCompetitionMissionModal);
+    document.getElementById('resetCompetitionMission').addEventListener('click', resetCompetitionMissionState);
+    competitionMissionModal.addEventListener('click', event => {
+      if (event.target === competitionMissionModal) closeCompetitionMissionModal();
+    });
+
     const catalogGuideModal = document.getElementById('catalogGuideModal');
     document.getElementById('openCatalogGuide').addEventListener('click', () => {
       catalogGuideModal.classList.add('active');
@@ -1530,7 +1764,7 @@
     deleteFlowerModal.addEventListener('click', e => { if (e.target === deleteFlowerModal) closeDeleteFlowers(); });
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
-        closeDetail(); closeAddFlowers(); closeEditFlowers(); closeDeleteFlowers();
+        closeDetail(); closeAddFlowers(); closeEditFlowers(); closeDeleteFlowers(); closeCompetitionMissionModal();
         catalogGuideModal.classList.remove('active');
         catalogGuideModal.setAttribute('aria-hidden','true');
       }
