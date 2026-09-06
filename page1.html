@@ -83,7 +83,7 @@
     .section-head p{margin:4px 0 0;color:#818181;font-size:.72rem}
     .section-count{font-size:.72rem;color:#7b7b7b}
 
-    .zodiac-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .zodiac-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
     .zodiac-card{
       min-width:0;overflow:hidden;background:rgba(255,255,255,.93);
       border:1px solid #dfdfdf;border-radius:18px;box-shadow:0 4px 14px rgba(0,0,0,.045)
@@ -121,19 +121,69 @@
     .member-tag.role-정예{border-color:#9fc5e3;background:#eef7ff;color:#346f9d}
     .member-tag.role-멤버{border-color:#a9cf9e;background:#f0f9ed;color:#47733d}
     .none-tag{font-size:.66rem;color:#aaa;padding:4px 0}
-    .coming{
-      margin-top:18px;padding:14px;border:1px dashed #d6d6d6;border-radius:16px;
-      text-align:center;color:#929292;background:rgba(255,255,255,.58);font-size:.72rem
+    .source-note{
+      margin-top:16px;padding:11px 13px;border:1px dashed #d7d3c7;border-radius:14px;
+      text-align:center;color:#8a877f;background:rgba(255,255,255,.58);font-size:.66rem;line-height:1.45
     }
 
-    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.35);z-index:5000}
+    .modal{
+      position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+      padding:16px;background:rgba(0,0,0,.42);z-index:5000
+    }
     .modal.show{display:flex}
-    .dialog{width:min(430px,100%);background:#fff;border-radius:18px;padding:18px;box-shadow:0 15px 45px rgba(0,0,0,.2)}
-    .dialog-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
-    .dialog h3{margin:0;font-size:1.05rem}
-    .dialog-close{border:0;background:transparent;font-size:1.4rem;color:#777;padding:4px 7px}
-    .dialog p{font-size:.78rem;line-height:1.55;color:#6f6f6f;margin:12px 0 0}
-    .dialog-ok{width:100%;min-height:40px;margin-top:14px;border:1px solid #d8c56c;border-radius:10px;background:#fff3b4;font-weight:700}
+    .dialog{
+      width:min(900px,100%);max-height:min(88vh,900px);
+      background:#fff;border-radius:20px;box-shadow:0 18px 55px rgba(0,0,0,.24);
+      overflow:hidden;display:flex;flex-direction:column
+    }
+    .dialog-head{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:16px 18px;border-bottom:1px solid #ececec;background:#fffdf8
+    }
+    .dialog h3{margin:0;font-size:1.1rem}
+    .dialog-close{border:0;background:transparent;font-size:1.55rem;color:#777;padding:3px 7px}
+    .dialog-scroll{overflow:auto;padding:16px 18px 20px;-webkit-overflow-scrolling:touch}
+    .modal-intro{
+      margin:0 0 13px;padding:11px 12px;border-radius:13px;
+      background:#fff9da;color:#625a3d;font-size:.76rem;line-height:1.55
+    }
+    .flow-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin:0 0 15px}
+    .flow-chip{
+      padding:6px 9px;border:1px solid #ddd8c8;border-radius:999px;background:#fff;
+      font-size:.68rem;font-weight:700;white-space:nowrap
+    }
+    .flow-arrow{font-size:.7rem;color:#aaa}
+    .guide-section{
+      border:1px solid #e3e3e3;border-radius:15px;padding:13px 14px;margin-top:10px;background:#fff
+    }
+    .guide-section h4{margin:0 0 7px;font-size:.88rem}
+    .guide-section p,.guide-section li{font-size:.72rem;line-height:1.6;color:#5f6066}
+    .guide-section p{margin:5px 0}
+    .guide-section ul{margin:5px 0 0;padding-left:19px}
+    .tip{
+      margin-top:8px;padding:8px 10px;border-radius:10px;
+      background:#fff6c9;color:#5e542f;font-size:.69rem;line-height:1.5
+    }
+    .mini-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+    .mini-card{border:1px solid #e1e1e1;border-radius:13px;padding:11px;background:#fafafa}
+    .mini-card strong{display:block;font-size:.79rem;margin-bottom:4px}
+    .mini-card span,.mini-card p{font-size:.68rem;color:#686a70;line-height:1.5;margin:0}
+    .info-table-wrap{overflow-x:auto;margin-top:8px}
+    .info-table{width:100%;border-collapse:collapse;min-width:520px;background:#fff}
+    .info-table th,.info-table td{
+      border:1px solid #dedede;padding:7px 8px;text-align:center;
+      font-size:.68rem;line-height:1.4;vertical-align:middle
+    }
+    .info-table th{background:#fff8d9;font-weight:700;color:#504b39}
+    .table-caption{margin:6px 0 0;font-size:.62rem;color:#8b8b8b;line-height:1.45}
+    .reward-highlight{
+      display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px
+    }
+    .reward-stat{
+      text-align:center;border:1px solid #ddd;border-radius:12px;padding:9px 7px;background:#fafafa
+    }
+    .reward-stat b{display:block;font-size:.95rem;margin-bottom:2px}
+    .reward-stat span{font-size:.62rem;color:#777}
     #site-version{position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none}
 
     @media(max-width:620px){
@@ -154,7 +204,7 @@
       .birth-form button{grid-column:1/-1;min-height:39px;font-size:.72rem}
       .birth-status,.unfound{font-size:.62rem}
       .section-head{margin-top:16px}.section-head h2{font-size:1rem}.section-head p,.section-count{font-size:.62rem}
-      .zodiac-grid{gap:8px}
+      .zodiac-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
       .zodiac-card{border-radius:14px}
       .zodiac-media{aspect-ratio:1.35/1}
       .flower-pill{left:6px;bottom:6px;max-width:calc(100% - 12px);font-size:.54rem;padding:4px 6px}
@@ -163,6 +213,22 @@
       .guild-label{font-size:.55rem;margin-top:7px}.member-tags{gap:3px;margin-top:4px}
       .member-tag{font-size:.55rem;padding:3px 5px}.none-tag{font-size:.55rem}
       .placeholder-symbol{font-size:1.55rem}.placeholder-inner small{font-size:.52rem}
+      .modal{padding:8px}
+      .dialog{max-height:92vh;border-radius:16px}
+      .dialog-head{padding:12px 13px}
+      .dialog h3{font-size:.96rem}
+      .dialog-scroll{padding:12px}
+      .modal-intro{font-size:.66rem;padding:9px 10px}
+      .flow-chip{font-size:.59rem;padding:5px 7px}
+      .guide-section{padding:10px 11px;border-radius:12px}
+      .guide-section h4{font-size:.78rem}
+      .guide-section p,.guide-section li{font-size:.63rem}
+      .tip{font-size:.61rem}
+      .mini-grid{grid-template-columns:1fr;gap:7px}
+      .mini-card strong{font-size:.7rem}.mini-card span,.mini-card p{font-size:.61rem}
+      .reward-highlight{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+      .reward-stat{padding:7px 4px}.reward-stat b{font-size:.78rem}.reward-stat span{font-size:.53rem}
+      .info-table th,.info-table td{font-size:.61rem;padding:6px}
     }
     @media(max-width:360px){
       .guide-copy small{display:none}
@@ -187,11 +253,11 @@
     </header>
 
     <div class="guide-actions">
-      <button type="button" class="guide-btn guide-primary" data-coming="📖 스타소울 공략">
+      <button type="button" class="guide-btn guide-primary" data-open-modal="guideModal">
         <span class="guide-icon">📖</span>
         <span class="guide-copy"><strong>스타소울 공략</strong><small>게임 가이드 보기</small></span>
       </button>
-      <button type="button" class="guide-btn guide-secondary" data-coming="✨ 시즌 / 보상">
+      <button type="button" class="guide-btn guide-secondary" data-open-modal="rewardModal">
         <span class="guide-icon">✨</span>
         <span class="guide-copy"><strong>시즌 / 보상</strong><small>시즌 정보 확인</small></span>
       </button>
@@ -223,18 +289,184 @@
 
   <section class="zodiac-grid" id="zodiacGrid" aria-live="polite"></section>
 
-  <div class="coming">📖 스타소울 공략 내용과 시즌/보상 상세 정보는 다음 단계에서 채울 예정입니다.</div>
+  <div class="source-note">※ 공략·보상 수치는 제공받은 스타소울 공략 자료를 기준으로 정리했습니다. 시즌에 따라 실제 게임 내용은 달라질 수 있습니다.</div>
 </main>
 
-<div class="modal" id="comingModal" role="dialog" aria-modal="true" aria-labelledby="comingTitle">
+<div class="modal" id="guideModal" role="dialog" aria-modal="true" aria-labelledby="guideModalTitle">
   <div class="dialog">
-    <div class="dialog-head"><h3 id="comingTitle">준비 중</h3><button class="dialog-close" id="comingClose" aria-label="닫기">×</button></div>
-    <p>현재는 페이지 구성과 길드원 별자리 참여 기능을 먼저 테스트하는 데모입니다. 이 영역의 상세 내용은 다음 단계에서 추가할게요.</p>
-    <button class="dialog-ok" id="comingOk">확인</button>
+    <div class="dialog-head">
+      <h3 id="guideModalTitle">📖 스타소울 공략</h3>
+      <button class="dialog-close" data-close-modal aria-label="닫기">×</button>
+    </div>
+    <div class="dialog-scroll">
+      <p class="modal-intro"><b>스타소울</b>은 별자리 꽃을 중심으로 스타소울을 모으고, 이를 스타코인으로 전환해 전용 상점의 꽃·화병·장식 등을 구매하는 콘텐츠입니다.</p>
+
+      <div class="flow-row" aria-label="스타소울 진행 순서">
+        <span class="flow-chip">① 별자리 꽃</span><span class="flow-arrow">→</span>
+        <span class="flow-chip">② 소울 컬렉션</span><span class="flow-arrow">→</span>
+        <span class="flow-chip">③ 대응 꽃</span><span class="flow-arrow">→</span>
+        <span class="flow-chip">④ 스타소울 수집</span><span class="flow-arrow">→</span>
+        <span class="flow-chip">⑤ 스타코인 변환</span>
+      </div>
+
+      <section class="guide-section">
+        <h4>🌸 1. 시작 준비물</h4>
+        <p>스타소울을 시작하려면 <b>별자리 꽃 + 소울 컬렉션 + 해당 컬렉션이 적용되는 꽃</b>이 필요합니다. 컬렉션만 있어도 연결된 꽃을 보유하지 않으면 사용할 수 없습니다.</p>
+      </section>
+
+      <section class="guide-section">
+        <h4>🌠 2. 별자리 꽃 뽑기</h4>
+        <ul>
+          <li>별자리 꽃 뽑기는 <b>꽃의 돌</b>을 사용합니다.</li>
+          <li>자료 기준 별자리 꽃 확률은 <b>0.1%</b>, <b>300회 확정</b>입니다.</li>
+          <li>남은 꽃의 돌은 다음 별자리 시즌에도 사용할 수 있습니다.</li>
+          <li>중복 뽑기로 쌓이는 <b>별 포인트</b>도 다음 시즌으로 이어집니다.</li>
+        </ul>
+        <div class="tip">🍋 TIP · 별 포인트 상점에서는 시즌 코스튬, 별자리 화병에 사용되는 꽃, 다이아, 가속권, 물 등을 구매할 수 있습니다.</div>
+      </section>
+
+      <section class="guide-section">
+        <h4>🧚 3. 소울 컬렉션</h4>
+        <p>한 시즌의 컬렉션은 <b>SSR 2장 / SR 5장 / R 5장 / 히든 1장</b>, 총 13개입니다.</p>
+        <ul>
+          <li>컬렉션 랜덤박스 티켓도 남은 수량을 다음 시즌에 사용할 수 있습니다.</li>
+          <li>일반 컬렉션은 스타소울을 획득할 때 경험치가 쌓이고, 레벨이 높아질수록 등장 확률이 올라갑니다.</li>
+          <li><b>히든 소울</b>은 별도 대응 꽃이 필요 없고, 획득 시 해당 시즌 스타소울 등장 확률을 올려줍니다. 중복 획득 시 히든 레벨이 올라갑니다.</li>
+        </ul>
+      </section>
+
+      <section class="guide-section">
+        <h4>🌱 4. 밭에서 스타소울 얻기</h4>
+        <ul>
+          <li>밭에 <b>별자리 꽃 1개 이상</b>과 컬렉션을 보유한 대응 꽃을 심습니다.</li>
+          <li>첫 번째 물주기에는 스타소울이 나오지 않고 <b>두 번째 턴부터</b> 등장합니다.</li>
+          <li>별자리 꽃은 물을 주지 않고 심어두기만 해도 스타소울 등장 조건을 충족합니다.</li>
+        </ul>
+        <div class="tip">🍋 TIP · 별자리 꽃 자체를 수확할 필요가 없다면 별자리 꽃에는 물을 주지 않고, 대응 꽃 위주로 재배하는 방식도 가능합니다.</div>
+      </section>
+
+      <section class="guide-section">
+        <h4>🖐️ 5. 친구 밭 서리</h4>
+        <p>친구 밭에서 <b>노란 원이 표시된 손</b>이 스타소울이 담긴 꽃입니다. 친구 밭에서 획득할 수 있는 스타소울은 <b>하루 최대 4개</b>입니다.</p>
+      </section>
+
+      <section class="guide-section">
+        <h4>🤝 6. 협력과 주간 보너스</h4>
+        <ul>
+          <li>스타소울 건물의 보너스 탭에서 협력 요청을 할 수 있습니다.</li>
+          <li>친구가 악수 표시를 눌러줄 때마다 <b>현재 시즌 스타소울 등장 확률 +0.1%</b>가 적용됩니다.</li>
+          <li>스타코인 <b>2배 보너스 꽃은 매주 변경</b>되므로 변환 전에 확인하는 것이 중요합니다.</li>
+        </ul>
+      </section>
+
+      <section class="guide-section">
+        <h4>⏳ 7. 스타소울 → 스타코인 변환</h4>
+        <p>변환 공간은 총 <b>5칸</b>이며 다이아로 개방하면 영구적으로 사용할 수 있습니다. 스타소울 1개를 변환하는 데 <b>1시간 30분</b>이 걸립니다.</p>
+        <div class="info-table-wrap">
+          <table class="info-table">
+            <thead><tr><th>등급</th><th>일반</th><th>2배 보너스</th></tr></thead>
+            <tbody>
+              <tr><td>SSR</td><td>4코인</td><td><b>8코인</b></td></tr>
+              <tr><td>SR</td><td>3코인</td><td><b>6코인</b></td></tr>
+              <tr><td>R</td><td>2코인</td><td><b>4코인</b></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="tip">⭐ 중요 · 2배 보너스는 <b>심은 시간이 아니라 수확하는 시간 기준</b>입니다. 보너스 종료 전에 변환 시간을 꼭 확인하세요.</div>
+      </section>
+    </div>
   </div>
 </div>
 
-<div id="site-version">demo_v4.5</div>
+<div class="modal" id="rewardModal" role="dialog" aria-modal="true" aria-labelledby="rewardModalTitle">
+  <div class="dialog">
+    <div class="dialog-head">
+      <h3 id="rewardModalTitle">✨ 시즌 / 보상</h3>
+      <button class="dialog-close" data-close-modal aria-label="닫기">×</button>
+    </div>
+    <div class="dialog-scroll">
+      <p class="modal-intro">시즌 동안 스타소울을 꾸준히 수집하면 스타코인을 모아 전용 상점 보상을 노릴 수 있습니다. 패스 여부에 따라 하루 획득 가능한 스타소울 수가 크게 달라집니다.</p>
+
+      <section class="guide-section">
+        <h4>⭐ 스타코인 획득량</h4>
+        <div class="reward-highlight">
+          <div class="reward-stat"><b>2 / 4</b><span>R 일반 / 2배</span></div>
+          <div class="reward-stat"><b>3 / 6</b><span>SR 일반 / 2배</span></div>
+          <div class="reward-stat"><b>4 / 8</b><span>SSR 일반 / 2배</span></div>
+        </div>
+        <p>등급이 높을수록 기본 코인이 많지만, <b>2배 보너스가 적용된 낮은 등급</b>이 일반 높은 등급보다 효율적일 수 있습니다.</p>
+      </section>
+
+      <section class="guide-section">
+        <h4>🎫 소울 패스</h4>
+        <p>새 별자리 시즌과 함께 등장하는 패스입니다. 자료에서는 무료 밀령과 고급 밀령을 기준으로 설명하고 있습니다.</p>
+        <div class="mini-grid">
+          <div class="mini-card">
+            <strong>무료 밀령</strong>
+            <span>내 밭 수확 18 + 친구 서리 4 = <b>하루 최대 22개</b></span>
+          </div>
+          <div class="mini-card">
+            <strong>고급 밀령</strong>
+            <span>기본 22개 + 수확 상한 12회 추가 = <b>하루 최대 34개</b></span>
+          </div>
+        </div>
+        <div class="tip">SR 2배 보너스(1개당 6코인)만 돌린다고 가정한 자료 예시: 무료 22×6 = 132코인 / 고급 34×6 = 204코인.</div>
+      </section>
+
+      <section class="guide-section">
+        <h4>📋 밀령 일일 임무</h4>
+        <div class="info-table-wrap">
+          <table class="info-table">
+            <thead><tr><th>미션</th><th>경험치</th><th>비고</th></tr></thead>
+            <tbody>
+              <tr><td>임의의 꽃 60회 재배</td><td>50</td><td>-</td></tr>
+              <tr><td>임의의 꽃 60회 수확</td><td>50</td><td>-</td></tr>
+              <tr><td>아무 꽃 스타소울 5회 수확</td><td>50</td><td>스타소울 보유자</td></tr>
+              <tr><td>친구 스타소울 3회 협력</td><td>50</td><td>친구 목록 악수</td></tr>
+              <tr><td>스타소울의 꽃 정령 3개 훔치기</td><td>50</td><td>-</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="guide-section">
+        <h4>🏆 밀령 도전 임무</h4>
+        <div class="info-table-wrap">
+          <table class="info-table">
+            <thead><tr><th>미션</th><th>경험치</th><th>자료 기준 참고</th></tr></thead>
+            <tbody>
+              <tr><td>꽃 정령 60개 훔치기</td><td>400</td><td>1일 4회 기준 15일</td></tr>
+              <tr><td>아무 꽃 스타소울 215회 수확</td><td>400</td><td>기본 23일 / 패스 14일</td></tr>
+              <tr><td>친구 스타소울 60회 협력</td><td>400</td><td>하루 3회 기준 20일</td></tr>
+              <tr><td>스타소울 랜덤박스 12회 뽑기</td><td>400</td><td>컬렉션 뽑기</td></tr>
+              <tr><td>스타소울 누적 100회 파견</td><td>400</td><td>일일 횟수 제한 없음</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="guide-section">
+        <h4>🛍️ 스타소울 상점</h4>
+        <p>스타코인으로 <b>꽃, 화병, 타이틀, 액자 등</b>을 구매할 수 있습니다. 상점 상품에는 <b>구매 기한</b>이 있으므로 목표 보상의 종료일을 확인하는 것이 중요합니다.</p>
+        <div class="tip">🍋 자료의 무과금 팁 · 친구 밭 서리를 매일 챙겨 스타코인을 모으고, 구매 우선순위가 필요하다면 화병을 우선 고려하는 방식이 소개되어 있습니다.</div>
+      </section>
+
+      <section class="guide-section">
+        <h4>💫 다음 시즌으로 이어지는 재화</h4>
+        <div class="mini-grid">
+          <div class="mini-card"><strong>꽃의 돌</strong><span>별자리 꽃 뽑기 후 남은 수량 이월</span></div>
+          <div class="mini-card"><strong>별 포인트</strong><span>중복 별자리 꽃 뽑기로 획득, 다음 시즌 사용 가능</span></div>
+          <div class="mini-card"><strong>컬렉션 랜덤박스 티켓</strong><span>남은 티켓을 다음 시즌에도 사용 가능</span></div>
+          <div class="mini-card"><strong>2배 보너스 꽃</strong><span>매주 변경되므로 수확 시점 기준으로 확인</span></div>
+        </div>
+      </section>
+
+      <p class="table-caption">※ 패키지 가격·특정 시즌 상품명처럼 변동 가능성이 큰 내용은 이번 페이지에서 제외했습니다.</p>
+    </div>
+  </div>
+</div>
+
+<div id="site-version">demo_v4.6</div>
 
 <script>
 const API='/api/guild-state';
@@ -439,16 +671,29 @@ monthSelect.addEventListener('change',fillDays);
 memberSelect.addEventListener('change',updateFormForMember);
 birthSave.addEventListener('click',saveBirthday);
 
-const comingModal=document.getElementById('comingModal');
-const comingTitle=document.getElementById('comingTitle');
-function closeComing(){comingModal.classList.remove('show')}
-document.querySelectorAll('[data-coming]').forEach(btn=>btn.addEventListener('click',()=>{
-  comingTitle.textContent=btn.dataset.coming;comingModal.classList.add('show')
-}));
-document.getElementById('comingClose').onclick=closeComing;
-document.getElementById('comingOk').onclick=closeComing;
-comingModal.onclick=e=>{if(e.target===comingModal)closeComing()};
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeComing()});
+function openInfoModal(id){
+  const modal=document.getElementById(id);
+  if(!modal)return;
+  modal.classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function closeInfoModal(modal){
+  if(!modal)return;
+  modal.classList.remove('show');
+  if(!document.querySelector('.modal.show'))document.body.style.overflow='';
+}
+document.querySelectorAll('[data-open-modal]').forEach(btn=>{
+  btn.addEventListener('click',()=>openInfoModal(btn.dataset.openModal));
+});
+document.querySelectorAll('[data-close-modal]').forEach(btn=>{
+  btn.addEventListener('click',()=>closeInfoModal(btn.closest('.modal')));
+});
+document.querySelectorAll('.modal').forEach(modal=>{
+  modal.addEventListener('click',e=>{if(e.target===modal)closeInfoModal(modal)});
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')document.querySelectorAll('.modal.show').forEach(closeInfoModal);
+});
 
 loadState();
 let pollTimer=setInterval(loadState,5000);
