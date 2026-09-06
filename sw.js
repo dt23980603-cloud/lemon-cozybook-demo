@@ -1,7 +1,8 @@
-const CACHE_NAME = 'lemon-demo-v4.2-competition-mission-status';
+const CACHE_NAME = 'lemon-demo-v4.3-starsoul-quick-menu';
 const APP_SHELL = [
   '/',
   '/index.html',
+  '/page1.html',
   '/page2.html',
   '/page3.html',
   '/page4.html',

@@ -64,6 +64,95 @@
             font-size: 0.95rem;
         }
 
+        /* demo_v4.3: 바로가기 아이콘 메뉴 */
+        .quick-section,
+        .main-menu-section {
+            width: 100%;
+        }
+
+        .section-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            margin: 2px 0 12px;
+        }
+
+        .section-divider-line {
+            height: 1px;
+            flex: 1;
+            background: #d5d5d5;
+        }
+
+        .section-divider h2 {
+            margin: 0;
+            flex: 0 0 auto;
+            color: #666;
+            font-size: 0.84rem;
+            font-weight: 700;
+            letter-spacing: .02em;
+        }
+
+        .quick-menu {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .quick-item {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 7px;
+            color: #333;
+            text-decoration: none;
+            font-weight: 700;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .quick-icon {
+            width: 72px;
+            height: 72px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #d2d2d2;
+            border-radius: 22px;
+            background: #fff;
+            box-shadow: 0 3px 10px rgba(0,0,0,.07);
+            font-size: 2rem;
+            line-height: 1;
+            transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+        }
+
+        .quick-starsoul .quick-icon {
+            background: linear-gradient(145deg, #f7f2ff 0%, #eef1ff 100%);
+            border-color: #cfc6e4;
+        }
+
+        .quick-item:hover .quick-icon {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,.11);
+            background-color: #fff9db;
+        }
+
+        .quick-name {
+            width: 100%;
+            text-align: center;
+            font-size: .82rem;
+            line-height: 1.25;
+            white-space: nowrap;
+        }
+
+        .main-menu-section {
+            margin-top: 2px;
+        }
+
         /* 버튼 메뉴 스타일 */
         .button-grid {
             display: grid;
@@ -370,7 +459,34 @@
                 margin: 7px 0;
             }
 
-            /* 2. 메뉴 버튼은 NOTICE 아래 2열 */
+            /* 2. 바로가기 아이콘 메뉴 */
+            .section-divider {
+                gap: 9px;
+                margin: 1px 0 10px;
+            }
+
+            .section-divider h2 {
+                font-size: .72rem;
+            }
+
+            .quick-menu {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 10px;
+                max-width: 100%;
+            }
+
+            .quick-icon {
+                width: 58px;
+                height: 58px;
+                border-radius: 18px;
+                font-size: 1.65rem;
+            }
+
+            .quick-name {
+                font-size: .72rem;
+            }
+
+            /* 3. 레몬공책 메뉴 버튼은 2열 */
             .button-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
                 gap: 10px;
@@ -403,7 +519,7 @@
                 word-break: keep-all;
             }
 
-            /* 3. 업데이트 영역을 버튼 아래 전체 너비로 */
+            /* 4. 업데이트 영역을 버튼 아래 전체 너비로 */
             .right-panel > div:first-child {
                 width: 100%;
                 min-width: 0;
@@ -549,17 +665,43 @@
                 </div>
             </div>
 
-            <!-- 페이지 이동 버튼 -->
-            <div class="button-grid">
-                <a href="page5.html" class="nav-btn">🌷전체 꽃 도감🌷</a>
-                <a href="page2.html" class="nav-btn">⚔️경쟁전 임무 계산⚔️</a>
-                <a href="page3.html" class="nav-btn">💡꽃 개량 효율표💡</a>
-                <a href="page6.html" class="nav-btn">📖 코지 공략모음 📖</a>
-                <div class="nav-row-three">
-                    <a href="https://open.kakao.com/o/gdYMYczi" class="nav-btn" target="_blank" rel="noopener noreferrer">💬 레몬 오픈채팅</a>
-                    <a href="https://game.naver.com/lounge/The_Cozy_Florist/home" class="nav-btn" target="_blank" rel="noopener noreferrer">🌿 코지 공식 라운지</a>
+            <!-- 바로가기 -->
+            <section class="quick-section" aria-labelledby="quickSectionTitle">
+                <div class="section-divider">
+                    <span class="section-divider-line"></span>
+                    <h2 id="quickSectionTitle">바로가기</h2>
+                    <span class="section-divider-line"></span>
                 </div>
-            </div>
+                <div class="quick-menu">
+                    <a href="page1.html" class="quick-item quick-starsoul" aria-label="스타소울">
+                        <span class="quick-icon" aria-hidden="true">🌌</span>
+                        <span class="quick-name">스타소울</span>
+                    </a>
+                    <a href="https://open.kakao.com/o/gdYMYczi" class="quick-item" target="_blank" rel="noopener noreferrer" aria-label="레몬 오픈카톡">
+                        <span class="quick-icon" aria-hidden="true">💬</span>
+                        <span class="quick-name">오픈카톡</span>
+                    </a>
+                    <a href="https://game.naver.com/lounge/The_Cozy_Florist/home" class="quick-item" target="_blank" rel="noopener noreferrer" aria-label="코지 공식라운지">
+                        <span class="quick-icon" aria-hidden="true">🌳</span>
+                        <span class="quick-name">공식라운지</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 레몬공책 메뉴 -->
+            <section class="main-menu-section" aria-labelledby="mainMenuTitle">
+                <div class="section-divider">
+                    <span class="section-divider-line"></span>
+                    <h2 id="mainMenuTitle">레몬공책 메뉴</h2>
+                    <span class="section-divider-line"></span>
+                </div>
+                <div class="button-grid">
+                    <a href="page5.html" class="nav-btn">🌷전체 꽃 도감🌷</a>
+                    <a href="page2.html" class="nav-btn">⚔️경쟁전 임무 계산⚔️</a>
+                    <a href="page3.html" class="nav-btn">💡꽃 개량 효율표💡</a>
+                    <a href="page6.html" class="nav-btn">📖 코지 공략모음 📖</a>
+                </div>
+            </section>
         </div>
 
         <!-- 우측 영역: 전체 꽃 도감에서 자동 생성되는 업데이트 내역 -->
@@ -703,7 +845,7 @@
     </script>
 
 
-    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.2</div>
+    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.3</div>
 
 
 <script id="pwa-auto-update-script">
