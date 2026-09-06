@@ -23,6 +23,7 @@ function sanitizePatch(input) {
   if (Array.isArray(input?.members)) patch.members = input.members;
   if (isPlainObject(input?.checks)) patch.checks = input.checks;
   if (isPlainObject(input?.flowerOptions)) patch.flowerOptions = input.flowerOptions;
+  if (isPlainObject(input?.memberBirthdays)) patch.memberBirthdays = input.memberBirthdays;
 
   return patch;
 }
@@ -189,6 +190,27 @@ function jsonPathForMissionMember(memberId) {
   return `$.competitionMissionDone."${escaped}"`;
 }
 
+function isValidBirthdayValue(value) {
+  if (value === null) return true;
+  if (typeof value !== 'string' || !/^\d{2}-\d{2}$/.test(value)) return false;
+  const [month, day] = value.split('-').map(Number);
+  const days = [31,29,31,30,31,30,31,31,30,31,30,31];
+  return month >= 1 && month <= 12 && day >= 1 && day <= days[month - 1];
+}
+
+function isValidBirthdayChange(change) {
+  return change && typeof change === 'object'
+    && typeof change.memberId === 'string'
+    && change.memberId.length > 0
+    && change.memberId.length <= 200
+    && isValidBirthdayValue(change.birthday);
+}
+
+function jsonPathForBirthdayMember(memberId) {
+  const escaped = memberId.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  return `$.memberBirthdays."${escaped}"`;
+}
+
 async function ensureStateRow(db, stateId) {
   const now = Date.now();
   await db.prepare(`
@@ -229,11 +251,16 @@ export async function onRequestPatch(context) {
     ? body.missionChanges.filter(isValidMissionChange)
     : [];
 
-  if ((changes.length === 0 && optionChanges.length === 0 && missionChanges.length === 0) ||
+  const birthdayChanges = Array.isArray(body?.birthdayChanges)
+    ? body.birthdayChanges.filter(isValidBirthdayChange)
+    : [];
+
+  if ((changes.length === 0 && optionChanges.length === 0 && missionChanges.length === 0 && birthdayChanges.length === 0) ||
       changes.length > 200 ||
       optionChanges.length > 200 ||
       missionChanges.length > 200 ||
-      changes.length + optionChanges.length + missionChanges.length > 250) {
+      birthdayChanges.length > 200 ||
+      changes.length + optionChanges.length + missionChanges.length + birthdayChanges.length > 250) {
     return new Response(JSON.stringify({ error: 'No valid guild state changes were provided.' }), {
       status: 400,
       headers: JSON_HEADERS
@@ -369,6 +396,41 @@ export async function onRequestPatch(context) {
     `).bind(stateId, path, updatedAt));
   });
 
+  // Guild member birthdays are stored sparsely as MM-DD strings by stable member id.
+  birthdayChanges.forEach(change => {
+    const path = jsonPathForBirthdayMember(change.memberId);
+
+    if (change.birthday !== null) {
+      statements.push(env.DB.prepare(`
+        UPDATE guild_state
+        SET state_json = json_set(
+              CASE
+                WHEN json_type(state_json, '$.memberBirthdays') = 'object' THEN state_json
+                ELSE json_set(state_json, '$.memberBirthdays', json('{}'))
+              END,
+              ?2,
+              ?3
+            ),
+            updated_at = ?4
+        WHERE id = ?1
+      `).bind(stateId, path, change.birthday, updatedAt));
+      return;
+    }
+
+    statements.push(env.DB.prepare(`
+      UPDATE guild_state
+      SET state_json = json_remove(
+            CASE
+              WHEN json_type(state_json, '$.memberBirthdays') = 'object' THEN state_json
+              ELSE json_set(state_json, '$.memberBirthdays', json('{}'))
+            END,
+            ?2
+          ),
+          updated_at = ?3
+      WHERE id = ?1
+    `).bind(stateId, path, updatedAt));
+  });
+
   await env.DB.batch(statements);
 
   return new Response(JSON.stringify({
@@ -376,7 +438,8 @@ export async function onRequestPatch(context) {
     updatedAt,
     changedChecks: changes.length,
     changedOptions: optionChanges.length,
-    changedMissions: missionChanges.length
+    changedMissions: missionChanges.length,
+    changedBirthdays: birthdayChanges.length
   }), { headers: JSON_HEADERS });
 }
 

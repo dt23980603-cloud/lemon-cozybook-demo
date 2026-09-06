@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.4-light-notice';
+const CACHE_NAME = 'lemon-demo-v4.5-starsoul-birthdays';
 const APP_SHELL = [
   '/',
   '/index.html',
