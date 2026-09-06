@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.3-starsoul-quick-menu';
+const CACHE_NAME = 'lemon-demo-v4.4-light-notice';
 const APP_SHELL = [
   '/',
   '/index.html',
