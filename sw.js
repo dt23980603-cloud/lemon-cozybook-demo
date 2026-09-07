@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.10-compact-package-cards';
+const CACHE_NAME = 'lemon-demo-v4.11-compact-flower-labels';
 const APP_SHELL = [
   '/',
   '/index.html',
