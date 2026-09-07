@@ -89,7 +89,44 @@
     .bottom-link{display:flex;justify-content:center;margin-top:18px}.bottom-link a{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:9px 18px;border:1px solid #d8c56c;border-radius:12px;background:#fff3b4;color:#4b452f;text-decoration:none;font-size:.76rem;font-weight:700}
     .source-note{margin-top:14px;text-align:center;color:#929292;font-size:.64rem;line-height:1.5}
     #site-version{position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none}
-    @media(max-width:520px){.page{width:calc(100% - 18px);margin-top:9px}.header{padding:10px 11px;border-radius:15px}.back{width:36px;height:36px;flex-basis:36px}h1{font-size:1.08rem}.subtitle{font-size:.65rem}.intro{font-size:.68rem;padding:11px 12px}.flow-chip{font-size:.59rem;padding:5px 7px}.guide-section{padding:11px 12px;border-radius:13px}.guide-section h2{font-size:.82rem}.guide-section p,.guide-section li{font-size:.65rem}.tip{font-size:.62rem}.info-table th,.info-table td{font-size:.61rem;padding:6px}.prep-visual-grid{gap:7px}.prep-figure{border-radius:10px}.prep-figure figcaption{font-size:.6rem;padding:6px}.prep-figure img{max-height:420px}.prep-package-row{align-items:stretch;flex-direction:column;padding:9px 10px}.prep-package-copy strong{font-size:.66rem}.prep-package-copy span{font-size:.58rem}.package-btn{width:100%;font-size:.62rem}.package-modal{padding:8px}.package-dialog{max-height:94vh;border-radius:14px}.package-dialog-head{padding:11px 12px}.package-dialog-head h2{font-size:.82rem}.package-dialog-body{min-height:300px}}
+    @media(max-width:520px){.page{width:calc(100% - 18px);margin-top:9px}.header{padding:10px 11px;border-radius:15px}.back{width:36px;height:36px;flex-basis:36px}h1{font-size:1.08rem}.subtitle{font-size:.65rem}.intro{font-size:.68rem;padding:11px 12px}.flow-chip{font-size:.59rem;padding:5px 7px}.guide-section{padding:11px 12px;border-radius:13px}.guide-section h2{font-size:.82rem}.guide-section p,.guide-section li{font-size:.65rem}.tip{font-size:.62rem}.info-table th,.info-table td{font-size:.61rem;padding:6px}.prep-visual-grid{gap:7px}.prep-figure{border-radius:10px}.prep-figure figcaption{font-size:.6rem;padding:6px}.prep-figure img{max-height:420px}.prep-package-row{align-items:stretch;flex-direction:column;padding:9px 10px}.prep-package-copy strong{font-size:.66rem}.prep-package-copy span{font-size:.58rem}.package-btn{width:100%;font-size:.62rem}.package-modal{padding:8px}.package-dialog{max-height:94vh;border-radius:14px}.package-dialog-head{padding:11px 12px}.package-dialog-head h2{font-size:.82rem}.package-dialog-body{min-height:300px}
+      .package-modal{padding:5px}
+      .package-dialog{width:100%;max-height:94vh;border-radius:13px}
+      .package-dialog-head{padding:9px 10px}
+      .package-dialog-head h2{font-size:.74rem}
+      .package-body-wrap{padding:7px}
+      .package-intro{padding:9px 10px}
+      .package-intro strong{font-size:.7rem}
+      .package-intro p{font-size:.58rem;line-height:1.5}
+      .package-intro small{display:none}
+      .package-combo-list{gap:8px;margin-top:8px}
+      .bundle-row{padding:6px 5px;border-radius:11px;overflow:hidden}
+      .bundle-strip{
+        display:grid;
+        grid-template-columns:minmax(0,1fr) 11px minmax(0,1fr) 11px minmax(0,1fr) 11px minmax(0,1fr);
+        gap:3px;overflow:visible;padding:0;width:100%
+      }
+      .bundle-card{
+        width:auto;min-width:0;max-width:none;flex:none;border-radius:9px;
+        box-shadow:0 2px 6px rgba(0,0,0,.05)
+      }
+      .bundle-card.grade-sr,.bundle-card.grade-ssr{border-width:2px}
+      .combo-sign{min-width:0;width:11px;font-size:.9rem;align-self:center}
+      .bundle-media{aspect-ratio:1/1}
+      .bundle-badge{
+        top:2px;min-height:0;padding:2px 3px;border-radius:5px;
+        font-size:.36rem;line-height:1;letter-spacing:-.03em
+      }
+      .bundle-badge-left{
+        left:2px;max-width:calc(100% - 4px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap
+      }
+      .bundle-badge-right{right:2px}
+      .bundle-name{
+        min-height:31px;display:flex;align-items:center;justify-content:center;
+        font-size:.43rem;line-height:1.15;padding:4px 2px;word-break:keep-all;
+        letter-spacing:-.04em;text-shadow:0 1px 1px rgba(0,0,0,.16)
+      }
+}
   </style>
   <link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#ffe680">
 </head>
@@ -282,9 +319,9 @@
         <div class="bundle-media">
           <span class="bundle-badge bundle-badge-left">₩7500</span>
           <span class="bundle-badge bundle-badge-right">SR</span>
-          <img src="images/flowers/SR/F0108.webp" alt="옥빛 그라디올러스" loading="lazy">
+          <img src="images/flowers/SR/F0108.webp" alt="옥빛 글라디올러스" loading="lazy">
         </div>
-        <div class="bundle-name">옥빛 그라디올러스</div>
+        <div class="bundle-name">옥빛 글라디올러스</div>
       </div>
     </div></div><div class="bundle-row"><div class="bundle-strip">
       <div class="bundle-card grade-sr">
@@ -688,7 +725,7 @@
 </div>
   </div>
 </div>
-<div id="site-version">demo_v4.9</div>
+<div id="site-version">demo_v4.10</div>
 <script>
 const packageFlowersModal=document.getElementById('packageFlowersModal');
 const openPackageFlowers=document.getElementById('openPackageFlowers');
