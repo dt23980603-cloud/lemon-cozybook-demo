@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.7-starsoul-guide-page';
+const CACHE_NAME = 'lemon-demo-v4.8-starsoul-guide-images';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -17,6 +17,8 @@ const APP_SHELL = [
   '/images/banners/lemon-banner-mobile.png',
   '/images/ui/back-button.png',
   '/images/ui/guide-default.png',
+  '/images/guides/starsoul/01-zodiac-flower.jpg',
+  '/images/guides/starsoul/02-soul-collection.jpg',
   '/icons/icon-192.png',
   '/icons/icon-512.png'
 ];

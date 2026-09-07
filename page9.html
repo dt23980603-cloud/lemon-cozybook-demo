@@ -21,11 +21,27 @@
     .guide-section{border:1px solid #e2e2e2;border-radius:16px;padding:15px 16px;margin-top:11px;background:rgba(255,255,255,.94);box-shadow:0 3px 12px rgba(0,0,0,.025)}
     .guide-section h2{margin:0 0 8px;font-size:.97rem}.guide-section p,.guide-section li{font-size:.75rem;line-height:1.68;color:#5d5f65}.guide-section p{margin:5px 0}.guide-section ul{margin:5px 0 0;padding-left:19px}
     .tip{margin-top:9px;padding:9px 11px;border-radius:11px;background:#fff6c9;color:#5e542f;font-size:.71rem;line-height:1.55}
+    .prep-visual-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:13px}
+    .prep-figure{margin:0;min-width:0;border:1px solid #e1e1e1;border-radius:14px;overflow:hidden;background:#fafafa}
+    .prep-figure figcaption{padding:8px 10px;background:#fffdf5;border-bottom:1px solid #e7e3d8;font-size:.72rem;font-weight:700;text-align:center}
+    .prep-figure img{display:block;width:100%;height:auto;max-height:560px;object-fit:contain;background:#f4f4f4}
+    .prep-package-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:13px;padding:11px 12px;border:1px dashed #dccf9c;border-radius:13px;background:#fffbee}
+    .prep-package-copy{min-width:0}.prep-package-copy strong{display:block;font-size:.75rem}.prep-package-copy span{display:block;margin-top:3px;color:#858176;font-size:.65rem;line-height:1.45}
+    .package-btn{flex:0 0 auto;min-height:38px;padding:8px 12px;border:1px solid #d8bc56;border-radius:11px;background:#fff0a5;color:#4f472e;font-size:.69rem;font-weight:700;white-space:nowrap;cursor:pointer}
+    .package-btn:hover{background:#ffe77a}
+    .package-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.42);z-index:5000}
+    .package-modal.show{display:flex}
+    .package-dialog{width:min(980px,100%);max-height:90vh;background:#fff;border-radius:18px;box-shadow:0 18px 55px rgba(0,0,0,.25);overflow:hidden;display:flex;flex-direction:column}
+    .package-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid #ececec;background:#fffdf7}
+    .package-dialog-head h2{margin:0;font-size:.98rem}
+    .package-close{border:0;background:transparent;color:#777;font-size:1.45rem;line-height:1;padding:5px 7px;cursor:pointer}
+    .package-dialog-body{min-height:360px;overflow:auto;background:#fff}
+
     .info-table-wrap{overflow-x:auto;margin-top:8px}.info-table{width:100%;border-collapse:collapse;min-width:420px;background:#fff}.info-table th,.info-table td{border:1px solid #dedede;padding:8px;text-align:center;font-size:.7rem;line-height:1.4;vertical-align:middle}.info-table th{background:#fff8d9;color:#504b39}
     .bottom-link{display:flex;justify-content:center;margin-top:18px}.bottom-link a{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:9px 18px;border:1px solid #d8c56c;border-radius:12px;background:#fff3b4;color:#4b452f;text-decoration:none;font-size:.76rem;font-weight:700}
     .source-note{margin-top:14px;text-align:center;color:#929292;font-size:.64rem;line-height:1.5}
     #site-version{position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none}
-    @media(max-width:520px){.page{width:calc(100% - 18px);margin-top:9px}.header{padding:10px 11px;border-radius:15px}.back{width:36px;height:36px;flex-basis:36px}h1{font-size:1.08rem}.subtitle{font-size:.65rem}.intro{font-size:.68rem;padding:11px 12px}.flow-chip{font-size:.59rem;padding:5px 7px}.guide-section{padding:11px 12px;border-radius:13px}.guide-section h2{font-size:.82rem}.guide-section p,.guide-section li{font-size:.65rem}.tip{font-size:.62rem}.info-table th,.info-table td{font-size:.61rem;padding:6px}}
+    @media(max-width:520px){.page{width:calc(100% - 18px);margin-top:9px}.header{padding:10px 11px;border-radius:15px}.back{width:36px;height:36px;flex-basis:36px}h1{font-size:1.08rem}.subtitle{font-size:.65rem}.intro{font-size:.68rem;padding:11px 12px}.flow-chip{font-size:.59rem;padding:5px 7px}.guide-section{padding:11px 12px;border-radius:13px}.guide-section h2{font-size:.82rem}.guide-section p,.guide-section li{font-size:.65rem}.tip{font-size:.62rem}.info-table th,.info-table td{font-size:.61rem;padding:6px}.prep-visual-grid{gap:7px}.prep-figure{border-radius:10px}.prep-figure figcaption{font-size:.6rem;padding:6px}.prep-figure img{max-height:420px}.prep-package-row{align-items:stretch;flex-direction:column;padding:9px 10px}.prep-package-copy strong{font-size:.66rem}.prep-package-copy span{font-size:.58rem}.package-btn{width:100%;font-size:.62rem}.package-modal{padding:8px}.package-dialog{max-height:94vh;border-radius:14px}.package-dialog-head{padding:11px 12px}.package-dialog-head h2{font-size:.82rem}.package-dialog-body{min-height:300px}}
   </style>
   <link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#ffe680">
 </head>
@@ -34,7 +50,27 @@
   <header class="header"><a href="page1.html" class="back" title="스타소울로 돌아가기" aria-label="스타소울로 돌아가기"><img src="images/ui/back-button.png" alt="뒤로가기"></a><div class="head-copy"><h1>📖 스타소울 공략</h1><p class="subtitle">처음 시작할 때 헷갈리기 쉬운 스타소울 흐름을 순서대로 정리했습니다.</p></div></header>
   <div class="intro"><b>스타소울</b>은 별자리 꽃을 중심으로 스타소울을 모으고, 이를 스타코인으로 전환해 전용 상점의 꽃·화병·장식 등을 구매하는 콘텐츠입니다.</div>
   <div class="flow-row" aria-label="스타소울 진행 순서"><span class="flow-chip">① 별자리 꽃</span><span class="flow-arrow">→</span><span class="flow-chip">② 소울 컬렉션</span><span class="flow-arrow">→</span><span class="flow-chip">③ 대응 꽃</span><span class="flow-arrow">→</span><span class="flow-chip">④ 스타소울 수집</span><span class="flow-arrow">→</span><span class="flow-chip">⑤ 스타코인 변환</span></div>
-  <section class="guide-section"><h2>🌸 1. 시작 준비물</h2><p>스타소울을 시작하려면 <b>별자리 꽃 + 소울 컬렉션 + 해당 컬렉션이 적용되는 꽃</b>이 필요합니다. 컬렉션만 있어도 연결된 꽃을 보유하지 않으면 사용할 수 없습니다.</p></section>
+  <section class="guide-section" id="guide-preparation">
+    <h2>🌸 1. 시작 준비물</h2>
+    <p>스타소울을 시작하려면 <b>별자리 꽃 + 소울 컬렉션 + 해당 컬렉션이 적용되는 꽃</b>이 필요합니다. 컬렉션만 있어도 연결된 꽃을 보유하지 않으면 사용할 수 없습니다.</p>
+    <div class="prep-visual-grid">
+      <figure class="prep-figure">
+        <figcaption>🌟 별자리 꽃</figcaption>
+        <img src="images/guides/starsoul/01-zodiac-flower.jpg" alt="인게임 별자리 꽃 화면 예시" loading="lazy">
+      </figure>
+      <figure class="prep-figure">
+        <figcaption>🃏 소울 컬렉션</figcaption>
+        <img src="images/guides/starsoul/02-soul-collection.jpg" alt="인게임 스타소울 컬렉션 화면 예시" loading="lazy">
+      </figure>
+    </div>
+    <div class="prep-package-row">
+      <div class="prep-package-copy">
+        <strong>🌷 해당 컬렉션이 적용되는 꽃</strong>
+        <span>컬렉션과 연결되는 패키지 화단 꽃 조합은 버튼에서 확인할 수 있어요.</span>
+      </div>
+      <button type="button" class="package-btn" id="openPackageFlowers">패키지 화단 꽃 확인하기</button>
+    </div>
+  </section>
   <section class="guide-section"><h2>🌠 2. 별자리 꽃 뽑기</h2><ul><li>별자리 꽃 뽑기는 <b>꽃의 돌</b>을 사용합니다.</li><li>자료 기준 별자리 꽃 확률은 <b>0.1%</b>, <b>300회 확정</b>입니다.</li><li>남은 꽃의 돌은 다음 별자리 시즌에도 사용할 수 있습니다.</li><li>중복 뽑기로 쌓이는 <b>별 포인트</b>도 다음 시즌으로 이어집니다.</li></ul><div class="tip">🍋 TIP · 별 포인트 상점에서는 시즌 코스튬, 별자리 화병에 사용되는 꽃, 다이아, 가속권, 물 등을 구매할 수 있습니다.</div></section>
   <section class="guide-section"><h2>🧚 3. 소울 컬렉션</h2><p>한 시즌의 컬렉션은 <b>SSR 2장 / SR 5장 / R 5장 / 히든 1장</b>, 총 13개입니다.</p><ul><li>컬렉션 랜덤박스 티켓도 남은 수량을 다음 시즌에 사용할 수 있습니다.</li><li>일반 컬렉션은 스타소울 획득 시 경험치가 쌓이고, 레벨이 높아질수록 등장 확률이 올라갑니다.</li><li><b>히든 소울</b>은 별도 대응 꽃이 필요 없으며, 획득하면 해당 시즌 스타소울 등장 확률이 상승합니다. 중복 획득 시 히든 레벨이 올라갑니다.</li></ul></section>
   <section class="guide-section"><h2>🌱 4. 밭에서 스타소울 얻기</h2><ul><li>밭에 <b>별자리 꽃 1개 이상</b>과 컬렉션을 보유한 대응 꽃을 심습니다.</li><li>첫 번째 물주기에는 스타소울이 나오지 않고 <b>두 번째 턴부터</b> 등장합니다.</li><li>별자리 꽃은 물을 주지 않고 심어두기만 해도 스타소울 등장 조건을 충족합니다.</li></ul><div class="tip">🍋 TIP · 별자리 꽃 자체를 수확할 필요가 없다면 별자리 꽃에는 물을 주지 않고, 대응 꽃 위주로 재배하는 방식도 가능합니다.</div></section>
@@ -43,6 +79,27 @@
   <section class="guide-section"><h2>⏳ 7. 스타소울 → 스타코인 변환</h2><p>변환 공간은 총 <b>5칸</b>이며 다이아로 개방하면 영구적으로 사용할 수 있습니다. 스타소울 1개를 변환하는 데 <b>1시간 30분</b>이 걸립니다.</p><div class="info-table-wrap"><table class="info-table"><thead><tr><th>등급</th><th>일반</th><th>2배 보너스</th></tr></thead><tbody><tr><td>SSR</td><td>4코인</td><td><b>8코인</b></td></tr><tr><td>SR</td><td>3코인</td><td><b>6코인</b></td></tr><tr><td>R</td><td>2코인</td><td><b>4코인</b></td></tr></tbody></table></div><div class="tip">⭐ 중요 · 2배 보너스는 <b>심은 시간이 아니라 수확하는 시간 기준</b>입니다. 보너스 종료 전에 변환 시간을 꼭 확인하세요.</div></section>
   <div class="bottom-link"><a href="page1.html">🌌 스타소울 페이지로 돌아가기</a></div><p class="source-note">※ 제공받은 스타소울 공략 자료를 기준으로 정리했습니다. 시즌에 따라 실제 게임 내용은 달라질 수 있습니다.</p>
 </main>
-<div id="site-version">demo_v4.7</div>
-<script>if('serviceWorker'in navigator){window.addEventListener('load',async()=>{try{const registration=await navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'});await registration.update()}catch(e){console.warn(e)}})}</script>
+
+<div class="package-modal" id="packageFlowersModal" role="dialog" aria-modal="true" aria-labelledby="packageFlowersTitle">
+  <div class="package-dialog">
+    <div class="package-dialog-head">
+      <h2 id="packageFlowersTitle">🌷 패키지 화단 꽃 확인하기</h2>
+      <button type="button" class="package-close" id="closePackageFlowers" aria-label="닫기">×</button>
+    </div>
+    <div class="package-dialog-body" id="packageFlowersBody"></div>
+  </div>
+</div>
+<div id="site-version">demo_v4.8</div>
+<script>
+const packageFlowersModal=document.getElementById('packageFlowersModal');
+const openPackageFlowers=document.getElementById('openPackageFlowers');
+const closePackageFlowers=document.getElementById('closePackageFlowers');
+function openPackageFlowerModal(){packageFlowersModal.classList.add('show');document.body.style.overflow='hidden'}
+function closePackageFlowerModal(){packageFlowersModal.classList.remove('show');document.body.style.overflow=''}
+openPackageFlowers.addEventListener('click',openPackageFlowerModal);
+closePackageFlowers.addEventListener('click',closePackageFlowerModal);
+packageFlowersModal.addEventListener('click',e=>{if(e.target===packageFlowersModal)closePackageFlowerModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&packageFlowersModal.classList.contains('show'))closePackageFlowerModal()});
+if('serviceWorker'in navigator){window.addEventListener('load',async()=>{try{const registration=await navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'});await registration.update()}catch(e){console.warn(e)}})}
+</script>
 </body></html>
