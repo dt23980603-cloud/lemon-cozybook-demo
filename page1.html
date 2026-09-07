@@ -253,10 +253,10 @@
     </header>
 
     <div class="guide-actions">
-      <button type="button" class="guide-btn guide-primary" data-open-modal="guideModal">
+      <a href="page9.html" class="guide-btn guide-primary">
         <span class="guide-icon">📖</span>
         <span class="guide-copy"><strong>스타소울 공략</strong><small>게임 가이드 보기</small></span>
-      </button>
+      </a>
       <button type="button" class="guide-btn guide-secondary" data-open-modal="rewardModal">
         <span class="guide-icon">✨</span>
         <span class="guide-copy"><strong>시즌 / 보상</strong><small>시즌 정보 확인</small></span>
@@ -291,92 +291,6 @@
 
   <div class="source-note">※ 공략·보상 수치는 제공받은 스타소울 공략 자료를 기준으로 정리했습니다. 시즌에 따라 실제 게임 내용은 달라질 수 있습니다.</div>
 </main>
-
-<div class="modal" id="guideModal" role="dialog" aria-modal="true" aria-labelledby="guideModalTitle">
-  <div class="dialog">
-    <div class="dialog-head">
-      <h3 id="guideModalTitle">📖 스타소울 공략</h3>
-      <button class="dialog-close" data-close-modal aria-label="닫기">×</button>
-    </div>
-    <div class="dialog-scroll">
-      <p class="modal-intro"><b>스타소울</b>은 별자리 꽃을 중심으로 스타소울을 모으고, 이를 스타코인으로 전환해 전용 상점의 꽃·화병·장식 등을 구매하는 콘텐츠입니다.</p>
-
-      <div class="flow-row" aria-label="스타소울 진행 순서">
-        <span class="flow-chip">① 별자리 꽃</span><span class="flow-arrow">→</span>
-        <span class="flow-chip">② 소울 컬렉션</span><span class="flow-arrow">→</span>
-        <span class="flow-chip">③ 대응 꽃</span><span class="flow-arrow">→</span>
-        <span class="flow-chip">④ 스타소울 수집</span><span class="flow-arrow">→</span>
-        <span class="flow-chip">⑤ 스타코인 변환</span>
-      </div>
-
-      <section class="guide-section">
-        <h4>🌸 1. 시작 준비물</h4>
-        <p>스타소울을 시작하려면 <b>별자리 꽃 + 소울 컬렉션 + 해당 컬렉션이 적용되는 꽃</b>이 필요합니다. 컬렉션만 있어도 연결된 꽃을 보유하지 않으면 사용할 수 없습니다.</p>
-      </section>
-
-      <section class="guide-section">
-        <h4>🌠 2. 별자리 꽃 뽑기</h4>
-        <ul>
-          <li>별자리 꽃 뽑기는 <b>꽃의 돌</b>을 사용합니다.</li>
-          <li>자료 기준 별자리 꽃 확률은 <b>0.1%</b>, <b>300회 확정</b>입니다.</li>
-          <li>남은 꽃의 돌은 다음 별자리 시즌에도 사용할 수 있습니다.</li>
-          <li>중복 뽑기로 쌓이는 <b>별 포인트</b>도 다음 시즌으로 이어집니다.</li>
-        </ul>
-        <div class="tip">🍋 TIP · 별 포인트 상점에서는 시즌 코스튬, 별자리 화병에 사용되는 꽃, 다이아, 가속권, 물 등을 구매할 수 있습니다.</div>
-      </section>
-
-      <section class="guide-section">
-        <h4>🧚 3. 소울 컬렉션</h4>
-        <p>한 시즌의 컬렉션은 <b>SSR 2장 / SR 5장 / R 5장 / 히든 1장</b>, 총 13개입니다.</p>
-        <ul>
-          <li>컬렉션 랜덤박스 티켓도 남은 수량을 다음 시즌에 사용할 수 있습니다.</li>
-          <li>일반 컬렉션은 스타소울을 획득할 때 경험치가 쌓이고, 레벨이 높아질수록 등장 확률이 올라갑니다.</li>
-          <li><b>히든 소울</b>은 별도 대응 꽃이 필요 없고, 획득 시 해당 시즌 스타소울 등장 확률을 올려줍니다. 중복 획득 시 히든 레벨이 올라갑니다.</li>
-        </ul>
-      </section>
-
-      <section class="guide-section">
-        <h4>🌱 4. 밭에서 스타소울 얻기</h4>
-        <ul>
-          <li>밭에 <b>별자리 꽃 1개 이상</b>과 컬렉션을 보유한 대응 꽃을 심습니다.</li>
-          <li>첫 번째 물주기에는 스타소울이 나오지 않고 <b>두 번째 턴부터</b> 등장합니다.</li>
-          <li>별자리 꽃은 물을 주지 않고 심어두기만 해도 스타소울 등장 조건을 충족합니다.</li>
-        </ul>
-        <div class="tip">🍋 TIP · 별자리 꽃 자체를 수확할 필요가 없다면 별자리 꽃에는 물을 주지 않고, 대응 꽃 위주로 재배하는 방식도 가능합니다.</div>
-      </section>
-
-      <section class="guide-section">
-        <h4>🖐️ 5. 친구 밭 서리</h4>
-        <p>친구 밭에서 <b>노란 원이 표시된 손</b>이 스타소울이 담긴 꽃입니다. 친구 밭에서 획득할 수 있는 스타소울은 <b>하루 최대 4개</b>입니다.</p>
-      </section>
-
-      <section class="guide-section">
-        <h4>🤝 6. 협력과 주간 보너스</h4>
-        <ul>
-          <li>스타소울 건물의 보너스 탭에서 협력 요청을 할 수 있습니다.</li>
-          <li>친구가 악수 표시를 눌러줄 때마다 <b>현재 시즌 스타소울 등장 확률 +0.1%</b>가 적용됩니다.</li>
-          <li>스타코인 <b>2배 보너스 꽃은 매주 변경</b>되므로 변환 전에 확인하는 것이 중요합니다.</li>
-        </ul>
-      </section>
-
-      <section class="guide-section">
-        <h4>⏳ 7. 스타소울 → 스타코인 변환</h4>
-        <p>변환 공간은 총 <b>5칸</b>이며 다이아로 개방하면 영구적으로 사용할 수 있습니다. 스타소울 1개를 변환하는 데 <b>1시간 30분</b>이 걸립니다.</p>
-        <div class="info-table-wrap">
-          <table class="info-table">
-            <thead><tr><th>등급</th><th>일반</th><th>2배 보너스</th></tr></thead>
-            <tbody>
-              <tr><td>SSR</td><td>4코인</td><td><b>8코인</b></td></tr>
-              <tr><td>SR</td><td>3코인</td><td><b>6코인</b></td></tr>
-              <tr><td>R</td><td>2코인</td><td><b>4코인</b></td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="tip">⭐ 중요 · 2배 보너스는 <b>심은 시간이 아니라 수확하는 시간 기준</b>입니다. 보너스 종료 전에 변환 시간을 꼭 확인하세요.</div>
-      </section>
-    </div>
-  </div>
-</div>
 
 <div class="modal" id="rewardModal" role="dialog" aria-modal="true" aria-labelledby="rewardModalTitle">
   <div class="dialog">
@@ -466,7 +380,7 @@
   </div>
 </div>
 
-<div id="site-version">demo_v4.6</div>
+<div id="site-version">demo_v4.7</div>
 
 <script>
 const API='/api/guild-state';

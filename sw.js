@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.6-starsoul-guide-rewards';
+const CACHE_NAME = 'lemon-demo-v4.7-starsoul-guide-page';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -10,6 +10,7 @@ const APP_SHELL = [
   '/page6.html',
   '/page7.html',
   '/page8.html',
+  '/page9.html',
   '/flower-data-all.js',
   '/images/branding/lemon-favicon.png',
   '/images/banners/lemon-banner-pc.png',
