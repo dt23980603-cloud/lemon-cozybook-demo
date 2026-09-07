@@ -380,16 +380,16 @@
   </div>
 </div>
 
-<div id="site-version">demo_v4.11</div>
+<div id="site-version">demo_v4.12</div>
 
 <script>
 const API='/api/guild-state';
 const roleOrder={'길드장':1,'부길드장':2,'임원':3,'정예':4,'멤버':5};
 
 const zodiacData=[
-  {key:'aquarius',symbol:'♒',name:'물병자리',period:'1월 20일 ~ 2월 18일',start:120,end:218,image:'',flower:''},
-  {key:'pisces',symbol:'♓',name:'물고기자리',period:'2월 19일 ~ 3월 20일',start:219,end:320,image:'',flower:''},
-  {key:'aries',symbol:'♈',name:'양자리',period:'3월 21일 ~ 4월 19일',start:321,end:419,image:'',flower:''},
+  {key:'aquarius',symbol:'♒',name:'물병자리',period:'1월 20일 ~ 2월 18일',start:120,end:218,image:'images/guides/starsoul/zodiac/aquarius.webp',flower:'물병자리 · 창공의 별자취'},
+  {key:'pisces',symbol:'♓',name:'물고기자리',period:'2월 19일 ~ 3월 20일',start:219,end:320,image:'images/guides/starsoul/zodiac/pisces.webp',flower:'물고기자리 · 보랏빛 심연의 별자리'},
+  {key:'aries',symbol:'♈',name:'양자리',period:'3월 21일 ~ 4월 19일',start:321,end:419,image:'images/guides/starsoul/zodiac/aries.webp',flower:'양자리 · 별자국 두루마리'},
   {key:'taurus',symbol:'♉',name:'황소자리',period:'4월 20일 ~ 5월 20일',start:420,end:520,image:'images/flowers/UR/F0019.webp',flower:'황소자리 · 풍요의 별그림'},
   {key:'gemini',symbol:'♊',name:'쌍둥이자리',period:'5월 21일 ~ 6월 21일',start:521,end:621,image:'images/flowers/UR/F0014.webp',flower:'쌍둥이자리 · 성수쌍영'},
   {key:'cancer',symbol:'♋',name:'게자리',period:'6월 22일 ~ 7월 22일',start:622,end:722,image:'images/flowers/UR/F0005.webp',flower:'게자리 · 물결치는 별무리'},
@@ -397,8 +397,8 @@ const zodiacData=[
   {key:'virgo',symbol:'♍',name:'처녀자리',period:'8월 23일 ~ 9월 23일',start:823,end:923,image:'images/flowers/UR/F0353.webp',flower:'처녀자리 · 블루스톤 가든 위스퍼'},
   {key:'libra',symbol:'♎',name:'천칭자리',period:'9월 24일 ~ 10월 22일',start:924,end:1022,image:'',flower:''},
   {key:'scorpio',symbol:'♏',name:'전갈자리',period:'10월 23일 ~ 11월 22일',start:1023,end:1122,image:'',flower:''},
-  {key:'sagittarius',symbol:'♐',name:'사수자리',period:'11월 23일 ~ 12월 24일',start:1123,end:1224,image:'',flower:''},
-  {key:'capricorn',symbol:'♑',name:'염소자리',period:'12월 25일 ~ 1월 19일',start:1225,end:119,image:'',flower:''}
+  {key:'sagittarius',symbol:'♐',name:'사수자리',period:'11월 23일 ~ 12월 24일',start:1123,end:1224,image:'images/guides/starsoul/zodiac/sagittarius.webp',flower:'사수자리 · 유성의 화염 깃털'},
+  {key:'capricorn',symbol:'♑',name:'염소자리',period:'12월 25일 ~ 1월 19일',start:1225,end:119,image:'images/guides/starsoul/zodiac/capricorn.webp',flower:'염소자리 · 달물결 별의 커튼'}
 ];
 
 let members=[];

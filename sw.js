@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.11-compact-flower-labels';
+const CACHE_NAME = 'lemon-demo-v4.12-zodiac-images';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -19,6 +19,11 @@ const APP_SHELL = [
   '/images/ui/guide-default.png',
   '/images/guides/starsoul/01-zodiac-flower.jpg',
   '/images/guides/starsoul/02-soul-collection.jpg',
+  '/images/guides/starsoul/zodiac/aquarius.webp',
+  '/images/guides/starsoul/zodiac/pisces.webp',
+  '/images/guides/starsoul/zodiac/aries.webp',
+  '/images/guides/starsoul/zodiac/sagittarius.webp',
+  '/images/guides/starsoul/zodiac/capricorn.webp',
   '/icons/icon-192.png',
   '/icons/icon-512.png'
 ];
