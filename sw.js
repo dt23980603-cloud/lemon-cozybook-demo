@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.8-starsoul-guide-images';
+const CACHE_NAME = 'lemon-demo-v4.9-starsoul-package-modal';
 const APP_SHELL = [
   '/',
   '/index.html',

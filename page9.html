@@ -35,7 +35,55 @@
     .package-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid #ececec;background:#fffdf7}
     .package-dialog-head h2{margin:0;font-size:.98rem}
     .package-close{border:0;background:transparent;color:#777;font-size:1.45rem;line-height:1;padding:5px 7px;cursor:pointer}
+    
     .package-dialog-body{min-height:360px;overflow:auto;background:#fff}
+    .package-body-wrap{padding:14px}
+    .package-intro{
+      padding:12px 13px;border:1px solid #eadfb6;border-radius:14px;
+      background:#fff9de;color:#5d573f
+    }
+    .package-intro strong{display:block;font-size:.85rem;margin-bottom:5px}
+    .package-intro p{margin:0;font-size:.72rem;line-height:1.6}
+    .package-intro small{display:block;margin-top:5px;color:#858176;font-size:.63rem}
+    .package-combo-list{display:flex;flex-direction:column;gap:14px;margin-top:14px}
+    .bundle-row{
+      border:1px solid #e6e6e6;border-radius:18px;background:#fafafa;
+      padding:12px;box-shadow:0 2px 10px rgba(0,0,0,.03)
+    }
+    .bundle-strip{
+      display:flex;align-items:center;gap:10px;overflow-x:auto;padding-bottom:2px;
+      -webkit-overflow-scrolling:touch
+    }
+    .combo-sign{
+      flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+      min-width:32px;font-size:2rem;font-weight:700;color:#ddb868;line-height:1
+    }
+    .bundle-card{
+      flex:0 0 196px;width:196px;border-radius:18px;overflow:hidden;background:#fff;
+      box-shadow:0 4px 14px rgba(0,0,0,.06)
+    }
+    .bundle-card.grade-sr{border:4px solid #b676ea}
+    .bundle-card.grade-ssr{border:4px solid #f2c356}
+    .bundle-media{
+      position:relative;background:#f3f3f3;aspect-ratio:1.12 / 1;overflow:hidden
+    }
+    .bundle-media img{display:block;width:100%;height:100%;object-fit:cover}
+    .bundle-badge{
+      position:absolute;top:6px;z-index:2;display:inline-flex;align-items:center;
+      min-height:22px;padding:3px 8px;border-radius:999px;font-size:.58rem;
+      line-height:1.1;font-weight:700;backdrop-filter:blur(2px);text-shadow:0 1px 1px rgba(0,0,0,.15)
+    }
+    .bundle-badge-left{left:6px;background:rgba(255,255,255,.9);color:#4e4e4e}
+    .bundle-badge-right{right:6px;background:rgba(255,255,255,.88);color:#5d5d5d}
+    .grade-sr .bundle-badge-right{color:#8e49c8}
+    .grade-ssr .bundle-badge-right{color:#a96e03}
+    .bundle-name{
+      padding:10px 8px 11px;text-align:center;font-size:.8rem;font-weight:700;line-height:1.3;
+      color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.18)
+    }
+    .grade-sr .bundle-name{background:#b676ea}
+    .grade-ssr .bundle-name{background:#f2c356}
+
 
     .info-table-wrap{overflow-x:auto;margin-top:8px}.info-table{width:100%;border-collapse:collapse;min-width:420px;background:#fff}.info-table th,.info-table td{border:1px solid #dedede;padding:8px;text-align:center;font-size:.7rem;line-height:1.4;vertical-align:middle}.info-table th{background:#fff8d9;color:#504b39}
     .bottom-link{display:flex;justify-content:center;margin-top:18px}.bottom-link a{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:9px 18px;border:1px solid #d8c56c;border-radius:12px;background:#fff3b4;color:#4b452f;text-decoration:none;font-size:.76rem;font-weight:700}
@@ -86,10 +134,561 @@
       <h2 id="packageFlowersTitle">🌷 패키지 화단 꽃 확인하기</h2>
       <button type="button" class="package-close" id="closePackageFlowers" aria-label="닫기">×</button>
     </div>
-    <div class="package-dialog-body" id="packageFlowersBody"></div>
+    <div class="package-dialog-body" id="packageFlowersBody">
+<div class="package-body-wrap">
+  <div class="package-intro">
+    <strong>🌷 패키지 화단 꽃 조합 안내</strong>
+    <p>왼쪽 꽃은 <b>모든 구성 꽃을 구매했을 때 획득되는 SR 꽃</b>입니다. 오른쪽 구성 꽃은 패키지 화단에 포함된 꽃이며, <b>SR은 보라색 / SSR은 노란색 테두리</b>로 구분했습니다.</p>
+    <small>모바일에서는 각 줄을 좌우로 밀어서 볼 수 있어요.</small>
+  </div>
+  <div class="package-combo-list">
+    <div class="bundle-row"><div class="bundle-strip">
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">모두 구매 시 획득</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0338.webp" alt="붉은태양 히비스커스" loading="lazy">
+        </div>
+        <div class="bundle-name">붉은태양 히비스커스</div>
+      </div>
+    <div class="combo-sign equal">=</div>
+      <div class="bundle-card grade-ssr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩16800</span>
+          <span class="bundle-badge bundle-badge-right">SSR</span>
+          <img src="images/flowers/SSR/F0024.webp" alt="귤빛 불꽃 부용" loading="lazy">
+        </div>
+        <div class="bundle-name">귤빛 불꽃 부용</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0337.webp" alt="하늘색 금어초" loading="lazy">
+        </div>
+        <div class="bundle-name">하늘색 금어초</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0118.webp" alt="창공빛 등나무" loading="lazy">
+        </div>
+        <div class="bundle-name">창공빛 등나무</div>
+      </div>
+    </div></div><div class="bundle-row"><div class="bundle-strip">
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">모두 구매 시 획득</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0340.webp" alt="연분홍 금어초" loading="lazy">
+        </div>
+        <div class="bundle-name">연분홍 금어초</div>
+      </div>
+    <div class="combo-sign equal">=</div>
+      <div class="bundle-card grade-ssr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩16800</span>
+          <span class="bundle-badge bundle-badge-right">SSR</span>
+          <img src="images/flowers/SSR/F0043.webp" alt="분홍옥 부용" loading="lazy">
+        </div>
+        <div class="bundle-name">분홍옥 부용</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0339.webp" alt="눈꽃 금어초" loading="lazy">
+        </div>
+        <div class="bundle-name">눈꽃 금어초</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0129.webp" alt="황혼 등나무" loading="lazy">
+        </div>
+        <div class="bundle-name">황혼 등나무</div>
+      </div>
+    </div></div><div class="bundle-row"><div class="bundle-strip">
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">모두 구매 시 획득</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0111.webp" alt="자색 글라디올러스" loading="lazy">
+        </div>
+        <div class="bundle-name">자색 글라디올러스</div>
+      </div>
+    <div class="combo-sign equal">=</div>
+      <div class="bundle-card grade-ssr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩16800</span>
+          <span class="bundle-badge bundle-badge-right">SSR</span>
+          <img src="images/flowers/SSR/F0040.webp" alt="보랏빛 꿈 부용" loading="lazy">
+        </div>
+        <div class="bundle-name">보랏빛 꿈 부용</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0115.webp" alt="주황 불꽃 글라디올러스" loading="lazy">
+        </div>
+        <div class="bundle-name">주황 불꽃 글라디올러스</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0083.webp" alt="맑은 봉우리 장미" loading="lazy">
+        </div>
+        <div class="bundle-name">맑은 봉우리 장미</div>
+      </div>
+    </div></div><div class="bundle-row"><div class="bundle-strip">
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">모두 구매 시 획득</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0090.webp" alt="병아리색 헬레보루스" loading="lazy">
+        </div>
+        <div class="bundle-name">병아리색 헬레보루스</div>
+      </div>
+    <div class="combo-sign equal">=</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0102.webp" alt="아지랑이빛 장미" loading="lazy">
+        </div>
+        <div class="bundle-name">아지랑이빛 장미</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0077.webp" alt="꾀꼬리 장미" loading="lazy">
+        </div>
+        <div class="bundle-name">꾀꼬리 장미</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0108.webp" alt="옥빛 그라디올러스" loading="lazy">
+        </div>
+        <div class="bundle-name">옥빛 그라디올러스</div>
+      </div>
+    </div></div><div class="bundle-row"><div class="bundle-strip">
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">모두 구매 시 획득</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0091.webp" alt="봄빛 심비디움" loading="lazy">
+        </div>
+        <div class="bundle-name">봄빛 심비디움</div>
+      </div>
+    <div class="combo-sign equal">=</div>
+      <div class="bundle-card grade-ssr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩16800</span>
+          <span class="bundle-badge bundle-badge-right">SSR</span>
+          <img src="images/flowers/SSR/F0044.webp" alt="비령추란" loading="lazy">
+        </div>
+        <div class="bundle-name">비령추란</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0123.webp" alt="푸른 수레국화" loading="lazy">
+        </div>
+        <div class="bundle-name">푸른 수레국화</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0104.webp" alt="연분홍 버베나" loading="lazy">
+        </div>
+        <div class="bundle-name">연분홍 버베나</div>
+      </div>
+    </div></div><div class="bundle-row"><div class="bundle-strip">
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">모두 구매 시 획득</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0076.webp" alt="금종 개나리" loading="lazy">
+        </div>
+        <div class="bundle-name">금종 개나리</div>
+      </div>
+    <div class="combo-sign equal">=</div>
+      <div class="bundle-card grade-ssr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩16800</span>
+          <span class="bundle-badge bundle-badge-right">SSR</span>
+          <img src="images/flowers/SSR/F0056.webp" alt="자색 여운" loading="lazy">
+        </div>
+        <div class="bundle-name">자색 여운</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0106.webp" alt="연지빛 개양귀비" loading="lazy">
+        </div>
+        <div class="bundle-name">연지빛 개양귀비</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0101.webp" alt="아련한 자색 아스틸베" loading="lazy">
+        </div>
+        <div class="bundle-name">아련한 자색 아스틸베</div>
+      </div>
+    </div></div><div class="bundle-row"><div class="bundle-strip">
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">모두 구매 시 획득</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0073.webp" alt="구름빛 아스틸베" loading="lazy">
+        </div>
+        <div class="bundle-name">구름빛 아스틸베</div>
+      </div>
+    <div class="combo-sign equal">=</div>
+      <div class="bundle-card grade-ssr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩16800</span>
+          <span class="bundle-badge bundle-badge-right">SSR</span>
+          <img src="images/flowers/SSR/F0042.webp" alt="분홍빛 물결꽃" loading="lazy">
+        </div>
+        <div class="bundle-name">분홍빛 물결꽃</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0100.webp" alt="새하얀 조팝나무" loading="lazy">
+        </div>
+        <div class="bundle-name">새하얀 조팝나무</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0130.webp" alt="흑자색 개양귀비" loading="lazy">
+        </div>
+        <div class="bundle-name">흑자색 개양귀비</div>
+      </div>
+    </div></div><div class="bundle-row"><div class="bundle-strip">
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">모두 구매 시 획득</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0086.webp" alt="벚꽃 온시디움" loading="lazy">
+        </div>
+        <div class="bundle-name">벚꽃 온시디움</div>
+      </div>
+    <div class="combo-sign equal">=</div>
+      <div class="bundle-card grade-ssr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩16800</span>
+          <span class="bundle-badge bundle-badge-right">SSR</span>
+          <img src="images/flowers/SSR/F0059.webp" alt="진홍빛 납매" loading="lazy">
+        </div>
+        <div class="bundle-name">진홍빛 납매</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0126.webp" alt="햇살 개양귀비" loading="lazy">
+        </div>
+        <div class="bundle-name">햇살 개양귀비</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0095.webp" alt="분홍안개 붓꽃" loading="lazy">
+        </div>
+        <div class="bundle-name">분홍안개 붓꽃</div>
+      </div>
+    </div></div><div class="bundle-row"><div class="bundle-strip">
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">모두 구매 시 획득</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0079.webp" alt="단풍 온시디움" loading="lazy">
+        </div>
+        <div class="bundle-name">단풍 온시디움</div>
+      </div>
+    <div class="combo-sign equal">=</div>
+      <div class="bundle-card grade-ssr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩16800</span>
+          <span class="bundle-badge bundle-badge-right">SSR</span>
+          <img src="images/flowers/SSR/F0048.webp" alt="수정빛 나비춤 장미" loading="lazy">
+        </div>
+        <div class="bundle-name">수정빛 나비춤 장미</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0107.webp" alt="오렌지꿀 버베나" loading="lazy">
+        </div>
+        <div class="bundle-name">오렌지꿀 버베나</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0099.webp" alt="비홍 붓꽃" loading="lazy">
+        </div>
+        <div class="bundle-name">비홍 붓꽃</div>
+      </div>
+    </div></div><div class="bundle-row"><div class="bundle-strip">
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">모두 구매 시 획득</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0094.webp" alt="분홍구름 코스모스" loading="lazy">
+        </div>
+        <div class="bundle-name">분홍구름 코스모스</div>
+      </div>
+    <div class="combo-sign equal">=</div>
+      <div class="bundle-card grade-ssr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩16800</span>
+          <span class="bundle-badge bundle-badge-right">SSR</span>
+          <img src="images/flowers/SSR/F0071.webp" alt="황금 장미" loading="lazy">
+        </div>
+        <div class="bundle-name">황금 장미</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-ssr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩16800</span>
+          <span class="bundle-badge bundle-badge-right">SSR</span>
+          <img src="images/flowers/SSR/F0046.webp" alt="선녀의 춤" loading="lazy">
+        </div>
+        <div class="bundle-name">선녀의 춤</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0131.webp" alt="흑자색 목련" loading="lazy">
+        </div>
+        <div class="bundle-name">흑자색 목련</div>
+      </div>
+    </div></div><div class="bundle-row"><div class="bundle-strip">
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">모두 구매 시 획득</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0092.webp" alt="분홍 복숭아 달리아" loading="lazy">
+        </div>
+        <div class="bundle-name">분홍 복숭아 달리아</div>
+      </div>
+    <div class="combo-sign equal">=</div>
+      <div class="bundle-card grade-ssr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩16800</span>
+          <span class="bundle-badge bundle-badge-right">SSR</span>
+          <img src="images/flowers/SSR/F0031.webp" alt="먹빛 모란" loading="lazy">
+        </div>
+        <div class="bundle-name">먹빛 모란</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0075.webp" alt="금빛 목련" loading="lazy">
+        </div>
+        <div class="bundle-name">금빛 목련</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0078.webp" alt="꿈의 보라 으아리" loading="lazy">
+        </div>
+        <div class="bundle-name">꿈의 보라 으아리</div>
+      </div>
+    </div></div><div class="bundle-row"><div class="bundle-strip">
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">모두 구매 시 획득</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0127.webp" alt="향설 목향장미" loading="lazy">
+        </div>
+        <div class="bundle-name">향설 목향장미</div>
+      </div>
+    <div class="combo-sign equal">=</div>
+      <div class="bundle-card grade-ssr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩16800</span>
+          <span class="bundle-badge bundle-badge-right">SSR</span>
+          <img src="images/flowers/SSR/F0041.webp" alt="봄 살구빛 옷자락" loading="lazy">
+        </div>
+        <div class="bundle-name">봄 살구빛 옷자락</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-ssr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩16800</span>
+          <span class="bundle-badge bundle-badge-right">SSR</span>
+          <img src="images/flowers/SSR/F0064.webp" alt="푸른안개 모란" loading="lazy">
+        </div>
+        <div class="bundle-name">푸른안개 모란</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0121.webp" alt="청영 루위시아" loading="lazy">
+        </div>
+        <div class="bundle-name">청영 루위시아</div>
+      </div>
+    </div></div><div class="bundle-row"><div class="bundle-strip">
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">모두 구매 시 획득</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0109.webp" alt="용금 아네모네" loading="lazy">
+        </div>
+        <div class="bundle-name">용금 아네모네</div>
+      </div>
+    <div class="combo-sign equal">=</div>
+      <div class="bundle-card grade-ssr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩16800</span>
+          <span class="bundle-badge bundle-badge-right">SSR</span>
+          <img src="images/flowers/SSR/F0029.webp" alt="달빛 모란" loading="lazy">
+        </div>
+        <div class="bundle-name">달빛 모란</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0112.webp" alt="자색 맥문동" loading="lazy">
+        </div>
+        <div class="bundle-name">자색 맥문동</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0096.webp" alt="붉은 깃털 아마릴리스" loading="lazy">
+        </div>
+        <div class="bundle-name">붉은 깃털 아마릴리스</div>
+      </div>
+    </div></div><div class="bundle-row"><div class="bundle-strip">
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">모두 구매 시 획득</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0120.webp" alt="창벽 협죽도" loading="lazy">
+        </div>
+        <div class="bundle-name">창벽 협죽도</div>
+      </div>
+    <div class="combo-sign equal">=</div>
+      <div class="bundle-card grade-ssr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩16800</span>
+          <span class="bundle-badge bundle-badge-right">SSR</span>
+          <img src="images/flowers/SSR/F0070.webp" alt="홍운 납매" loading="lazy">
+        </div>
+        <div class="bundle-name">홍운 납매</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0110.webp" alt="윤분홍 칼랑코에" loading="lazy">
+        </div>
+        <div class="bundle-name">윤분홍 칼랑코에</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0125.webp" alt="핑크화이트 심비디움" loading="lazy">
+        </div>
+        <div class="bundle-name">핑크화이트 심비디움</div>
+      </div>
+    </div></div><div class="bundle-row"><div class="bundle-strip">
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">모두 구매 시 획득</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0117.webp" alt="진홍 진달래" loading="lazy">
+        </div>
+        <div class="bundle-name">진홍 진달래</div>
+      </div>
+    <div class="combo-sign equal">=</div>
+      <div class="bundle-card grade-ssr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩16800</span>
+          <span class="bundle-badge bundle-badge-right">SSR</span>
+          <img src="images/flowers/SSR/F0032.webp" alt="몽롱한 청아" loading="lazy">
+        </div>
+        <div class="bundle-name">몽롱한 청아</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0113.webp" alt="자색 수레국화" loading="lazy">
+        </div>
+        <div class="bundle-name">자색 수레국화</div>
+      </div>
+    <div class="combo-sign plus">+</div>
+      <div class="bundle-card grade-sr">
+        <div class="bundle-media">
+          <span class="bundle-badge bundle-badge-left">₩7500</span>
+          <span class="bundle-badge bundle-badge-right">SR</span>
+          <img src="images/flowers/SR/F0128.webp" alt="황금목 아마릴리스" loading="lazy">
+        </div>
+        <div class="bundle-name">황금목 아마릴리스</div>
+      </div>
+    </div></div>
   </div>
 </div>
-<div id="site-version">demo_v4.8</div>
+</div>
+  </div>
+</div>
+<div id="site-version">demo_v4.9</div>
 <script>
 const packageFlowersModal=document.getElementById('packageFlowersModal');
 const openPackageFlowers=document.getElementById('openPackageFlowers');
