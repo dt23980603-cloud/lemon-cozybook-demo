@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.12-zodiac-images';
+const CACHE_NAME = 'lemon-demo-v4.13-zodiac-unreleased';
 const APP_SHELL = [
   '/',
   '/index.html',
