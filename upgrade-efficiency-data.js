@@ -54,6 +54,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "6% ~ 9%",
             "8% ~ 9%",
             ""
+          ],
+          "uncertain": [
+            true,
+            true,
+            false
           ]
         },
         {
@@ -62,6 +67,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "10% ~ 14%",
             "10% ~ 15%",
             "10% / 13 / 14 / 15"
+          ],
+          "uncertain": [
+            true,
+            false,
+            true
           ]
         },
         {
@@ -70,6 +80,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "15% ~ 20%",
             "16% ~ 25%",
             "17 / 18 ~ 25%"
+          ],
+          "uncertain": [
+            true,
+            true,
+            false
           ]
         },
         {
@@ -78,6 +93,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "",
             "26% ~ 30%",
             "26% ~ 32 / 39"
+          ],
+          "uncertain": [
+            false,
+            true,
+            false
           ]
         },
         {
@@ -86,6 +106,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "",
             "",
             "42% ~ 50%"
+          ],
+          "uncertain": [
+            false,
+            false,
+            true
           ]
         }
       ]
@@ -101,6 +126,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "1% ~ 3%",
             "2% ~ 4%",
             ""
+          ],
+          "uncertain": [
+            true,
+            true,
+            false
           ]
         },
         {
@@ -109,6 +139,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "4% ~ 8%",
             "5% ~ 8%",
             "4% / 5 / 7 / 8"
+          ],
+          "uncertain": [
+            false,
+            false,
+            true
           ]
         },
         {
@@ -117,6 +152,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "9% ~ 10%",
             "9% ~ 13%",
             "10 / 11 / 12"
+          ],
+          "uncertain": [
+            true,
+            true,
+            false
           ]
         },
         {
@@ -125,6 +165,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "",
             "14% ~ 15%",
             "14% ~ 20%"
+          ],
+          "uncertain": [
+            false,
+            true,
+            true
           ]
         },
         {
@@ -133,6 +178,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "",
             "",
             "21% ~ 25%"
+          ],
+          "uncertain": [
+            false,
+            false,
+            true
           ]
         }
       ]
@@ -148,6 +198,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "2% ~ 5%",
             "4% ~ 5%",
             ""
+          ],
+          "uncertain": [
+            true,
+            true,
+            false
           ]
         },
         {
@@ -156,6 +211,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "6% ~ 8%",
             "6% ~ 13%",
             "8% ~"
+          ],
+          "uncertain": [
+            false,
+            false,
+            true
           ]
         },
         {
@@ -164,6 +224,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "9% ~ 10%",
             "14% ~ 15%",
             "10 / 12 / 16"
+          ],
+          "uncertain": [
+            true,
+            true,
+            false
           ]
         },
         {
@@ -172,6 +237,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "",
             "16% ~ 20%",
             "20%"
+          ],
+          "uncertain": [
+            false,
+            true,
+            false
           ]
         },
         {
@@ -180,6 +250,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "",
             "",
             "26% ~ 30%"
+          ],
+          "uncertain": [
+            false,
+            false,
+            true
           ]
         }
       ]
@@ -195,6 +270,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "1% ~ 3%",
             "2%~",
             ""
+          ],
+          "uncertain": [
+            true,
+            true,
+            false
           ]
         },
         {
@@ -203,6 +283,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "4% ~ 7%",
             "6%",
             "4% ~ 8%"
+          ],
+          "uncertain": [
+            true,
+            false,
+            true
           ]
         },
         {
@@ -211,6 +296,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "8% ~ 10%",
             "10%~",
             "9% ~ 16%"
+          ],
+          "uncertain": [
+            true,
+            false,
+            false
           ]
         },
         {
@@ -219,6 +309,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "",
             "14 / 15%",
             "17% ~ 20%"
+          ],
+          "uncertain": [
+            false,
+            true,
+            false
           ]
         },
         {
@@ -227,6 +322,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "",
             "",
             "21% ~ 25%"
+          ],
+          "uncertain": [
+            false,
+            false,
+            true
           ]
         }
       ]
@@ -242,6 +342,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "1개",
             "1개",
             "1개"
+          ],
+          "uncertain": [
+            false,
+            false,
+            false
           ]
         }
       ]
@@ -257,6 +362,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "",
             "0개~1개",
             "0개~1개"
+          ],
+          "uncertain": [
+            false,
+            false,
+            false
           ]
         },
         {
@@ -265,6 +375,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "",
             "",
             "1개~2개"
+          ],
+          "uncertain": [
+            false,
+            false,
+            false
           ]
         }
       ]
@@ -280,6 +395,11 @@ window.UPGRADE_EFFICIENCY_DEFAULTS = {
             "",
             "",
             "1~4점"
+          ],
+          "uncertain": [
+            false,
+            false,
+            false
           ]
         }
       ]

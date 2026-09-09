@@ -28,10 +28,18 @@ h1{margin:0;font-size:1.3rem}.subtitle{margin:3px 0 0;color:#888;font-size:.7rem
 .edit-summary-icon{width:26px;height:26px;object-fit:contain;flex:0 0 26px}
 .edit-section summary::-webkit-details-marker{display:none}.edit-section summary::after{content:'＋';margin-left:auto;color:#999}.edit-section[open] summary::after{content:'－'}
 .section-body{padding:10px;border-top:1px solid #eee}
-.row{display:grid;grid-template-columns:125px repeat(3,minmax(0,1fr));gap:6px;align-items:center;margin-bottom:7px}
-.grade{display:flex;align-items:center;gap:6px;min-width:0;font-size:.7rem;font-weight:700}
+.row{display:grid;grid-template-columns:125px repeat(3,minmax(0,1fr));gap:6px;align-items:start;margin-bottom:8px}
+.grade{display:flex;align-items:center;gap:6px;min-width:0;font-size:.7rem;font-weight:700;padding-top:5px}
 .grade img{width:27px;height:27px;object-fit:contain}
-.row input{width:100%;min-height:34px;padding:5px 6px;border:1px solid #bbb;border-radius:6px;font-size:.68rem;text-align:center}
+.value-editor{min-width:0}
+.value-editor input[type="text"]{width:100%;min-height:34px;padding:5px 6px;border:1px solid #bbb;border-radius:6px;font-size:.68rem;text-align:center}
+.uncertain-check{
+  display:flex;align-items:center;justify-content:center;gap:4px;margin-top:3px;
+  color:#a44;font-size:.58rem;line-height:1.1;cursor:pointer;user-select:none
+}
+.uncertain-check input{width:13px;height:13px;margin:0;accent-color:#d74343}
+.value-editor.is-uncertain input[type="text"]{color:#d52f2f;border-color:#d99;font-weight:700;background:#fffafa}
+
 .note-label{display:block;margin:7px 0 4px;font-size:.66rem;font-weight:700;color:#777}
 .note-input{width:100%;min-height:58px;padding:7px 8px;border:1px solid #bbb;border-radius:7px;resize:vertical;font-size:.67rem;line-height:1.45}
 .actions{
@@ -49,9 +57,11 @@ h1{margin:0;font-size:1.3rem}.subtitle{margin:3px 0 0;color:#888;font-size:.7rem
   h1{font-size:1rem}.subtitle{font-size:.57rem}.notice{font-size:.59rem;padding:8px 9px}
   .level-edit{gap:4px}.level-box{padding:6px}.level-box b{font-size:.57rem}.level-box input{min-height:31px;font-size:.6rem;padding:4px}
   .edit-section summary{font-size:.64rem;padding:7px 8px;gap:5px}.edit-summary-icon{width:21px;height:21px;flex-basis:21px}.section-body{padding:7px}
-  .row{grid-template-columns:82px repeat(3,minmax(0,1fr));gap:3px;margin-bottom:5px}
-  .grade{font-size:.56rem;gap:3px}.grade img{width:20px;height:20px}
-  .row input{min-height:31px;font-size:.54rem;padding:4px 2px}
+  .row{grid-template-columns:76px repeat(3,minmax(0,1fr));gap:3px;margin-bottom:6px}
+  .grade{font-size:.54rem;gap:3px;padding-top:4px}.grade img{width:19px;height:19px}
+  .value-editor input[type="text"]{min-height:30px;font-size:.52rem;padding:4px 1px}
+  .uncertain-check{gap:2px;margin-top:2px;font-size:.46rem}
+  .uncertain-check input{width:11px;height:11px}
   .note-label{font-size:.56rem}.note-input{font-size:.56rem;min-height:52px}
   .actions{bottom:7px;width:calc(100% - 14px);padding:6px;gap:5px}.actions button{min-height:38px;font-size:.63rem}.reset{flex-basis:92px}
   .status{font-size:.58rem}
@@ -67,7 +77,7 @@ h1{margin:0;font-size:1.3rem}.subtitle{margin:3px 0 0;color:#888;font-size:.7rem
     <div><h1>⚙️ 꽃 개량 효율표 관리</h1><p class="subtitle">확인된 수치가 바뀌면 여기서 직접 수정할 수 있어요.</p></div>
   </header>
 
-  <div class="notice">수정한 값은 데모 D1에 저장되어 같은 데모 사이트를 보는 기기에도 반영됩니다. 빈칸으로 저장하면 효율표에서는 회색 <b>—</b> 칸으로 표시돼요.</div>
+  <div class="notice">수정한 값은 데모 D1에 저장되어 같은 데모 사이트를 보는 기기에도 반영됩니다. 값 아래의 <b>미확정</b>을 체크하면 효율표에서 해당 수치만 빨간색으로 표시됩니다. 빈칸은 회색 <b>—</b> 칸으로 표시돼요.</div>
   <div id="levelEdit" class="level-edit"></div>
   <div id="editorList" class="editor-list"></div>
   <div id="status" class="status"></div>
@@ -77,7 +87,7 @@ h1{margin:0;font-size:1.3rem}.subtitle{margin:3px 0 0;color:#888;font-size:.7rem
   <button type="button" class="reset" id="resetBtn">기본값으로 초기화</button>
   <button type="button" class="save" id="saveBtn">💾 변경사항 저장</button>
 </div>
-<div id="site-version">demo_v4.19</div>
+<div id="site-version">demo_v4.20</div>
 
 <script src="upgrade-efficiency-data.js"></script>
 <script>
@@ -92,6 +102,28 @@ const EFFECT_ICONS={
   guildPoints:'images/guides/upgrade/effects/guildPoints.webp'
 };
 let data=structuredClone(window.UPGRADE_EFFICIENCY_DEFAULTS);
+
+function normalizeData(source){
+  const base=structuredClone(window.UPGRADE_EFFICIENCY_DEFAULTS);
+  if(!source||!Array.isArray(source.sections))return base;
+  const merged=structuredClone(source);
+  merged.levels=Array.isArray(merged.levels)&&merged.levels.length===3?merged.levels:base.levels;
+  merged.grades=merged.grades&&typeof merged.grades==='object'?merged.grades:base.grades;
+  merged.sections=(merged.sections||[]).map((section,si)=>{
+    const baseSection=base.sections.find(s=>s.key===section.key)||base.sections[si];
+    section.rows=(section.rows||[]).map((row,ri)=>{
+      const baseRow=baseSection?.rows?.find(r=>r.grade===row.grade)||baseSection?.rows?.[ri];
+      if(!Array.isArray(row.uncertain)||row.uncertain.length!==3){
+        row.uncertain=Array.isArray(baseRow?.uncertain)?[...baseRow.uncertain]:[false,false,false];
+      }else{
+        row.uncertain=row.uncertain.map(Boolean);
+      }
+      return row;
+    });
+    return section;
+  });
+  return merged;
+}
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 const status=document.getElementById('status');
 
@@ -105,7 +137,14 @@ function renderEditor(){
       const grade=data.grades?.[row.grade]||{label:row.grade,icon:''};
       return `<div class="row">
         <div class="grade">${grade.icon?`<img src="${esc(grade.icon)}" alt="">`:''}<span>${esc(grade.label)}</span></div>
-        ${[0,1,2].map(li=>`<input data-value="${si}:${ri}:${li}" value="${esc(row.values?.[li]??'')}" placeholder="—" aria-label="${esc(section.title)} ${esc(grade.label)} ${li+1}단계"></input>`).join('')}
+        ${[0,1,2].map(li=>{
+          const value=esc(row.values?.[li]??'');
+          const uncertain=Boolean(row.uncertain?.[li]);
+          return `<div class="value-editor${uncertain?' is-uncertain':''}">
+            <input type="text" data-value="${si}:${ri}:${li}" value="${value}" placeholder="—" aria-label="${esc(section.title)} ${esc(grade.label)} ${li+1}단계">
+            <label class="uncertain-check"><input type="checkbox" data-uncertain="${si}:${ri}:${li}" ${uncertain?'checked':''}><span>미확정</span></label>
+          </div>`;
+        }).join('')}
       </div>`;
     }).join('');
     const effectIcon=EFFECT_ICONS[section.key]||'';
@@ -130,6 +169,11 @@ function collect(){
     const [si,ri,li]=input.dataset.value.split(':').map(Number);
     data.sections[si].rows[ri].values[li]=input.value.trim();
   });
+  document.querySelectorAll('[data-uncertain]').forEach(input=>{
+    const [si,ri,li]=input.dataset.uncertain.split(':').map(Number);
+    if(!Array.isArray(data.sections[si].rows[ri].uncertain))data.sections[si].rows[ri].uncertain=[false,false,false];
+    data.sections[si].rows[ri].uncertain[li]=input.checked;
+  });
   document.querySelectorAll('[data-note]').forEach(input=>{
     data.sections[Number(input.dataset.note)].note=input.value.trim();
   });
@@ -142,7 +186,7 @@ async function load(){
     if(!r.ok)throw new Error(`GET ${r.status}`);
     const p=await r.json();
     if(p.exists&&p.data&&Array.isArray(p.data.sections)){
-      data=p.data;
+      data=normalizeData(p.data);
       renderEditor();
       status.textContent='현재 저장된 수치를 불러왔어요.';
     }
@@ -171,6 +215,10 @@ async function save(){
   }finally{btn.disabled=false}
 }
 
+document.getElementById('editorList').addEventListener('change',e=>{
+  if(!e.target.matches('[data-uncertain]'))return;
+  e.target.closest('.value-editor')?.classList.toggle('is-uncertain',e.target.checked);
+});
 document.getElementById('saveBtn').addEventListener('click',save);
 document.getElementById('resetBtn').addEventListener('click',async()=>{
   if(!confirm('현재 입력값을 처음 기본 수치로 되돌릴까요?'))return;

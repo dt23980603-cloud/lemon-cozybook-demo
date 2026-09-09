@@ -31,9 +31,12 @@ body{margin:0;background:#f7f7f7;color:var(--ink)}
 .settings:hover{background:#fff;opacity:.72;border-color:rgba(120,120,120,.45);transform:translateY(-1px)}
 .settings:focus-visible{opacity:.8;outline:2px solid rgba(130,130,130,.28);outline-offset:2px}
 .summary{
-  margin-top:12px;padding:12px 14px;border:1px solid #e3ddc4;border-radius:14px;background:#fffdf3;
-  color:#625c47;font-size:.73rem;line-height:1.55
+  margin-top:12px;padding:11px 14px;border:1px solid rgba(214,74,74,.34);
+  border-radius:14px;background:rgba(255,92,92,.11);
+  color:#a84343;font-size:.73rem;line-height:1.55;text-align:center
 }
+.summary strong{color:#963838}
+
 .level-legend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
 .level-chip{
   display:flex;align-items:center;justify-content:center;gap:7px;min-height:43px;padding:7px 8px;
@@ -64,6 +67,8 @@ body{margin:0;background:#f7f7f7;color:var(--ink)}
 .grade-epic .grade-cell{background:var(--epic)}.grade-perfect .grade-cell{background:var(--perfect)}
 .value-cell{font-family:Arial,'Gowun Batang',sans-serif;font-weight:700}
 .value-cell.unavailable{background:#efefef;color:#aaa;font-weight:400}
+.value-cell.uncertain{color:#d52f2f;font-weight:800}
+
 @media(min-width:621px){
   .value-cell{font-size:.80rem}
 }
@@ -80,7 +85,7 @@ body{margin:0;background:#f7f7f7;color:var(--ink)}
   .header{grid-template-columns:38px minmax(0,1fr) 38px;padding:9px 10px;border-radius:13px;gap:7px}
   .back{width:38px;height:38px}.settings{width:36px;height:36px;border-radius:10px;font-size:1rem}
   .heading h1{font-size:1rem}.heading p{font-size:.58rem}
-  .summary{margin-top:8px;padding:9px 10px;font-size:.61rem;border-radius:11px}
+  .summary{margin-top:8px;padding:8px 9px;font-size:.61rem;border-radius:11px}
   .level-legend{gap:5px;margin:8px 0}
   .level-chip{min-height:39px;padding:5px 3px;gap:3px;flex-direction:column;font-size:.57rem;line-height:1.1}
   .level-chip b{font-size:.62rem}.cost{font-size:.55rem}
@@ -113,15 +118,16 @@ body{margin:0;background:#f7f7f7;color:var(--ink)}
     <a href="page10.html" class="settings" title="개량 효율표 수치 수정" aria-label="개량 효율표 수치 수정">⚙️</a>
   </header>
 
-  <div class="summary">
-    표의 수치는 현재까지 정리된 자료를 기준으로 표시합니다. 회색 칸은 해당 단계에서 확인된 수치가 없는 항목이에요.
+  <div class="summary" role="note">
+    <strong>🚧 꽃 개량 효율표를 계속 업데이트하고 있어요.</strong><br>
+    현재 세부 내용을 순차적으로 추가 · 수정 중이며, 빨간색으로 표시된 수치는 아직 최종 확인되지 않은 정보입니다.
   </div>
 
   <div id="levelLegend" class="level-legend"></div>
   <section id="sections" class="sections"><div class="loading">효율표를 불러오는 중...</div></section>
   <p class="footer-note">※ 수치가 추가로 확인되면 우측 상단 ⚙️에서 직접 수정할 수 있습니다.</p>
 </main>
-<div id="site-version">demo_v4.19</div>
+<div id="site-version">demo_v4.20</div>
 
 <script src="upgrade-efficiency-data.js"></script>
 <script>
@@ -138,6 +144,28 @@ const EFFECT_ICONS={
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 let data=structuredClone(window.UPGRADE_EFFICIENCY_DEFAULTS);
 
+function normalizeData(source){
+  const base=structuredClone(window.UPGRADE_EFFICIENCY_DEFAULTS);
+  if(!source||!Array.isArray(source.sections))return base;
+  const merged=structuredClone(source);
+  merged.levels=Array.isArray(merged.levels)&&merged.levels.length===3?merged.levels:base.levels;
+  merged.grades=merged.grades&&typeof merged.grades==='object'?merged.grades:base.grades;
+  merged.sections=(merged.sections||[]).map((section,si)=>{
+    const baseSection=base.sections.find(s=>s.key===section.key)||base.sections[si];
+    section.rows=(section.rows||[]).map((row,ri)=>{
+      const baseRow=baseSection?.rows?.find(r=>r.grade===row.grade)||baseSection?.rows?.[ri];
+      if(!Array.isArray(row.uncertain)||row.uncertain.length!==3){
+        row.uncertain=Array.isArray(baseRow?.uncertain)?[...baseRow.uncertain]:[false,false,false];
+      }else{
+        row.uncertain=row.uncertain.map(Boolean);
+      }
+      return row;
+    });
+    return section;
+  });
+  return merged;
+}
+
 function render(){
   const grades=data.grades||{};
   const levels=data.levels||[];
@@ -150,7 +178,8 @@ function render(){
       const grade=grades[row.grade]||{label:row.grade,icon:''};
       const values=[0,1,2].map(i=>{
         const value=String(row.values?.[i]??'').trim();
-        return `<td class="value-cell${value?'':' unavailable'}">${value?esc(value):'—'}</td>`;
+        const uncertain=Boolean(row.uncertain?.[i])&&Boolean(value);
+        return `<td class="value-cell${value?'':' unavailable'}${uncertain?' uncertain':''}">${value?esc(value):'—'}</td>`;
       }).join('');
       return `<tr class="grade-${esc(row.grade)}">
         <td class="grade-cell">${grade.icon?`<img class="grade-icon" src="${esc(grade.icon)}" alt="">`:''}<span>${esc(grade.label)}</span></td>
@@ -176,7 +205,7 @@ async function load(){
     if(!r.ok)throw new Error(`GET ${r.status}`);
     const p=await r.json();
     if(p.exists&&p.data&&Array.isArray(p.data.sections)){
-      data=p.data;
+      data=normalizeData(p.data);
       render();
     }
   }catch(e){

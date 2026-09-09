@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.19-subtle-settings-pc-values';
+const CACHE_NAME = 'lemon-demo-v4.20-upgrade-uncertain-flags';
 const APP_SHELL = [
   '/',
   '/index.html',

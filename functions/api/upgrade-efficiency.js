@@ -24,6 +24,7 @@ function validateData(data){
     for(const row of section.rows){
       if(!row||typeof row.grade!=='string'||!Array.isArray(row.values)||row.values.length!==3)return false;
       if(row.grade.length>30||row.values.some(v=>String(v??'').length>100))return false;
+      if(row.uncertain!==undefined&&(!Array.isArray(row.uncertain)||row.uncertain.length!==3||row.uncertain.some(v=>typeof v!=='boolean')))return false;
     }
   }
   return true;
