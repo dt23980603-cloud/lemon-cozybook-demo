@@ -1,53 +1,179 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head><meta charset="UTF-8"><title>꽃 개량 효율표</title>
-    <link rel="icon" type="image/png" href="images/branding/lemon-favicon.png"><style>
-  .nav-btn-home { display:inline-flex; width:50px; height:50px; align-items:center; justify-content:center; text-decoration:none; }
-  .back-icon { width:100%; height:100%; object-fit:contain; display:block; }
-
-        /* 이미지 전용 뒤로가기 버튼 */
-        .nav-btn-home {
-            border: none !important;
-            outline: none !important;
-            background: transparent !important;
-            box-shadow: none !important;
-            padding: 0 !important;
-            overflow: visible !important;
-        }
-        .nav-btn-home:hover {
-            border: none !important;
-            background: transparent !important;
-            box-shadow: none !important;
-            filter: brightness(.78);
-        }
-        .nav-btn-home:active { filter: brightness(.6); }
-        .nav-btn-home .back-icon {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-            border: 0;
-        }
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>꽃 개량 효율표 | 레몬</title>
+<link rel="icon" type="image/png" href="images/branding/lemon-favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,body,button,input,select,textarea{font-family:'Gowun Batang',serif;box-sizing:border-box}
+:root{
+  --ink:#343434;--muted:#797979;--line:#dfdfdf;--lemon:#fff4b8;
+  --normal:#dff3d4;--good:#d8edf9;--superior:#eddcf7;--rare:#fff0bd;--epic:#ffd8dc;--perfect:#f4dced;
+}
+body{margin:0;background:#f7f7f7;color:var(--ink)}
+.page{width:min(980px,calc(100% - 28px));margin:16px auto 56px}
+.header{
+  display:grid;grid-template-columns:46px minmax(0,1fr) 46px;gap:10px;align-items:center;
+  padding:12px 14px;border:1px solid #dedbd0;border-radius:16px;background:#fff;
+  box-shadow:0 4px 14px rgba(0,0,0,.035)
+}
+.back{width:46px;height:46px;display:flex}.back img{width:100%;height:100%;object-fit:contain}
+.heading{min-width:0}.heading h1{margin:0;font-size:1.32rem}.heading p{margin:3px 0 0;color:#888;font-size:.72rem;line-height:1.45}
+.settings{
+  width:42px;height:42px;border:1px solid #d6d0b6;border-radius:12px;background:#fff9db;
+  display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:1.18rem;
+  cursor:pointer;transition:.15s
+}
+.settings:hover{background:#fff1ad;transform:translateY(-1px)}
+.summary{
+  margin-top:12px;padding:12px 14px;border:1px solid #e3ddc4;border-radius:14px;background:#fffdf3;
+  color:#625c47;font-size:.73rem;line-height:1.55
+}
+.level-legend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
+.level-chip{
+  display:flex;align-items:center;justify-content:center;gap:7px;min-height:43px;padding:7px 8px;
+  border:1px solid #dedede;border-radius:11px;background:#fff;font-size:.72rem;font-weight:700;text-align:center
+}
+.level-chip b{font-size:.76rem}.cost{color:#4373a4;white-space:nowrap}
+.sections{display:flex;flex-direction:column;gap:12px}
+.eff-card{overflow:hidden;border:1px solid #d7d7d7;border-radius:15px;background:#fff;box-shadow:0 3px 11px rgba(0,0,0,.025)}
+.eff-title{padding:11px 13px;border-bottom:1px solid #e8e8e8;background:#fbfbfb;font-size:.9rem;font-weight:700}
+.eff-table{width:100%;border-collapse:collapse;table-layout:fixed}
+.eff-table th,.eff-table td{
+  border-right:1px solid #e3e3e3;border-bottom:1px solid #e3e3e3;
+  padding:8px 7px;text-align:center;vertical-align:middle;font-size:.72rem;line-height:1.35
+}
+.eff-table th:last-child,.eff-table td:last-child{border-right:0}
+.eff-table tbody tr:last-child td{border-bottom:0}
+.eff-table th{background:#fff9db;font-size:.68rem;color:#57513d}
+.eff-table th:first-child{width:28%}
+.grade-cell{display:flex;align-items:center;justify-content:center;gap:6px;font-weight:700}
+.grade-icon{width:28px;height:28px;object-fit:contain;flex:0 0 auto}
+.grade-normal .grade-cell{background:var(--normal)}.grade-good .grade-cell{background:var(--good)}
+.grade-superior .grade-cell{background:var(--superior)}.grade-rare .grade-cell{background:var(--rare)}
+.grade-epic .grade-cell{background:var(--epic)}.grade-perfect .grade-cell{background:var(--perfect)}
+.value-cell{font-family:Arial,'Gowun Batang',sans-serif;font-weight:700}
+.value-cell.unavailable{background:#efefef;color:#aaa;font-weight:400}
+.note{
+  padding:9px 12px;border-top:1px dashed #e2cfcf;background:#fff8f8;color:#735454;
+  font-size:.65rem;line-height:1.55
+}
+.note::before{content:'※ ';font-weight:700;color:#b45151}
+.loading{padding:40px 10px;text-align:center;color:#999}
+.footer-note{margin-top:13px;text-align:center;color:#969696;font-size:.62rem;line-height:1.5}
+#site-version{position:fixed;left:11px;bottom:9px;color:#aaa;font-size:10px;pointer-events:none}
+@media(max-width:620px){
+  .page{width:calc(100% - 16px);margin:8px auto 42px}
+  .header{grid-template-columns:38px minmax(0,1fr) 38px;padding:9px 10px;border-radius:13px;gap:7px}
+  .back{width:38px;height:38px}.settings{width:36px;height:36px;border-radius:10px;font-size:1rem}
+  .heading h1{font-size:1rem}.heading p{font-size:.58rem}
+  .summary{margin-top:8px;padding:9px 10px;font-size:.61rem;border-radius:11px}
+  .level-legend{gap:5px;margin:8px 0}
+  .level-chip{min-height:39px;padding:5px 3px;gap:3px;flex-direction:column;font-size:.57rem;line-height:1.1}
+  .level-chip b{font-size:.62rem}.cost{font-size:.55rem}
+  .sections{gap:8px}.eff-card{border-radius:11px}
+  .eff-title{padding:8px 9px;font-size:.72rem}
+  .eff-table th,.eff-table td{padding:5px 3px;font-size:.57rem;line-height:1.2}
+  .eff-table th{font-size:.52rem}.eff-table th:first-child{width:31%}
+  .grade-cell{gap:3px;white-space:nowrap}.grade-icon{width:20px;height:20px}
+  .value-cell{word-break:keep-all;overflow-wrap:anywhere}
+  .note{padding:7px 8px;font-size:.54rem}
+  .footer-note{font-size:.53rem}
+}
+@media(max-width:370px){
+  .eff-table th,.eff-table td{font-size:.52rem;padding:5px 2px}
+  .grade-icon{width:18px;height:18px}.grade-cell{font-size:.51rem}
+  .level-chip b{font-size:.57rem}
+}
 </style>
-    <link rel="manifest" href="/manifest.webmanifest">
-    <meta name="theme-color" content="#ffe680">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="레몬">
-    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#ffe680">
 </head>
-<body style="padding: 20px;">
-  <h1>💖준비중입니다💖</h1>
-  <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기"><img src="images/ui/back-button.png" alt="뒤로가기" class="back-icon"></a>
+<body>
+<main class="page">
+  <header class="header">
+    <a href="index.html" class="back" title="메인으로 돌아가기"><img src="images/ui/back-button.png" alt="뒤로가기"></a>
+    <div class="heading">
+      <h1>💡 꽃 개량 효율표</h1>
+      <p>개량 레벨별 등장 등급과 확인된 수치를 한눈에 정리했어요.</p>
+    </div>
+    <a href="page10.html" class="settings" title="개량 효율표 수치 수정" aria-label="개량 효율표 수치 수정">⚙️</a>
+  </header>
 
+  <div class="summary">
+    표의 수치는 현재까지 정리된 자료를 기준으로 표시합니다. 회색 칸은 해당 단계에서 확인된 수치가 없는 항목이에요.
+  </div>
+
+  <div id="levelLegend" class="level-legend"></div>
+  <section id="sections" class="sections"><div class="loading">효율표를 불러오는 중...</div></section>
+  <p class="footer-note">※ 수치가 추가로 확인되면 우측 상단 ⚙️에서 직접 수정할 수 있습니다.</p>
+</main>
+<div id="site-version">demo_v4.17</div>
+
+<script src="upgrade-efficiency-data.js"></script>
 <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').catch((err) => console.warn('PWA service worker registration failed:', err));
-    });
-  }
-</script>
+const API='/api/upgrade-efficiency';
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+let data=structuredClone(window.UPGRADE_EFFICIENCY_DEFAULTS);
 
+function render(){
+  const grades=data.grades||{};
+  const levels=data.levels||[];
+  document.getElementById('levelLegend').innerHTML=levels.map(l=>
+    `<div class="level-chip"><b>${esc(l.label)}</b><span class="cost">💎 ${esc(l.cost)}</span></div>`
+  ).join('');
+
+  document.getElementById('sections').innerHTML=(data.sections||[]).map(section=>{
+    const rows=(section.rows||[]).map(row=>{
+      const grade=grades[row.grade]||{label:row.grade,icon:''};
+      const values=[0,1,2].map(i=>{
+        const value=String(row.values?.[i]??'').trim();
+        return `<td class="value-cell${value?'':' unavailable'}">${value?esc(value):'—'}</td>`;
+      }).join('');
+      return `<tr class="grade-${esc(row.grade)}">
+        <td class="grade-cell">${grade.icon?`<img class="grade-icon" src="${esc(grade.icon)}" alt="">`:''}<span>${esc(grade.label)}</span></td>
+        ${values}
+      </tr>`;
+    }).join('');
+    return `<article class="eff-card">
+      <div class="eff-title">${esc(section.title)}</div>
+      <table class="eff-table">
+        <thead><tr><th>등급</th>${levels.map(l=>`<th>${esc(l.label.replace(' 개량',''))}</th>`).join('')}</tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      ${section.note?`<div class="note">${esc(section.note)}</div>`:''}
+    </article>`;
+  }).join('');
+}
+
+async function load(){
+  render();
+  try{
+    const r=await fetch(API,{cache:'no-store'});
+    if(!r.ok)throw new Error(`GET ${r.status}`);
+    const p=await r.json();
+    if(p.exists&&p.data&&Array.isArray(p.data.sections)){
+      data=p.data;
+      render();
+    }
+  }catch(e){
+    console.warn('개량 효율표 서버 데이터를 불러오지 못해 기본 자료를 표시합니다.',e);
+  }
+}
+load();
+
+if('serviceWorker'in navigator){
+  window.addEventListener('load',async()=>{
+    try{
+      const registration=await navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'});
+      await registration.update();
+    }catch(e){console.warn(e)}
+  });
+}
+</script>
 </body>
 </html>

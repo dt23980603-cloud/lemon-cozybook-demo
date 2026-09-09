@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.16-zodiac-birthday-more';
+const CACHE_NAME = 'lemon-demo-v4.17-upgrade-efficiency';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -11,12 +11,20 @@ const APP_SHELL = [
   '/page7.html',
   '/page8.html',
   '/page9.html',
+  '/page10.html',
+  '/upgrade-efficiency-data.js',
   '/flower-data-all.js',
   '/images/branding/lemon-favicon.png',
   '/images/banners/lemon-banner-pc.png',
   '/images/banners/lemon-banner-mobile.png',
   '/images/ui/back-button.png',
   '/images/ui/guide-default.png',
+  '/images/guides/upgrade/grade-normal.webp',
+  '/images/guides/upgrade/grade-good.webp',
+  '/images/guides/upgrade/grade-superior.webp',
+  '/images/guides/upgrade/grade-rare.webp',
+  '/images/guides/upgrade/grade-epic.webp',
+  '/images/guides/upgrade/grade-perfect.webp',
   '/images/guides/starsoul/01-zodiac-flower.jpg',
   '/images/guides/starsoul/02-soul-collection.jpg',
   '/images/guides/starsoul/zodiac/aquarius.webp',

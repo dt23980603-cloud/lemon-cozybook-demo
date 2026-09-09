@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>꽃 개량 효율표 관리 | 레몬</title>
+<link rel="icon" type="image/png" href="images/branding/lemon-favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,body,input,button,textarea{font-family:'Gowun Batang',serif;box-sizing:border-box}
+body{margin:0;background:#f7f7f7;color:#333}
+.page{width:min(980px,calc(100% - 28px));margin:16px auto 90px}
+.header{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+.back{width:46px;height:46px;display:flex;flex:0 0 46px}.back img{width:100%;height:100%;object-fit:contain}
+h1{margin:0;font-size:1.3rem}.subtitle{margin:3px 0 0;color:#888;font-size:.7rem;line-height:1.4}
+.notice{padding:10px 12px;border:1px solid #e3d9a9;border-radius:12px;background:#fff9db;color:#625a39;font-size:.7rem;line-height:1.55}
+.level-edit{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:10px 0}
+.level-box{padding:9px;border:1px solid #ddd;border-radius:10px;background:#fff}
+.level-box b{display:block;font-size:.7rem;margin-bottom:5px}.level-box input{width:100%;min-height:34px;padding:5px 7px;border:1px solid #bbb;border-radius:6px;font-size:.72rem}
+.editor-list{display:flex;flex-direction:column;gap:9px}
+.edit-section{border:1px solid #d9d9d9;border-radius:12px;background:#fff;overflow:hidden}
+.edit-section summary{padding:10px 12px;background:#fbfbfb;font-size:.78rem;font-weight:700;cursor:pointer;list-style:none}
+.edit-section summary::-webkit-details-marker{display:none}.edit-section summary::after{content:'＋';float:right;color:#999}.edit-section[open] summary::after{content:'－'}
+.section-body{padding:10px;border-top:1px solid #eee}
+.row{display:grid;grid-template-columns:125px repeat(3,minmax(0,1fr));gap:6px;align-items:center;margin-bottom:7px}
+.grade{display:flex;align-items:center;gap:6px;min-width:0;font-size:.7rem;font-weight:700}
+.grade img{width:27px;height:27px;object-fit:contain}
+.row input{width:100%;min-height:34px;padding:5px 6px;border:1px solid #bbb;border-radius:6px;font-size:.68rem;text-align:center}
+.note-label{display:block;margin:7px 0 4px;font-size:.66rem;font-weight:700;color:#777}
+.note-input{width:100%;min-height:58px;padding:7px 8px;border:1px solid #bbb;border-radius:7px;resize:vertical;font-size:.67rem;line-height:1.45}
+.actions{
+  position:fixed;left:50%;bottom:12px;transform:translateX(-50%);
+  width:min(950px,calc(100% - 24px));display:flex;gap:7px;padding:8px;
+  border:1px solid #d6d6d6;border-radius:13px;background:rgba(255,255,255,.96);
+  box-shadow:0 7px 25px rgba(0,0,0,.14);z-index:10
+}
+.actions button{min-height:40px;border:1px solid #999;border-radius:8px;font-size:.72rem;font-weight:700;cursor:pointer}
+.save{flex:1;background:#fff2a8}.reset{flex:0 0 120px;background:#fff0f0;color:#9b3a3a;border-color:#d3a0a0!important}
+.status{margin-top:9px;min-height:21px;text-align:center;color:#777;font-size:.69rem}.status.ok{color:#28723b}.status.error{color:#a43838}
+#site-version{position:fixed;left:10px;bottom:5px;color:#aaa;font-size:10px;z-index:20;pointer-events:none}
+@media(max-width:620px){
+  .page{width:calc(100% - 16px);margin:8px auto 82px}.header{gap:7px}.back{width:38px;height:38px;flex-basis:38px}
+  h1{font-size:1rem}.subtitle{font-size:.57rem}.notice{font-size:.59rem;padding:8px 9px}
+  .level-edit{gap:4px}.level-box{padding:6px}.level-box b{font-size:.57rem}.level-box input{min-height:31px;font-size:.6rem;padding:4px}
+  .edit-section summary{font-size:.66rem;padding:8px 9px}.section-body{padding:7px}
+  .row{grid-template-columns:82px repeat(3,minmax(0,1fr));gap:3px;margin-bottom:5px}
+  .grade{font-size:.56rem;gap:3px}.grade img{width:20px;height:20px}
+  .row input{min-height:31px;font-size:.54rem;padding:4px 2px}
+  .note-label{font-size:.56rem}.note-input{font-size:.56rem;min-height:52px}
+  .actions{bottom:7px;width:calc(100% - 14px);padding:6px;gap:5px}.actions button{min-height:38px;font-size:.63rem}.reset{flex-basis:92px}
+  .status{font-size:.58rem}
+}
+</style>
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#ffe680">
+</head>
+<body>
+<main class="page">
+  <header class="header">
+    <a href="page3.html" class="back" title="효율표로 돌아가기"><img src="images/ui/back-button.png" alt="뒤로가기"></a>
+    <div><h1>⚙️ 꽃 개량 효율표 관리</h1><p class="subtitle">확인된 수치가 바뀌면 여기서 직접 수정할 수 있어요.</p></div>
+  </header>
+
+  <div class="notice">수정한 값은 데모 D1에 저장되어 같은 데모 사이트를 보는 기기에도 반영됩니다. 빈칸으로 저장하면 효율표에서는 회색 <b>—</b> 칸으로 표시돼요.</div>
+  <div id="levelEdit" class="level-edit"></div>
+  <div id="editorList" class="editor-list"></div>
+  <div id="status" class="status"></div>
+</main>
+
+<div class="actions">
+  <button type="button" class="reset" id="resetBtn">기본값으로 초기화</button>
+  <button type="button" class="save" id="saveBtn">💾 변경사항 저장</button>
+</div>
+<div id="site-version">demo_v4.17</div>
+
+<script src="upgrade-efficiency-data.js"></script>
+<script>
+const API='/api/upgrade-efficiency';
+let data=structuredClone(window.UPGRADE_EFFICIENCY_DEFAULTS);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+const status=document.getElementById('status');
+
+function renderEditor(){
+  document.getElementById('levelEdit').innerHTML=(data.levels||[]).map((l,i)=>
+    `<div class="level-box"><b>${esc(l.label)}</b><input data-level-cost="${i}" inputmode="numeric" value="${esc(l.cost)}" aria-label="${esc(l.label)} 다이아 비용"></div>`
+  ).join('');
+
+  document.getElementById('editorList').innerHTML=(data.sections||[]).map((section,si)=>{
+    const rows=(section.rows||[]).map((row,ri)=>{
+      const grade=data.grades?.[row.grade]||{label:row.grade,icon:''};
+      return `<div class="row">
+        <div class="grade">${grade.icon?`<img src="${esc(grade.icon)}" alt="">`:''}<span>${esc(grade.label)}</span></div>
+        ${[0,1,2].map(li=>`<input data-value="${si}:${ri}:${li}" value="${esc(row.values?.[li]??'')}" placeholder="—" aria-label="${esc(section.title)} ${esc(grade.label)} ${li+1}단계"></input>`).join('')}
+      </div>`;
+    }).join('');
+    return `<details class="edit-section" ${si===0?'open':''}>
+      <summary>${esc(section.title)}</summary>
+      <div class="section-body">
+        ${rows}
+        <label class="note-label">설명 / 참고</label>
+        <textarea class="note-input" data-note="${si}" placeholder="설명이 없으면 비워두세요.">${esc(section.note||'')}</textarea>
+      </div>
+    </details>`;
+  }).join('');
+}
+
+function collect(){
+  document.querySelectorAll('[data-level-cost]').forEach(input=>{
+    const i=Number(input.dataset.levelCost);
+    const n=Number(String(input.value).replace(/[^0-9.]/g,''));
+    data.levels[i].cost=Number.isFinite(n)?n:0;
+  });
+  document.querySelectorAll('[data-value]').forEach(input=>{
+    const [si,ri,li]=input.dataset.value.split(':').map(Number);
+    data.sections[si].rows[ri].values[li]=input.value.trim();
+  });
+  document.querySelectorAll('[data-note]').forEach(input=>{
+    data.sections[Number(input.dataset.note)].note=input.value.trim();
+  });
+}
+
+async function load(){
+  renderEditor();
+  try{
+    const r=await fetch(API,{cache:'no-store'});
+    if(!r.ok)throw new Error(`GET ${r.status}`);
+    const p=await r.json();
+    if(p.exists&&p.data&&Array.isArray(p.data.sections)){
+      data=p.data;
+      renderEditor();
+      status.textContent='현재 저장된 수치를 불러왔어요.';
+    }
+  }catch(e){
+    console.warn(e);
+    status.textContent='서버 저장값을 불러오지 못해 기본 수치를 표시하고 있어요.';
+  }
+}
+
+async function save(){
+  collect();
+  const btn=document.getElementById('saveBtn');
+  btn.disabled=true;status.className='status';status.textContent='저장 중...';
+  try{
+    const r=await fetch(API,{
+      method:'PUT',
+      headers:{'content-type':'application/json'},
+      body:JSON.stringify({data})
+    });
+    const p=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(p.error||`PUT ${r.status}`);
+    status.className='status ok';status.textContent='✓ 변경사항을 저장했어요.';
+  }catch(e){
+    console.warn(e);
+    status.className='status error';status.textContent='저장에 실패했어요. 잠시 후 다시 시도해주세요.';
+  }finally{btn.disabled=false}
+}
+
+document.getElementById('saveBtn').addEventListener('click',save);
+document.getElementById('resetBtn').addEventListener('click',async()=>{
+  if(!confirm('현재 입력값을 처음 기본 수치로 되돌릴까요?'))return;
+  data=structuredClone(window.UPGRADE_EFFICIENCY_DEFAULTS);
+  renderEditor();
+  await save();
+});
+
+load();
+
+if('serviceWorker'in navigator){
+  window.addEventListener('load',async()=>{
+    try{
+      const registration=await navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'});
+      await registration.update();
+    }catch(e){console.warn(e)}
+  });
+}
+</script>
+</body>
+</html>
