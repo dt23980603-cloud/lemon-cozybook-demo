@@ -73,7 +73,7 @@
             text-align: center;
         }
 
-        /* demo_v4.25: 바로가기 아이콘 메뉴 */
+        /* demo_v4.26: 바로가기 아이콘 메뉴 */
         .quick-section,
         .main-menu-section {
             width: 100%;
@@ -638,7 +638,7 @@
 
     
 
-        /* demo_v4.25: v4.24 레이아웃/비율 유지 + 메인페이지 디자인만 개선 */
+        /* demo_v4.26: v4.24 레이아웃/비율 유지 + 메인페이지 디자인만 개선 */
         body {
             background:
                 radial-gradient(circle at 9% 92%, rgba(255, 227, 104, .18), transparent 16%),
@@ -685,7 +685,7 @@
         .quick-menu { gap: 12px; max-width: 520px; }
         .quick-item {
             position: relative;
-            min-height: 124px;
+            min-height: 118px;
             padding: 12px 6px 10px;
             border: 1px solid #e7dfd1;
             border-radius: 20px;
@@ -709,15 +709,18 @@
             z-index:1;
             width: 60px;
             height: 60px;
-            border-radius: 18px;
-            background: #fff;
-            border-color: #e6dfd4;
-            box-shadow: 0 4px 11px rgba(79,61,24,.07), inset 0 1px 0 rgba(255,255,255,.9);
-            font-size: 1.65rem;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+            font-size: 2rem;
         }
         .quick-starsoul .quick-icon {
-            background: linear-gradient(145deg, #fbf8ff 0%, #f4efff 100%);
-            border-color: #dcd3f2;
+            background: transparent;
+            border: 0;
         }
         .quick-name { position:relative; z-index:1; color:#403126; font-size:.78rem; }
         .quick-sub {
@@ -750,8 +753,8 @@
             justify-content: flex-start;
             gap: 10px;
             min-width: 0;
-            min-height: 112px;
-            padding: 10px 42px 10px 10px;
+            min-height: 96px;
+            padding: 8px 40px 8px 10px;
             border: 1.5px solid #dfc568;
             border-radius: 20px;
             background: linear-gradient(180deg, #fff9dd 0%, #fff4c5 100%);
@@ -779,9 +782,9 @@
         .menu-art {
             position:relative;
             z-index:1;
-            flex: 0 0 76px;
-            width:76px;
-            height:76px;
+            flex: 0 0 64px;
+            width:64px;
+            height:64px;
             display:flex;
             align-items:center;
             justify-content:center;
@@ -789,8 +792,8 @@
             background:rgba(255,255,255,.58);
         }
         .menu-art img {
-            width:70px;
-            height:70px;
+            width:60px;
+            height:60px;
             object-fit:contain;
             display:block;
             filter: drop-shadow(0 3px 5px rgba(55,44,18,.08));
@@ -805,13 +808,13 @@
         }
         .menu-copy strong {
             color:#3d2c1c;
-            font-size:.96rem;
+            font-size:.94rem;
             line-height:1.25;
             word-break:keep-all;
         }
         .menu-copy small {
             color:#817365;
-            font-size:.64rem;
+            font-size:.62rem;
             line-height:1.35;
             font-weight:400;
             word-break:keep-all;
@@ -852,29 +855,29 @@
             .notice-content p { font-size:.69rem; }
             .quick-menu { gap:7px; }
             .quick-item {
-                min-height:96px;
+                min-height:88px;
                 padding:8px 3px 7px;
                 border-radius:16px;
             }
-            .quick-icon { width:48px; height:48px; border-radius:15px; font-size:1.35rem; }
+            .quick-icon { width:48px; height:48px; border-radius:0; font-size:1.7rem; }
             .quick-name { font-size:.66rem; }
             .quick-sub { font-size:.47rem; }
             .quick-spark { top:7px; right:8px; width:5px; height:5px; }
 
             .lemon-menu-grid { gap:8px; }
             .lemon-menu-card.nav-btn {
-                min-height:126px;
-                padding:8px 7px 10px;
+                min-height:112px;
+                padding:7px 7px 8px;
                 flex-direction:column;
                 justify-content:center;
                 gap:4px;
                 text-align:center;
                 border-radius:17px;
             }
-            .menu-art { width:55px; height:55px; flex-basis:55px; border-radius:13px; }
-            .menu-art img { width:51px; height:51px; }
+            .menu-art { width:48px; height:48px; flex-basis:48px; border-radius:12px; }
+            .menu-art img { width:44px; height:44px; }
             .menu-copy { align-items:center; gap:2px; width:100%; }
-            .menu-copy strong { font-size:.72rem; line-height:1.25; }
+            .menu-copy strong { font-size:.69rem; line-height:1.2; }
             .menu-copy small { display:none; }
             .menu-arrow {
                 top:9px;
@@ -1129,7 +1132,7 @@
     </script>
 
 
-    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.25</div>
+    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.26</div>
 
 
 <script id="pwa-auto-update-script">
