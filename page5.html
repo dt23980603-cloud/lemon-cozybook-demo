@@ -232,7 +232,7 @@
       .flower-detail-image { width:min(180px, 100%); }
     }
   
-    /* demo_v4.34: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
+    /* demo_v4.35: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
     .flower-grid {
       grid-template-columns:repeat(2,minmax(0,1fr));
       gap:14px;
@@ -416,7 +416,7 @@
     }
 
   
-    /* demo_v4.34 통합 도감 보완 */
+    /* demo_v4.35 통합 도감 보완 */
     .guild-check-row{position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:7px;}
     .guild-check-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
     .guild-title-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap;}
@@ -487,7 +487,7 @@
     }
 
   
-    /* demo_v4.34: 선택 길드원 보유 수량 / 필터 안내 / 카드 가독성 */
+    /* demo_v4.35: 선택 길드원 보유 수량 / 필터 안내 / 카드 가독성 */
     .member-ownership-filter-wrap{
       display:grid;
       gap:5px;
@@ -553,7 +553,7 @@
     }
 
   
-    /* demo_v4.34: 보유/미보유 필터 색상 */
+    /* demo_v4.35: 보유/미보유 필터 색상 */
     .ownership-filter-btn[data-ownership-filter="OWNED"]{
       background:#e4f4df;
       border-color:#76946b;
@@ -595,7 +595,7 @@
     }
 
   
-    /* demo_v4.34: 통합 도감 헤더 / 가이드 / 관리 버튼 */
+    /* demo_v4.35: 통합 도감 헤더 / 가이드 / 관리 버튼 */
     .catalog-title-block{min-width:0;}
     .catalog-title-row{display:inline-flex;align-items:center;gap:6px;}
     .catalog-guide-btn{
@@ -646,7 +646,7 @@
     }
 
   
-    /* demo_v4.34: 경쟁전 임무 완료 현황 */
+    /* demo_v4.35: 경쟁전 임무 완료 현황 */
     .competition-mission-card{
       width:min(560px,100%);max-height:min(82vh,760px);display:flex;flex-direction:column;
       background:#fff;border:2px solid #333;border-radius:12px;padding:18px;
@@ -704,7 +704,7 @@
       .competition-mission-reset{font-size:.64rem;}
     }
 
-    /* demo_v4.34: 길드원 보유 태그 → 보유 꽃 목록 모달 */
+    /* demo_v4.35: 길드원 보유 태그 → 보유 꽃 목록 모달 */
     .guild-owner-tag{
       font-family:inherit;
       cursor:pointer;
@@ -737,6 +737,9 @@
       font-size:.76rem;
     }
     .member-flower-list{
+      flex:1 1 auto;
+      min-height:0;
+      max-height:612px;
       overflow-y:auto;
       display:flex;
       flex-direction:column;
@@ -825,6 +828,25 @@
       border-radius:11px;
       background:#fffefb;
     }
+    .member-flower-footer{
+      flex:0 0 auto;
+      margin-top:12px;
+    }
+    .member-flower-close-btn{
+      width:100%;
+      min-height:44px;
+      border:1px solid #d8c77f;
+      border-radius:10px;
+      background:linear-gradient(180deg,#fffdf5 0%,#fff3c8 100%);
+      color:#4b402e;
+      font-size:.82rem;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 2px 6px rgba(128,101,32,.08);
+    }
+    .member-flower-close-btn:hover{
+      background:linear-gradient(180deg,#fffaf0 0%,#ffedb3 100%);
+    }
 
     /* PC: 전체 꽃 도감 카드를 3열로 표시 */
     @media (min-width:981px){
@@ -853,12 +875,14 @@
     @media(max-width:620px){
       .member-flower-card{padding:13px;max-height:88vh;border-radius:14px;}
       .member-flower-summary{font-size:.66rem;}
-      .member-flower-list{gap:7px;}
+      .member-flower-list{gap:7px;max-height:536px;}
       .member-flower-row{grid-template-columns:54px minmax(0,1fr);gap:8px;padding:8px;}
       .member-flower-thumb{width:54px;height:54px;border-radius:9px;}
       .member-flower-name{font-size:.72rem;}
       .member-flower-sub{font-size:.62rem;gap:5px;}
       .member-flower-score{font-size:.64rem;}
+      .member-flower-footer{margin-top:10px;}
+      .member-flower-close-btn{min-height:42px;font-size:.72rem;border-radius:9px;}
     }
 
   </style>
@@ -985,13 +1009,15 @@
     <div class="member-flower-card" role="dialog" aria-modal="true" aria-labelledby="memberFlowerTitle">
       <div class="modal-header">
         <div class="modal-title" id="memberFlowerTitle">🌷 길드원 보유 꽃</div>
-        <button class="modal-close" type="button" id="closeMemberFlowerModal" aria-label="닫기">✕</button>
       </div>
       <div class="member-flower-summary">
         <span id="memberFlowerCount">보유 0개</span>
         <span>길드전 점수 높은 순</span>
       </div>
       <div id="memberFlowerList" class="member-flower-list"></div>
+      <div class="member-flower-footer">
+        <button class="member-flower-close-btn" type="button" id="closeMemberFlowerModal">닫기</button>
+      </div>
     </div>
   </div>
 
