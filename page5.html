@@ -232,7 +232,7 @@
       .flower-detail-image { width:min(180px, 100%); }
     }
   
-    /* demo_v4.30: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
+    /* demo_v4.31: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
     .flower-grid {
       grid-template-columns:repeat(2,minmax(0,1fr));
       gap:14px;
@@ -416,7 +416,7 @@
     }
 
   
-    /* demo_v4.30 통합 도감 보완 */
+    /* demo_v4.31 통합 도감 보완 */
     .guild-check-row{position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:7px;}
     .guild-check-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
     .guild-title-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap;}
@@ -487,7 +487,7 @@
     }
 
   
-    /* demo_v4.30: 선택 길드원 보유 수량 / 필터 안내 / 카드 가독성 */
+    /* demo_v4.31: 선택 길드원 보유 수량 / 필터 안내 / 카드 가독성 */
     .member-ownership-filter-wrap{
       display:grid;
       gap:5px;
@@ -553,7 +553,7 @@
     }
 
   
-    /* demo_v4.30: 보유/미보유 필터 색상 */
+    /* demo_v4.31: 보유/미보유 필터 색상 */
     .ownership-filter-btn[data-ownership-filter="OWNED"]{
       background:#e4f4df;
       border-color:#76946b;
@@ -595,7 +595,7 @@
     }
 
   
-    /* demo_v4.30: 통합 도감 헤더 / 가이드 / 관리 버튼 */
+    /* demo_v4.31: 통합 도감 헤더 / 가이드 / 관리 버튼 */
     .catalog-title-block{min-width:0;}
     .catalog-title-row{display:inline-flex;align-items:center;gap:6px;}
     .catalog-guide-btn{
@@ -646,7 +646,7 @@
     }
 
   
-    /* demo_v4.30: 경쟁전 임무 완료 현황 */
+    /* demo_v4.31: 경쟁전 임무 완료 현황 */
     .competition-mission-card{
       width:min(560px,100%);max-height:min(82vh,760px);display:flex;flex-direction:column;
       background:#fff;border:2px solid #333;border-radius:12px;padding:18px;
@@ -704,7 +704,7 @@
       .competition-mission-reset{font-size:.64rem;}
     }
 
-    /* demo_v4.30: 길드원 보유 태그 → 보유 꽃 목록 모달 */
+    /* demo_v4.31: 길드원 보유 태그 → 보유 꽃 목록 모달 */
     .guild-owner-tag{
       font-family:inherit;
       cursor:pointer;
@@ -717,13 +717,13 @@
       filter:brightness(.985);
     }
     .member-flower-card{
-      width:min(610px,100%);
+      width:min(620px,100%);
       max-height:min(84vh,800px);
       display:flex;
       flex-direction:column;
       background:#fff;
-      border:1px solid #cfcfcf;
-      border-radius:12px;
+      border:1px solid #d8cfba;
+      border-radius:16px;
       padding:18px;
       box-shadow:0 10px 32px rgba(0,0,0,.20);
     }
@@ -732,51 +732,67 @@
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      margin:-3px 0 10px;
-      color:#777;
+      margin:-3px 0 11px;
+      color:#7b715f;
       font-size:.76rem;
     }
     .member-flower-list{
       overflow-y:auto;
-      border:1px solid #e3e3e3;
-      border-radius:9px;
-      background:#fafafa;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      padding:2px;
+      border:0;
+      border-radius:12px;
+      background:transparent;
     }
     .member-flower-row{
       display:grid;
-      grid-template-columns:66px minmax(0,1fr) auto;
+      grid-template-columns:62px minmax(0,1fr);
       align-items:center;
       gap:11px;
-      padding:8px 10px;
-      border-bottom:1px solid #e8e8e8;
-      background:#fff;
+      padding:9px 10px;
+      border:1px solid #e6dcc5;
+      border-radius:12px;
+      background:linear-gradient(180deg,#fffefb 0%, #fff9ef 100%);
+      box-shadow:0 1px 0 rgba(255,255,255,.92) inset;
     }
-    .member-flower-row:last-child{border-bottom:0;}
     .member-flower-thumb{
-      width:66px;
-      height:52px;
+      width:62px;
+      height:62px;
       object-fit:cover;
-      border:1px solid #ddd;
-      border-radius:7px;
+      border:1px solid #eadfbc;
+      border-radius:11px;
       background:#f4ecd9;
+      display:block;
     }
     .member-flower-info{min-width:0;}
     .member-flower-name{
-      font-size:.82rem;
+      font-size:.83rem;
       font-weight:700;
-      line-height:1.35;
+      line-height:1.32;
       word-break:keep-all;
+      color:#2f2a23;
+    }
+    .member-flower-sub{
+      margin-top:4px;
+      display:flex;
+      align-items:center;
+      gap:6px;
+      flex-wrap:wrap;
+      font-size:.7rem;
+      color:#7b715f;
     }
     .member-flower-grade{
-      margin-top:3px;
-      font-size:.68rem;
-      color:#777;
+      font-weight:700;
     }
+    .member-flower-grade.grade-text-N{ color:#4f7a2f; }
+    .member-flower-grade.grade-text-R{ color:#2f78a8; }
+    .member-flower-grade.grade-text-SR{ color:#8b4fb3; }
+    .member-flower-grade.grade-text-SSR{ color:#d88900; }
+    .member-flower-grade.grade-text-UR{ color:#c94d4d; }
     .member-flower-score{
-      min-width:58px;
-      text-align:right;
-      color:#5f513d;
-      font-size:.78rem;
+      color:#6a5a44;
       font-weight:700;
       white-space:nowrap;
     }
@@ -785,6 +801,9 @@
       text-align:center;
       color:#888;
       font-size:.8rem;
+      border:1px dashed #dfd5bf;
+      border-radius:11px;
+      background:#fffefb;
     }
 
     /* PC: 전체 꽃 도감 카드를 3열로 표시 */
@@ -812,13 +831,14 @@
     }
 
     @media(max-width:620px){
-      .member-flower-card{padding:13px;max-height:88vh;}
+      .member-flower-card{padding:13px;max-height:88vh;border-radius:14px;}
       .member-flower-summary{font-size:.66rem;}
-      .member-flower-row{grid-template-columns:54px minmax(0,1fr) auto;gap:8px;padding:7px 8px;}
-      .member-flower-thumb{width:54px;height:43px;border-radius:6px;}
-      .member-flower-name{font-size:.7rem;}
-      .member-flower-grade{font-size:.6rem;}
-      .member-flower-score{min-width:49px;font-size:.66rem;}
+      .member-flower-list{gap:7px;}
+      .member-flower-row{grid-template-columns:54px minmax(0,1fr);gap:8px;padding:8px;}
+      .member-flower-thumb{width:54px;height:54px;border-radius:9px;}
+      .member-flower-name{font-size:.72rem;}
+      .member-flower-sub{font-size:.62rem;gap:5px;}
+      .member-flower-score{font-size:.64rem;}
     }
 
   </style>
@@ -1141,14 +1161,14 @@
       } else {
         memberFlowerList.innerHTML = flowers.map(flower => {
           const displayName = flower.listName || (flower.category ? `[${flower.category}] ${flower.name || ''}` : (flower.name || ''));
+          const grade = flower.grade || '-';
           const score = flower.guildScore == null || flower.guildScore === '' ? '-' : `${flower.guildScore}점`;
           return `<div class="member-flower-row">
             <img class="member-flower-thumb" src="${escapeHtml(flower.image || '')}" alt="${escapeHtml(flower.name || displayName)}" loading="lazy">
             <div class="member-flower-info">
               <div class="member-flower-name">${escapeHtml(displayName)}</div>
-              <div class="member-flower-grade">${escapeHtml(flower.grade || '-')}</div>
+              <div class="member-flower-sub"><span class="member-flower-grade grade-text-${escapeHtml(grade)}">${escapeHtml(grade)}</span> · <span class="member-flower-score">⚔️ ${escapeHtml(score)}</span></div>
             </div>
-            <div class="member-flower-score">⚔️ ${escapeHtml(score)}</div>
           </div>`;
         }).join('');
       }
