@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.26-home-tweaks';
+const CACHE_NAME = 'lemon-demo-v4.27-home-tweaks';
 const APP_SHELL = [
   '/',
   '/index.html',

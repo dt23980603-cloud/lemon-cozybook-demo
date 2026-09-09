@@ -73,7 +73,7 @@
             text-align: center;
         }
 
-        /* demo_v4.26: 바로가기 아이콘 메뉴 */
+        /* demo_v4.27: 바로가기 아이콘 메뉴 */
         .quick-section,
         .main-menu-section {
             width: 100%;
@@ -237,36 +237,40 @@
             font-weight: bold;
         }
 
-        /* 표 헤더 / 제목 스타일 */
+        /* 메인페이지 업데이트 내역 표만 배경 그래픽 톤에 맞게 부드럽게 보정 */
         .table-header-box {
-            background-color: #fff9db;
-            border: 1px solid #333;
+            background: linear-gradient(180deg, #fffaf0 0%, #fff3d1 100%);
+            border: 1.5px solid #dbc998;
             border-bottom: none;
-            padding: 8px 15px;
+            border-radius: 18px 18px 0 0;
+            padding: 10px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 6px 15px rgba(173, 149, 70, 0.08);
         }
 
         .table-title {
-            font-weight: bold;
+            font-weight: 700;
             font-size: 1rem;
+            color: #52391e;
         }
 
         .btn-reset {
-            background-color: #ff6b6b;
-            color: #fff;
-            border: 1px solid #d93838;
-            padding: 4px 10px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            border-radius: 4px;
+            background: linear-gradient(180deg, #fff5f5 0%, #ffe5e5 100%);
+            color: #bf4f4f;
+            border: 1px solid #e1b0b0;
+            padding: 5px 11px;
+            font-size: 0.79rem;
+            font-weight: 700;
+            border-radius: 999px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: background 0.2s, transform 0.2s;
         }
 
         .btn-reset:hover {
-            background-color: #fa5252;
+            background: linear-gradient(180deg, #fff0f0 0%, #ffd9d9 100%);
+            transform: translateY(-1px);
         }
 
         .btn-update-delete {
@@ -310,6 +314,49 @@
             align-items: center;
             gap: 6px;
             flex-shrink: 0;
+        }
+
+
+        #updateTable {
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1.5px solid #dbc998;
+            border-top: none;
+            border-radius: 0 0 18px 18px;
+            overflow: hidden;
+            background: rgba(255,255,255,0.96);
+            box-shadow: 0 8px 18px rgba(173, 149, 70, 0.08);
+        }
+
+        #updateTable th,
+        #updateTable td {
+            border: 0;
+            border-right: 1px solid #eadfbc;
+            border-bottom: 1px solid #eadfbc;
+            background: rgba(255,255,255,0.92);
+        }
+
+        #updateTable th {
+            background: linear-gradient(180deg, #fffdf6 0%, #fff6df 100%);
+            color: #5b4323;
+            font-weight: 700;
+        }
+
+        #updateTable th:last-child,
+        #updateTable td:last-child {
+            border-right: none;
+        }
+
+        #updateTable tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        #updateTable tbody tr:nth-child(odd) td {
+            background: #fffdf8;
+        }
+
+        #updateTable tbody tr:nth-child(even) td {
+            background: #fffaf1;
         }
 
         /* 업데이트 내역 본문: PC/모바일 공통 가독성 */
@@ -544,6 +591,7 @@
                 width: 100%;
                 padding: 9px 10px;
                 gap: 8px;
+                border-radius: 16px 16px 0 0;
             }
 
             .table-title {
@@ -570,7 +618,7 @@
 
             #updateTable th,
             #updateTable td {
-                padding: 6px 4px;
+                padding: 7px 5px;
                 font-size: 0.72rem;
                 line-height: 1.35;
                 word-break: break-word;
@@ -638,7 +686,7 @@
 
     
 
-        /* demo_v4.26: v4.24 레이아웃/비율 유지 + 메인페이지 디자인만 개선 */
+        /* demo_v4.27: v4.24 레이아웃/비율 유지 + 메인페이지 디자인만 개선 */
         body {
             background:
                 radial-gradient(circle at 9% 92%, rgba(255, 227, 104, .18), transparent 16%),
@@ -746,20 +794,20 @@
             box-shadow:0 0 0 4px rgba(244,212,108,.12);
         }
 
-        /* 4개 메인 메뉴: 일러스트 카드 느낌으로 복원 */
-        .lemon-menu-grid { gap: 15px; }
+        /* 4개 메인 메뉴: 일러스트 카드 느낌 유지 + 조금 더 밝고 슬림하게 */
+        .lemon-menu-grid { gap: 14px; }
         .lemon-menu-card.nav-btn {
             position: relative;
             justify-content: flex-start;
             align-items: center;
             gap: 14px;
             min-width: 0;
-            min-height: 102px;
-            padding: 11px 44px 11px 12px;
-            border: 1.7px solid #dfc568;
+            min-height: 94px;
+            padding: 9px 42px 9px 12px;
+            border: 1.6px solid #dfc568;
             border-radius: 24px;
-            background: linear-gradient(180deg, #fff9de 0%, #fff4c6 62%, #fff0b9 100%);
-            box-shadow: 0 8px 18px rgba(171,141,46,.09), inset 0 1px 0 rgba(255,255,255,.94);
+            background: linear-gradient(180deg, #fffef7 0%, #fffbf0 42%, #fff7df 76%, #fff4d0 100%);
+            box-shadow: 0 8px 17px rgba(171,141,46,.08), inset 0 1px 0 rgba(255,255,255,.97);
             overflow: hidden;
             font-size: inherit;
             text-align: left;
@@ -787,7 +835,7 @@
             pointer-events:none;
         }
         .lemon-menu-card.nav-btn:hover {
-            background: linear-gradient(180deg, #fff9db 0%, #fff2b8 62%, #ffeaa2 100%);
+            background: linear-gradient(180deg, #fffef4 0%, #fff9e8 46%, #fff4cf 100%);
             border-color:#d6b94f;
             transform: translateY(-2px);
             box-shadow:0 11px 20px rgba(171,141,46,.14);
@@ -795,9 +843,9 @@
         .menu-art {
             position:relative;
             z-index:1;
-            flex: 0 0 74px;
-            width:74px;
-            height:74px;
+            flex: 0 0 70px;
+            width:70px;
+            height:70px;
             display:flex;
             align-items:center;
             justify-content:center;
@@ -805,8 +853,8 @@
             background:transparent;
         }
         .menu-art img {
-            width:72px;
-            height:72px;
+            width:68px;
+            height:68px;
             object-fit:contain;
             display:block;
             filter: drop-shadow(0 4px 8px rgba(55,44,18,.10));
@@ -823,14 +871,14 @@
         }
         .menu-copy strong {
             color:#3a2919;
-            font-size:1rem;
+            font-size:.98rem;
             line-height:1.22;
             word-break:keep-all;
             letter-spacing:-.01em;
         }
         .menu-copy small {
             color:#817365;
-            font-size:.66rem;
+            font-size:.64rem;
             line-height:1.35;
             font-weight:500;
             word-break:keep-all;
@@ -853,10 +901,10 @@
             line-height:1;
             box-shadow:0 5px 10px rgba(204,157,9,.19);
         }
-        .menu-flower { background:linear-gradient(180deg,#fff8df 0%,#fff3ca 65%,#ffefb8 100%) !important; }
-        .menu-battle { background:linear-gradient(180deg,#fff8dd 0%,#fff3c5 65%,#ffefbb 100%) !important; }
-        .menu-upgrade { background:linear-gradient(180deg,#fff8df 0%,#fff4ce 65%,#fff0be 100%) !important; }
-        .menu-guide { background:linear-gradient(180deg,#fff8e2 0%,#fff4cf 65%,#fff0bf 100%) !important; }
+        .menu-flower { background:linear-gradient(180deg,#fffef6 0%,#fffbf0 48%,#fff7de 100%) !important; }
+        .menu-battle { background:linear-gradient(180deg,#fffef5 0%,#fffbef 48%,#fff6dc 100%) !important; }
+        .menu-upgrade { background:linear-gradient(180deg,#fffef7 0%,#fffbf1 48%,#fff7e1 100%) !important; }
+        .menu-guide { background:linear-gradient(180deg,#fffef7 0%,#fffbf2 48%,#fff7e0 100%) !important; }
 
         /* 업데이트 표는 v4.24의 우측 컬럼/기능 그대로, 색만 부드럽게 */
         .table-header-box {
@@ -882,18 +930,18 @@
 
             .lemon-menu-grid { gap:10px; }
             .lemon-menu-card.nav-btn {
-                min-height:106px;
-                padding:8px 8px 9px;
+                min-height:96px;
+                padding:7px 8px 8px;
                 flex-direction:column;
                 justify-content:center;
                 gap:5px;
                 text-align:center;
                 border-radius:18px;
             }
-            .menu-art { width:56px; height:56px; flex-basis:56px; }
-            .menu-art img { width:54px; height:54px; }
+            .menu-art { width:52px; height:52px; flex-basis:52px; }
+            .menu-art img { width:50px; height:50px; }
             .menu-copy { align-items:center; gap:3px; width:100%; }
-            .menu-copy strong { font-size:.72rem; line-height:1.22; }
+            .menu-copy strong { font-size:.70rem; line-height:1.2; }
             .menu-copy small { display:none; }
             .menu-arrow {
                 top:9px;
@@ -1148,7 +1196,7 @@
     </script>
 
 
-    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.26</div>
+    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.27</div>
 
 
 <script id="pwa-auto-update-script">
