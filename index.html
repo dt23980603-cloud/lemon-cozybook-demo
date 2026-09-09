@@ -73,7 +73,7 @@
             text-align: center;
         }
 
-        /* demo_v4.27: 바로가기 아이콘 메뉴 */
+        /* demo_v4.28: 바로가기 아이콘 메뉴 */
         .quick-section,
         .main-menu-section {
             width: 100%;
@@ -240,7 +240,7 @@
         /* 메인페이지 업데이트 내역 표만 배경 그래픽 톤에 맞게 부드럽게 보정 */
         .table-header-box {
             background: linear-gradient(180deg, #fffaf0 0%, #fff3d1 100%);
-            border: 1.5px solid #dbc998;
+            border: 1.5px solid #eadfbc;
             border-bottom: none;
             border-radius: 18px 18px 0 0;
             padding: 10px 15px;
@@ -252,7 +252,7 @@
 
         .table-title {
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.96rem;
             color: #52391e;
         }
 
@@ -320,7 +320,7 @@
         #updateTable {
             border-collapse: separate;
             border-spacing: 0;
-            border: 1.5px solid #dbc998;
+            border: 1.5px solid #eadfbc;
             border-top: none;
             border-radius: 0 0 18px 18px;
             overflow: hidden;
@@ -373,6 +373,76 @@
         #updateTable .grade-text-SR { color: #8b4fb3; }
         #updateTable .grade-text-SSR { color: #d88900; }
         #updateTable .grade-text-UR { color: #c94d4d; }
+        #updateTable .update-date-cell {
+            width: 88px;
+            min-width: 88px;
+            white-space: nowrap;
+            font-size: 0.76rem;
+            color: #6f6557;
+            line-height: 1.35;
+        }
+
+        #updateTable .update-content-cell {
+            text-align: left;
+            padding: 10px 12px;
+        }
+
+        #updateTable .update-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        #updateTable .update-item-main {
+            min-width: 0;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #updateTable .update-thumb-wrap {
+            flex: 0 0 58px;
+            width: 58px;
+            height: 58px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #eadfbc;
+            background: linear-gradient(180deg, #fffef8 0%, #fff8e9 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.95);
+        }
+
+        #updateTable .update-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        #updateTable .update-text {
+            min-width: 0;
+            flex: 1;
+        }
+
+        #updateTable .update-meta {
+            font-size: .72rem;
+            color: #999;
+            margin-bottom: 2px;
+        }
+
+        #updateTable .update-label {
+            font-weight: bold;
+            word-break: keep-all;
+            line-height: 1.35;
+        }
+
+        #updateTable .update-sub {
+            margin-top: 4px;
+            font-size: .82rem;
+            color: #666;
+            line-height: 1.35;
+        }
 
         /* 입력 양식 스타일: PC/모바일 공통으로 외곽선을 연하게 */
         .add-form-card {
@@ -595,7 +665,7 @@
             }
 
             .table-title {
-                font-size: 0.96rem;
+                font-size: 0.9rem;
             }
 
             .btn-reset {
@@ -686,7 +756,7 @@
 
     
 
-        /* demo_v4.27: v4.24 레이아웃/비율 유지 + 메인페이지 디자인만 개선 */
+        /* demo_v4.28: v4.24 레이아웃/비율 유지 + 메인페이지 디자인만 개선 */
         body {
             background:
                 radial-gradient(circle at 9% 92%, rgba(255, 227, 104, .18), transparent 16%),
@@ -906,10 +976,10 @@
         .menu-upgrade { background:linear-gradient(180deg,#fffef7 0%,#fffbf1 48%,#fff7e1 100%) !important; }
         .menu-guide { background:linear-gradient(180deg,#fffef7 0%,#fffbf2 48%,#fff7e0 100%) !important; }
 
-        /* 업데이트 표는 v4.24의 우측 컬럼/기능 그대로, 색만 부드럽게 */
+        /* 업데이트 표는 메인 배경과 어울리도록 동일 톤 유지 */
         .table-header-box {
-            background: linear-gradient(180deg,#fff9df,#fff3c9);
-            border-color:#9f8e72;
+            background: linear-gradient(180deg,#fffaf0,#fff3d1);
+            border-color:#eadfbc;
         }
         th { background-color:#fff9df; }
 
@@ -1095,6 +1165,12 @@
             return `${map.year}.${map.month}.${map.day}`;
         }
 
+        function getUpdateImageSrc(item) {
+            if (!item || !item.flowerKey) return '';
+            const version = item.createdAt || Date.now();
+            return `/api/flower-image/${encodeURIComponent(item.flowerKey)}?v=${encodeURIComponent(version)}`;
+        }
+
         function renderTable() {
             const tbody = document.getElementById('updateTbody');
             if (!updateList.length) {
@@ -1104,14 +1180,18 @@
             tbody.innerHTML = updateList.map(item => {
                 const label = item.category ? `[${item.category}] ${item.name}` : item.name;
                 const score = item.guildScore == null ? '-' : `${item.guildScore}점`;
+                const imageSrc = getUpdateImageSrc(item);
                 return `<tr>
-                    <td>${escapeHtml(formatUpdateDate(item.createdAt))}</td>
-                    <td style="text-align:left;padding-left:12px;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-                            <div style="min-width:0;flex:1;">
-                                <div style="font-size:.72rem;color:#999;margin-bottom:2px;">${item.action === 'edit' ? '정보 수정' : '신규 추가'}</div>
-                                <div style="font-weight:bold;word-break:keep-all;">${escapeHtml(label)}</div>
-                                <div style="margin-top:4px;font-size:.82rem;color:#666;"><span class="grade-text grade-text-${escapeHtml(item.grade)}">${escapeHtml(item.grade)}</span> · ⚔️ ${escapeHtml(score)}</div>
+                    <td class="update-date-cell">${escapeHtml(formatUpdateDate(item.createdAt))}</td>
+                    <td class="update-content-cell">
+                        <div class="update-item">
+                            <div class="update-item-main">
+                                <div class="update-thumb-wrap">${imageSrc ? `<img class="update-thumb" src="${escapeHtml(imageSrc)}" alt="${escapeHtml(label)}" loading="lazy" onerror="this.closest('.update-thumb-wrap').style.display='none'">` : ''}</div>
+                                <div class="update-text">
+                                    <div class="update-meta">${item.action === 'edit' ? '정보 수정' : '신규 추가'}</div>
+                                    <div class="update-label">${escapeHtml(label)}</div>
+                                    <div class="update-sub"><span class="grade-text grade-text-${escapeHtml(item.grade)}">${escapeHtml(item.grade)}</span> · ⚔️ ${escapeHtml(score)}</div>
+                                </div>
                             </div>
                             <div class="update-actions">
                                 <button type="button" class="btn-update-flower" data-flower-key="${escapeHtml(item.flowerKey || '')}">꽃 정보 보기</button>
@@ -1196,7 +1276,7 @@
     </script>
 
 
-    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.27</div>
+    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.28</div>
 
 
 <script id="pwa-auto-update-script">
