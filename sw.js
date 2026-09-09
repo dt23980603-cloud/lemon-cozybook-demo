@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.36-member-modal-transparent-close';
+const CACHE_NAME = 'lemon-demo-v4.5-member-flower-quality-option';
 const APP_SHELL = [
   '/',
   '/index.html',
