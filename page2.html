@@ -384,7 +384,7 @@
     </div>
   </div>
 
-  <div id="site-version">demo_v4.5</div>
+  <div id="site-version">demo_v4.6</div>
   <script src="flower-data-all.js"></script>
   <script>
     const FLOWERS_API = '/api/flowers';
@@ -590,7 +590,7 @@
         ? `${selected.name} · 옵션이 설정된 꽃 ${optionCount}종`
         : `${selected.name} · 현재 모든 꽃 옵션 +0점`;
 
-      memberStatus.textContent = `${selected.name} · 보유 체크 ${owned}종 · 길드전 점수 등록 ${scored}종 · 사용 가능한 임무 유형 ${options.length}개`;
+      memberStatus.textContent = `${selected.name} · 보유 체크 ${owned}종 · 경쟁전 점수 등록 ${scored}종 · 사용 가능한 임무 유형 ${options.length}개`;
       if (multiplier === 2 && excludedUpgradeCost) {
         memberStatus.textContent += ` · 업그레이드 비용 기준이 없는 ${excludedUpgradeCost}종은 2배 계산에서 제외`;
       }
@@ -1058,7 +1058,7 @@
           summaryItem('필요 점수', `${formatNumber(needed)}점`),
           summaryItem('계산 배율', `${multiplier}배`)
         ].join('');
-        planArea.innerHTML = '<div class="empty-plan">길드전 점수가 등록되고 현재 배율에서 비용 계산이 가능한 보유 꽃이 없어 계산할 수 없습니다.</div>';
+        planArea.innerHTML = '<div class="empty-plan">경쟁전 점수가 등록되고 현재 배율에서 비용 계산이 가능한 보유 꽃이 없어 계산할 수 없습니다.</div>';
         resultNote.textContent = multiplier === 2 && excludedUpgradeCost
           ? `업그레이드 비용 기준이 없는 보유 꽃 ${excludedUpgradeCost}종은 제외되었습니다.`
           : '';

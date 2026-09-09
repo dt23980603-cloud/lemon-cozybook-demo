@@ -217,7 +217,7 @@ export async function onRequestPost(context) {
     return new Response(JSON.stringify({ error: '등급, 분류, 꽃 이름을 확인해주세요.' }), { status: 400, headers: JSON_HEADERS });
   }
   if (!score.ok) {
-    return new Response(JSON.stringify({ error: '길드전 점수를 확인해주세요.' }), { status: 400, headers: JSON_HEADERS });
+    return new Response(JSON.stringify({ error: '경쟁전 점수를 확인해주세요.' }), { status: 400, headers: JSON_HEADERS });
   }
   if (!(image instanceof File) || image.size <= 0) {
     return new Response(JSON.stringify({ error: '꽃 이미지를 선택해주세요.' }), { status: 400, headers: JSON_HEADERS });
@@ -290,7 +290,7 @@ export async function onRequestPut(context) {
     return new Response(JSON.stringify({ error: '수정할 꽃 정보가 올바르지 않습니다.' }), { status: 400, headers: JSON_HEADERS });
   }
   if (!score.ok) {
-    return new Response(JSON.stringify({ error: '길드전 점수를 확인해주세요.' }), { status: 400, headers: JSON_HEADERS });
+    return new Response(JSON.stringify({ error: '경쟁전 점수를 확인해주세요.' }), { status: 400, headers: JSON_HEADERS });
   }
 
   await ensureTables(env.DB);
