@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.18-upgrade-icons-compact';
+const CACHE_NAME = 'lemon-demo-v4.19-subtle-settings-pc-values';
 const APP_SHELL = [
   '/',
   '/index.html',

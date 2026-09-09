@@ -24,11 +24,12 @@ body{margin:0;background:#f7f7f7;color:var(--ink)}
 .back{width:46px;height:46px;display:flex}.back img{width:100%;height:100%;object-fit:contain}
 .heading{min-width:0}.heading h1{margin:0;font-size:1.32rem}.heading p{margin:3px 0 0;color:#888;font-size:.72rem;line-height:1.45}
 .settings{
-  width:42px;height:42px;border:1px solid #d6d0b6;border-radius:12px;background:#fff9db;
+  width:42px;height:42px;border:1px solid rgba(160,160,160,.28);border-radius:12px;background:#fff;
   display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:1.18rem;
-  cursor:pointer;transition:.15s
+  color:#666;opacity:.34;cursor:pointer;transition:opacity .15s ease,border-color .15s ease,transform .15s ease
 }
-.settings:hover{background:#fff1ad;transform:translateY(-1px)}
+.settings:hover{background:#fff;opacity:.72;border-color:rgba(120,120,120,.45);transform:translateY(-1px)}
+.settings:focus-visible{opacity:.8;outline:2px solid rgba(130,130,130,.28);outline-offset:2px}
 .summary{
   margin-top:12px;padding:12px 14px;border:1px solid #e3ddc4;border-radius:14px;background:#fffdf3;
   color:#625c47;font-size:.73rem;line-height:1.55
@@ -63,6 +64,9 @@ body{margin:0;background:#f7f7f7;color:var(--ink)}
 .grade-epic .grade-cell{background:var(--epic)}.grade-perfect .grade-cell{background:var(--perfect)}
 .value-cell{font-family:Arial,'Gowun Batang',sans-serif;font-weight:700}
 .value-cell.unavailable{background:#efefef;color:#aaa;font-weight:400}
+@media(min-width:621px){
+  .value-cell{font-size:.80rem}
+}
 .note{
   padding:9px 12px;border-top:1px dashed #e2cfcf;background:#fff8f8;color:#735454;
   font-size:.65rem;line-height:1.55
@@ -117,7 +121,7 @@ body{margin:0;background:#f7f7f7;color:var(--ink)}
   <section id="sections" class="sections"><div class="loading">효율표를 불러오는 중...</div></section>
   <p class="footer-note">※ 수치가 추가로 확인되면 우측 상단 ⚙️에서 직접 수정할 수 있습니다.</p>
 </main>
-<div id="site-version">demo_v4.18</div>
+<div id="site-version">demo_v4.19</div>
 
 <script src="upgrade-efficiency-data.js"></script>
 <script>
