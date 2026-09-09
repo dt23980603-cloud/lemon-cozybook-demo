@@ -161,6 +161,13 @@
       margin:0 0 13px;padding:11px 12px;border-radius:13px;
       background:#fff9da;color:#625a3d;font-size:.76rem;line-height:1.55
     }
+    .reward-dev-notice{
+      margin:0 0 12px;padding:9px 11px;border:1px solid rgba(214,74,74,.34);
+      border-radius:11px;background:rgba(255,92,92,.11);
+      color:#a84343;font-size:.69rem;line-height:1.5;text-align:center
+    }
+    .reward-dev-notice strong{font-weight:700;color:#963838}
+
     .flow-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin:0 0 15px}
     .flow-chip{
       padding:6px 9px;border:1px solid #ddd8c8;border-radius:999px;background:#fff;
@@ -232,7 +239,7 @@
       .dialog-head{padding:12px 13px}
       .dialog h3{font-size:.96rem}
       .dialog-scroll{padding:12px}
-      .modal-intro{font-size:.66rem;padding:9px 10px}
+      .modal-intro{font-size:.66rem;padding:9px 10px}.reward-dev-notice{font-size:.6rem;padding:8px 9px;margin-bottom:9px}
       .flow-chip{font-size:.59rem;padding:5px 7px}
       .guide-section{padding:10px 11px;border-radius:12px}
       .guide-section h4{font-size:.78rem}
@@ -314,6 +321,10 @@
       <button class="dialog-close" data-close-modal aria-label="닫기">×</button>
     </div>
     <div class="dialog-scroll">
+      <div class="reward-dev-notice" role="note">
+        <strong>🚧 시즌·보상 페이지도 계속 준비 중이에요.</strong><br>
+        현재 이미지와 세부 내용을 순차적으로 추가하고 있으며, 정리된 정보는 먼저 확인하실 수 있습니다.
+      </div>
       <p class="modal-intro">시즌 동안 스타소울을 꾸준히 수집하면 스타코인을 모아 전용 상점 보상을 노릴 수 있습니다. 패스 여부에 따라 하루 획득 가능한 스타소울 수가 크게 달라집니다.</p>
 
       <section class="guide-section">
@@ -395,7 +406,7 @@
   </div>
 </div>
 
-<div id="site-version">demo_v4.13</div>
+<div id="site-version">demo_v4.14</div>
 
 <script>
 const API='/api/guild-state';
