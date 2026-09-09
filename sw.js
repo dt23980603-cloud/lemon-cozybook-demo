@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.15-guide-mobile-width';
+const CACHE_NAME = 'lemon-demo-v4.16-zodiac-birthday-more';
 const APP_SHELL = [
   '/',
   '/index.html',

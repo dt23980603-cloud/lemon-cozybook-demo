@@ -134,7 +134,14 @@
     .member-tag.role-임원{border-color:#c6a4e3;background:#f8f0ff;color:#74449a}
     .member-tag.role-정예{border-color:#9fc5e3;background:#eef7ff;color:#346f9d}
     .member-tag.role-멤버{border-color:#a9cf9e;background:#f0f9ed;color:#47733d}
-    .none-tag{font-size:.66rem;color:#aaa;padding:4px 0}
+        .none-tag{font-size:.66rem;color:#aaa;padding:4px 0}
+    .zodiac-more-btn{
+      display:inline-flex;align-items:center;min-height:24px;padding:4px 7px;
+      border:1px dashed #aaa;border-radius:999px;background:#fff9db;
+      color:#555;font-size:.64rem;font-weight:700;cursor:pointer;white-space:nowrap
+    }
+    .zodiac-more-btn:hover{background:#fff1ad}
+
     .source-note{
       margin-top:16px;padding:11px 13px;border:1px dashed #d7d3c7;border-radius:14px;
       text-align:center;color:#8a877f;background:rgba(255,255,255,.58);font-size:.66rem;line-height:1.45
@@ -232,7 +239,7 @@
       .zodiac-body{padding:8px}
       .zodiac-name{font-size:.79rem}.zodiac-period{font-size:.58rem}.member-total{font-size:.54rem;padding:3px 5px}
       .guild-label{font-size:.55rem;margin-top:7px}.member-tags{gap:3px;margin-top:4px}
-      .member-tag{font-size:.55rem;padding:3px 5px}.none-tag{font-size:.55rem}
+      .member-tag{font-size:.55rem;padding:3px 5px}.none-tag{font-size:.55rem}.zodiac-more-btn{min-height:20px;padding:3px 5px;font-size:.52rem}
       .placeholder-symbol{font-size:1.55rem}.placeholder-inner small{font-size:.52rem}
       .modal{padding:8px}
       .dialog{max-height:92vh;border-radius:16px}
@@ -322,8 +329,8 @@
     </div>
     <div class="dialog-scroll">
       <div class="reward-dev-notice" role="note">
-        <strong>🚧 시즌·보상 페이지도 계속 준비 중이에요.</strong><br>
-        현재 이미지와 세부 내용을 순차적으로 추가하고 있으며, 정리된 정보는 먼저 확인하실 수 있습니다.
+        <strong>🚧 스타소울 가이드를 계속 업데이트하고 있어요.</strong><br>
+        현재 이미지와 세부 내용을 순차적으로 추가 중이며, 가이드 글은 먼저 확인하실 수 있습니다.
       </div>
       <p class="modal-intro">시즌 동안 스타소울을 꾸준히 수집하면 스타코인을 모아 전용 상점 보상을 노릴 수 있습니다. 패스 여부에 따라 하루 획득 가능한 스타소울 수가 크게 달라집니다.</p>
 
@@ -406,7 +413,7 @@
   </div>
 </div>
 
-<div id="site-version">demo_v4.15</div>
+<div id="site-version">demo_v4.16</div>
 
 <script>
 const API='/api/guild-state';
@@ -509,6 +516,16 @@ function renderParticipation(){
     ? `🌙 아직 별을 찾지 못한 길드원 ${missing.length}명 · ${missing.map(m=>esc(m.name)).join(' · ')}`
     : '✨ 모든 길드원이 자신의 별을 찾았어요!';
 }
+const expandedZodiacMembers=new Set();
+
+function formatBirthdayLabel(memberId){
+  const b=parseBirthday(memberBirthdays[memberId]);
+  return b?`${b.month}월 ${b.day}일`:'';
+}
+function zodiacVisibleMemberLimit(){
+  return window.matchMedia('(max-width:620px)').matches?2:3;
+}
+
 function renderZodiac(){
   const grouped=new Map(zodiacData.map(z=>[z.key,[]]));
   sortedMembers().forEach(m=>{
@@ -522,8 +539,20 @@ function renderZodiac(){
     const media=z.image
       ? `<div class="zodiac-media${unreleasedClass}"><img src="${esc(z.image)}" alt="${esc(z.name)}" loading="lazy">${unreleasedBadge}<div class="flower-pill">${esc(z.flower)}</div></div>`
       : `<div class="zodiac-media placeholder${unreleasedClass}">${unreleasedBadge}<div class="placeholder-inner"><span class="placeholder-symbol">${z.symbol}</span><small>${z.unreleased?'별자리 아이템 미출시':'별자리 꽃 이미지 준비중'}</small></div></div>`;
+    const expanded=expandedZodiacMembers.has(z.key);
+    const limit=zodiacVisibleMemberLimit();
+    const visibleOwners=expanded?owners:owners.slice(0,limit);
+    const hiddenCount=Math.max(0,owners.length-visibleOwners.length);
+    const ownerTags=visibleOwners.map(m=>{
+      const birthday=formatBirthdayLabel(m.id);
+      const label=birthday?`${m.name} · ${birthday}`:m.name;
+      return `<span class="member-tag role-${esc(m.role||'멤버')}" title="${esc(m.role||'멤버')}">${esc(label)}</span>`;
+    }).join('');
+    const moreButton=owners.length>limit
+      ? `<button type="button" class="zodiac-more-btn" data-zodiac-more="${esc(z.key)}">${expanded?'접기':`더보기 +${hiddenCount}`}</button>`
+      : '';
     const tags=owners.length
-      ? owners.map(m=>`<span class="member-tag role-${esc(m.role||'멤버')}" title="${esc(m.role||'멤버')}">${esc(m.name)}</span>`).join('')
+      ? ownerTags+moreButton
       : '<span class="none-tag">아직 등록된 길드원이 없어요.</span>';
     return `<article class="zodiac-card" data-zodiac="${esc(z.key)}">
       ${media}
@@ -538,6 +567,21 @@ function renderZodiac(){
     </article>`;
   }).join('');
 }
+zodiacGrid.addEventListener('click',e=>{
+  const btn=e.target.closest('[data-zodiac-more]');
+  if(!btn)return;
+  const key=btn.dataset.zodiacMore;
+  if(expandedZodiacMembers.has(key))expandedZodiacMembers.delete(key);
+  else expandedZodiacMembers.add(key);
+  renderZodiac();
+});
+
+let zodiacResizeTimer;
+window.addEventListener('resize',()=>{
+  clearTimeout(zodiacResizeTimer);
+  zodiacResizeTimer=setTimeout(renderZodiac,120);
+});
+
 function localSave(){
   localStorage.setItem('guild_members',JSON.stringify(members));
   localStorage.setItem('guild_member_birthdays',JSON.stringify(memberBirthdays));
