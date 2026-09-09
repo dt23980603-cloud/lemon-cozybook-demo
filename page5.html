@@ -232,7 +232,7 @@
       .flower-detail-image { width:min(180px, 100%); }
     }
   
-    /* demo_v4.29: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
+    /* demo_v4.30: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
     .flower-grid {
       grid-template-columns:repeat(2,minmax(0,1fr));
       gap:14px;
@@ -416,7 +416,7 @@
     }
 
   
-    /* demo_v4.29 통합 도감 보완 */
+    /* demo_v4.30 통합 도감 보완 */
     .guild-check-row{position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:7px;}
     .guild-check-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
     .guild-title-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap;}
@@ -487,7 +487,7 @@
     }
 
   
-    /* demo_v4.29: 선택 길드원 보유 수량 / 필터 안내 / 카드 가독성 */
+    /* demo_v4.30: 선택 길드원 보유 수량 / 필터 안내 / 카드 가독성 */
     .member-ownership-filter-wrap{
       display:grid;
       gap:5px;
@@ -553,7 +553,7 @@
     }
 
   
-    /* demo_v4.29: 보유/미보유 필터 색상 */
+    /* demo_v4.30: 보유/미보유 필터 색상 */
     .ownership-filter-btn[data-ownership-filter="OWNED"]{
       background:#e4f4df;
       border-color:#76946b;
@@ -595,7 +595,7 @@
     }
 
   
-    /* demo_v4.29: 통합 도감 헤더 / 가이드 / 관리 버튼 */
+    /* demo_v4.30: 통합 도감 헤더 / 가이드 / 관리 버튼 */
     .catalog-title-block{min-width:0;}
     .catalog-title-row{display:inline-flex;align-items:center;gap:6px;}
     .catalog-guide-btn{
@@ -646,7 +646,7 @@
     }
 
   
-    /* demo_v4.29: 경쟁전 임무 완료 현황 */
+    /* demo_v4.30: 경쟁전 임무 완료 현황 */
     .competition-mission-card{
       width:min(560px,100%);max-height:min(82vh,760px);display:flex;flex-direction:column;
       background:#fff;border:2px solid #333;border-radius:12px;padding:18px;
@@ -702,6 +702,123 @@
       .competition-mission-name{font-size:.7rem;}
       .competition-mission-toggle{min-width:68px;min-height:29px;font-size:.62rem;padding:4px 7px;}
       .competition-mission-reset{font-size:.64rem;}
+    }
+
+    /* demo_v4.30: 길드원 보유 태그 → 보유 꽃 목록 모달 */
+    .guild-owner-tag{
+      font-family:inherit;
+      cursor:pointer;
+      appearance:none;
+      -webkit-appearance:none;
+    }
+    .guild-owner-tag:hover{
+      transform:translateY(-1px);
+      box-shadow:0 2px 6px rgba(0,0,0,.08);
+      filter:brightness(.985);
+    }
+    .member-flower-card{
+      width:min(610px,100%);
+      max-height:min(84vh,800px);
+      display:flex;
+      flex-direction:column;
+      background:#fff;
+      border:1px solid #cfcfcf;
+      border-radius:12px;
+      padding:18px;
+      box-shadow:0 10px 32px rgba(0,0,0,.20);
+    }
+    .member-flower-summary{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin:-3px 0 10px;
+      color:#777;
+      font-size:.76rem;
+    }
+    .member-flower-list{
+      overflow-y:auto;
+      border:1px solid #e3e3e3;
+      border-radius:9px;
+      background:#fafafa;
+    }
+    .member-flower-row{
+      display:grid;
+      grid-template-columns:66px minmax(0,1fr) auto;
+      align-items:center;
+      gap:11px;
+      padding:8px 10px;
+      border-bottom:1px solid #e8e8e8;
+      background:#fff;
+    }
+    .member-flower-row:last-child{border-bottom:0;}
+    .member-flower-thumb{
+      width:66px;
+      height:52px;
+      object-fit:cover;
+      border:1px solid #ddd;
+      border-radius:7px;
+      background:#f4ecd9;
+    }
+    .member-flower-info{min-width:0;}
+    .member-flower-name{
+      font-size:.82rem;
+      font-weight:700;
+      line-height:1.35;
+      word-break:keep-all;
+    }
+    .member-flower-grade{
+      margin-top:3px;
+      font-size:.68rem;
+      color:#777;
+    }
+    .member-flower-score{
+      min-width:58px;
+      text-align:right;
+      color:#5f513d;
+      font-size:.78rem;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .member-flower-empty{
+      padding:38px 14px;
+      text-align:center;
+      color:#888;
+      font-size:.8rem;
+    }
+
+    /* PC: 전체 꽃 도감 카드를 3열로 표시 */
+    @media (min-width:981px){
+      .flower-grid{
+        grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+        gap:12px;
+      }
+      .flower-card{
+        grid-template-columns:132px minmax(0,1fr) !important;
+        min-height:202px;
+      }
+      .image-wrap{padding:8px;gap:6px;}
+      .card-body{padding:9px 10px;}
+      .flower-name{font-size:.86rem;margin-bottom:7px;}
+      .guild-owner-box{padding:7px 8px;margin-bottom:7px;}
+      .guild-owner-head{font-size:.68rem;margin-bottom:5px;}
+      .guild-owner-tag,.owner-more-btn{min-height:22px;padding:2px 6px;font-size:.62rem;}
+      .btn-open,.btn-own-check{min-height:32px;padding:5px 4px;font-size:.68rem;}
+    }
+
+    @media (min-width:621px) and (max-width:980px){
+      .flower-grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:11px;}
+      .flower-card{grid-template-columns:150px minmax(0,1fr) !important;}
+    }
+
+    @media(max-width:620px){
+      .member-flower-card{padding:13px;max-height:88vh;}
+      .member-flower-summary{font-size:.66rem;}
+      .member-flower-row{grid-template-columns:54px minmax(0,1fr) auto;gap:8px;padding:7px 8px;}
+      .member-flower-thumb{width:54px;height:43px;border-radius:6px;}
+      .member-flower-name{font-size:.7rem;}
+      .member-flower-grade{font-size:.6rem;}
+      .member-flower-score{min-width:49px;font-size:.66rem;}
     }
 
   </style>
@@ -820,6 +937,21 @@
       <div class="competition-mission-footer">
         <button type="button" id="resetCompetitionMission" class="competition-mission-reset">완료 상태 전체 초기화</button>
       </div>
+    </div>
+  </div>
+
+  <!-- 길드원 보유 꽃 목록 -->
+  <div class="modal-overlay" id="memberFlowerModal" aria-hidden="true">
+    <div class="member-flower-card" role="dialog" aria-modal="true" aria-labelledby="memberFlowerTitle">
+      <div class="modal-header">
+        <div class="modal-title" id="memberFlowerTitle">🌷 길드원 보유 꽃</div>
+        <button class="modal-close" type="button" id="closeMemberFlowerModal" aria-label="닫기">✕</button>
+      </div>
+      <div class="member-flower-summary">
+        <span id="memberFlowerCount">보유 0개</span>
+        <span>길드전 점수 높은 순</span>
+      </div>
+      <div id="memberFlowerList" class="member-flower-list"></div>
     </div>
   </div>
 
@@ -948,6 +1080,10 @@
     const competitionMissionList = document.getElementById('competitionMissionList');
     const competitionMissionSummary = document.getElementById('competitionMissionSummary');
     const competitionMissionMiniCount = document.getElementById('competitionMissionMiniCount');
+    const memberFlowerModal = document.getElementById('memberFlowerModal');
+    const memberFlowerTitle = document.getElementById('memberFlowerTitle');
+    const memberFlowerCount = document.getElementById('memberFlowerCount');
+    const memberFlowerList = document.getElementById('memberFlowerList');
 
     function escapeHtml(value) {
       return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
@@ -981,6 +1117,51 @@
       );
     }
 
+    function getMemberOwnedFlowers(memberId) {
+      if (!memberId) return [];
+      return getAllFlowers()
+        .filter(flower => Boolean(guildChecks[getGuildFlowerCheckKey(flower.key, memberId)]))
+        .sort((a, b) => {
+          const scoreA = a.guildScore == null || a.guildScore === '' ? -1 : Number(a.guildScore);
+          const scoreB = b.guildScore == null || b.guildScore === '' ? -1 : Number(b.guildScore);
+          if (scoreA !== scoreB) return scoreB - scoreA;
+          return String(a.listName || a.name || '').localeCompare(String(b.listName || b.name || ''), 'ko-KR');
+        });
+    }
+
+    function openMemberFlowerModal(memberId) {
+      const member = guildMembers.find(item => item.id === memberId);
+      if (!member) return;
+      const flowers = getMemberOwnedFlowers(memberId);
+      memberFlowerTitle.textContent = `🌷 ${member.name || '길드원'}님의 보유 꽃`;
+      memberFlowerCount.textContent = `보유 ${flowers.length}개`;
+
+      if (!flowers.length) {
+        memberFlowerList.innerHTML = '<div class="member-flower-empty">현재 보유 체크된 꽃이 없습니다.</div>';
+      } else {
+        memberFlowerList.innerHTML = flowers.map(flower => {
+          const displayName = flower.listName || (flower.category ? `[${flower.category}] ${flower.name || ''}` : (flower.name || ''));
+          const score = flower.guildScore == null || flower.guildScore === '' ? '-' : `${flower.guildScore}점`;
+          return `<div class="member-flower-row">
+            <img class="member-flower-thumb" src="${escapeHtml(flower.image || '')}" alt="${escapeHtml(flower.name || displayName)}" loading="lazy">
+            <div class="member-flower-info">
+              <div class="member-flower-name">${escapeHtml(displayName)}</div>
+              <div class="member-flower-grade">${escapeHtml(flower.grade || '-')}</div>
+            </div>
+            <div class="member-flower-score">⚔️ ${escapeHtml(score)}</div>
+          </div>`;
+        }).join('');
+      }
+
+      memberFlowerModal.classList.add('active');
+      memberFlowerModal.setAttribute('aria-hidden','false');
+    }
+
+    function closeMemberFlowerModal() {
+      memberFlowerModal.classList.remove('active');
+      memberFlowerModal.setAttribute('aria-hidden','true');
+    }
+
     function renderFlowerOwnerTags(flower) {
       const owners = getFlowerOwners(flower);
       const totalMembers = guildMembers.length;
@@ -995,7 +1176,7 @@
           const title = missionDone
             ? `${member.role || '멤버'} · 경쟁전 임무 완료`
             : `${member.role || '멤버'} · 경쟁전 임무 미완료`;
-          return `<span class="guild-owner-tag ${missionDone ? 'mission-done' : ''} ${index >= previewLimit ? 'owner-extra' : ''}" data-role="${escapeHtml(member.role || '멤버')}" title="${escapeHtml(title)}">${missionDone ? '✓ ' : ''}${escapeHtml(member.name || '')}</span>`;
+          return `<button type="button" class="guild-owner-tag ${missionDone ? 'mission-done' : ''} ${index >= previewLimit ? 'owner-extra' : ''}" data-role="${escapeHtml(member.role || '멤버')}" data-owner-member="${escapeHtml(member.id)}" title="${escapeHtml(title)} · 보유 꽃 목록 보기">${missionDone ? '✓ ' : ''}${escapeHtml(member.name || '')}</button>`;
         }).join('');
         if (owners.length > previewLimit) {
           tags += `<button type="button" class="owner-more-btn" data-owner-key="${escapeHtml(flower.key)}">${expanded ? '접기' : `더보기 +${owners.length - previewLimit}`}</button>`;
@@ -1378,6 +1559,10 @@
         </article>`).join('');
       document.querySelectorAll('.btn-open').forEach(btn => btn.addEventListener('click', openDetail));
       document.querySelectorAll('.btn-own-check').forEach(btn => btn.addEventListener('click', () => toggleSelectedMemberFlower(btn.dataset.key)));
+      document.querySelectorAll('.guild-owner-tag[data-owner-member]').forEach(tag => tag.addEventListener('click', event => {
+        event.stopPropagation();
+        openMemberFlowerModal(tag.dataset.ownerMember);
+      }));
       document.querySelectorAll('.owner-more-btn').forEach(btn => btn.addEventListener('click', () => {
         const key = btn.dataset.ownerKey;
         const tagBox = [...grid.querySelectorAll('[data-owner-tags]')].find(el => el.dataset.ownerTags === key);
@@ -1724,6 +1909,11 @@
       if (!guildMemberPicker.contains(event.target)) closeGuildMemberPicker();
     });
 
+    document.getElementById('closeMemberFlowerModal').addEventListener('click', closeMemberFlowerModal);
+    memberFlowerModal.addEventListener('click', event => {
+      if (event.target === memberFlowerModal) closeMemberFlowerModal();
+    });
+
     document.getElementById('openCompetitionMission').addEventListener('click', openCompetitionMissionModal);
     document.getElementById('closeCompetitionMission').addEventListener('click', closeCompetitionMissionModal);
     document.getElementById('resetCompetitionMission').addEventListener('click', resetCompetitionMissionState);
@@ -1766,7 +1956,7 @@
     deleteFlowerModal.addEventListener('click', e => { if (e.target === deleteFlowerModal) closeDeleteFlowers(); });
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
-        closeDetail(); closeAddFlowers(); closeEditFlowers(); closeDeleteFlowers(); closeCompetitionMissionModal();
+        closeDetail(); closeAddFlowers(); closeEditFlowers(); closeDeleteFlowers(); closeCompetitionMissionModal(); closeMemberFlowerModal();
         catalogGuideModal.classList.remove('active');
         catalogGuideModal.setAttribute('aria-hidden','true');
       }
