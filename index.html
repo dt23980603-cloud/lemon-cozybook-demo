@@ -73,7 +73,7 @@
             text-align: center;
         }
 
-        /* demo_v4.28: 바로가기 아이콘 메뉴 */
+        /* demo_v4.29: 바로가기 아이콘 메뉴 */
         .quick-section,
         .main-menu-section {
             width: 100%;
@@ -373,18 +373,10 @@
         #updateTable .grade-text-SR { color: #8b4fb3; }
         #updateTable .grade-text-SSR { color: #d88900; }
         #updateTable .grade-text-UR { color: #c94d4d; }
-        #updateTable .update-date-cell {
-            width: 88px;
-            min-width: 88px;
-            white-space: nowrap;
-            font-size: 0.76rem;
-            color: #6f6557;
-            line-height: 1.35;
-        }
-
         #updateTable .update-content-cell {
             text-align: left;
             padding: 10px 12px;
+            width: 100%;
         }
 
         #updateTable .update-item {
@@ -756,7 +748,7 @@
 
     
 
-        /* demo_v4.28: v4.24 레이아웃/비율 유지 + 메인페이지 디자인만 개선 */
+        /* demo_v4.29: v4.24 레이아웃/비율 유지 + 메인페이지 디자인만 개선 */
         body {
             background:
                 radial-gradient(circle at 9% 92%, rgba(255, 227, 104, .18), transparent 16%),
@@ -1135,12 +1127,11 @@
                 <table id="updateTable">
                     <thead>
                         <tr>
-                            <th style="width: 26%;">수정 일자</th>
-                            <th style="width: 74%;">내용</th>
+                            <th>내용</th>
                         </tr>
                     </thead>
                     <tbody id="updateTbody">
-                        <tr><td colspan="2" style="color:#888;">업데이트 내역을 불러오는 중입니다.</td></tr>
+                        <tr><td style="color:#888;">업데이트 내역을 불러오는 중입니다.</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -1162,7 +1153,8 @@
                 timeZone: 'Asia/Seoul', year:'numeric', month:'2-digit', day:'2-digit'
             }).formatToParts(new Date(timestamp));
             const map = Object.fromEntries(parts.map(p => [p.type, p.value]));
-            return `${map.year}.${map.month}.${map.day}`;
+            const year2 = String(map.year || '').slice(-2);
+            return `${year2}.${map.month}.${map.day}`;
         }
 
         function getUpdateImageSrc(item) {
@@ -1174,7 +1166,7 @@
         function renderTable() {
             const tbody = document.getElementById('updateTbody');
             if (!updateList.length) {
-                tbody.innerHTML = '<tr><td colspan="2" style="color:#888;">등록된 업데이트 내역이 없습니다.</td></tr>';
+                tbody.innerHTML = '<tr><td style="color:#888;">등록된 업데이트 내역이 없습니다.</td></tr>';
                 return;
             }
             tbody.innerHTML = updateList.map(item => {
@@ -1182,13 +1174,12 @@
                 const score = item.guildScore == null ? '-' : `${item.guildScore}점`;
                 const imageSrc = getUpdateImageSrc(item);
                 return `<tr>
-                    <td class="update-date-cell">${escapeHtml(formatUpdateDate(item.createdAt))}</td>
                     <td class="update-content-cell">
                         <div class="update-item">
                             <div class="update-item-main">
                                 <div class="update-thumb-wrap">${imageSrc ? `<img class="update-thumb" src="${escapeHtml(imageSrc)}" alt="${escapeHtml(label)}" loading="lazy" onerror="this.closest('.update-thumb-wrap').style.display='none'">` : ''}</div>
                                 <div class="update-text">
-                                    <div class="update-meta">${item.action === 'edit' ? '정보 수정' : '신규 추가'}</div>
+                                    <div class="update-meta">${escapeHtml(formatUpdateDate(item.createdAt))} · ${item.action === 'edit' ? '정보 수정' : '신규 추가'}</div>
                                     <div class="update-label">${escapeHtml(label)}</div>
                                     <div class="update-sub"><span class="grade-text grade-text-${escapeHtml(item.grade)}">${escapeHtml(item.grade)}</span> · ⚔️ ${escapeHtml(score)}</div>
                                 </div>
@@ -1263,7 +1254,7 @@
                 renderTable();
             } catch (error) {
                 console.warn('업데이트 내역 D1 조회 실패', error);
-                document.getElementById('updateTbody').innerHTML = '<tr><td colspan="2" style="color:#a66;">업데이트 내역을 불러오지 못했습니다.</td></tr>';
+                document.getElementById('updateTbody').innerHTML = '<tr><td style="color:#a66;">업데이트 내역을 불러오지 못했습니다.</td></tr>';
             }
         }
 
@@ -1276,7 +1267,7 @@
     </script>
 
 
-    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.28</div>
+    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.29</div>
 
 
 <script id="pwa-auto-update-script">
