@@ -15,7 +15,7 @@
   --normal:#dff3d4;--good:#d8edf9;--superior:#eddcf7;--rare:#fff0bd;--epic:#ffd8dc;--perfect:#f4dced;
 }
 body{margin:0;background:#f7f7f7;color:var(--ink)}
-.page{width:min(980px,calc(100% - 28px));margin:16px auto 56px}
+.page{width:min(780px,calc(100% - 28px));margin:16px auto 56px}
 .header{
   display:grid;grid-template-columns:46px minmax(0,1fr) 46px;gap:10px;align-items:center;
   padding:12px 14px;border:1px solid #dedbd0;border-radius:16px;background:#fff;
@@ -41,11 +41,16 @@ body{margin:0;background:#f7f7f7;color:var(--ink)}
 .level-chip b{font-size:.76rem}.cost{color:#4373a4;white-space:nowrap}
 .sections{display:flex;flex-direction:column;gap:12px}
 .eff-card{overflow:hidden;border:1px solid #d7d7d7;border-radius:15px;background:#fff;box-shadow:0 3px 11px rgba(0,0,0,.025)}
-.eff-title{padding:11px 13px;border-bottom:1px solid #e8e8e8;background:#fbfbfb;font-size:.9rem;font-weight:700}
+.eff-title{
+  display:flex;align-items:center;gap:8px;
+  padding:9px 12px;border-bottom:1px solid #e8e8e8;background:#fbfbfb;
+  font-size:.86rem;font-weight:700
+}
+.eff-title-icon{width:30px;height:30px;object-fit:contain;flex:0 0 30px}
 .eff-table{width:100%;border-collapse:collapse;table-layout:fixed}
 .eff-table th,.eff-table td{
   border-right:1px solid #e3e3e3;border-bottom:1px solid #e3e3e3;
-  padding:8px 7px;text-align:center;vertical-align:middle;font-size:.72rem;line-height:1.35
+  padding:7px 5px;text-align:center;vertical-align:middle;font-size:.69rem;line-height:1.3
 }
 .eff-table th:last-child,.eff-table td:last-child{border-right:0}
 .eff-table tbody tr:last-child td{border-bottom:0}
@@ -76,7 +81,7 @@ body{margin:0;background:#f7f7f7;color:var(--ink)}
   .level-chip{min-height:39px;padding:5px 3px;gap:3px;flex-direction:column;font-size:.57rem;line-height:1.1}
   .level-chip b{font-size:.62rem}.cost{font-size:.55rem}
   .sections{gap:8px}.eff-card{border-radius:11px}
-  .eff-title{padding:8px 9px;font-size:.72rem}
+  .eff-title{padding:7px 8px;font-size:.69rem;gap:5px}.eff-title-icon{width:23px;height:23px;flex-basis:23px}
   .eff-table th,.eff-table td{padding:5px 3px;font-size:.57rem;line-height:1.2}
   .eff-table th{font-size:.52rem}.eff-table th:first-child{width:31%}
   .grade-cell{gap:3px;white-space:nowrap}.grade-icon{width:20px;height:20px}
@@ -112,11 +117,20 @@ body{margin:0;background:#f7f7f7;color:var(--ink)}
   <section id="sections" class="sections"><div class="loading">효율표를 불러오는 중...</div></section>
   <p class="footer-note">※ 수치가 추가로 확인되면 우측 상단 ⚙️에서 직접 수정할 수 있습니다.</p>
 </main>
-<div id="site-version">demo_v4.17</div>
+<div id="site-version">demo_v4.18</div>
 
 <script src="upgrade-efficiency-data.js"></script>
 <script>
 const API='/api/upgrade-efficiency';
+const EFFECT_ICONS={
+  gold:'images/guides/upgrade/effects/gold.webp',
+  exp:'images/guides/upgrade/effects/exp.webp',
+  interval:'images/guides/upgrade/effects/interval.webp',
+  essenceChance:'images/guides/upgrade/effects/essenceChance.webp',
+  essenceCount:'images/guides/upgrade/effects/essenceCount.webp',
+  harvestCount:'images/guides/upgrade/effects/harvestCount.webp',
+  guildPoints:'images/guides/upgrade/effects/guildPoints.webp'
+};
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 let data=structuredClone(window.UPGRADE_EFFICIENCY_DEFAULTS);
 
@@ -139,8 +153,9 @@ function render(){
         ${values}
       </tr>`;
     }).join('');
+    const effectIcon=EFFECT_ICONS[section.key]||'';
     return `<article class="eff-card">
-      <div class="eff-title">${esc(section.title)}</div>
+      <div class="eff-title">${effectIcon?`<img class="eff-title-icon" src="${esc(effectIcon)}" alt="">`:''}<span>${esc(section.title)}</span></div>
       <table class="eff-table">
         <thead><tr><th>등급</th>${levels.map(l=>`<th>${esc(l.label.replace(' 개량',''))}</th>`).join('')}</tr></thead>
         <tbody>${rows}</tbody>

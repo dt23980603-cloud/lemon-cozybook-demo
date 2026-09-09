@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.17-upgrade-efficiency';
+const CACHE_NAME = 'lemon-demo-v4.18-upgrade-icons-compact';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -25,6 +25,13 @@ const APP_SHELL = [
   '/images/guides/upgrade/grade-rare.webp',
   '/images/guides/upgrade/grade-epic.webp',
   '/images/guides/upgrade/grade-perfect.webp',
+  '/images/guides/upgrade/effects/essenceCount.webp',
+  '/images/guides/upgrade/effects/essenceChance.webp',
+  '/images/guides/upgrade/effects/guildPoints.webp',
+  '/images/guides/upgrade/effects/exp.webp',
+  '/images/guides/upgrade/effects/gold.webp',
+  '/images/guides/upgrade/effects/interval.webp',
+  '/images/guides/upgrade/effects/harvestCount.webp',
   '/images/guides/starsoul/01-zodiac-flower.jpg',
   '/images/guides/starsoul/02-soul-collection.jpg',
   '/images/guides/starsoul/zodiac/aquarius.webp',
