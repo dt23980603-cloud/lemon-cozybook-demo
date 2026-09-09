@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.25-mainpage-icons';
+const CACHE_NAME = 'lemon-demo-v4.25-main-design-fixed';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -19,6 +19,10 @@ const APP_SHELL = [
   '/images/banners/lemon-banner-mobile.png',
   '/images/ui/back-button.png',
   '/images/ui/guide-default.png',
+  '/images/ui/main-flower-book.webp',
+  '/images/ui/main-swords.webp',
+  '/images/ui/main-bulb.webp',
+  '/images/ui/main-guide-book.webp',
   '/images/guides/upgrade/grade-normal.webp',
   '/images/guides/upgrade/grade-good.webp',
   '/images/guides/upgrade/grade-superior.webp',

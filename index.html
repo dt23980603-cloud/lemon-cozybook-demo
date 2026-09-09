@@ -1,542 +1,1219 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>demo 레몬 | 더 코지 플로리스트</title>
-<link rel="icon" type="image/png" href="images/branding/lemon-favicon.png">
-<style>
-  *{box-sizing:border-box}
-  :root{
-    --bg:#fcfbf7;
-    --paper:#ffffff;
-    --ink:#3e2c1d;
-    --sub:#7d736b;
-    --line:#e6dece;
-    --lemon:#fff4ba;
-    --lemon-2:#fff7d7;
-    --lemon-3:#f8e694;
-    --shadow:0 10px 30px rgba(79,61,24,.08);
-  }
-  html,body{
-    margin:0;
-    background:
-      radial-gradient(circle at 12% 10%, rgba(255,236,151,.32), transparent 18%),
-      radial-gradient(circle at 92% 18%, rgba(255,240,185,.32), transparent 16%),
-      linear-gradient(180deg, #fffcf2 0%, #fbfbf8 40%, #f7f6f3 100%);
-    color:var(--ink);
-    font-family:"Malgun Gothic","Apple SD Gothic Neo",sans-serif;
-  }
-  body{padding:32px 20px 56px; position:relative; overflow-x:hidden}
-  a{color:inherit}
-  button,input,select,textarea{font-family:inherit}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>demo 레몬 | 더 코지 플로리스트</title>
+    <link rel="icon" type="image/png" href="images/branding/lemon-favicon.png">
 
-  .lemon-deco{
-    position:fixed; inset:auto auto 18px 18px; width:190px; height:190px; pointer-events:none; opacity:.72;
-    background:
-      radial-gradient(circle at 42% 45%, #ffe86d 0 23%, #ffd957 23% 38%, transparent 39%),
-      radial-gradient(circle at 54% 58%, rgba(255,255,255,.75) 0 7%, transparent 8%),
-      radial-gradient(circle at 79% 35%, #7dbd57 0 10%, transparent 11%),
-      radial-gradient(circle at 89% 49%, #87c460 0 8%, transparent 9%),
-      radial-gradient(circle at 78% 81%, #fff 0 2.6%, transparent 2.8%),
-      radial-gradient(circle at 73% 77%, #f7f6d9 0 7%, transparent 7.2%);
-    filter:blur(.2px);
-  }
-  .lemon-deco.right{inset:auto 8px 6px auto; transform:scale(.9) rotate(10deg); opacity:.56}
-  .container{max-width:1200px; margin:0 auto; position:relative}
-  .page{
-    position:relative;
-    background:rgba(255,255,255,.78);
-    backdrop-filter: blur(4px);
-    border:1px solid rgba(222,214,196,.75);
-    border-radius:34px;
-    box-shadow:var(--shadow);
-    padding:30px 34px 34px;
-    overflow:hidden;
-  }
-  .page:before,.page:after{
-    content:""; position:absolute; border-radius:50%; pointer-events:none;
-    background:radial-gradient(circle at 35% 35%, rgba(255,245,188,.9), rgba(255,245,188,.1) 65%, transparent 70%);
-  }
-  .page:before{width:210px;height:210px;left:-70px;bottom:-85px}
-  .page:after{width:170px;height:170px;right:-50px;top:-40px}
-  .top-title{text-align:center; margin:2px 0 26px; position:relative; z-index:1}
-  .notice-title{
-    font-size:clamp(24px,2.2vw,38px);
-    font-weight:800; letter-spacing:-.03em; color:#45301e;
-    margin:0 0 10px;
-  }
-  .notice-title .emoji{margin:0 6px}
-  .notice-lines{
-    margin:0; padding:0; list-style:none;
-    color:#72675f; font-size:clamp(14px,1.1vw,18px); line-height:1.8;
-  }
-  .divider{
-    display:flex; align-items:center; gap:18px; margin:24px 0 18px;
-    color:#66594f; font-weight:700; font-size:21px;
-    justify-content:center;
-  }
-  .divider:before,.divider:after{
-    content:""; height:1px; background:linear-gradient(90deg, transparent, #d9cfbf 20%, #d9cfbf 80%, transparent);
-    flex:1;
-  }
-  .quick-grid{
-    display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:26px;
-    margin-bottom:18px;
-  }
-  .quick-card{
-    position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center;
-    min-height:160px; border-radius:28px; background:rgba(255,255,255,.96); text-decoration:none;
-    border:1px solid #e7dfd1; box-shadow:0 8px 24px rgba(81,60,26,.05), inset 0 1px 0 rgba(255,255,255,.9);
-    transition:transform .18s ease, box-shadow .18s ease;
-    overflow:hidden; color:#403126;
-  }
-  .quick-card:hover{transform:translateY(-3px); box-shadow:0 14px 32px rgba(81,60,26,.11)}
-  .quick-card:before{
-    content:""; position:absolute; inset:0;
-    background:
-      radial-gradient(circle at 18% 18%, rgba(255,244,200,.5), transparent 20%),
-      radial-gradient(circle at 84% 24%, rgba(240,230,255,.55), transparent 18%),
-      linear-gradient(180deg, rgba(255,255,255,.55), transparent 55%);
-    pointer-events:none;
-  }
-  .quick-icon-wrap{
-    width:76px; height:76px; border-radius:24px; display:grid; place-items:center;
-    margin-bottom:14px; position:relative; z-index:1;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 0 6px 18px rgba(71,50,20,.08);
-    border:1px solid #ece4d5;
-    background:#fff;
-  }
-  .quick-card:nth-child(1) .quick-icon-wrap{background:linear-gradient(180deg,#fbf8ff,#f4eeff); border-color:#ddd3ff}
-  .quick-card:nth-child(2) .quick-icon-wrap{background:linear-gradient(180deg,#fffdfd,#f6f1ff); border-color:#eadfff}
-  .quick-card:nth-child(3) .quick-icon-wrap{background:linear-gradient(180deg,#fbfffb,#eef8eb); border-color:#d7e8cf}
-  .quick-icon{font-size:40px; line-height:1}
-  .quick-label.small{font-weight:800; font-size:18px; line-height:1}
-  .quick-sub{font-size:14px; color:#8a8178; margin-top:5px; text-align:center}
-  .corner-star{
-    position:absolute; width:10px; height:10px; border-radius:50%;
-    background:#ffe17c; top:18px; right:20px; box-shadow:0 0 0 5px rgba(255,225,124,.18);
-  }
-  .menu-grid{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:22px; margin-top:8px}
-  .menu-card{
-    position:relative; min-height:168px; text-decoration:none; color:inherit;
-    background:linear-gradient(180deg,var(--lemon-2),#fff8da 65%, #fff5cb 100%);
-    border:2px solid #e1c65c; border-radius:32px; overflow:hidden;
-    box-shadow:0 12px 26px rgba(171,141,46,.10), inset 0 1px 0 rgba(255,255,255,.85);
-    padding:24px 24px 22px 22px;
-    display:flex; align-items:center; gap:22px;
-  }
-  .menu-card:before{
-    content:""; position:absolute; inset:0;
-    background:
-      radial-gradient(circle at 11% 20%, rgba(255,255,255,.82), transparent 14%),
-      radial-gradient(circle at 84% 22%, rgba(255,248,198,.85), transparent 16%),
-      radial-gradient(circle at 26% 80%, rgba(255,255,255,.48), transparent 20%);
-    pointer-events:none;
-  }
-  .menu-card:after{
-    content:""; position:absolute; right:-28px; bottom:-30px; width:118px; height:118px; border-radius:50%;
-    background:radial-gradient(circle, rgba(255,238,141,.42), rgba(255,238,141,.08) 62%, transparent 64%);
-    pointer-events:none;
-  }
-  .menu-illus{
-    position:relative; z-index:1; width:126px; min-width:126px; height:126px; border-radius:28px;
-    display:grid; place-items:center;
-    background:linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.48));
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
-  }
-  .menu-illus img{
-    width:104px; height:104px; object-fit:contain; display:block;
-    filter:drop-shadow(0 6px 12px rgba(0,0,0,.08));
-  }
-  .menu-copy{position:relative; z-index:1; min-width:0; flex:1}
-  .menu-title{
-    margin:0 0 10px; font-size:clamp(27px,2vw,38px); font-weight:900; letter-spacing:-.04em; color:#362616;
-    display:flex; align-items:center; gap:8px; flex-wrap:wrap;
-  }
-  .menu-desc{margin:0; color:#786a5d; font-size:clamp(15px,1.05vw,18px); line-height:1.55}
-  .menu-arrow{
-    position:relative; z-index:1; width:54px; height:54px; min-width:54px; border-radius:50%;
-    display:grid; place-items:center; background:#f5cc43; color:#fff; font-size:26px; font-weight:900;
-    box-shadow:0 8px 18px rgba(224,178,22,.23);
-  }
-  .menu-card.pink{background:linear-gradient(180deg,#fff7de,#fff3ca 65%,#ffeeb4 100%)}
-  .menu-card.green{background:linear-gradient(180deg,#fff8dc,#fff6d7 65%,#fff2c1 100%)}
-  .menu-card.book{background:linear-gradient(180deg,#fff8df,#fff4d1 65%,#ffefbe 100%)}
-  .tiny-flower,.tiny-leaf,.tiny-spark{position:absolute; z-index:1; opacity:.95}
-  .tiny-flower{font-size:25px; left:18px; bottom:12px}
-  .tiny-leaf{font-size:24px; right:22px; top:14px}
-  .tiny-spark{font-size:21px; left:16px; top:16px}
-  .updates-section{margin-top:30px; position:relative; z-index:1}
-  .updates-card{
-    background:rgba(255,255,255,.88);
-    border:1px solid #e6dece;
-    border-radius:28px;
-    box-shadow:0 10px 24px rgba(79,61,24,.06);
-    overflow:hidden;
-  }
-  .updates-head{
-    display:flex; justify-content:space-between; align-items:center; gap:12px;
-    padding:16px 18px; background:linear-gradient(180deg,#fff8df,#fff4d1);
-    border-bottom:1px solid #eadfbe;
-  }
-  .updates-title{font-weight:900; font-size:20px; color:#3d2d1b}
-  .btn-reset{
-    background:#fff; color:#82503c; border:1px solid #dfc7b8; border-radius:14px;
-    padding:8px 12px; cursor:pointer; font-weight:700;
-  }
-  .btn-reset:hover{background:#fff7f5}
-  table{width:100%; border-collapse:collapse; background:transparent}
-  th,td{border-bottom:1px solid #efe7da; padding:14px 12px; text-align:center; vertical-align:middle; font-size:14px}
-  th{background:#fffcf3; color:#6a5c50; font-weight:800}
-  tbody tr:hover{background:#fffdf8}
-  .grade-text{font-weight:700}
-  .grade-text-N{color:#6ca34f}.grade-text-R{color:#2f78d6}.grade-text-SR{color:#8a4fd2}.grade-text-SSR{color:#cc8d1f}.grade-text-UR{color:#d4557d}
-  .update-actions{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
-  .btn-update-flower,.btn-update-delete{
-    border:1px solid #e2d8cd; background:#fff; border-radius:12px; padding:7px 10px; cursor:pointer; font-size:13px; font-weight:700;
-  }
-  .btn-update-flower:hover,.btn-update-delete:hover{background:#fff8eb}
-  .footer-msg{margin-top:26px; text-align:center; color:#756a61; font-size:18px; font-weight:600}
-  .signature{text-align:right; margin-top:10px; color:#e0bb4a; font-size:43px; font-style:italic; font-family:cursive; opacity:.85; padding-right:6px}
-  #site-version{position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;}
-  #pwaInstallBtn{
-    position:fixed;right:14px;bottom:12px;z-index:9998;border:0;border-radius:999px;padding:11px 16px;background:#f4d356;color:#5b4511;
-    box-shadow:0 6px 18px rgba(162,126,14,.18);font-weight:800;cursor:pointer
-  }
+    <!-- 고운 바탕 폰트 불러오기 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
 
-  @media (max-width: 920px){
-    .page{padding:24px 18px 26px}
-    .quick-grid,.menu-grid{grid-template-columns:1fr}
-    .menu-card{min-height:150px}
-    .menu-illus{width:92px; min-width:92px; height:92px}
-    .menu-illus img{width:74px;height:74px}
-    .signature{font-size:34px}
+    <style>
+        /* 모든 글자를 Gowun Batang으로 지정 */
+        *, body, input, button, select, textarea {
+            font-family: 'Gowun Batang', serif !important;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            margin: 20px;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .left-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .notice-box {
+            background: transparent;
+            border: 0;
+            border-radius: 0;
+            padding: 2px 0 4px;
+            text-align: center;
+        }
+
+        .notice-title {
+            font-size: 0.96rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #555;
+            text-align: center;
+        }
+
+        .notice-content {
+            text-align: center;
+        }
+
+        .notice-content p {
+            margin: 3px 0;
+            line-height: 1.4;
+            font-size: 0.78rem;
+            color: #777;
+            text-align: center;
+        }
+
+        /* demo_v4.25: 바로가기 아이콘 메뉴 */
+        .quick-section,
+        .main-menu-section {
+            width: 100%;
+        }
+
+        .section-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            margin: 2px 0 12px;
+        }
+
+        .section-divider-line {
+            height: 1px;
+            flex: 1;
+            background: #d5d5d5;
+        }
+
+        .section-divider h2 {
+            margin: 0;
+            flex: 0 0 auto;
+            color: #666;
+            font-size: 0.84rem;
+            font-weight: 700;
+            letter-spacing: .02em;
+        }
+
+        .quick-menu {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .quick-item {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 7px;
+            color: #333;
+            text-decoration: none;
+            font-weight: 700;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .quick-icon {
+            width: 72px;
+            height: 72px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #d2d2d2;
+            border-radius: 22px;
+            background: #fff;
+            box-shadow: 0 3px 10px rgba(0,0,0,.07);
+            font-size: 2rem;
+            line-height: 1;
+            transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+        }
+
+        .quick-starsoul .quick-icon {
+            background: linear-gradient(145deg, #f7f2ff 0%, #eef1ff 100%);
+            border-color: #cfc6e4;
+        }
+
+        .quick-item:hover .quick-icon {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,.11);
+            background-color: #fff9db;
+        }
+
+        .quick-name {
+            width: 100%;
+            text-align: center;
+            font-size: .82rem;
+            line-height: 1.25;
+            white-space: nowrap;
+        }
+
+        .main-menu-section {
+            margin-top: 2px;
+        }
+
+        /* 버튼 메뉴 스타일 */
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-color: #fff9db;
+            border: 1px solid #333;
+            border-radius: 16px;
+            color: #333;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .button-grid .nav-row-three {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+            width: 100%;
+        }
+
+        .button-grid .nav-row-three .nav-btn {
+            width: 100%;
+            box-sizing: border-box;
+            background: #fff;
+            border: 1px solid #b9b9b9;
+            border-radius: 16px;
+            box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .button-grid .nav-row-three .nav-btn:hover {
+            background: #f7f7f7;
+        }
+
+        .button-grid .nav-btn-wide {
+            grid-column: 1 / -1;
+        }
+
+        .nav-btn:hover {
+            background-color: #fff2cc;
+            transform: translateY(-2px);
+            box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+
+        th,
+        td {
+            border: 1px solid #333;
+            padding: 8px 10px;
+            text-align: center;
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: #fff9db;
+            font-weight: bold;
+        }
+
+        /* 표 헤더 / 제목 스타일 */
+        .table-header-box {
+            background-color: #fff9db;
+            border: 1px solid #333;
+            border-bottom: none;
+            padding: 8px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .btn-reset {
+            background-color: #ff6b6b;
+            color: #fff;
+            border: 1px solid #d93838;
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-reset:hover {
+            background-color: #fa5252;
+        }
+
+        .btn-update-delete {
+            flex: 0 0 auto;
+            margin-left: 10px;
+            width: 28px;
+            height: 28px;
+            border: 1px solid #e2b6b6;
+            border-radius: 6px;
+            background: #fff5f5;
+            color: #c94d4d;
+            cursor: pointer;
+            font-size: 0.92rem;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-update-delete:hover {
+            background: #ffe3e3;
+        }
+
+        .btn-update-flower {
+            border: 1px solid #8fa98a;
+            border-radius: 6px;
+            background: #f7fbf5;
+            color: #355c35;
+            padding: 5px 9px;
+            font-size: .76rem;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .btn-update-flower:hover {
+            background: #eef7e9;
+        }
+
+        .update-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        /* 업데이트 내역 본문: PC/모바일 공통 가독성 */
+        #updateTable tbody td {
+            color: #111;
+        }
+
+        #updateTable .grade-text {
+            font-weight: 700;
+        }
+
+        #updateTable .grade-text-N { color: #4f7a2f; }
+        #updateTable .grade-text-R { color: #2f78a8; }
+        #updateTable .grade-text-SR { color: #8b4fb3; }
+        #updateTable .grade-text-SSR { color: #d88900; }
+        #updateTable .grade-text-UR { color: #c94d4d; }
+
+        /* 입력 양식 스타일: PC/모바일 공통으로 외곽선을 연하게 */
+        .add-form-card {
+            background: #fff;
+            border: 1px solid #d8d8d8;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .form-row input,
+        .form-row select {
+            padding: 6px 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .input-category {
+            width: 100px;
+        }
+
+        .input-content {
+            flex: 1;
+        }
+
+        .btn-add {
+            background-color: #fff2cc;
+            border: 1px solid #333;
+            padding: 8px 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-add:hover {
+            background-color: #ffd94e;
+        }
+
+        .btn-edit {
+            background-color: #ffffff;
+            border: 1px solid #777;
+            padding: 4px 9px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-edit:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn-cancel-edit {
+            display: none;
+            background-color: #f5f5f5;
+            border: 1px solid #aaa;
+            padding: 8px 12px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .edit-guide {
+            display: none;
+            margin-top: 2px;
+            color: #777;
+            font-size: 0.8rem;
+        }
+
+
+
+        /* 메인 배너: PC / 모바일 전용 이미지 자동 전환 */
+        .main-banner {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto 20px;
+        }
+
+        .main-banner img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .main-banner-mobile {
+            display: none !important;
+        }
+
+        /* 모바일 전용 레이아웃: PC 스타일은 그대로 유지 */
+        @media (max-width: 480px) {
+            .main-banner-pc { display: none !important; }
+            .main-banner-mobile { display: block !important; }
+            .main-banner { margin-bottom: 16px; }
+
+            body {
+                margin: 12px;
+            }
+
+            .container {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                width: 100%;
+                max-width: none;
+                margin: 0;
+            }
+
+            .left-panel,
+            .right-panel {
+                width: 100%;
+                min-width: 0;
+                gap: 10px;
+            }
+
+            /* 1. NOTICE는 보조 안내처럼 가볍게 표시 */
+            .notice-box {
+                width: 100%;
+                box-sizing: border-box;
+                padding: 0 2px 2px;
+                text-align: center;
+            }
+
+            .notice-title {
+                font-size: 0.84rem;
+                line-height: 1.35;
+                margin-bottom: 4px;
+                text-align: center;
+            }
+
+            .notice-content p {
+                font-size: 0.70rem;
+                line-height: 1.42;
+                margin: 2px 0;
+                text-align: center;
+            }
+
+            /* 2. 바로가기 아이콘 메뉴 */
+            .section-divider {
+                gap: 9px;
+                margin: 1px 0 10px;
+            }
+
+            .section-divider h2 {
+                font-size: .72rem;
+            }
+
+            .quick-menu {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 10px;
+                max-width: 100%;
+            }
+
+            .quick-icon {
+                width: 58px;
+                height: 58px;
+                border-radius: 18px;
+                font-size: 1.65rem;
+            }
+
+            .quick-name {
+                font-size: .72rem;
+            }
+
+            /* 3. 레몬공책 메뉴 버튼은 2열 */
+            .button-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+                margin-top: 0;
+            }
+
+            .button-grid .nav-row-three {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+                width: 100%;
+            }
+
+            .button-grid .nav-row-three .nav-btn {
+                width: 100%;
+                min-height: 58px;
+                font-size: 0.86rem;
+                padding: 10px 6px;
+                background: #fff;
+                border-radius: 16px;
+            }
+
+            .nav-btn {
+                min-width: 0;
+                min-height: 68px;
+                padding: 12px 8px;
+                box-sizing: border-box;
+                text-align: center;
+                font-size: 0.98rem;
+                line-height: 1.35;
+                word-break: keep-all;
+            }
+
+            /* 4. 업데이트 영역을 버튼 아래 전체 너비로 */
+            .right-panel > div:first-child {
+                width: 100%;
+                min-width: 0;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .table-header-box {
+                box-sizing: border-box;
+                width: 100%;
+                padding: 9px 10px;
+                gap: 8px;
+            }
+
+            .table-title {
+                font-size: 0.96rem;
+            }
+
+            .btn-reset {
+                flex: 0 0 auto;
+                padding: 5px 8px;
+                font-size: 0.72rem;
+            }
+
+            .btn-update-delete {
+                width: 26px;
+                height: 26px;
+                margin-left: 6px;
+                font-size: 0.82rem;
+            }
+
+            #updateTable {
+                width: 100%;
+                table-layout: fixed;
+            }
+
+            #updateTable th,
+            #updateTable td {
+                padding: 6px 4px;
+                font-size: 0.72rem;
+                line-height: 1.35;
+                word-break: break-word;
+            }
+
+            #updateTable .btn-edit {
+                padding: 4px 5px;
+                font-size: 0.68rem;
+                white-space: nowrap;
+            }
+
+            /* 업데이트 등록 폼도 모바일에서 입력하기 쉽게 정렬 */
+            .add-form-card {
+                box-sizing: border-box;
+                width: 100%;
+                padding: 12px;
+            }
+
+            .form-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr auto;
+                gap: 8px;
+                align-items: stretch;
+            }
+
+            .form-row input,
+            .form-row select,
+            .form-row button {
+                box-sizing: border-box;
+                min-width: 0;
+                font-size: 0.82rem;
+            }
+
+            .input-category {
+                width: 100%;
+                grid-column: 1 / 2;
+            }
+
+            .input-content {
+                width: 100%;
+                grid-column: 2 / 4;
+            }
+
+            #selectGrade {
+                width: 100%;
+                grid-column: 1 / 2;
+            }
+
+            #btnSaveUpdate {
+                grid-column: 2 / 3;
+                padding: 8px 10px;
+            }
+
+            #btnCancelEdit {
+                grid-column: 3 / 4;
+                padding: 8px 10px;
+            }
+
+            .edit-guide {
+                font-size: 0.72rem;
+                line-height: 1.45;
+            }
+
+        }
+
+    
+
+        /* demo_v4.25: v4.24 레이아웃/비율 유지 + 메인페이지 디자인만 개선 */
+        body {
+            background:
+                radial-gradient(circle at 9% 92%, rgba(255, 227, 104, .18), transparent 16%),
+                radial-gradient(circle at 95% 88%, rgba(165, 203, 92, .10), transparent 14%),
+                linear-gradient(180deg, #fffdf7 0%, #f9f9f7 48%, #f6f5f1 100%);
+        }
+
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -55px;
+            width: 205px;
+            height: 205px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: .64;
+            background:
+                radial-gradient(circle at 42% 45%, #ffe66c 0 25%, #f8d94f 25% 38%, transparent 39%),
+                radial-gradient(circle at 80% 28%, #75b654 0 9%, transparent 10%),
+                radial-gradient(circle at 88% 42%, #8ac566 0 8%, transparent 9%);
+        }
+        body::before { left: -58px; }
+        body::after { right: -62px; transform: scale(.84) rotate(14deg); opacity: .46; }
+
+        .notice-title {
+            color: #493322;
+            font-size: 1.06rem;
+            font-weight: 700;
+            letter-spacing: -.02em;
+        }
+        .notice-content p {
+            color: #786e66;
+            font-size: .80rem;
+        }
+
+        .section-divider-line {
+            background: linear-gradient(90deg, rgba(215,207,194,0), #d9cfbf 20%, #d9cfbf 80%, rgba(215,207,194,0));
+        }
+        .section-divider h2 { color:#675a50; }
+
+        /* 바로가기: 기존 3열 크기 안에서 흰색 카드/아이콘 모양 유지 */
+        .quick-menu { gap: 12px; max-width: 520px; }
+        .quick-item {
+            position: relative;
+            min-height: 124px;
+            padding: 12px 6px 10px;
+            border: 1px solid #e7dfd1;
+            border-radius: 20px;
+            background: rgba(255,255,255,.92);
+            box-shadow: 0 6px 16px rgba(81,60,26,.055), inset 0 1px 0 rgba(255,255,255,.95);
+            overflow: hidden;
+            transition: transform .18s ease, box-shadow .18s ease;
+        }
+        .quick-item::before {
+            content:'';
+            position:absolute;
+            inset:0;
+            background:
+                radial-gradient(circle at 18% 17%, rgba(255,244,200,.48), transparent 22%),
+                linear-gradient(180deg, rgba(255,255,255,.38), transparent 58%);
+            pointer-events:none;
+        }
+        .quick-item:hover { transform: translateY(-2px); box-shadow:0 9px 20px rgba(81,60,26,.10); }
+        .quick-icon {
+            position:relative;
+            z-index:1;
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
+            background: #fff;
+            border-color: #e6dfd4;
+            box-shadow: 0 4px 11px rgba(79,61,24,.07), inset 0 1px 0 rgba(255,255,255,.9);
+            font-size: 1.65rem;
+        }
+        .quick-starsoul .quick-icon {
+            background: linear-gradient(145deg, #fbf8ff 0%, #f4efff 100%);
+            border-color: #dcd3f2;
+        }
+        .quick-name { position:relative; z-index:1; color:#403126; font-size:.78rem; }
+        .quick-sub {
+            position:relative;
+            z-index:1;
+            display:block;
+            color:#988e84;
+            font-size:.58rem;
+            line-height:1.25;
+            text-align:center;
+            font-weight:400;
+            white-space:nowrap;
+        }
+        .quick-spark {
+            position:absolute;
+            z-index:1;
+            top:10px;
+            right:12px;
+            width:6px;
+            height:6px;
+            border-radius:50%;
+            background:#f4d46c;
+            box-shadow:0 0 0 4px rgba(244,212,108,.12);
+        }
+
+        /* 4개 메인 메뉴: v4.24의 2x2 그리드를 그대로 사용 */
+        .lemon-menu-grid { gap: 12px; }
+        .lemon-menu-card.nav-btn {
+            position: relative;
+            justify-content: flex-start;
+            gap: 10px;
+            min-width: 0;
+            min-height: 112px;
+            padding: 10px 42px 10px 10px;
+            border: 1.5px solid #dfc568;
+            border-radius: 20px;
+            background: linear-gradient(180deg, #fff9dd 0%, #fff4c5 100%);
+            box-shadow: 0 7px 15px rgba(171,141,46,.085), inset 0 1px 0 rgba(255,255,255,.92);
+            overflow: hidden;
+            font-size: inherit;
+            text-align: left;
+        }
+        .lemon-menu-card.nav-btn::before {
+            content:'';
+            position:absolute;
+            inset:0;
+            background:
+                radial-gradient(circle at 12% 22%, rgba(255,255,255,.78), transparent 19%),
+                radial-gradient(circle at 88% 18%, rgba(255,247,190,.72), transparent 17%),
+                linear-gradient(135deg, rgba(255,255,255,.28), transparent 45%);
+            pointer-events:none;
+        }
+        .lemon-menu-card.nav-btn:hover {
+            background: linear-gradient(180deg, #fff8d5 0%, #ffefad 100%);
+            border-color:#d6b94f;
+            transform: translateY(-2px);
+            box-shadow:0 10px 19px rgba(171,141,46,.13);
+        }
+        .menu-art {
+            position:relative;
+            z-index:1;
+            flex: 0 0 76px;
+            width:76px;
+            height:76px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            border-radius:17px;
+            background:rgba(255,255,255,.58);
+        }
+        .menu-art img {
+            width:70px;
+            height:70px;
+            object-fit:contain;
+            display:block;
+            filter: drop-shadow(0 3px 5px rgba(55,44,18,.08));
+        }
+        .menu-copy {
+            position:relative;
+            z-index:1;
+            min-width:0;
+            display:flex;
+            flex-direction:column;
+            gap:5px;
+        }
+        .menu-copy strong {
+            color:#3d2c1c;
+            font-size:.96rem;
+            line-height:1.25;
+            word-break:keep-all;
+        }
+        .menu-copy small {
+            color:#817365;
+            font-size:.64rem;
+            line-height:1.35;
+            font-weight:400;
+            word-break:keep-all;
+        }
+        .menu-arrow {
+            position:absolute;
+            z-index:1;
+            right:12px;
+            top:50%;
+            transform:translateY(-50%);
+            width:28px;
+            height:28px;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:#f2c943;
+            color:#fff;
+            font-size:1.25rem;
+            line-height:1;
+            box-shadow:0 4px 9px rgba(204,157,9,.16);
+        }
+        .menu-flower { background:linear-gradient(180deg,#fff9df 0%,#fff2bd 100%) !important; }
+        .menu-battle { background:linear-gradient(180deg,#fff9dd 0%,#fff3bf 100%) !important; }
+        .menu-upgrade { background:linear-gradient(180deg,#fff9df 0%,#fff4c8 100%) !important; }
+        .menu-guide { background:linear-gradient(180deg,#fff9e1 0%,#fff3c4 100%) !important; }
+
+        /* 업데이트 표는 v4.24의 우측 컬럼/기능 그대로, 색만 부드럽게 */
+        .table-header-box {
+            background: linear-gradient(180deg,#fff9df,#fff3c9);
+            border-color:#9f8e72;
+        }
+        th { background-color:#fff9df; }
+
+        @media (max-width: 480px) {
+            body::before, body::after { width:140px; height:140px; bottom:-45px; }
+            .notice-title { font-size:.88rem; }
+            .notice-content p { font-size:.69rem; }
+            .quick-menu { gap:7px; }
+            .quick-item {
+                min-height:96px;
+                padding:8px 3px 7px;
+                border-radius:16px;
+            }
+            .quick-icon { width:48px; height:48px; border-radius:15px; font-size:1.35rem; }
+            .quick-name { font-size:.66rem; }
+            .quick-sub { font-size:.47rem; }
+            .quick-spark { top:7px; right:8px; width:5px; height:5px; }
+
+            .lemon-menu-grid { gap:8px; }
+            .lemon-menu-card.nav-btn {
+                min-height:126px;
+                padding:8px 7px 10px;
+                flex-direction:column;
+                justify-content:center;
+                gap:4px;
+                text-align:center;
+                border-radius:17px;
+            }
+            .menu-art { width:55px; height:55px; flex-basis:55px; border-radius:13px; }
+            .menu-art img { width:51px; height:51px; }
+            .menu-copy { align-items:center; gap:2px; width:100%; }
+            .menu-copy strong { font-size:.72rem; line-height:1.25; }
+            .menu-copy small { display:none; }
+            .menu-arrow {
+                top:9px;
+                right:9px;
+                transform:none;
+                width:23px;
+                height:23px;
+                font-size:1rem;
+            }
+        }
+
+    </style>
+
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#ffe680">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="레몬">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+<style id="pwa-install-style">
+  #pwaInstallBtn {
+    display:block; position:fixed; right:14px; bottom:14px; z-index:10000;
+    border:0; border-radius:999px; padding:10px 14px; cursor:pointer;
+    background:#ffe680; color:#4a3b00; font-weight:700; font-size:13px;
+    box-shadow:0 3px 12px rgba(0,0,0,.16);
   }
-  @media (max-width: 560px){
-    body{padding:16px 10px 42px}
-    .page{border-radius:24px; padding:18px 14px 22px}
-    .notice-title{font-size:24px}
-    .notice-lines{font-size:13px}
-    .divider{font-size:18px; gap:10px}
-    .quick-grid{gap:14px}
-    .quick-card{min-height:132px; border-radius:22px}
-    .quick-icon-wrap{width:64px; height:64px; border-radius:20px; margin-bottom:10px}
-    .quick-icon{font-size:34px}
-    .quick-label.small{font-size:17px}
-    .quick-sub{font-size:12px}
-    .menu-grid{gap:16px}
-    .menu-card{gap:14px; padding:16px 16px 16px 14px; border-radius:24px; min-height:132px}
-    .menu-illus{width:76px; min-width:76px; height:76px; border-radius:22px}
-    .menu-illus img{width:60px;height:60px}
-    .menu-title{font-size:23px; margin-bottom:7px}
-    .menu-desc{font-size:13px}
-    .menu-arrow{width:46px; height:46px; min-width:46px; font-size:22px}
-    .tiny-flower,.tiny-leaf,.tiny-spark{font-size:18px}
-    .footer-msg{font-size:15px}
-    .signature{font-size:28px}
-    .updates-head{flex-direction:column; align-items:flex-start}
-    th,td{font-size:13px; padding:12px 8px}
-    .update-actions{justify-content:flex-start}
-    #pwaInstallBtn{padding:10px 14px;font-size:13px}
-  }
+  #pwaInstallBtn:hover { filter:brightness(.96); }
+  @media (max-width:480px){ #pwaInstallBtn { right:12px; bottom:12px; font-size:12px; padding:9px 12px; } }
 </style>
 </head>
+
 <body>
-<div class="lemon-deco"></div>
-<div class="lemon-deco right"></div>
 
-<div class="container">
-  <div class="page">
-    <section class="top-title">
-      <h1 class="notice-title"><span class="emoji">🍋</span> 레몬 NOTICE | 새로운 길드원 여러분 환영합니다! <span class="emoji">💛</span></h1>
-      <ul class="notice-lines">
-        <li># 새로운 길드원 여러분! 👏 레몬에 오신 것을 환영합니다! 💖</li>
-        <li># 인게임 공식 업데이트 후, 1~3일 이내에 최대한 추가하도록 노력하겠습니다 :)</li>
-        <li># 해당 웹사이트에 대해 추가 의견사항 있으시면 언제든지 자유롭게 말씀해주세요 :)</li>
-      </ul>
-    </section>
+    <div class="main-banner" aria-label="더 코지 플로리스트 레몬 배너">
+        <img class="main-banner-pc" src="images/banners/lemon-banner-pc.png" alt="더 코지 플로리스트 레몬 PC 배너">
+        <img class="main-banner-mobile" src="images/banners/lemon-banner-mobile.png" alt="더 코지 플로리스트 레몬 모바일 배너">
+    </div>
 
-    <div class="divider">바로가기</div>
+    <div class="container">
+        <!-- 좌측 영역 (공지사항 & 이동 버튼 4개) -->
+        <div class="left-panel">
+            <div class="notice-box">
+                <div class="notice-title">🍋 레몬 NOTICE | 새로운 길드원 여러분 환영합니다! 💛</div>
+                <div class="notice-content">
+                    <p># 새로운 길드원 여러분! 👏 레몬에 오신 것을 환영합니다! 💖</p>
+                    <p># 인게임 공식 업데이트 후, 1~3일 이내에 최대한 추가하도록 노력하겠습니다 :)</p>
+                    <p># 해당 웹사이트에 대해 추가 의견사항 있으시면 언제든지 자유롭게 말씀해주세요 :)</p>
+                </div>
+            </div>
 
-    <section class="quick-grid">
-      <a class="quick-card" href="page1.html" aria-label="스타소울">
-        <span class="corner-star"></span>
-        <div class="quick-icon-wrap"><span class="quick-icon">🌌</span></div>
-        <div class="quick-label small">스타소울</div>
-        <div class="quick-sub">시즌 별자리 콘텐츠</div>
-      </a>
+            <!-- 바로가기 -->
+            <section class="quick-section" aria-labelledby="quickSectionTitle">
+                <div class="section-divider">
+                    <span class="section-divider-line"></span>
+                    <h2 id="quickSectionTitle">바로가기</h2>
+                    <span class="section-divider-line"></span>
+                </div>
+                <div class="quick-menu">
+                    <a href="page1.html" class="quick-item quick-starsoul" aria-label="스타소울">
+                        <span class="quick-spark" aria-hidden="true"></span>
+                        <span class="quick-icon" aria-hidden="true">🌌</span>
+                        <span class="quick-name">스타소울</span>
+                        <span class="quick-sub">시즌 별자리 콘텐츠</span>
+                    </a>
+                    <a href="https://open.kakao.com/o/gdYMYczi" class="quick-item" target="_blank" rel="noopener noreferrer" aria-label="레몬 오픈카톡">
+                        <span class="quick-spark" aria-hidden="true"></span>
+                        <span class="quick-icon" aria-hidden="true">💬</span>
+                        <span class="quick-name">오픈카톡</span>
+                        <span class="quick-sub">길드원 소통 공간</span>
+                    </a>
+                    <a href="https://game.naver.com/lounge/The_Cozy_Florist/home" class="quick-item" target="_blank" rel="noopener noreferrer" aria-label="코지 공식라운지">
+                        <span class="quick-spark" aria-hidden="true"></span>
+                        <span class="quick-icon" aria-hidden="true">🌳</span>
+                        <span class="quick-name">공식라운지</span>
+                        <span class="quick-sub">공식 소식 바로가기</span>
+                    </a>
+                </div>
+            </section>
 
-      <a class="quick-card" href="https://open.kakao.com/o/gdYMYczi" target="_blank" rel="noopener noreferrer" aria-label="오픈카톡">
-        <span class="corner-star"></span>
-        <div class="quick-icon-wrap"><span class="quick-icon">💬</span></div>
-        <div class="quick-label small">오픈카톡</div>
-        <div class="quick-sub">길드원 소통 공간</div>
-      </a>
-
-      <a class="quick-card" href="https://game.naver.com/lounge/The_Cozy_Florist/home" target="_blank" rel="noopener noreferrer" aria-label="공식라운지">
-        <span class="corner-star"></span>
-        <div class="quick-icon-wrap"><span class="quick-icon">🌳</span></div>
-        <div class="quick-label small">공식라운지</div>
-        <div class="quick-sub">공식 소식 바로가기</div>
-      </a>
-    </section>
-
-    <div class="divider">레몬공책 메뉴</div>
-
-    <section class="menu-grid">
-      <a class="menu-card pink" href="page5.html">
-        <div class="menu-illus"><img src="images/ui/main-flower-book.png" alt="전체 꽃 도감 아이콘"></div>
-        <div class="menu-copy">
-          <h2 class="menu-title">🌷 전체 꽃 도감 🌷</h2>
-          <p class="menu-desc">모든 꽃을 한눈에 보고, 길드 보유 현황까지 바로 확인하는 통합 도감 메뉴예요.</p>
+            <!-- 레몬공책 메뉴 -->
+            <section class="main-menu-section" aria-labelledby="mainMenuTitle">
+                <div class="section-divider">
+                    <span class="section-divider-line"></span>
+                    <h2 id="mainMenuTitle">레몬공책 메뉴</h2>
+                    <span class="section-divider-line"></span>
+                </div>
+                <div class="button-grid lemon-menu-grid">
+                    <a href="page5.html" class="nav-btn lemon-menu-card menu-flower">
+                        <span class="menu-art"><img src="images/ui/main-flower-book.webp" alt=""></span>
+                        <span class="menu-copy"><strong>🌷 전체 꽃 도감 🌷</strong><small>모든 꽃과 길드 보유 현황</small></span>
+                        <span class="menu-arrow" aria-hidden="true">›</span>
+                    </a>
+                    <a href="page2.html" class="nav-btn lemon-menu-card menu-battle">
+                        <span class="menu-art"><img src="images/ui/main-swords.webp" alt=""></span>
+                        <span class="menu-copy"><strong>⚔️ 경쟁전 임무 계산 ⚔️</strong><small>목표 점수에 맞는 임무 계산</small></span>
+                        <span class="menu-arrow" aria-hidden="true">›</span>
+                    </a>
+                    <a href="page3.html" class="nav-btn lemon-menu-card menu-upgrade">
+                        <span class="menu-art"><img src="images/ui/main-bulb.webp" alt=""></span>
+                        <span class="menu-copy"><strong>💡 꽃 개량 효율표 💡</strong><small>레벨별 개량 수치를 한눈에</small></span>
+                        <span class="menu-arrow" aria-hidden="true">›</span>
+                    </a>
+                    <a href="page6.html" class="nav-btn lemon-menu-card menu-guide">
+                        <span class="menu-art"><img src="images/ui/main-guide-book.webp" alt=""></span>
+                        <span class="menu-copy"><strong>📖 코지 공략모음 📖</strong><small>코지 공략과 정보를 한곳에</small></span>
+                        <span class="menu-arrow" aria-hidden="true">›</span>
+                    </a>
+                </div>
+            </section>
         </div>
-        <div class="menu-arrow">›</div>
-        <span class="tiny-flower">🌼</span>
-        <span class="tiny-leaf">🍋</span>
-        <span class="tiny-spark">✨</span>
-      </a>
 
-      <a class="menu-card" href="page2.html">
-        <div class="menu-illus"><img src="images/ui/main-swords.png" alt="경쟁전 임무 계산 아이콘"></div>
-        <div class="menu-copy">
-          <h2 class="menu-title">⚔️ 경쟁전 임무 계산 ⚔️</h2>
-          <p class="menu-desc">효율적인 임무 계산으로 목표 점수에 맞는 추천 조합을 빠르게 확인해보세요.</p>
+        <!-- 우측 영역: 전체 꽃 도감에서 자동 생성되는 업데이트 내역 -->
+        <div class="right-panel">
+            <div>
+                <div class="table-header-box">
+                    <span class="table-title">🍋 업데이트 내역</span>
+                    <button type="button" class="btn-reset" id="clearUpdatesBtn" onclick="clearAllUpdates()">전체 초기화</button>
+                </div>
+                <table id="updateTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 26%;">수정 일자</th>
+                            <th style="width: 74%;">내용</th>
+                        </tr>
+                    </thead>
+                    <tbody id="updateTbody">
+                        <tr><td colspan="2" style="color:#888;">업데이트 내역을 불러오는 중입니다.</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <div class="menu-arrow">›</div>
-        <span class="tiny-flower">⭐</span>
-        <span class="tiny-leaf">🍋</span>
-        <span class="tiny-spark">✨</span>
-      </a>
+    </div>
 
-      <a class="menu-card green" href="page3.html">
-        <div class="menu-illus"><img src="images/ui/main-bulb.png" alt="꽃 개량 효율표 아이콘"></div>
-        <div class="menu-copy">
-          <h2 class="menu-title">💡 꽃 개량 효율표 💡</h2>
-          <p class="menu-desc">더 예쁜 꽃을 위한 똑똑한 선택, 레벨별 개량 수치와 미확정 정보를 보기 쉽게 정리했어요.</p>
-        </div>
-        <div class="menu-arrow">›</div>
-        <span class="tiny-flower">🌼</span>
-        <span class="tiny-leaf">🍃</span>
-        <span class="tiny-spark">✨</span>
-      </a>
+    <script>
+        const UPDATES_API = '/api/updates';
+        let updateList = [];
+        let updatePollTimer = null;
 
-      <a class="menu-card book" href="page6.html">
-        <div class="menu-illus"><img src="images/ui/main-guide-book.png" alt="코지 공략모음 아이콘"></div>
-        <div class="menu-copy">
-          <h2 class="menu-title">📘 코지 공략모음 📘</h2>
-          <p class="menu-desc">코지를 더 즐겁게, 한곳에 모은 공략과 정보들을 편하게 살펴보세요.</p>
-        </div>
-        <div class="menu-arrow">›</div>
-        <span class="tiny-flower">🤍</span>
-        <span class="tiny-leaf">🍃</span>
-        <span class="tiny-spark">✨</span>
-      </a>
-    </section>
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
+        }
 
-    <section class="updates-section">
-      <div class="divider">업데이트 내역</div>
-      <div class="updates-card">
-        <div class="updates-head">
-          <div class="updates-title">🍋 최근 업데이트</div>
-          <button type="button" class="btn-reset" id="clearUpdatesBtn" onclick="clearAllUpdates()">전체 초기화</button>
-        </div>
-        <table id="updateTable">
-          <thead>
-            <tr>
-              <th style="width: 22%;">수정 일자</th>
-              <th style="width: 78%;">내용</th>
-            </tr>
-          </thead>
-          <tbody id="updateTbody">
-            <tr><td colspan="2" style="color:#888;">업데이트 내역을 불러오는 중입니다.</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
+        function formatUpdateDate(timestamp) {
+            if (!timestamp) return '-';
+            const parts = new Intl.DateTimeFormat('ko-KR', {
+                timeZone: 'Asia/Seoul', year:'numeric', month:'2-digit', day:'2-digit'
+            }).formatToParts(new Date(timestamp));
+            const map = Object.fromEntries(parts.map(p => [p.type, p.value]));
+            return `${map.year}.${map.month}.${map.day}`;
+        }
 
-    <div class="footer-msg">오늘도, 레몬과 함께 더 즐거운 하루 되세요! 🍋 ♡</div>
-    <div class="signature">Lemon</div>
-  </div>
-</div>
+        function renderTable() {
+            const tbody = document.getElementById('updateTbody');
+            if (!updateList.length) {
+                tbody.innerHTML = '<tr><td colspan="2" style="color:#888;">등록된 업데이트 내역이 없습니다.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = updateList.map(item => {
+                const label = item.category ? `[${item.category}] ${item.name}` : item.name;
+                const score = item.guildScore == null ? '-' : `${item.guildScore}점`;
+                return `<tr>
+                    <td>${escapeHtml(formatUpdateDate(item.createdAt))}</td>
+                    <td style="text-align:left;padding-left:12px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                            <div style="min-width:0;flex:1;">
+                                <div style="font-size:.72rem;color:#999;margin-bottom:2px;">${item.action === 'edit' ? '정보 수정' : '신규 추가'}</div>
+                                <div style="font-weight:bold;word-break:keep-all;">${escapeHtml(label)}</div>
+                                <div style="margin-top:4px;font-size:.82rem;color:#666;"><span class="grade-text grade-text-${escapeHtml(item.grade)}">${escapeHtml(item.grade)}</span> · ⚔️ ${escapeHtml(score)}</div>
+                            </div>
+                            <div class="update-actions">
+                                <button type="button" class="btn-update-flower" data-flower-key="${escapeHtml(item.flowerKey || '')}">꽃 정보 보기</button>
+                                <button type="button" class="btn-update-delete" title="이 공지만 삭제" aria-label="이 공지만 삭제" onclick="deleteUpdate(${Number(item.id)})">🗑️</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('');
+            tbody.querySelectorAll('.btn-update-flower').forEach(button => {
+                button.addEventListener('click', () => openUpdateFlower(button.dataset.flowerKey));
+            });
+        }
 
-<script>
-const UPDATES_API = '/api/updates';
-let updateList = [];
-let updatePollTimer = null;
+        function openUpdateFlower(flowerKey) {
+            if (!flowerKey) {
+                alert('연결된 꽃 정보를 찾을 수 없습니다.');
+                return;
+            }
+            location.href = `page5.html?flower=${encodeURIComponent(flowerKey)}&from=updates`;
+        }
 
-function escapeHtml(value) {
-  return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
-}
+        async function deleteUpdate(id) {
+            const item = updateList.find(entry => Number(entry.id) === Number(id));
+            const label = item ? (item.category ? `[${item.category}] ${item.name}` : item.name) : '이 공지';
+            if (!confirm(`${label}\n\n이 업데이트 공지만 삭제할까요?\n꽃 데이터와 이미지는 삭제되지 않습니다.`)) return;
 
-function formatUpdateDate(timestamp) {
-  if (!timestamp) return '-';
-  const parts = new Intl.DateTimeFormat('ko-KR', {
-    timeZone: 'Asia/Seoul', year:'numeric', month:'2-digit', day:'2-digit'
-  }).formatToParts(new Date(timestamp));
-  const map = Object.fromEntries(parts.map(p => [p.type, p.value]));
-  return `${map.year}.${map.month}.${map.day}`;
-}
+            try {
+                const response = await fetch(`${UPDATES_API}?id=${encodeURIComponent(id)}`, { method:'DELETE' });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(payload.error || `DELETE ${response.status}`);
+                updateList = updateList.filter(entry => Number(entry.id) !== Number(id));
+                renderTable();
+            } catch (error) {
+                console.error('업데이트 공지 삭제 실패', error);
+                alert(`공지 삭제에 실패했습니다.\n${error.message || error}`);
+            }
+        }
 
-function renderTable() {
-  const tbody = document.getElementById('updateTbody');
-  if (!updateList.length) {
-    tbody.innerHTML = '<tr><td colspan="2" style="color:#888;">등록된 업데이트 내역이 없습니다.</td></tr>';
-    return;
-  }
-  tbody.innerHTML = updateList.map(item => {
-    const label = item.category ? `[${item.category}] ${item.name}` : item.name;
-    const score = item.guildScore == null ? '-' : `${item.guildScore}점`;
-    return `<tr>
-      <td>${escapeHtml(formatUpdateDate(item.createdAt))}</td>
-      <td style="text-align:left;padding-left:12px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
-          <div style="min-width:0;flex:1;">
-            <div style="font-size:.72rem;color:#999;margin-bottom:2px;">${item.action === 'edit' ? '정보 수정' : '신규 추가'}</div>
-            <div style="font-weight:bold;word-break:keep-all;">${escapeHtml(label)}</div>
-            <div style="margin-top:4px;font-size:.82rem;color:#666;"><span class="grade-text grade-text-${escapeHtml(item.grade)}">${escapeHtml(item.grade)}</span> · ⚔️ ${escapeHtml(score)}</div>
-          </div>
-          <div class="update-actions">
-            <button type="button" class="btn-update-flower" data-flower-key="${escapeHtml(item.flowerKey || '')}">꽃 정보 보기</button>
-            <button type="button" class="btn-update-delete" title="이 공지만 삭제" aria-label="이 공지만 삭제" onclick="deleteUpdate(${Number(item.id)})">🗑️</button>
-          </div>
-        </div>
-      </td>
-    </tr>`;
-  }).join('');
-  tbody.querySelectorAll('.btn-update-flower').forEach(button => {
-    button.addEventListener('click', () => openUpdateFlower(button.dataset.flowerKey));
-  });
-}
+        async function clearAllUpdates() {
+            if (!updateList.length) {
+                alert('삭제할 업데이트 내역이 없습니다.');
+                return;
+            }
+            if (!confirm('업데이트 내역을 전체 초기화할까요?\n\n공지 기록만 삭제되며 전체 꽃 도감, 길드 꽃 도감, R2 이미지는 그대로 유지됩니다.')) return;
 
-function openUpdateFlower(flowerKey) {
-  if (!flowerKey) {
-    alert('연결된 꽃 정보를 찾을 수 없습니다.');
-    return;
-  }
-  location.href = `page5.html?flower=${encodeURIComponent(flowerKey)}&from=updates`;
-}
+            const button = document.getElementById('clearUpdatesBtn');
+            if (button) button.disabled = true;
+            try {
+                const response = await fetch(`${UPDATES_API}?all=1`, { method:'DELETE' });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(payload.error || `DELETE ${response.status}`);
+                updateList = [];
+                renderTable();
+            } catch (error) {
+                console.error('업데이트 내역 전체 초기화 실패', error);
+                alert(`전체 초기화에 실패했습니다.\n${error.message || error}`);
+            } finally {
+                if (button) button.disabled = false;
+            }
+        }
 
-async function deleteUpdate(id) {
-  const item = updateList.find(entry => Number(entry.id) === Number(id));
-  const label = item ? (item.category ? `[${item.category}] ${item.name}` : item.name) : '이 공지';
-  if (!confirm(`${label}\n\n이 업데이트 공지만 삭제할까요?\n꽃 데이터와 이미지는 삭제되지 않습니다.`)) return;
+        async function fetchUpdates() {
+            try {
+                const response = await fetch(UPDATES_API, { cache:'no-store' });
+                if (!response.ok) throw new Error(`GET ${response.status}`);
+                const payload = await response.json();
+                updateList = Array.isArray(payload.updates) ? payload.updates : [];
+                renderTable();
+            } catch (error) {
+                console.warn('업데이트 내역 D1 조회 실패', error);
+                document.getElementById('updateTbody').innerHTML = '<tr><td colspan="2" style="color:#a66;">업데이트 내역을 불러오지 못했습니다.</td></tr>';
+            }
+        }
 
-  try {
-    const response = await fetch(`${UPDATES_API}?id=${encodeURIComponent(id)}`, { method:'DELETE' });
-    const payload = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(payload.error || `DELETE ${response.status}`);
-    updateList = updateList.filter(entry => Number(entry.id) !== Number(id));
-    renderTable();
-  } catch (error) {
-    console.error('업데이트 공지 삭제 실패', error);
-    alert(`공지 삭제에 실패했습니다.\n${error.message || error}`);
-  }
-}
+        window.addEventListener('load', () => {
+            fetchUpdates();
+            updatePollTimer = setInterval(fetchUpdates, 5000);
+        });
+        window.addEventListener('focus', fetchUpdates);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) fetchUpdates(); });
+    </script>
 
-async function clearAllUpdates() {
-  if (!updateList.length) {
-    alert('삭제할 업데이트 내역이 없습니다.');
-    return;
-  }
-  if (!confirm('업데이트 내역을 전체 초기화할까요?\n\n공지 기록만 삭제되며 전체 꽃 도감, 길드 꽃 도감, R2 이미지는 그대로 유지됩니다.')) return;
 
-  const button = document.getElementById('clearUpdatesBtn');
-  if (button) button.disabled = true;
-  try {
-    const response = await fetch(`${UPDATES_API}?all=1`, { method:'DELETE' });
-    const payload = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(payload.error || `DELETE ${response.status}`);
-    updateList = [];
-    renderTable();
-  } catch (error) {
-    console.error('업데이트 내역 전체 초기화 실패', error);
-    alert(`전체 초기화에 실패했습니다.\n${error.message || error}`);
-  } finally {
-    if (button) button.disabled = false;
-  }
-}
+    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.25</div>
 
-async function fetchUpdates() {
-  try {
-    const response = await fetch(UPDATES_API, { cache:'no-store' });
-    if (!response.ok) throw new Error(`GET ${response.status}`);
-    const payload = await response.json();
-    updateList = Array.isArray(payload.updates) ? payload.updates : [];
-    renderTable();
-  } catch (error) {
-    console.warn('업데이트 내역 D1 조회 실패', error);
-    document.getElementById('updateTbody').innerHTML = '<tr><td colspan="2" style="color:#a66;">업데이트 내역을 불러오지 못했습니다.</td></tr>';
-  }
-}
-
-window.addEventListener('load', () => {
-  fetchUpdates();
-  updatePollTimer = setInterval(fetchUpdates, 5000);
-});
-window.addEventListener('focus', fetchUpdates);
-document.addEventListener('visibilitychange', () => { if (!document.hidden) fetchUpdates(); });
-</script>
-
-<div id="site-version">demo_v4.25</div>
 
 <script id="pwa-auto-update-script">
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', async () => {
-    try {
-      const registration = await navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' });
-      await registration.update();
-      setInterval(() => registration.update().catch(() => {}), 60 * 1000);
-      registration.addEventListener('updatefound', () => {
-        const worker = registration.installing;
-        if (!worker) return;
-        worker.addEventListener('statechange', () => {
-          if (worker.state === 'installed' && navigator.serviceWorker.controller) {
-            worker.postMessage('SKIP_WAITING');
-          }
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', async () => {
+      try {
+        const registration = await navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' });
+
+        // 앱을 열 때마다 새 서비스 워커가 있는지 즉시 확인합니다.
+        await registration.update();
+
+        // 앱을 오래 켜둔 경우에도 주기적으로 새 배포본을 확인합니다.
+        setInterval(() => registration.update().catch(() => {}), 60 * 1000);
+
+        registration.addEventListener('updatefound', () => {
+          const worker = registration.installing;
+          if (!worker) return;
+
+          worker.addEventListener('statechange', () => {
+            if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+              // 새 버전이 준비되면 즉시 활성화합니다.
+              worker.postMessage('SKIP_WAITING');
+            }
+          });
         });
-      });
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        const key = 'lemon_pwa_auto_reload';
-        if (sessionStorage.getItem(key) === '1') return;
-        sessionStorage.setItem(key, '1');
-        window.location.reload();
-      });
-      setTimeout(() => sessionStorage.removeItem('lemon_pwa_auto_reload'), 5000);
-    } catch (err) {
-      console.warn('PWA service worker registration/update failed:', err);
-    }
-  });
-}
+
+        // 새 서비스 워커가 페이지 제어권을 얻으면 한 번만 자동 새로고침합니다.
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          const key = 'lemon_pwa_auto_reload';
+          if (sessionStorage.getItem(key) === '1') return;
+          sessionStorage.setItem(key, '1');
+          window.location.reload();
+        });
+
+        // 정상적으로 새 페이지가 열린 뒤 플래그를 해제해 다음 업데이트도 자동 적용되게 합니다.
+        setTimeout(() => sessionStorage.removeItem('lemon_pwa_auto_reload'), 5000);
+      } catch (err) {
+        console.warn('PWA service worker registration/update failed:', err);
+      }
+    });
+  }
 </script>
+
 
 <button id="pwaInstallBtn" type="button" aria-label="레몬 앱 설치">🍋 앱 설치</button>
 <script id="pwa-install-script">
-(() => {
-  let deferredPrompt = null;
-  const btn = document.getElementById('pwaInstallBtn');
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-  btn.style.display = isStandalone ? 'none' : 'block';
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    if (!isStandalone) btn.style.display = 'block';
-  });
-  btn.addEventListener('click', async () => {
-    if (!deferredPrompt) {
-      alert('브라우저 메뉴에서 “홈 화면에 추가” 또는 “앱 설치”를 선택해 주세요.');
-      return;
-    }
-    deferredPrompt.prompt();
-    const result = await deferredPrompt.userChoice.catch(() => null);
-    deferredPrompt = null;
-    if (result?.outcome !== 'accepted' && !isStandalone) btn.style.display = 'block';
-  });
-  window.addEventListener('appinstalled', () => {
-    btn.style.display = 'none';
-    deferredPrompt = null;
-  });
-})();
+  (() => {
+    let deferredPrompt = null;
+    const btn = document.getElementById('pwaInstallBtn');
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+    // 설치 전에는 항상 버튼을 표시합니다.
+    btn.style.display = isStandalone ? 'none' : 'block';
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (!isStandalone) btn.style.display = 'block';
+    });
+
+    btn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        return;
+      }
+
+      // 브라우저가 설치 프롬프트를 아직 제공하지 않는 경우에도 버튼은 유지하고 안내합니다.
+      const ua = navigator.userAgent.toLowerCase();
+      const isIOS = /iphone|ipad|ipod/.test(ua);
+      if (isIOS) {
+        alert('Safari의 공유 버튼을 누른 뒤 “홈 화면에 추가”를 선택해주세요.');
+      } else {
+        alert('Chrome에서 이 페이지를 열고 잠시 이용한 뒤 다시 눌러주세요. 브라우저 메뉴의 “앱 설치” 또는 “홈 화면에 추가”를 이용해도 됩니다.');
+      }
+    });
+
+    window.addEventListener('appinstalled', () => {
+      deferredPrompt = null;
+      btn.style.display = 'none';
+    });
+  })();
 </script>
 </body>
+
 </html>
