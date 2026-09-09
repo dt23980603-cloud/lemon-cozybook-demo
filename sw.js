@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.14-starsoul-dev-notice';
+const CACHE_NAME = 'lemon-demo-v4.15-guide-mobile-width';
 const APP_SHELL = [
   '/',
   '/index.html',
