@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.24-guide-group-left';
+const CACHE_NAME = 'lemon-demo-v4.25-mainpage-icons';
 const APP_SHELL = [
   '/',
   '/index.html',
