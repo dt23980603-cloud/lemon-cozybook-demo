@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.20-upgrade-uncertain-flags';
+const CACHE_NAME = 'lemon-demo-v4.21-starsoul-mobile-row-centered-actions';
 const APP_SHELL = [
   '/',
   '/index.html',

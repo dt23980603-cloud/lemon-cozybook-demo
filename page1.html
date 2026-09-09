@@ -40,16 +40,19 @@
     .intro{margin:7px auto 0;max-width:600px;text-align:center;color:#777;font-size:.84rem;line-height:1.55}
     .guide-actions{display:grid;grid-template-columns:1.15fr .85fr;gap:12px;margin-top:17px}
     .guide-btn{
-      min-height:72px;border:1px solid #d5d3cd;border-radius:17px;padding:12px 16px;
-      display:flex;align-items:center;gap:12px;text-align:left;color:#353535;
+      position:relative;min-height:72px;border:1px solid #d5d3cd;border-radius:17px;padding:12px 16px;
+      display:flex;align-items:center;justify-content:center;gap:12px;text-align:center;color:#353535;
       background:#fff;text-decoration:none;box-shadow:0 3px 10px rgba(0,0,0,.035);
       transition:.18s transform,.18s box-shadow
     }
     .guide-btn:hover{transform:translateY(-2px);box-shadow:0 6px 15px rgba(0,0,0,.075)}
     .guide-primary{background:linear-gradient(145deg,#fff8cd,#ffef9c);border-color:#e8cf73}
     .guide-secondary{background:linear-gradient(145deg,#f5f2ff,#e9edff);border-color:#cfcae8}
-    .guide-icon{font-size:1.7rem;line-height:1}
-    .guide-copy{display:flex;flex-direction:column;gap:2px}
+    .guide-icon{
+      position:absolute;left:16px;top:50%;transform:translateY(-50%);
+      font-size:1.7rem;line-height:1
+    }
+    .guide-copy{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
     .guide-copy strong{font-size:1rem}.guide-copy small{font-size:.72rem;color:#777}
 
     .starlight-card{
@@ -222,14 +225,23 @@
       h1{font-size:1.28rem}.intro{font-size:.72rem;margin-top:4px}
       .guide-actions{gap:8px;margin-top:12px}
       .guide-btn{min-height:61px;border-radius:14px;padding:9px 10px;gap:8px}
-      .guide-icon{font-size:1.3rem}.guide-copy strong{font-size:.83rem}.guide-copy small{font-size:.62rem}
+      .guide-icon{left:10px;font-size:1.3rem}
+      .guide-copy{width:100%;padding:0 18px}
+      .guide-copy strong{font-size:.83rem}.guide-copy small{font-size:.62rem}
       .starlight-card{padding:12px;border-radius:16px;margin-top:11px}
       .starlight-title{font-size:.9rem}.starlight-desc{font-size:.66rem}
       .participation{font-size:.61rem;padding:5px 8px}
-      .birth-form{grid-template-columns:1fr 1fr 1fr;gap:6px}
-      .birth-form select{font-size:.7rem;padding:6px;min-height:38px}
-      .birth-form select:first-child{grid-column:1/-1}
-      .birth-form button{grid-column:1/-1;min-height:39px;font-size:.72rem}
+      .birth-form{
+        grid-template-columns:minmax(0,1.45fr) minmax(44px,.55fr) minmax(44px,.55fr) auto;
+        gap:4px;width:100%
+      }
+      .birth-form select{
+        min-width:0;width:100%;font-size:.58rem;padding:5px 4px;min-height:36px
+      }
+      .birth-form select:first-child{grid-column:auto}
+      .birth-form button{
+        grid-column:auto;min-height:36px;padding:5px 7px;font-size:.57rem;white-space:nowrap
+      }
       .birth-status,.unfound{font-size:.62rem}
       .section-head{margin-top:16px}.section-head h2{font-size:1rem}.section-head p,.section-count{font-size:.62rem}
       .zodiac-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
@@ -261,7 +273,11 @@
     }
     @media(max-width:360px){
       .guide-copy small{display:none}
-      .guide-btn{justify-content:center}.guide-copy strong{font-size:.77rem}
+      .guide-copy strong{font-size:.77rem}
+      .guide-icon{left:8px;font-size:1.18rem}
+      .birth-form{grid-template-columns:minmax(0,1.35fr) 42px 42px auto;gap:3px}
+      .birth-form select{font-size:.52rem;padding:4px 2px;min-height:34px}
+      .birth-form button{min-height:34px;padding:4px 5px;font-size:.51rem}
       .zodiac-name{font-size:.73rem}
     }
   </style>
@@ -413,7 +429,7 @@
   </div>
 </div>
 
-<div id="site-version">demo_v4.20</div>
+<div id="site-version">demo_v4.21</div>
 
 <script>
 const API='/api/guild-state';
