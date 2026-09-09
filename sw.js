@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.31-owner-modal-ui';
+const CACHE_NAME = 'lemon-demo-v4.32-grade-modal';
 const APP_SHELL = [
   '/',
   '/index.html',
