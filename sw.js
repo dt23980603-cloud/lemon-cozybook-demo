@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.21-starsoul-mobile-row-centered-actions';
+const CACHE_NAME = 'lemon-demo-v4.22-centered-guide-group';
 const APP_SHELL = [
   '/',
   '/index.html',
