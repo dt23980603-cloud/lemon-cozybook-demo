@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.8-banner-refresh';
+const CACHE_NAME = 'lemon-demo-v4.9-banner-half-pc';
 const APP_SHELL = [
   '/',
   '/index.html',
