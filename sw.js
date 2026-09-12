@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.11-app-branding';
+const CACHE_NAME = 'lemon-demo-v4.12-update-prompt';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -43,16 +43,15 @@ const APP_SHELL = [
   '/images/guides/starsoul/zodiac/aries.webp',
   '/images/guides/starsoul/zodiac/sagittarius.webp',
   '/images/guides/starsoul/zodiac/capricorn.webp',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png'
+  '/icons/icon-v4.12-192.png',
+  '/icons/icon-v4.12-512.png'
 ];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL))
   );
-  // 새 서비스 워커가 다운로드되면 대기하지 않고 바로 적용 후보가 됩니다.
-  self.skipWaiting();
+  // 기존 앱 사용자는 업데이트 확인창에서 동의할 때까지 새 버전을 대기시킵니다.
 });
 
 self.addEventListener('activate', (event) => {
@@ -66,7 +65,9 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('message', (event) => {
-  if (event.data === 'SKIP_WAITING') self.skipWaiting();
+  if (event.data && event.data.type === 'APPLY_UPDATE' && event.data.version === 'v4.12') {
+    self.skipWaiting();
+  }
 });
 
 self.addEventListener('fetch', (event) => {

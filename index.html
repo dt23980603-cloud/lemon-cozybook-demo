@@ -73,7 +73,7 @@
             text-align: center;
         }
 
-        /* demo_v4.11: 바로가기 아이콘 메뉴 */
+        /* demo_v4.12: 바로가기 아이콘 메뉴 */
         .quick-section,
         .main-menu-section {
             width: 100%;
@@ -748,7 +748,7 @@
 
     
 
-        /* demo_v4.11: v4.24 레이아웃/비율 유지 + 메인페이지 디자인만 개선 */
+        /* demo_v4.12: v4.24 레이아웃/비율 유지 + 메인페이지 디자인만 개선 */
         body {
             background:
                 radial-gradient(circle at 9% 92%, rgba(255, 227, 104, .18), transparent 16%),
@@ -1015,14 +1015,14 @@
 
     </style>
 
-    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="manifest" href="/manifest.webmanifest?v=4.12">
     <meta name="theme-color" content="#ffe680">
     <meta name="application-name" content="레몬공책DEMO">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="레몬공책DEMO">
-    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <link rel="apple-touch-icon" href="/icons/icon-v4.12-192.png">
 
 <style id="pwa-install-style">
   #pwaInstallBtn {
@@ -1266,19 +1266,43 @@
     </script>
 
 
-    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.11</div>
+    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.12</div>
 
 
 <script id="pwa-auto-update-script">
-  if ('serviceWorker' in navigator) {
+  (() => {
+    if (!('serviceWorker' in navigator)) return;
+
+    let updatePromptOpen = false;
+    let reloadingForUpdate = false;
+
+    const askToApplyUpdate = (registration) => {
+      const waiting = registration.waiting;
+      if (!waiting || updatePromptOpen) return;
+
+      updatePromptOpen = true;
+      const ok = window.confirm('🍋 레몬공책DEMO 업데이트\n\n새로운 버전이 있습니다.\n최신 버전으로 업데이트하시겠어요?');
+      updatePromptOpen = false;
+
+      if (ok && registration.waiting) {
+        // v4.12부터는 사용자가 확인을 눌렀을 때만 새 서비스워커를 활성화합니다.
+        registration.waiting.postMessage({ type: 'APPLY_UPDATE', version: 'v4.12' });
+      }
+    };
+
     window.addEventListener('load', async () => {
       try {
         const registration = await navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' });
 
-        // 앱을 열 때마다 새 서비스 워커가 있는지 즉시 확인합니다.
+        // 이미 다운로드되어 대기 중인 버전이 있으면 앱 실행 직후 확인창을 표시합니다.
+        if (registration.waiting && navigator.serviceWorker.controller) {
+          askToApplyUpdate(registration);
+        }
+
+        // 앱을 열 때마다 최신 배포본을 확인합니다.
         await registration.update();
 
-        // 앱을 오래 켜둔 경우에도 주기적으로 새 배포본을 확인합니다.
+        // 앱을 오래 켜둔 경우에도 1분마다 새 버전을 확인합니다.
         setInterval(() => registration.update().catch(() => {}), 60 * 1000);
 
         registration.addEventListener('updatefound', () => {
@@ -1287,27 +1311,22 @@
 
           worker.addEventListener('statechange', () => {
             if (worker.state === 'installed' && navigator.serviceWorker.controller) {
-              // 새 버전이 준비되면 즉시 활성화합니다.
-              worker.postMessage('SKIP_WAITING');
+              askToApplyUpdate(registration);
             }
           });
         });
 
-        // 새 서비스 워커가 페이지 제어권을 얻으면 한 번만 자동 새로고침합니다.
+        // 사용자가 업데이트를 승인하여 새 서비스워커가 활성화되면 한 번만 새로고침합니다.
         navigator.serviceWorker.addEventListener('controllerchange', () => {
-          const key = 'lemon_pwa_auto_reload';
-          if (sessionStorage.getItem(key) === '1') return;
-          sessionStorage.setItem(key, '1');
+          if (reloadingForUpdate) return;
+          reloadingForUpdate = true;
           window.location.reload();
         });
-
-        // 정상적으로 새 페이지가 열린 뒤 플래그를 해제해 다음 업데이트도 자동 적용되게 합니다.
-        setTimeout(() => sessionStorage.removeItem('lemon_pwa_auto_reload'), 5000);
       } catch (err) {
         console.warn('PWA service worker registration/update failed:', err);
       }
     });
-  }
+  })();
 </script>
 
 
