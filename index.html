@@ -73,7 +73,7 @@
             text-align: center;
         }
 
-        /* demo_v4.9: 바로가기 아이콘 메뉴 */
+        /* demo_v4.10: 바로가기 아이콘 메뉴 */
         .quick-section,
         .main-menu-section {
             width: 100%;
@@ -748,7 +748,7 @@
 
     
 
-        /* demo_v4.9: v4.24 레이아웃/비율 유지 + 메인페이지 디자인만 개선 */
+        /* demo_v4.10: v4.24 레이아웃/비율 유지 + 메인페이지 디자인만 개선 */
         body {
             background:
                 radial-gradient(circle at 9% 92%, rgba(255, 227, 104, .18), transparent 16%),
@@ -868,7 +868,7 @@
             padding: 9px 42px 9px 12px;
             border: 1.6px solid #dfc568;
             border-radius: 24px;
-            background: linear-gradient(180deg, #fffef7 0%, #fffbf0 42%, #fff7df 76%, #fff4d0 100%);
+            background: rgba(255,255,255,.92);
             box-shadow: 0 8px 17px rgba(171,141,46,.08), inset 0 1px 0 rgba(255,255,255,.97);
             overflow: hidden;
             font-size: inherit;
@@ -879,10 +879,8 @@
             position:absolute;
             inset:0;
             background:
-                radial-gradient(circle at 11% 21%, rgba(255,255,255,.82), transparent 16%),
-                radial-gradient(circle at 87% 20%, rgba(255,246,182,.78), transparent 18%),
-                radial-gradient(circle at 19% 82%, rgba(255,255,255,.36), transparent 20%),
-                linear-gradient(135deg, rgba(255,255,255,.20), transparent 45%);
+                radial-gradient(circle at 18% 17%, rgba(255,244,200,.48), transparent 22%),
+                linear-gradient(180deg, rgba(255,255,255,.38), transparent 58%);
             pointer-events:none;
         }
         .lemon-menu-card.nav-btn::after {
@@ -897,7 +895,7 @@
             pointer-events:none;
         }
         .lemon-menu-card.nav-btn:hover {
-            background: linear-gradient(180deg, #fffef4 0%, #fff9e8 46%, #fff4cf 100%);
+            background: rgba(255,255,255,.92);
             border-color:#d6b94f;
             transform: translateY(-2px);
             box-shadow:0 11px 20px rgba(171,141,46,.14);
@@ -963,10 +961,10 @@
             line-height:1;
             box-shadow:0 5px 10px rgba(204,157,9,.19);
         }
-        .menu-flower { background:linear-gradient(180deg,#fffef6 0%,#fffbf0 48%,#fff7de 100%) !important; }
-        .menu-battle { background:linear-gradient(180deg,#fffef5 0%,#fffbef 48%,#fff6dc 100%) !important; }
-        .menu-upgrade { background:linear-gradient(180deg,#fffef7 0%,#fffbf1 48%,#fff7e1 100%) !important; }
-        .menu-guide { background:linear-gradient(180deg,#fffef7 0%,#fffbf2 48%,#fff7e0 100%) !important; }
+        .menu-flower,
+        .menu-battle,
+        .menu-upgrade,
+        .menu-guide { background:rgba(255,255,255,.92) !important; }
 
         /* 업데이트 표는 메인 배경과 어울리도록 동일 톤 유지 */
         .table-header-box {
@@ -1267,7 +1265,7 @@
     </script>
 
 
-    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.9</div>
+    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.10</div>
 
 
 <script id="pwa-auto-update-script">
