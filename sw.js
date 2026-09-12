@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.10-menu-background';
+const CACHE_NAME = 'lemon-demo-v4.11-app-branding';
 const APP_SHELL = [
   '/',
   '/index.html',
