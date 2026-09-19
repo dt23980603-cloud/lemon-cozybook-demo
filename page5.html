@@ -232,7 +232,7 @@
       .flower-detail-image { width:min(180px, 100%); }
     }
   
-    /* demo_v4.20: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
+    /* demo_v4.21: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
     .flower-grid {
       grid-template-columns:repeat(2,minmax(0,1fr));
       gap:14px;
@@ -416,7 +416,7 @@
     }
 
   
-    /* demo_v4.20 통합 도감 보완 */
+    /* demo_v4.21 통합 도감 보완 */
     .guild-check-row{position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:7px;}
     .guild-check-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
     .guild-title-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap;}
@@ -487,7 +487,7 @@
     }
 
   
-    /* demo_v4.20: 선택 길드원 보유 수량 / 필터 안내 / 카드 가독성 */
+    /* demo_v4.21: 선택 길드원 보유 수량 / 필터 안내 / 카드 가독성 */
     .member-ownership-filter-wrap{
       display:grid;
       gap:5px;
@@ -553,7 +553,7 @@
     }
 
   
-    /* demo_v4.20: 보유/미보유 필터 색상 */
+    /* demo_v4.21: 보유/미보유 필터 색상 */
     .ownership-filter-btn[data-ownership-filter="OWNED"]{
       background:#e4f4df;
       border-color:#76946b;
@@ -595,7 +595,7 @@
     }
 
   
-    /* demo_v4.20: 통합 도감 헤더 / 가이드 / 관리 버튼 */
+    /* demo_v4.21: 통합 도감 헤더 / 가이드 / 관리 버튼 */
     .catalog-title-block{min-width:0;}
     .catalog-title-row{display:inline-flex;align-items:center;gap:6px;}
     .catalog-guide-btn{
@@ -646,7 +646,7 @@
     }
 
   
-    /* demo_v4.20: 경쟁전 임무 완료 현황 */
+    /* demo_v4.21: 경쟁전 임무 완료 현황 */
     .competition-mission-card{
       width:min(560px,100%);max-height:min(82vh,760px);display:flex;flex-direction:column;
       background:#fff;border:2px solid #333;border-radius:12px;padding:18px;
@@ -704,7 +704,7 @@
       .competition-mission-reset{font-size:.64rem;}
     }
 
-    /* demo_v4.20: 길드원 보유 태그 → 보유 꽃 목록 모달 */
+    /* demo_v4.21: 길드원 보유 태그 → 보유 꽃 목록 모달 */
     .guild-owner-tag{
       font-family:inherit;
       cursor:pointer;
@@ -896,7 +896,7 @@
       .member-flower-close-btn{min-height:42px;font-size:.72rem;border-radius:9px;}
     }
 
-    /* demo_v4.20: 메인페이지 디자인을 전체 꽃 도감에 적용
+    /* demo_v4.21: 메인페이지 디자인을 전체 꽃 도감에 적용
        화면 구성과 기능은 유지하고 배경·색상·테두리·그림자만 통일합니다. */
     body{
       background:
@@ -1156,7 +1156,7 @@
       .btn-open{border-radius:10px;}
     }
 
-    /* demo_v4.20: 외곽 프레임을 제거하고 페이지 전체 폭을 콘텐츠에 활용 */
+    /* demo_v4.21: 외곽 프레임을 제거하고 페이지 전체 폭을 콘텐츠에 활용 */
     body{
       margin:0;
       padding:18px 22px 30px;
@@ -1203,7 +1203,7 @@
       .guild-check-help{text-align:center;}
     }
 
-    /* demo_v4.20: 모바일 꽃 사진 정사각형 프레임 및 등급·점수 가독성 개선 */
+    /* demo_v4.21: 모바일 꽃 사진 정사각형 프레임 및 등급·점수 가독성 개선 */
     @media(max-width:620px){
       .image-wrap{
         align-items:center!important;
@@ -1242,7 +1242,7 @@
       }
     }
 
-    /* demo_v4.20: PC·모바일 꽃 사진 프레임 통일 및 이미지 축소 */
+    /* demo_v4.21: PC·모바일 꽃 사진 프레임 통일 및 이미지 축소 */
     .grade-image-crop,
     .flower-card.grade-N .grade-image-crop{
       position:relative;
@@ -1283,6 +1283,9 @@
     .grade-image-crop.image-scale-100 .flower-image{
       transform:scale(1);
     }
+    .grade-image-crop.image-scale-100{
+      padding:5px;
+    }
 
     @media(max-width:620px){
       .grade-image-crop,
@@ -1293,7 +1296,7 @@
 
   </style>
 
-    <link rel="manifest" href="/manifest.webmanifest?v=4.20">
+    <link rel="manifest" href="/manifest.webmanifest?v=4.21">
     <meta name="theme-color" content="#ffe680">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
