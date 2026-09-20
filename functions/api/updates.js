@@ -51,14 +51,27 @@ export async function onRequestGet(context) {
     guildScore: row.guild_score == null ? null : Number(row.guild_score),
     createdAt: Number(row.created_at || 0)
   }));
-  const featuredResult = await env.DB.prepare(`
-    SELECT flower_key, selected_at
-    FROM featured_new_flowers
-    ORDER BY selected_at DESC, flower_key ASC
-  `).all();
+  const flowersTable = await env.DB.prepare(`SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'flowers'`).first();
+  const featuredResult = flowersTable
+    ? await env.DB.prepare(`
+        SELECT featured.flower_key, featured.selected_at,
+               flowers.category, flowers.name, flowers.grade, flowers.guild_score
+        FROM featured_new_flowers AS featured
+        LEFT JOIN flowers ON flowers.flower_key = featured.flower_key
+        ORDER BY featured.selected_at DESC, featured.flower_key ASC
+      `).all()
+    : await env.DB.prepare(`
+        SELECT flower_key, selected_at
+        FROM featured_new_flowers
+        ORDER BY selected_at DESC, flower_key ASC
+      `).all();
   const featuredFlowers = (featuredResult.results || []).map(row => ({
     flowerKey: row.flower_key,
-    selectedAt: Number(row.selected_at || 0)
+    selectedAt: Number(row.selected_at || 0),
+    category: row.category || '',
+    name: row.name || '',
+    grade: row.grade || '',
+    guildScore: row.guild_score == null ? null : Number(row.guild_score)
   }));
   return new Response(JSON.stringify({ updates, featuredFlowers }), { headers: JSON_HEADERS });
 }

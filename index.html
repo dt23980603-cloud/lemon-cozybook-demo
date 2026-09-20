@@ -73,7 +73,7 @@
             text-align: center;
         }
 
-        /* demo_v4.31: 바로가기 아이콘 메뉴 */
+        /* demo_v4.32: 바로가기 아이콘 메뉴 */
         .quick-section,
         .main-menu-section {
             width: 100%;
@@ -281,21 +281,15 @@
             flex: 0 0 auto;
         }
 
-        .btn-featured-save {
-            border: 1px solid #af9b58;
-            border-radius: 999px;
-            background: linear-gradient(180deg, #fffdf4 0%, #ffefb8 100%);
-            color: #684f16;
-            padding: 5px 11px;
-            font-size: .79rem;
-            font-weight: 700;
-            white-space: nowrap;
-            cursor: pointer;
-            transition: background .2s, transform .2s;
+        .featured-flower-options-btn {
+            width:31px;height:31px;display:inline-flex;align-items:center;justify-content:center;
+            padding:0;border:1px solid #e7dfd1;border-radius:10px;
+            background:rgba(255,255,255,.92);box-shadow:0 4px 12px rgba(81,60,26,.05),inset 0 1px 0 rgba(255,255,255,.95);
+            color:#666;font-size:.93rem;line-height:1;opacity:.34;cursor:pointer;
+            transition:opacity .15s ease,border-color .15s ease,transform .15s ease;
         }
-
-        .btn-featured-save:hover { background:linear-gradient(180deg,#fff9e8 0%,#ffe497 100%);transform:translateY(-1px); }
-        .btn-featured-save:disabled { opacity:.55;cursor:wait;transform:none; }
+        .featured-flower-options-btn:hover{opacity:.72;border-color:#d6b94f;transform:translateY(-1px);}
+        .featured-flower-options-btn:focus-visible{opacity:.8;outline:2px solid rgba(130,130,130,.28);outline-offset:2px;}
 
         .web-update-title-wrap {
             min-width: 0;
@@ -450,6 +444,27 @@
         .web-update-post-actions button { min-width:40px; min-height:30px; padding:4px 7px; border:1px solid #c8bea8; border-radius:7px; background:#fff; font-size:.7rem; font-weight:700; cursor:pointer; }
         .web-update-post-actions .delete { color:#a13d3d; border-color:#d9acac; background:#fff5f5; }
 
+        .featured-flower-modal-card{width:min(560px,100%);}
+        .featured-flower-help{margin:0 0 11px;padding:10px 11px;border:1px solid #eadfbc;border-radius:11px;background:#fffaf0;color:#6f654f;font-size:.74rem;line-height:1.5;}
+        .featured-flower-count{margin-right:4px;color:#8a7442;font-size:.72rem;font-weight:700;white-space:nowrap;}
+        .featured-flower-list{display:flex;flex-direction:column;gap:7px;}
+        .featured-flower-row{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:9px;padding:8px;border:1px solid #e5dbc4;border-radius:11px;background:#fff;}
+        .featured-flower-row.is-selected{border-color:#cdb256;background:#fffaf0;}
+        .featured-flower-thumb-wrap{width:48px;height:48px;overflow:hidden;border:1px solid #eadfbc;border-radius:9px;background:#fff8e9;}
+        .featured-flower-thumb{width:100%;height:100%;display:block;object-fit:cover;}
+        .featured-flower-copy{min-width:0;}
+        .featured-flower-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#493922;font-size:.8rem;font-weight:700;}
+        .featured-flower-meta{margin-top:3px;color:#95866b;font-size:.66rem;}
+        .featured-flower-check{display:inline-flex;align-items:center;gap:5px;color:#665324;font-size:.7rem;font-weight:700;white-space:nowrap;cursor:pointer;}
+        .featured-flower-check input{width:18px;height:18px;margin:0;accent-color:#b39227;}
+        .featured-flower-empty{padding:30px 10px;text-align:center;color:#999;font-size:.78rem;}
+        .featured-flower-status{min-height:20px;margin-top:9px;text-align:center;color:#777;font-size:.72rem;}
+        .featured-flower-status.error{color:#a03b3b}.featured-flower-status.ok{color:#347044}
+        .featured-flower-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:9px;}
+        .featured-flower-actions button{min-height:38px;padding:7px 12px;border:1px solid #b9aa7b;border-radius:9px;background:#fff;font-size:.76rem;font-weight:700;cursor:pointer;}
+        .featured-flower-actions .save{background:#fff1bd;border-color:#ad9140;}
+        .featured-flower-actions button:disabled{opacity:.55;cursor:wait;}
+
         .btn-update-delete {
             flex: 0 0 auto;
             margin-left: 10px;
@@ -494,25 +509,6 @@
             gap: 6px;
             flex-shrink: 0;
         }
-
-        .update-featured-toggle {
-            display:inline-flex;
-            align-items:center;
-            gap:4px;
-            min-height:28px;
-            padding:4px 7px;
-            border:1px solid #d8c98c;
-            border-radius:8px;
-            background:#fffdf3;
-            color:#705b24;
-            font-size:.71rem;
-            font-weight:700;
-            white-space:nowrap;
-            cursor:pointer;
-        }
-        .update-featured-toggle:has(input:checked){background:#fff0b7;border-color:#a68d36;color:#57430e;}
-        .update-featured-toggle input{width:15px;height:15px;margin:0;accent-color:#b39227;}
-
 
         #updateTable {
             border-collapse: separate;
@@ -864,8 +860,7 @@
             }
 
             .table-header-actions { gap:4px; }
-            .btn-featured-save { padding:5px 8px;font-size:.68rem; }
-            .update-featured-toggle { min-height:26px;padding:3px 5px;font-size:.64rem; }
+            .featured-flower-options-btn { width:29px;height:29px;border-radius:9px;font-size:.87rem; }
 
             .web-update-title-wrap { gap:5px; }
             .btn-web-update { min-height:27px; padding:5px 8px; font-size:.72rem; }
@@ -880,6 +875,11 @@
             .web-update-post { padding:11px; }
             .web-update-post-title { font-size:.84rem; }
             .web-update-post-content { font-size:.76rem; }
+            .featured-flower-help{font-size:.66rem;}
+            .featured-flower-row{grid-template-columns:44px minmax(0,1fr) auto;gap:7px;padding:7px;}
+            .featured-flower-thumb-wrap{width:44px;height:44px;}
+            .featured-flower-name{font-size:.72rem}.featured-flower-meta,.featured-flower-check{font-size:.61rem;}
+            .featured-flower-actions button{flex:1;min-width:0;font-size:.68rem;padding-inline:7px;}
 
             .btn-update-delete {
                 width: 26px;
@@ -963,7 +963,7 @@
 
     
 
-        /* demo_v4.31: v4.31 레이아웃/비율 유지 + 메인페이지 디자인만 개선 */
+        /* demo_v4.32: v4.32 레이아웃/비율 유지 + 메인페이지 디자인만 개선 */
         body {
             background:
                 radial-gradient(circle at 9% 92%, rgba(255, 227, 104, .18), transparent 16%),
@@ -1230,7 +1230,7 @@
 
     </style>
 
-    <link rel="manifest" href="/manifest.webmanifest?v=4.31">
+    <link rel="manifest" href="/manifest.webmanifest?v=4.32">
     <meta name="theme-color" content="#ffe680">
     <meta name="application-name" content="레몬공책DEMO">
     <meta name="mobile-web-app-capable" content="yes">
@@ -1340,8 +1340,8 @@
                         <button type="button" class="btn-web-update" id="openWebUpdates" title="레몬공책 업데이트 공지" aria-label="레몬공책 업데이트 공지 열기">📢 <span class="web-update-new-label">NEW!</span></button>
                     </div>
                     <div class="table-header-actions">
-                        <button type="button" class="btn-featured-save" id="saveFeaturedFlowersBtn">🌷 선택 저장</button>
                         <button type="button" class="btn-reset" id="clearUpdatesBtn" onclick="clearAllUpdates()">전체 초기화</button>
+                        <button type="button" class="featured-flower-options-btn" id="openFeaturedFlowerOptions" title="신규 꽃 표시 설정" aria-label="신규 꽃 표시 설정 열기">⚙️</button>
                     </div>
                 </div>
                 <table id="updateTable">
@@ -1385,6 +1385,25 @@
         </section>
     </div>
 
+    <div class="web-update-modal" id="featuredFlowerModal" aria-hidden="true">
+        <section class="web-update-modal-card featured-flower-modal-card" role="dialog" aria-modal="true" aria-labelledby="featuredFlowerModalTitle">
+            <header class="web-update-modal-head">
+                <div class="web-update-modal-title" id="featuredFlowerModalTitle">🌷 신규 추가 꽃 설정</div>
+                <span class="featured-flower-count" id="featuredFlowerCount">선택 0개</span>
+                <button type="button" class="web-update-close-btn" id="closeFeaturedFlowerOptions" title="닫기" aria-label="닫기">✕</button>
+            </header>
+            <div class="web-update-modal-body">
+                <p class="featured-flower-help">업데이트 내역의 같은 꽃 기록은 하나로 합쳐서 표시됩니다. 다음 게임 업데이트 전까지 보여줄 꽃을 선택한 뒤 저장해주세요.</p>
+                <div class="featured-flower-list" id="featuredFlowerList"></div>
+                <div class="featured-flower-status" id="featuredFlowerStatus" aria-live="polite"></div>
+                <div class="featured-flower-actions">
+                    <button type="button" id="clearFeaturedFlowerDraft">전체 해제</button>
+                    <button type="button" class="save" id="saveFeaturedFlowers">선택 저장</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
     <script>
         const UPDATES_API = '/api/updates';
         const WEB_UPDATES_API = '/api/web-updates';
@@ -1396,6 +1415,7 @@
         let updatePollTimer = null;
         let featuredFlowerKeys = new Set();
         let featuredSelectionDraft = null;
+        let featuredFlowerDetails = [];
 
         function escapeHtml(value) {
             return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
@@ -1555,58 +1575,99 @@
             return `/api/flower-image/${encodeURIComponent(item.flowerKey)}?v=${encodeURIComponent(version)}`;
         }
 
-        function visibleUpdateFlowerKeys() {
-            return new Set(updateList.map(item => String(item.flowerKey || '')).filter(Boolean));
-        }
-
-        function effectiveFeaturedFlowerKeys() {
-            return featuredSelectionDraft || featuredFlowerKeys;
-        }
-
-        function getFeaturedKeysForSave() {
-            const visibleKeys = visibleUpdateFlowerKeys();
-            return [...effectiveFeaturedFlowerKeys()].filter(key => visibleKeys.has(key));
-        }
-
-        function updateFeaturedSaveButton() {
-            const button = document.getElementById('saveFeaturedFlowersBtn');
-            if (!button) return;
-            button.textContent = `🌷 선택 ${getFeaturedKeysForSave().length}개 저장`;
-        }
-
-        function changeFeaturedDraft(flowerKey, checked) {
-            if (!featuredSelectionDraft) {
-                const visibleKeys = visibleUpdateFlowerKeys();
-                featuredSelectionDraft = new Set([...featuredFlowerKeys].filter(key => visibleKeys.has(key)));
-            }
-            if (checked) featuredSelectionDraft.add(flowerKey);
-            else featuredSelectionDraft.delete(flowerKey);
-            document.querySelectorAll('[data-featured-flower-key]').forEach(input => {
-                if (input.dataset.featuredFlowerKey === flowerKey) input.checked = checked;
+        function uniqueFeaturedFlowerCandidates() {
+            const candidates = new Map();
+            updateList.forEach(item => {
+                const key = String(item.flowerKey || '');
+                if (key && !candidates.has(key)) candidates.set(key, { ...item, source:'update' });
             });
-            updateFeaturedSaveButton();
+            featuredFlowerDetails.forEach(item => {
+                const key = String(item.flowerKey || '');
+                if (key && !candidates.has(key)) {
+                    candidates.set(key, {
+                        ...item,
+                        createdAt:Number(item.selectedAt || 0),
+                        action:'selected',
+                        source:'saved'
+                    });
+                }
+            });
+            return [...candidates.values()];
+        }
+
+        function renderFeaturedFlowerModal() {
+            const list = document.getElementById('featuredFlowerList');
+            const selectedKeys = featuredSelectionDraft || featuredFlowerKeys;
+            const candidates = uniqueFeaturedFlowerCandidates();
+            document.getElementById('featuredFlowerCount').textContent = `선택 ${selectedKeys.size}개`;
+            if (!candidates.length) {
+                list.innerHTML = '<div class="featured-flower-empty">업데이트 내역에 선택할 꽃이 없습니다.</div>';
+                return;
+            }
+            list.innerHTML = candidates.map(item => {
+                const flowerKey = String(item.flowerKey || '');
+                const checked = selectedKeys.has(flowerKey);
+                const label = item.name ? (item.category ? `[${item.category}] ${item.name}` : item.name) : '꽃 정보 없음';
+                const imageSrc = getUpdateImageSrc(item);
+                const meta = item.source === 'saved'
+                    ? `${item.grade || '-'} · 현재 지정 목록`
+                    : `${item.grade || '-'} · ${formatUpdateDate(item.createdAt)} 최근 기록`;
+                return `<label class="featured-flower-row${checked ? ' is-selected' : ''}">
+                    <span class="featured-flower-thumb-wrap">${imageSrc ? `<img class="featured-flower-thumb" src="${escapeHtml(imageSrc)}" alt="${escapeHtml(label)}" loading="lazy" onerror="this.style.display='none'">` : ''}</span>
+                    <span class="featured-flower-copy"><span class="featured-flower-name">${escapeHtml(label)}</span><span class="featured-flower-meta">${escapeHtml(meta)}</span></span>
+                    <span class="featured-flower-check"><input type="checkbox" data-featured-modal-key="${escapeHtml(flowerKey)}" ${checked ? 'checked' : ''}><span>표시</span></span>
+                </label>`;
+            }).join('');
+            list.querySelectorAll('[data-featured-modal-key]').forEach(input => {
+                input.addEventListener('change', () => {
+                    const key = input.dataset.featuredModalKey;
+                    if (input.checked) featuredSelectionDraft.add(key);
+                    else featuredSelectionDraft.delete(key);
+                    input.closest('.featured-flower-row').classList.toggle('is-selected', input.checked);
+                    document.getElementById('featuredFlowerCount').textContent = `선택 ${featuredSelectionDraft.size}개`;
+                });
+            });
+        }
+
+        function openFeaturedFlowerOptions() {
+            featuredSelectionDraft = new Set(featuredFlowerKeys);
+            const status = document.getElementById('featuredFlowerStatus');
+            status.textContent = '';status.className = 'featured-flower-status';
+            renderFeaturedFlowerModal();
+            const modal = document.getElementById('featuredFlowerModal');
+            modal.classList.add('active');modal.setAttribute('aria-hidden','false');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeFeaturedFlowerOptions() {
+            const modal = document.getElementById('featuredFlowerModal');
+            modal.classList.remove('active');modal.setAttribute('aria-hidden','true');
+            featuredSelectionDraft = null;
+            if (!document.querySelector('.web-update-modal.active')) document.body.style.overflow = '';
         }
 
         async function saveFeaturedFlowers() {
-            const flowerKeys = getFeaturedKeysForSave();
-            if (!confirm(`선택한 ${flowerKeys.length}개의 꽃을 신규 추가 꽃 영역에 표시할까요?\n\n현재 신규 꽃 목록은 이번 선택 내용으로 교체됩니다.`)) return;
-            const button = document.getElementById('saveFeaturedFlowersBtn');
+            const flowerKeys = [...(featuredSelectionDraft || new Set())];
+            const button = document.getElementById('saveFeaturedFlowers');
+            const status = document.getElementById('featuredFlowerStatus');
             button.disabled = true;
+            status.textContent = '신규 꽃 표시 목록을 저장하는 중입니다.';status.className = 'featured-flower-status';
             try {
                 const response = await fetch(UPDATES_API, {
-                    method:'PUT',
-                    headers:{ 'content-type':'application/json' },
+                    method:'PUT',headers:{ 'content-type':'application/json' },
                     body:JSON.stringify({ featuredFlowerKeys:flowerKeys })
                 });
                 const payload = await response.json().catch(() => ({}));
                 if (!response.ok) throw new Error(payload.error || `PUT ${response.status}`);
-                featuredFlowerKeys = new Set((payload.featuredFlowers || []).map(item => item.flowerKey));
-                featuredSelectionDraft = null;
-                renderTable();
-                alert(`신규 추가 꽃 ${featuredFlowerKeys.size}개를 저장했습니다.`);
+                await fetchUpdates();
+                featuredSelectionDraft = new Set(featuredFlowerKeys);
+                renderFeaturedFlowerModal();
+                status.textContent = `신규 추가 꽃 ${featuredFlowerKeys.size}개를 저장했습니다.`;
+                status.className = 'featured-flower-status ok';
             } catch (error) {
                 console.error('신규 꽃 선택 저장 실패', error);
-                alert(`신규 꽃 선택 저장에 실패했습니다.\n${error.message || error}`);
+                status.textContent = error.message || '신규 꽃 선택 저장에 실패했습니다.';
+                status.className = 'featured-flower-status error';
             } finally {
                 button.disabled = false;
             }
@@ -1616,16 +1677,12 @@
             const tbody = document.getElementById('updateTbody');
             if (!updateList.length) {
                 tbody.innerHTML = '<tr><td style="color:#888;">등록된 업데이트 내역이 없습니다.</td></tr>';
-                updateFeaturedSaveButton();
                 return;
             }
-            const selectedKeys = effectiveFeaturedFlowerKeys();
             tbody.innerHTML = updateList.map(item => {
                 const label = item.category ? `[${item.category}] ${item.name}` : item.name;
                 const score = item.guildScore == null ? '-' : `${item.guildScore}점`;
                 const imageSrc = getUpdateImageSrc(item);
-                const flowerKey = String(item.flowerKey || '');
-                const featured = flowerKey && selectedKeys.has(flowerKey);
                 return `<tr>
                     <td class="update-content-cell">
                         <div class="update-item">
@@ -1638,10 +1695,6 @@
                                 </div>
                             </div>
                             <div class="update-actions">
-                                <label class="update-featured-toggle" title="신규 추가 꽃 영역 표시 여부">
-                                    <input type="checkbox" data-featured-flower-key="${escapeHtml(flowerKey)}" ${featured ? 'checked' : ''} ${flowerKey ? '' : 'disabled'}>
-                                    <span>🌷 신규 꽃</span>
-                                </label>
                                 <button type="button" class="btn-update-flower" data-flower-key="${escapeHtml(item.flowerKey || '')}">꽃 정보 보기</button>
                                 <button type="button" class="btn-update-delete" title="이 공지만 삭제" aria-label="이 공지만 삭제" onclick="deleteUpdate(${Number(item.id)})">🗑️</button>
                             </div>
@@ -1652,10 +1705,6 @@
             tbody.querySelectorAll('.btn-update-flower').forEach(button => {
                 button.addEventListener('click', () => openUpdateFlower(button.dataset.flowerKey));
             });
-            tbody.querySelectorAll('[data-featured-flower-key]').forEach(input => {
-                input.addEventListener('change', () => changeFeaturedDraft(input.dataset.featuredFlowerKey, input.checked));
-            });
-            updateFeaturedSaveButton();
         }
 
         function openUpdateFlower(flowerKey) {
@@ -1712,12 +1761,10 @@
                 if (!response.ok) throw new Error(`GET ${response.status}`);
                 const payload = await response.json();
                 updateList = Array.isArray(payload.updates) ? payload.updates : [];
-                featuredFlowerKeys = new Set((Array.isArray(payload.featuredFlowers) ? payload.featuredFlowers : []).map(item => String(item.flowerKey || '')).filter(Boolean));
-                if (featuredSelectionDraft) {
-                    const visibleKeys = visibleUpdateFlowerKeys();
-                    featuredSelectionDraft = new Set([...featuredSelectionDraft].filter(key => visibleKeys.has(key)));
-                }
+                featuredFlowerDetails = Array.isArray(payload.featuredFlowers) ? payload.featuredFlowers : [];
+                featuredFlowerKeys = new Set(featuredFlowerDetails.map(item => String(item.flowerKey || '')).filter(Boolean));
                 renderTable();
+                if (document.getElementById('featuredFlowerModal').classList.contains('active')) renderFeaturedFlowerModal();
             } catch (error) {
                 console.warn('업데이트 내역 D1 조회 실패', error);
                 document.getElementById('updateTbody').innerHTML = '<tr><td style="color:#a66;">업데이트 내역을 불러오지 못했습니다.</td></tr>';
@@ -1725,7 +1772,19 @@
         }
 
         document.getElementById('openWebUpdates').addEventListener('click', openWebUpdates);
-        document.getElementById('saveFeaturedFlowersBtn').addEventListener('click', saveFeaturedFlowers);
+        document.getElementById('openFeaturedFlowerOptions').addEventListener('click', openFeaturedFlowerOptions);
+        document.getElementById('closeFeaturedFlowerOptions').addEventListener('click', closeFeaturedFlowerOptions);
+        document.getElementById('saveFeaturedFlowers').addEventListener('click', saveFeaturedFlowers);
+        document.getElementById('clearFeaturedFlowerDraft').addEventListener('click', () => {
+            featuredSelectionDraft = new Set();
+            renderFeaturedFlowerModal();
+            const status = document.getElementById('featuredFlowerStatus');
+            status.textContent = '전체 선택을 해제했습니다. 저장하면 실제 표시 목록에 반영됩니다.';
+            status.className = 'featured-flower-status';
+        });
+        document.getElementById('featuredFlowerModal').addEventListener('click', event => {
+            if (event.target === document.getElementById('featuredFlowerModal')) closeFeaturedFlowerOptions();
+        });
         document.getElementById('closeWebUpdates').addEventListener('click', closeWebUpdates);
         document.getElementById('webUpdateModal').addEventListener('click', event => {
             if (event.target === document.getElementById('webUpdateModal')) closeWebUpdates();
@@ -1771,6 +1830,7 @@
         });
         document.addEventListener('keydown', event => {
             if (event.key === 'Escape' && document.getElementById('webUpdateModal').classList.contains('active')) closeWebUpdates();
+            if (event.key === 'Escape' && document.getElementById('featuredFlowerModal').classList.contains('active')) closeFeaturedFlowerOptions();
         });
 
         window.addEventListener('load', () => {
@@ -1783,7 +1843,7 @@
     </script>
 
 
-    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.31</div>
+    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.32</div>
 
 
 <script id="pwa-auto-update-script">
@@ -1802,8 +1862,8 @@
       updatePromptOpen = false;
 
       if (ok && registration.waiting) {
-        // 사용자가 확인을 눌렀을 때만 demo_v4.31 서비스워커를 활성화합니다.
-        registration.waiting.postMessage({ type: 'APPLY_UPDATE', version: 'v4.31' });
+        // 사용자가 확인을 눌렀을 때만 demo_v4.32 서비스워커를 활성화합니다.
+        registration.waiting.postMessage({ type: 'APPLY_UPDATE', version: 'v4.32' });
       }
     };
 
