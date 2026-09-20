@@ -232,7 +232,7 @@
       .flower-detail-image { width:min(180px, 100%); }
     }
   
-    /* demo_v4.26: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
+    /* demo_v4.27: 전체 꽃 도감 + 길드 보유 현황 통합 카드 */
     .flower-grid {
       grid-template-columns:repeat(2,minmax(0,1fr));
       gap:14px;
@@ -416,7 +416,7 @@
     }
 
   
-    /* demo_v4.26 통합 도감 보완 */
+    /* demo_v4.27 통합 도감 보완 */
     .guild-check-row{position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:7px;}
     .guild-check-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
     .guild-title-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap;}
@@ -487,7 +487,7 @@
     }
 
   
-    /* demo_v4.26: 선택 길드원 보유 수량 / 필터 안내 / 카드 가독성 */
+    /* demo_v4.27: 선택 길드원 보유 수량 / 필터 안내 / 카드 가독성 */
     .member-ownership-filter-wrap{
       display:grid;
       gap:5px;
@@ -553,7 +553,7 @@
     }
 
   
-    /* demo_v4.26: 보유/미보유 필터 색상 */
+    /* demo_v4.27: 보유/미보유 필터 색상 */
     .ownership-filter-btn[data-ownership-filter="OWNED"]{
       background:#e4f4df;
       border-color:#76946b;
@@ -595,7 +595,7 @@
     }
 
   
-    /* demo_v4.26: 통합 도감 헤더 / 가이드 / 관리 버튼 */
+    /* demo_v4.27: 통합 도감 헤더 / 가이드 / 관리 버튼 */
     .catalog-title-block{min-width:0;}
     .catalog-title-row{display:inline-flex;align-items:center;gap:6px;}
     .catalog-guide-btn{
@@ -646,7 +646,7 @@
     }
 
   
-    /* demo_v4.26: 경쟁전 임무 완료 현황 */
+    /* demo_v4.27: 경쟁전 임무 완료 현황 */
     .competition-mission-card{
       width:min(560px,100%);max-height:min(82vh,760px);display:flex;flex-direction:column;
       background:#fff;border:2px solid #333;border-radius:12px;padding:18px;
@@ -704,7 +704,7 @@
       .competition-mission-reset{font-size:.64rem;}
     }
 
-    /* demo_v4.26: 길드원 보유 태그 → 보유 꽃 목록 모달 */
+    /* demo_v4.27: 길드원 보유 태그 → 보유 꽃 목록 모달 */
     .guild-owner-tag{
       font-family:inherit;
       cursor:pointer;
@@ -896,7 +896,7 @@
       .member-flower-close-btn{min-height:42px;font-size:.72rem;border-radius:9px;}
     }
 
-    /* demo_v4.26: 메인페이지 디자인을 전체 꽃 도감에 적용
+    /* demo_v4.27: 메인페이지 디자인을 전체 꽃 도감에 적용
        화면 구성과 기능은 유지하고 배경·색상·테두리·그림자만 통일합니다. */
     body{
       background:
@@ -1156,7 +1156,7 @@
       .btn-open{border-radius:10px;}
     }
 
-    /* demo_v4.26: 외곽 프레임을 제거하고 페이지 전체 폭을 콘텐츠에 활용 */
+    /* demo_v4.27: 외곽 프레임을 제거하고 페이지 전체 폭을 콘텐츠에 활용 */
     body{
       margin:0;
       padding:18px 22px 30px;
@@ -1203,7 +1203,7 @@
       .guild-check-help{text-align:center;}
     }
 
-    /* demo_v4.26: 모바일 꽃 사진 정사각형 프레임 및 등급·점수 가독성 개선 */
+    /* demo_v4.27: 모바일 꽃 사진 정사각형 프레임 및 등급·점수 가독성 개선 */
     @media(max-width:620px){
       .image-wrap{
         align-items:center!important;
@@ -1242,7 +1242,7 @@
       }
     }
 
-    /* demo_v4.26: PC·모바일 꽃 사진 프레임 통일 및 이미지 축소 */
+    /* demo_v4.27: PC·모바일 꽃 사진 프레임 통일 및 이미지 축소 */
     .grade-image-crop,
     .flower-card.grade-N .grade-image-crop{
       position:relative;
@@ -1295,7 +1295,7 @@
       }
     }
 
-    /* demo_v4.26: 이번 주 신규 꽃 빠른 보유 체크 */
+    /* demo_v4.27: 이번 주 신규 꽃 빠른 보유 체크 */
     .new-flower-panel{
       width:100%;
       margin:0 0 14px;
@@ -1506,7 +1506,7 @@
 
   </style>
 
-    <link rel="manifest" href="/manifest.webmanifest?v=4.26">
+    <link rel="manifest" href="/manifest.webmanifest?v=4.27">
     <meta name="theme-color" content="#ffe680">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1607,7 +1607,7 @@
       <div class="guide-step"><b>⑤ 길드 전체 보유 현황 확인</b><br>각 꽃 카드의 <b>👥 길드 보유 현황</b>에는 현재 그 꽃을 보유한 길드원이 표시됩니다. 인원이 많으면 <b>더보기</b>를 눌러 전체 명단을 펼칠 수 있습니다.</div>
       <div class="guide-step"><b>⑥ 경쟁전 임무 완료 표시</b><br>상단의 <b>⚔️ 임무 현황</b>에서 길드원별 경쟁전 임무 완료 여부를 체크할 수 있습니다. 완료한 길드원은 꽃 보유자 태그에 <b>✓ 표시</b>가 붙고 조금 흐리게 표시됩니다.</div>
       <div class="guide-step"><b>⑦ 신규 추가 꽃 빠른 체크</b><br><b>🌷신규 추가 꽃🌷</b>에는 이번 주에 등록된 꽃이 표시됩니다. 체크 대상 길드원을 선택한 뒤 각 꽃의 <b>보유</b> 체크박스에서 바로 보유 여부를 변경할 수 있습니다.</div>
-      <div class="guide-step"><b>⑧ 꽃 검색과 상세 정보</b><br>꽃 이름 검색과 등급 필터를 함께 사용할 수 있습니다. <b>정보 보기</b>에서는 분류, 경쟁전 점수, 획득 방법, 날짜, 비고를 확인할 수 있습니다.</div>
+      <div class="guide-step"><b>⑧ 꽃 검색과 상세 정보</b><br>꽃 이름 검색과 등급 필터를 함께 사용할 수 있습니다. <b>정보 보기</b>에서는 분류, 경쟁전 점수, 획득 방법, 날짜 기간, 비고를 확인할 수 있습니다.</div>
       <div class="guide-step"><b>⑨ 길드원 정보 관리</b><br>상단의 <b>⚙️ 길드원 관리</b>에서 길드원 추가, 직위·닉네임 수정, 삭제를 할 수 있습니다.</div>
       <div class="guide-tip">⚠️ 보유 체크는 길드원 모두에게 공유됩니다. 꽃을 체크하기 전에 선택된 닉네임이 맞는지 확인해주세요. 잘못 체크했다면 같은 꽃의 보유 버튼을 다시 눌러 해제하면 됩니다.</div>
     </div>
@@ -1684,7 +1684,8 @@
           <label class="span-2">꽃 이름<input id="addName" name="name" type="text" maxlength="120" required></label>
           <label>경쟁전 점수<input id="addGuildScore" name="guildScore" type="number" min="0" max="9999" inputmode="numeric" placeholder="예: 14"></label>
           <label>획득<input id="addAcquire" name="acquire" type="text" maxlength="200" placeholder="예: 꽃시장"></label>
-          <label>날짜<input id="addFlowerDate" name="flowerDate" type="date"></label>
+          <label>시작일<input id="addFlowerStartDate" name="flowerStartDate" type="date"></label>
+          <label>종료일<input id="addFlowerEndDate" name="flowerEndDate" type="date"></label>
           <label class="span-2">비고<textarea id="addNote" name="note" maxlength="500" rows="3" placeholder="비고 내용을 입력하세요."></textarea></label>
           <label class="span-2">이미지<input id="addImage" name="image" type="file" accept="image/png,image/jpeg,image/webp" required><span class="image-help">PNG/JPG도 등록 시 웹용 WebP로 자동 변환됩니다.</span></label>
         </div>
@@ -1708,7 +1709,8 @@
           <label class="span-2">꽃 이름<input id="editName" name="name" type="text" maxlength="120" required></label>
           <label>경쟁전 점수<input id="editGuildScore" name="guildScore" type="number" min="0" max="9999" inputmode="numeric"></label>
           <label>획득<input id="editAcquire" name="acquire" type="text" maxlength="200"></label>
-          <label>날짜<input id="editFlowerDate" name="flowerDate" type="date"></label>
+          <label>시작일<input id="editFlowerStartDate" name="flowerStartDate" type="date"></label>
+          <label>종료일<input id="editFlowerEndDate" name="flowerEndDate" type="date"></label>
           <label class="span-2">비고<textarea id="editNote" name="note" maxlength="500" rows="3"></textarea></label>
           <label class="span-2">이미지<input id="editImage" name="image" type="file" accept="image/png,image/jpeg,image/webp"><span class="image-help">새 이미지를 선택한 경우에만 WebP로 변환하여 R2에 저장합니다.</span><span id="editCurrentImage" class="edit-current-image"></span></label>
         </div>
@@ -1789,9 +1791,27 @@
     function escapeHtml(value) {
       return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
     }
-    function formatFlowerDate(value) {
-      const date = String(value || '').trim();
-      return /^\d{4}-\d{2}-\d{2}$/.test(date) ? date.replace(/-/g, '.') : '-';
+    function formatFlowerDateRange(startValue, endValue) {
+      const start = String(startValue || '').trim();
+      const end = String(endValue || '').trim();
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(start)) return '-';
+      const formattedStart = start.replace(/-/g, '.');
+      return /^\d{4}-\d{2}-\d{2}$/.test(end) ? `${formattedStart} ~ ${end.replace(/-/g, '.')}` : formattedStart;
+    }
+    function validateFlowerDateRange(startId, endId, statusElement) {
+      const start = document.getElementById(startId).value;
+      const end = document.getElementById(endId).value;
+      if (end && !start) {
+        statusElement.textContent = '종료일을 선택하려면 시작일도 선택해주세요.';
+        statusElement.className = 'add-status error';
+        return false;
+      }
+      if (start && end && end < start) {
+        statusElement.textContent = '종료일은 시작일과 같거나 이후여야 합니다.';
+        statusElement.className = 'add-status error';
+        return false;
+      }
+      return true;
     }
 
     function getSortedGuildMembers() {
@@ -2397,7 +2417,7 @@
       document.getElementById('detailCategory').textContent = flower.category || '-';
       document.getElementById('detailScore').textContent = flower.guildScore == null ? '-' : `${flower.guildScore}점`;
       document.getElementById('detailAcquire').textContent = flower.acquire || '-';
-      document.getElementById('detailDate').textContent = formatFlowerDate(flower.flowerDate);
+      document.getElementById('detailDate').textContent = formatFlowerDateRange(flower.flowerStartDate || flower.flowerDate, flower.flowerEndDate);
       document.getElementById('detailNote').textContent = flower.note || '-';
       modal.classList.add('active');
       modal.setAttribute('aria-hidden','false');
@@ -2434,7 +2454,9 @@
       document.getElementById('editName').value = flower.name || '';
       document.getElementById('editGuildScore').value = flower.guildScore == null ? '' : flower.guildScore;
       document.getElementById('editAcquire').value = flower.acquire || '';
-      document.getElementById('editFlowerDate').value = flower.flowerDate || '';
+      document.getElementById('editFlowerStartDate').value = flower.flowerStartDate || flower.flowerDate || '';
+      document.getElementById('editFlowerEndDate').value = flower.flowerEndDate || '';
+      document.getElementById('editFlowerEndDate').min = document.getElementById('editFlowerStartDate').value || '';
       document.getElementById('editNote').value = flower.note || '';
       document.getElementById('editImage').value = '';
       document.getElementById('editCurrentImage').textContent = `현재 이미지: ${flower.hasR2Image ? 'R2 이미지' : '프로젝트 기본 이미지'} · 변경하지 않으려면 선택하지 마세요.`;
@@ -2570,6 +2592,7 @@
         addFlowerStatus.className = 'add-status error';
         return;
       }
+      if (!validateFlowerDateRange('addFlowerStartDate', 'addFlowerEndDate', addFlowerStatus)) return;
       submit.disabled = true;
       addFlowerStatus.textContent = '이미지를 WebP로 변환하고 등록 중입니다…';
       addFlowerStatus.className = 'add-status';
@@ -2581,7 +2604,8 @@
         form.append('name', name);
         form.append('guildScore', document.getElementById('addGuildScore').value.trim());
         form.append('acquire', document.getElementById('addAcquire').value.trim());
-        form.append('flowerDate', document.getElementById('addFlowerDate').value);
+        form.append('flowerStartDate', document.getElementById('addFlowerStartDate').value);
+        form.append('flowerEndDate', document.getElementById('addFlowerEndDate').value);
         form.append('note', document.getElementById('addNote').value.trim());
         form.append('image', webp, 'flower.webp');
         const response = await fetch(FLOWERS_API, { method:'POST', body:form });
@@ -2590,6 +2614,7 @@
         addFlowerStatus.textContent = '등록되었습니다. 전체/길드 꽃 도감과 업데이트 내역에 자동 반영됩니다.';
         addFlowerStatus.className = 'add-status ok';
         addFlowerForm.reset();
+        document.getElementById('addFlowerEndDate').min = '';
         await syncRemoteFlowers(true);
         setTimeout(closeAddFlowers, 650);
       } catch (error) {
@@ -2613,6 +2638,7 @@
         editFlowerStatus.className = 'add-status error';
         return;
       }
+      if (!validateFlowerDateRange('editFlowerStartDate', 'editFlowerEndDate', editFlowerStatus)) return;
 
       submit.disabled = true;
       editFlowerStatus.textContent = '꽃 정보를 저장 중입니다…';
@@ -2625,7 +2651,8 @@
         form.append('name', name);
         form.append('guildScore', document.getElementById('editGuildScore').value.trim());
         form.append('acquire', document.getElementById('editAcquire').value.trim());
-        form.append('flowerDate', document.getElementById('editFlowerDate').value);
+        form.append('flowerStartDate', document.getElementById('editFlowerStartDate').value);
+        form.append('flowerEndDate', document.getElementById('editFlowerEndDate').value);
         form.append('note', document.getElementById('editNote').value.trim());
 
         const imageFile = document.getElementById('editImage').files[0];
@@ -2767,6 +2794,14 @@
     document.getElementById('openDeleteFlowerModal')?.addEventListener('click', openDeleteFlowers);
     document.getElementById('closeDeleteFlowerModal').addEventListener('click', closeDeleteFlowers);
     deleteFlowerModal.addEventListener('click', e => { if (e.target === deleteFlowerModal) closeDeleteFlowers(); });
+    [['addFlowerStartDate','addFlowerEndDate'],['editFlowerStartDate','editFlowerEndDate']].forEach(([startId,endId]) => {
+      const start = document.getElementById(startId);
+      const end = document.getElementById(endId);
+      start.addEventListener('change', () => {
+        end.min = start.value || '';
+        if (end.value && start.value && end.value < start.value) end.value = start.value;
+      });
+    });
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
         closeDetail(); closeAddFlowers(); closeEditFlowers(); closeDeleteFlowers(); closeCompetitionMissionModal(); closeMemberFlowerModal();

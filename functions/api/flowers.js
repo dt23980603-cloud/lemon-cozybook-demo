@@ -16,6 +16,7 @@ async function ensureTables(db) {
       guild_score INTEGER,
       acquire TEXT NOT NULL DEFAULT '',
       flower_date TEXT NOT NULL DEFAULT '',
+      flower_end_date TEXT NOT NULL DEFAULT '',
       note TEXT NOT NULL DEFAULT '',
       image_key TEXT NOT NULL DEFAULT '',
       image_path TEXT NOT NULL DEFAULT '',
@@ -31,6 +32,9 @@ async function ensureTables(db) {
   }
   if (!columns.has('flower_date')) {
     await db.prepare(`ALTER TABLE flowers ADD COLUMN flower_date TEXT NOT NULL DEFAULT ''`).run();
+  }
+  if (!columns.has('flower_end_date')) {
+    await db.prepare(`ALTER TABLE flowers ADD COLUMN flower_end_date TEXT NOT NULL DEFAULT ''`).run();
   }
 
   await db.prepare(`
@@ -100,6 +104,8 @@ function rowToFlower(row) {
     guildScore: row.guild_score == null ? null : Number(row.guild_score),
     acquire: row.acquire || '',
     flowerDate: row.flower_date || '',
+    flowerStartDate: row.flower_date || '',
+    flowerEndDate: row.flower_end_date || '',
     note: row.note || '',
     image: imageKey
       ? `/api/flower-image/${encodeURIComponent(row.flower_key)}?v=${updatedAt}`
@@ -113,7 +119,7 @@ function rowToFlower(row) {
 
 async function readFlower(db, key) {
   return db.prepare(`
-    SELECT flower_key, grade, category, name, guild_score, acquire, flower_date, note,
+    SELECT flower_key, grade, category, name, guild_score, acquire, flower_date, flower_end_date, note,
            image_key, image_path, created_at, updated_at
     FROM flowers WHERE flower_key = ?1
   `).bind(key).first();
@@ -190,7 +196,7 @@ export async function onRequestGet(context) {
   }
   await ensureTables(env.DB);
   const result = await env.DB.prepare(`
-    SELECT flower_key, grade, category, name, guild_score, acquire, flower_date, note,
+    SELECT flower_key, grade, category, name, guild_score, acquire, flower_date, flower_end_date, note,
            image_key, image_path, created_at, updated_at
     FROM flowers
     ORDER BY created_at ASC, flower_key ASC
@@ -224,7 +230,8 @@ export async function onRequestPost(context) {
   const category = cleanText(form.get('category'), 80);
   const name = cleanText(form.get('name'), 120);
   const acquire = cleanText(form.get('acquire'), 200);
-  const flowerDate = parseFlowerDate(form.get('flowerDate'));
+  const flowerStartDate = parseFlowerDate(form.get('flowerStartDate') ?? form.get('flowerDate'));
+  const flowerEndDate = parseFlowerDate(form.get('flowerEndDate'));
   const note = cleanText(form.get('note'), 500);
   const score = parseGuildScore(form.get('guildScore'));
   const image = form.get('image');
@@ -235,8 +242,11 @@ export async function onRequestPost(context) {
   if (!score.ok) {
     return new Response(JSON.stringify({ error: '경쟁전 점수를 확인해주세요.' }), { status: 400, headers: JSON_HEADERS });
   }
-  if (!flowerDate.ok) {
-    return new Response(JSON.stringify({ error: '날짜를 확인해주세요.' }), { status: 400, headers: JSON_HEADERS });
+  if (!flowerStartDate.ok || !flowerEndDate.ok) {
+    return new Response(JSON.stringify({ error: '기간 날짜를 확인해주세요.' }), { status: 400, headers: JSON_HEADERS });
+  }
+  if ((flowerEndDate.value && !flowerStartDate.value) || (flowerStartDate.value && flowerEndDate.value && flowerEndDate.value < flowerStartDate.value)) {
+    return new Response(JSON.stringify({ error: '종료일은 시작일과 같거나 이후여야 합니다.' }), { status: 400, headers: JSON_HEADERS });
   }
   if (!(image instanceof File) || image.size <= 0) {
     return new Response(JSON.stringify({ error: '꽃 이미지를 선택해주세요.' }), { status: 400, headers: JSON_HEADERS });
@@ -266,9 +276,9 @@ export async function onRequestPost(context) {
     await env.DB.batch([
       env.DB.prepare(`
         INSERT INTO flowers
-          (flower_key, grade, category, name, guild_score, acquire, flower_date, note, image_key, image_path, created_at, updated_at)
-        VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, '', ?10, ?11)
-      `).bind(flowerKey, grade, category, name, score.value, acquire, flowerDate.value, note, imageKey, now, now),
+          (flower_key, grade, category, name, guild_score, acquire, flower_date, flower_end_date, note, image_key, image_path, created_at, updated_at)
+        VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, '', ?11, ?12)
+      `).bind(flowerKey, grade, category, name, score.value, acquire, flowerStartDate.value, flowerEndDate.value, note, imageKey, now, now),
       env.DB.prepare(`
         INSERT INTO update_logs (flower_key, action, category, name, grade, guild_score, created_at)
         VALUES (?1, 'add', ?2, ?3, ?4, ?5, ?6)
@@ -301,7 +311,8 @@ export async function onRequestPut(context) {
   const category = cleanText(form.get('category'), 80);
   const name = cleanText(form.get('name'), 120);
   const acquire = cleanText(form.get('acquire'), 200);
-  const flowerDate = parseFlowerDate(form.get('flowerDate'));
+  const flowerStartDate = parseFlowerDate(form.get('flowerStartDate') ?? form.get('flowerDate'));
+  const flowerEndDate = parseFlowerDate(form.get('flowerEndDate'));
   const note = cleanText(form.get('note'), 500);
   const score = parseGuildScore(form.get('guildScore'));
   const image = form.get('image');
@@ -312,8 +323,11 @@ export async function onRequestPut(context) {
   if (!score.ok) {
     return new Response(JSON.stringify({ error: '경쟁전 점수를 확인해주세요.' }), { status: 400, headers: JSON_HEADERS });
   }
-  if (!flowerDate.ok) {
-    return new Response(JSON.stringify({ error: '날짜를 확인해주세요.' }), { status: 400, headers: JSON_HEADERS });
+  if (!flowerStartDate.ok || !flowerEndDate.ok) {
+    return new Response(JSON.stringify({ error: '기간 날짜를 확인해주세요.' }), { status: 400, headers: JSON_HEADERS });
+  }
+  if ((flowerEndDate.value && !flowerStartDate.value) || (flowerStartDate.value && flowerEndDate.value && flowerEndDate.value < flowerStartDate.value)) {
+    return new Response(JSON.stringify({ error: '종료일은 시작일과 같거나 이후여야 합니다.' }), { status: 400, headers: JSON_HEADERS });
   }
 
   await ensureTables(env.DB);
@@ -366,11 +380,12 @@ export async function onRequestPut(context) {
             guild_score = ?5,
             acquire = ?6,
             flower_date = ?7,
-            note = ?8,
-            image_key = ?9,
-            updated_at = ?10
+            flower_end_date = ?8,
+            note = ?9,
+            image_key = ?10,
+            updated_at = ?11
         WHERE flower_key = ?1
-      `).bind(key, grade, category, name, score.value, acquire, flowerDate.value, note, newImageKey, now),
+      `).bind(key, grade, category, name, score.value, acquire, flowerStartDate.value, flowerEndDate.value, note, newImageKey, now),
       env.DB.prepare(`
         INSERT INTO update_logs (flower_key, action, category, name, grade, guild_score, created_at)
         VALUES (?1, 'edit', ?2, ?3, ?4, ?5, ?6)

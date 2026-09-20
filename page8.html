@@ -21,7 +21,7 @@ h1{margin:0;font-size:1.45rem}.subtitle{margin:3px 0 0;color:#888;font-size:.74r
 .card-title{margin:0 0 12px;font-size:1rem}.guide{margin:0 0 12px;color:#777;font-size:.76rem;line-height:1.55}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.form-grid label,.form-grid .field{display:flex;flex-direction:column;gap:5px;font-size:.8rem;font-weight:700;color:#555}
 .form-grid label.span-2,.form-grid .field.span-2{grid-column:1/-1}.form-grid input,.form-grid select,.form-grid textarea{width:100%;min-height:41px;padding:8px 10px;border:1px solid #aaa;border-radius:7px;background:#fff;font-size:.86rem}
-.managed-select-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px}.option-add-btn{min-width:66px;min-height:41px;padding:7px 9px;border:1px solid #999;border-radius:7px;background:#fff9db;color:#4f472f;font-size:.76rem;font-weight:700;cursor:pointer}
+.managed-select-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px}.option-add-btn,.option-delete-btn{min-width:60px;min-height:41px;padding:7px 8px;border:1px solid #999;border-radius:7px;background:#fff9db;color:#4f472f;font-size:.74rem;font-weight:700;white-space:nowrap;cursor:pointer}.option-delete-btn{background:#fff1f1;border-color:#c9a1a1;color:#8d3434}
 .form-grid textarea{min-height:72px;resize:vertical}.image-help{font-size:.68rem;color:#999;font-weight:400}.actions{display:flex;justify-content:flex-end;margin-top:12px}
 .submit{min-width:105px;min-height:39px;padding:7px 14px;border:1px solid #666;border-radius:7px;background:#fff9db;font-weight:700;cursor:pointer}.submit:disabled{opacity:.55;cursor:wait}
 .status{min-height:21px;margin-top:9px;color:#777;font-size:.76rem}.status.ok{color:#276b37}.status.error{color:#a12d2d}
@@ -32,11 +32,12 @@ h1{margin:0;font-size:1.45rem}.subtitle{margin:3px 0 0;color:#888;font-size:.74r
 .flower-name{min-width:0;font-size:.8rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.row-btn{min-height:32px;padding:5px 10px;border:1px solid #999;border-radius:6px;background:#fff;font-size:.72rem;font-weight:700;cursor:pointer}.row-btn.edit{background:#fff9db}.row-btn.delete{background:#fff0f0;border-color:#c99;color:#962e2e}
 .selected-card{display:none;grid-template-columns:110px minmax(0,1fr);gap:13px;align-items:center;margin-bottom:12px;padding:10px;border:1px solid #ddd;border-radius:9px;background:#fafafa}.selected-card.show{display:grid}.selected-card img{width:110px;height:110px;object-fit:contain;border-radius:9px;background:#f4ecd9}.selected-name{font-weight:700;margin-bottom:4px}.selected-meta{font-size:.74rem;color:#777}
 .empty{padding:25px;text-align:center;color:#888;border:1px dashed #ccc;border-radius:8px}
-.option-dialog{width:min(420px,calc(100% - 28px));padding:0;border:1px solid #b9aa6c;border-radius:12px;background:#fff;box-shadow:0 16px 45px rgba(0,0,0,.2)}.option-dialog::backdrop{background:rgba(0,0,0,.36)}.option-dialog-inner{padding:18px}.option-dialog h2{margin:0 0 7px;font-size:1.05rem}.option-dialog p{margin:0 0 13px;color:#777;font-size:.75rem;line-height:1.5}.option-dialog input{width:100%;min-height:43px;padding:9px 11px;border:1px solid #999;border-radius:7px;font-size:.9rem}.dialog-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:13px}.dialog-actions button{min-width:76px;min-height:38px;border:1px solid #999;border-radius:7px;background:#fff;font-weight:700;cursor:pointer}.dialog-actions .save-option{background:#fff9db;border-color:#756a3b}
+.option-dialog{width:min(420px,calc(100% - 28px));padding:0;border:1px solid #b9aa6c;border-radius:12px;background:#fff;box-shadow:0 16px 45px rgba(0,0,0,.2)}.option-dialog::backdrop{background:rgba(0,0,0,.36)}.option-dialog-inner{padding:18px}.option-dialog h2{margin:0 0 7px;font-size:1.05rem}.option-dialog p{margin:0 0 13px;color:#777;font-size:.75rem;line-height:1.5}.option-dialog input,.option-dialog select{width:100%;min-height:43px;padding:9px 11px;border:1px solid #999;border-radius:7px;background:#fff;font-size:.9rem}.dialog-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:13px}.dialog-actions button{min-width:76px;min-height:38px;border:1px solid #999;border-radius:7px;background:#fff;font-weight:700;cursor:pointer}.dialog-actions .save-option{background:#fff9db;border-color:#756a3b}.dialog-actions .delete-option{background:#fff0f0;border-color:#b97474;color:#8d2c2c}.dialog-actions button:disabled{opacity:.5;cursor:not-allowed}
 #site-version{position:fixed;left:12px;bottom:10px;color:#aaa;font-size:11px;pointer-events:none}
 @media(max-width:600px){
 body{margin:8px}.card{padding:12px}.header{gap:8px}.back{width:44px;height:44px}h1{font-size:1.25rem}.subtitle{font-size:.62rem}
 .home-link{min-width:48px;min-height:42px;padding:5px 7px;font-size:.68rem}.home-link .home-text{display:none}
+.managed-select-row{gap:4px}.option-add-btn,.option-delete-btn{min-width:52px;padding:6px 5px;font-size:.68rem}
 .nav-tabs{gap:5px}.nav-tab{min-height:38px;font-size:.72rem;padding:5px 2px}.form-grid{grid-template-columns:1fr}.form-grid label.span-2,.form-grid .field.span-2{grid-column:auto}
 .finder{grid-template-columns:100px minmax(0,1fr)}.finder button{grid-column:1/-1}.flower-row{grid-template-columns:44px minmax(0,1fr) auto;padding:7px}.flower-name{font-size:.7rem}.row-btn{font-size:.64rem;padding:4px 7px}
 .selected-card{grid-template-columns:82px minmax(0,1fr)}.selected-card img{width:82px;height:82px}
@@ -63,11 +64,12 @@ body{margin:8px}.card{padding:12px}.header{gap:8px}.back{width:44px;height:44px}
       <form id="addForm">
         <div class="form-grid">
           <label>등급<select id="addGrade" required><option>N</option><option>R</option><option>SR</option><option>SSR</option><option>UR</option></select></label>
-          <div class="field"><span>분류</span><div class="managed-select-row"><select id="addCategory" aria-label="분류" required><option value="">선택해주세요</option></select><button class="option-add-btn" type="button" data-option-type="category" data-option-target="addCategory" data-option-label="분류">＋ 추가</button></div></div>
+          <div class="field"><span>분류</span><div class="managed-select-row"><select id="addCategory" aria-label="분류" required><option value="">선택해주세요</option></select><button class="option-add-btn" type="button" data-option-type="category" data-option-target="addCategory" data-option-label="분류">＋ 추가</button><button class="option-delete-btn" type="button" data-option-type="category" data-option-label="분류">－ 삭제</button></div></div>
           <label class="span-2">꽃 이름<input id="addName" maxlength="120" required></label>
-          <div class="field"><span>경쟁전 점수</span><div class="managed-select-row"><select id="addGuildScore" aria-label="경쟁전 점수"><option value="">미입력</option></select><button class="option-add-btn" type="button" data-option-type="guildScore" data-option-target="addGuildScore" data-option-label="경쟁전 점수">＋ 추가</button></div></div>
-          <div class="field"><span>획득</span><div class="managed-select-row"><select id="addAcquire" aria-label="획득"><option value="">미입력</option></select><button class="option-add-btn" type="button" data-option-type="acquire" data-option-target="addAcquire" data-option-label="획득">＋ 추가</button></div></div>
-          <label>날짜<input id="addFlowerDate" type="date"></label>
+          <div class="field"><span>경쟁전 점수</span><div class="managed-select-row"><select id="addGuildScore" aria-label="경쟁전 점수"><option value="">미입력</option></select><button class="option-add-btn" type="button" data-option-type="guildScore" data-option-target="addGuildScore" data-option-label="경쟁전 점수">＋ 추가</button><button class="option-delete-btn" type="button" data-option-type="guildScore" data-option-label="경쟁전 점수">－ 삭제</button></div></div>
+          <div class="field"><span>획득</span><div class="managed-select-row"><select id="addAcquire" aria-label="획득"><option value="">미입력</option></select><button class="option-add-btn" type="button" data-option-type="acquire" data-option-target="addAcquire" data-option-label="획득">＋ 추가</button><button class="option-delete-btn" type="button" data-option-type="acquire" data-option-label="획득">－ 삭제</button></div></div>
+          <label>시작일<input id="addFlowerStartDate" type="date"></label>
+          <label>종료일<input id="addFlowerEndDate" type="date"></label>
           <label class="span-2">비고<textarea id="addNote" maxlength="500" rows="3"></textarea></label>
           <label class="span-2">이미지<input id="addImage" type="file" accept="image/png,image/jpeg,image/webp" required><span class="image-help">PNG/JPG도 등록 시 WebP로 자동 변환되어 저장됩니다.</span></label>
         </div>
@@ -98,11 +100,12 @@ body{margin:8px}.card{padding:12px}.header{gap:8px}.back{width:44px;height:44px}
         <input id="editKey" type="hidden">
         <div class="form-grid">
           <label>등급<select id="editGrade" required><option>N</option><option>R</option><option>SR</option><option>SSR</option><option>UR</option></select></label>
-          <div class="field"><span>분류</span><div class="managed-select-row"><select id="editCategory" aria-label="분류" required><option value="">선택해주세요</option></select><button class="option-add-btn" type="button" data-option-type="category" data-option-target="editCategory" data-option-label="분류">＋ 추가</button></div></div>
+          <div class="field"><span>분류</span><div class="managed-select-row"><select id="editCategory" aria-label="분류" required><option value="">선택해주세요</option></select><button class="option-add-btn" type="button" data-option-type="category" data-option-target="editCategory" data-option-label="분류">＋ 추가</button><button class="option-delete-btn" type="button" data-option-type="category" data-option-label="분류">－ 삭제</button></div></div>
           <label class="span-2">꽃 이름<input id="editName" maxlength="120" required></label>
-          <div class="field"><span>경쟁전 점수</span><div class="managed-select-row"><select id="editGuildScore" aria-label="경쟁전 점수"><option value="">미입력</option></select><button class="option-add-btn" type="button" data-option-type="guildScore" data-option-target="editGuildScore" data-option-label="경쟁전 점수">＋ 추가</button></div></div>
-          <div class="field"><span>획득</span><div class="managed-select-row"><select id="editAcquire" aria-label="획득"><option value="">미입력</option></select><button class="option-add-btn" type="button" data-option-type="acquire" data-option-target="editAcquire" data-option-label="획득">＋ 추가</button></div></div>
-          <label>날짜<input id="editFlowerDate" type="date"></label>
+          <div class="field"><span>경쟁전 점수</span><div class="managed-select-row"><select id="editGuildScore" aria-label="경쟁전 점수"><option value="">미입력</option></select><button class="option-add-btn" type="button" data-option-type="guildScore" data-option-target="editGuildScore" data-option-label="경쟁전 점수">＋ 추가</button><button class="option-delete-btn" type="button" data-option-type="guildScore" data-option-label="경쟁전 점수">－ 삭제</button></div></div>
+          <div class="field"><span>획득</span><div class="managed-select-row"><select id="editAcquire" aria-label="획득"><option value="">미입력</option></select><button class="option-add-btn" type="button" data-option-type="acquire" data-option-target="editAcquire" data-option-label="획득">＋ 추가</button><button class="option-delete-btn" type="button" data-option-type="acquire" data-option-label="획득">－ 삭제</button></div></div>
+          <label>시작일<input id="editFlowerStartDate" type="date"></label>
+          <label>종료일<input id="editFlowerEndDate" type="date"></label>
           <label class="span-2">비고<textarea id="editNote" maxlength="500" rows="3"></textarea></label>
           <label class="span-2">이미지<input id="editImage" type="file" accept="image/png,image/jpeg,image/webp"><span id="editImageHelp" class="image-help">변경하지 않으려면 이미지를 선택하지 마세요.</span></label>
         </div>
@@ -134,7 +137,16 @@ body{margin:8px}.card{padding:12px}.header{gap:8px}.back{width:44px;height:44px}
     <div class="dialog-actions"><button id="cancelOption" type="button">취소</button><button class="save-option" type="submit">추가</button></div>
   </form>
 </dialog>
-<div id="site-version">demo_v4.26</div>
+<dialog id="optionDeleteDialog" class="option-dialog">
+  <form id="optionDeleteForm" class="option-dialog-inner" method="dialog">
+    <h2 id="optionDeleteTitle">선택 항목 삭제</h2>
+    <p>목록에서만 삭제됩니다. 이미 등록된 꽃의 정보는 변경되지 않습니다.</p>
+    <select id="optionDeleteValue" required></select>
+    <div id="optionDeleteStatus" class="status" aria-live="polite"></div>
+    <div class="dialog-actions"><button id="cancelOptionDelete" type="button">취소</button><button id="confirmOptionDelete" class="delete-option" type="submit">삭제</button></div>
+  </form>
+</dialog>
+<div id="site-version">demo_v4.27</div>
 
 <script src="flower-data-all.js"></script>
 <script>
@@ -146,6 +158,7 @@ let flowers=[];
 let ready=false;
 let fieldOptions={category:[],acquire:[],guildScore:[]};
 let pendingOption={type:'',target:'',label:''};
+let pendingDeleteOption={type:'',label:''};
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 const byName=(a,b)=>String(a.listName||a.name||'').localeCompare(String(b.listName||b.name||''),'ko-KR');
@@ -184,6 +197,14 @@ function renderOptionSelects(){
   renderOptionSelect('addAcquire','acquire','미입력');renderOptionSelect('editAcquire','acquire','미입력');
   renderOptionSelect('addGuildScore','guildScore','미입력');renderOptionSelect('editGuildScore','guildScore','미입력');
 }
+function setManagedSelectValue(id,value,type){
+  const select=document.getElementById(id),text=value==null?'':String(value);
+  if(text&&![...select.options].some(option=>option.value===text)){
+    const label=type==='guildScore'?`${text}점 (기존 정보)`:`${text} (기존 정보)`;
+    select.add(new Option(label,text));
+  }
+  select.value=text;
+}
 async function refreshOptions(){
   const r=await fetch(FLOWER_OPTIONS_API,{cache:'no-store'});const p=await r.json().catch(()=>({}));
   if(!r.ok)throw new Error(p.error||`선택 항목 불러오기 실패 (${r.status})`);
@@ -197,6 +218,24 @@ function openOptionDialog(button){
   input.type=pendingOption.type==='guildScore'?'number':'text';
   if(input.type==='number'){input.min='0';input.max='9999';input.inputMode='numeric'}else{input.removeAttribute('min');input.removeAttribute('max');input.removeAttribute('inputmode')}
   document.getElementById('optionDialog').showModal();setTimeout(()=>input.focus(),0);
+}
+function openOptionDeleteDialog(button){
+  pendingDeleteOption={type:button.dataset.optionType,label:button.dataset.optionLabel};
+  const values=optionSort(pendingDeleteOption.type,fieldOptions[pendingDeleteOption.type]);
+  const select=document.getElementById('optionDeleteValue');
+  select.innerHTML=values.length
+    ? values.map(v=>`<option value="${esc(v)}">${esc(pendingDeleteOption.type==='guildScore'?`${v}점`:v)}</option>`).join('')
+    : '<option value="">삭제할 항목이 없습니다.</option>';
+  document.getElementById('optionDeleteTitle').textContent=`－ ${pendingDeleteOption.label} 항목 삭제`;
+  document.getElementById('optionDeleteStatus').textContent='';
+  document.getElementById('confirmOptionDelete').disabled=!values.length;
+  document.getElementById('optionDeleteDialog').showModal();
+}
+function validDateRange(startId,endId,status){
+  const start=document.getElementById(startId).value,end=document.getElementById(endId).value;
+  if(end&&!start){status.textContent='종료일을 선택하려면 시작일도 선택해주세요.';status.className='status error';return false}
+  if(start&&end&&end<start){status.textContent='종료일은 시작일과 같거나 이후여야 합니다.';status.className='status error';return false}
+  return true;
 }
 async function imageToWebP(file){
   if(!file)throw new Error('이미지를 선택해주세요.');
@@ -229,11 +268,13 @@ function selectEditFlower(key){
   const f=getFlower(key);if(!f)return;
   document.getElementById('editKey').value=f.key;
   document.getElementById('editGrade').value=f.grade;
-  document.getElementById('editCategory').value=f.category||'';
+  setManagedSelectValue('editCategory',f.category||'','category');
   document.getElementById('editName').value=f.name||'';
-  document.getElementById('editGuildScore').value=f.guildScore==null?'':f.guildScore;
-  document.getElementById('editAcquire').value=f.acquire||'';
-  document.getElementById('editFlowerDate').value=f.flowerDate||'';
+  setManagedSelectValue('editGuildScore',f.guildScore==null?'':f.guildScore,'guildScore');
+  setManagedSelectValue('editAcquire',f.acquire||'','acquire');
+  document.getElementById('editFlowerStartDate').value=f.flowerStartDate||f.flowerDate||'';
+  document.getElementById('editFlowerEndDate').value=f.flowerEndDate||'';
+  document.getElementById('editFlowerEndDate').min=document.getElementById('editFlowerStartDate').value||'';
   document.getElementById('editNote').value=f.note||'';
   document.getElementById('editImage').value='';
   document.getElementById('editPreview').src=f.image||'';
@@ -256,12 +297,13 @@ document.getElementById('addForm').addEventListener('submit',async e=>{
   const grade=document.getElementById('addGrade').value,category=document.getElementById('addCategory').value.trim(),name=document.getElementById('addName').value.trim();
   const listName=category?`[${category}] ${name}`:name;
   if(flowers.some(f=>f.grade===grade&&f.listName===listName)){status.textContent='같은 등급에 동일한 [분류] 꽃 이름이 이미 있습니다.';status.className='status error';return}
+  if(!validDateRange('addFlowerStartDate','addFlowerEndDate',status))return;
   submit.disabled=true;status.textContent='이미지를 WebP로 변환하고 등록 중입니다…';status.className='status';
   try{
     const webp=await imageToWebP(document.getElementById('addImage').files[0]);
-    const form=new FormData();form.append('grade',grade);form.append('category',category);form.append('name',name);form.append('guildScore',document.getElementById('addGuildScore').value.trim());form.append('acquire',document.getElementById('addAcquire').value.trim());form.append('flowerDate',document.getElementById('addFlowerDate').value);form.append('note',document.getElementById('addNote').value.trim());form.append('image',webp,'flower.webp');
+    const form=new FormData();form.append('grade',grade);form.append('category',category);form.append('name',name);form.append('guildScore',document.getElementById('addGuildScore').value.trim());form.append('acquire',document.getElementById('addAcquire').value.trim());form.append('flowerStartDate',document.getElementById('addFlowerStartDate').value);form.append('flowerEndDate',document.getElementById('addFlowerEndDate').value);form.append('note',document.getElementById('addNote').value.trim());form.append('image',webp,'flower.webp');
     const r=await fetch(FLOWERS_API,{method:'POST',body:form});const p=await r.json().catch(()=>({}));if(!r.ok)throw new Error(p.error||`등록 실패 (${r.status})`);
-    status.textContent='등록되었습니다. 전체 꽃 도감과 업데이트 내역에 자동 반영됩니다.';status.className='status ok';e.target.reset();await refresh();await refreshOptions();
+    status.textContent='등록되었습니다. 전체 꽃 도감과 업데이트 내역에 자동 반영됩니다.';status.className='status ok';e.target.reset();document.getElementById('addFlowerEndDate').min='';await refresh();await refreshOptions();
   }catch(err){status.textContent=err.message||'등록 중 오류가 발생했습니다.';status.className='status error'}finally{submit.disabled=false}
 });
 
@@ -269,9 +311,10 @@ document.getElementById('editForm').addEventListener('submit',async e=>{
   e.preventDefault();const key=document.getElementById('editKey').value;if(!key)return;
   const status=document.getElementById('editStatus'),submit=document.getElementById('submitEdit'),grade=document.getElementById('editGrade').value,category=document.getElementById('editCategory').value.trim(),name=document.getElementById('editName').value.trim(),listName=category?`[${category}] ${name}`:name;
   if(flowers.some(f=>f.key!==key&&f.grade===grade&&f.listName===listName)){status.textContent='같은 등급에 동일한 [분류] 꽃 이름이 이미 있습니다.';status.className='status error';return}
+  if(!validDateRange('editFlowerStartDate','editFlowerEndDate',status))return;
   submit.disabled=true;status.textContent='꽃 정보를 저장 중입니다…';status.className='status';
   try{
-    const form=new FormData();form.append('key',key);form.append('grade',grade);form.append('category',category);form.append('name',name);form.append('guildScore',document.getElementById('editGuildScore').value.trim());form.append('acquire',document.getElementById('editAcquire').value.trim());form.append('flowerDate',document.getElementById('editFlowerDate').value);form.append('note',document.getElementById('editNote').value.trim());
+    const form=new FormData();form.append('key',key);form.append('grade',grade);form.append('category',category);form.append('name',name);form.append('guildScore',document.getElementById('editGuildScore').value.trim());form.append('acquire',document.getElementById('editAcquire').value.trim());form.append('flowerStartDate',document.getElementById('editFlowerStartDate').value);form.append('flowerEndDate',document.getElementById('editFlowerEndDate').value);form.append('note',document.getElementById('editNote').value.trim());
     const file=document.getElementById('editImage').files[0];if(file){status.textContent='새 이미지를 WebP로 변환하고 저장 중입니다…';form.append('image',await imageToWebP(file),'flower.webp')}
     const r=await fetch(FLOWERS_API,{method:'PUT',body:form});const p=await r.json().catch(()=>({}));if(!r.ok)throw new Error(p.error||`수정 실패 (${r.status})`);
     status.textContent='수정되었습니다. 전체 꽃 도감과 업데이트 내역에 자동 반영됩니다.';status.className='status ok';await refresh();await refreshOptions();selectEditFlower(key);
@@ -293,6 +336,7 @@ document.getElementById('editClear').onclick=()=>{document.getElementById('editG
 document.getElementById('deleteClear').onclick=()=>{document.getElementById('deleteGradeFilter').value='ALL';document.getElementById('deleteSearch').value='';renderDeleteList()};
 
 document.querySelectorAll('.option-add-btn').forEach(button=>button.addEventListener('click',()=>openOptionDialog(button)));
+document.querySelectorAll('.option-delete-btn').forEach(button=>button.addEventListener('click',()=>openOptionDeleteDialog(button)));
 document.getElementById('cancelOption').onclick=()=>document.getElementById('optionDialog').close();
 document.getElementById('optionForm').addEventListener('submit',async e=>{
   e.preventDefault();
@@ -305,6 +349,27 @@ document.getElementById('optionForm').addEventListener('submit',async e=>{
     await refreshOptions();document.getElementById(pendingOption.target).value=p.value;
     document.getElementById('optionDialog').close();
   }catch(err){status.textContent=err.message||'항목을 추가하지 못했습니다.';status.className='status error'}
+});
+document.getElementById('cancelOptionDelete').onclick=()=>document.getElementById('optionDeleteDialog').close();
+document.getElementById('optionDeleteForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const value=document.getElementById('optionDeleteValue').value,status=document.getElementById('optionDeleteStatus');
+  if(!value)return;
+  const display=pendingDeleteOption.type==='guildScore'?`${value}점`:value;
+  if(!confirm(`'${display}' 항목을 목록에서 삭제하시겠습니까?\n이미 등록된 꽃의 정보는 유지됩니다.`))return;
+  status.textContent='삭제 중입니다…';status.className='status';
+  try{
+    const query=new URLSearchParams({type:pendingDeleteOption.type,value});
+    const r=await fetch(`${FLOWER_OPTIONS_API}?${query}`,{method:'DELETE'});const p=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(p.error||`항목 삭제 실패 (${r.status})`);
+    await refreshOptions();
+    const editKey=document.getElementById('editKey').value;if(editKey)selectEditFlower(editKey);
+    document.getElementById('optionDeleteDialog').close();
+  }catch(err){status.textContent=err.message||'항목을 삭제하지 못했습니다.';status.className='status error'}
+});
+[['addFlowerStartDate','addFlowerEndDate'],['editFlowerStartDate','editFlowerEndDate']].forEach(([startId,endId])=>{
+  const start=document.getElementById(startId),end=document.getElementById(endId);
+  start.addEventListener('change',()=>{end.min=start.value||'';if(end.value&&start.value&&end.value<start.value)end.value=start.value});
 });
 
 (async()=>{try{await ensureSeed();await refreshOptions();await refresh()}catch(err){console.error(err);alert(`꽃 관리 데이터를 불러오지 못했습니다.\\n${err.message||err}`)}})();
