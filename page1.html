@@ -332,7 +332,7 @@
       .zodiac-name{font-size:.73rem}
     }
   </style>
-  <link rel="manifest" href="/manifest.webmanifest?v=4.29">
+  <link rel="manifest" href="/manifest.webmanifest?v=4.30">
   <meta name="theme-color" content="#ffe680">
 </head>
 <body>
@@ -520,7 +520,7 @@
   </div>
 </div>
 
-<div id="site-version">demo_v4.29</div>
+<div id="site-version">demo_v4.30</div>
 
 <script>
 const API='/api/guild-state';
@@ -588,7 +588,7 @@ function applyZodiacSettings(){
       unreleased:!setting.released,
       linkedFlowerKey:setting.flowerKey||'',
       image:linked?.image||base.image,
-      flower:linked?(linked.listName||linked.name):(base.flower||'')
+      flower:linked?(linked.name||'이름 없음'):(base.flower||'')
     };
   });
   renderZodiac();
@@ -638,7 +638,7 @@ function effectiveManagePreview(){
   const linked=catalogFlowers.find(f=>f.key===zodiacFlowerSelect.value)||null;
   return {
     base,linked,image:linked?.image||base.image,
-    flower:linked?(linked.listName||linked.name):(base.flower||'미연결'),
+    flower:linked?(linked.name||'이름 없음'):(base.flower||'미연결'),
     released:zodiacManageReleased.value==='true'
   };
 }
