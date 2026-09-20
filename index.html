@@ -73,7 +73,7 @@
             text-align: center;
         }
 
-        /* demo_v4.27: 바로가기 아이콘 메뉴 */
+        /* demo_v4.28: 바로가기 아이콘 메뉴 */
         .quick-section,
         .main-menu-section {
             width: 100%;
@@ -272,6 +272,159 @@
             background: linear-gradient(180deg, #fff0f0 0%, #ffd9d9 100%);
             transform: translateY(-1px);
         }
+
+        .web-update-title-wrap {
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-web-update {
+            flex: 0 0 auto;
+            box-sizing: border-box;
+            min-height: 29px;
+            padding: 5px 11px;
+            border: 1px solid #d8bd72;
+            border-radius: 999px;
+            background: linear-gradient(180deg, #fffdf4 0%, #fff2c9 100%);
+            color: #72531d;
+            font-size: .79rem;
+            font-weight: 700;
+            line-height: 1;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background .2s, transform .2s, box-shadow .2s;
+        }
+
+        .btn-web-update:hover {
+            background: linear-gradient(180deg, #fff9e8 0%, #ffe9a8 100%);
+            transform: translateY(-1px);
+        }
+
+        .btn-web-update.is-new {
+            color: #a63d3d;
+            border-color: #d99494;
+            background: linear-gradient(180deg, #fff7f7 0%, #ffe0e0 100%);
+            box-shadow: 0 0 0 3px rgba(217,148,148,.12);
+        }
+
+        .web-update-new-label { display:none; }
+        .btn-web-update.is-new .web-update-new-label { display:inline; }
+
+        .web-update-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            background: rgba(51,42,29,.42);
+        }
+
+        .web-update-modal.active { display:flex; }
+
+        .web-update-modal-card {
+            width: min(620px, 100%);
+            max-height: min(86vh, 780px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1.5px solid #dfca8d;
+            border-radius: 18px;
+            background: #fffdf8;
+            box-shadow: 0 18px 48px rgba(70,51,20,.22);
+        }
+
+        .web-update-modal-head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 16px;
+            border-bottom: 1px solid #eadfbc;
+            background: linear-gradient(180deg, #fffaf0 0%, #fff1c9 100%);
+        }
+
+        .web-update-modal-title {
+            min-width: 0;
+            flex: 1;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #52391e;
+        }
+
+        .web-update-manage-btn,
+        .web-update-close-btn {
+            width: 36px;
+            height: 36px;
+            flex: 0 0 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            border: 1px solid #cdbb83;
+            border-radius: 10px;
+            background: rgba(255,255,255,.82);
+            color: #5d4b29;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .web-update-manage-btn.active { background:#fff0bd; border-color:#b89a45; }
+
+        .web-update-modal-body {
+            min-height: 0;
+            overflow-y: auto;
+            padding: 14px;
+        }
+
+        .web-update-editor {
+            display: none;
+            margin-bottom: 14px;
+            padding: 13px;
+            border: 1px solid #ddc98d;
+            border-radius: 13px;
+            background: #fffaf0;
+        }
+
+        .web-update-editor.active { display:block; }
+        .web-update-editor-title { margin:0 0 10px; font-size:.92rem; color:#5b4323; }
+        .web-update-editor-grid { display:grid; grid-template-columns:150px minmax(0,1fr); gap:9px; }
+        .web-update-editor label { display:flex; flex-direction:column; gap:5px; color:#665a44; font-size:.76rem; font-weight:700; }
+        .web-update-editor label.span-2 { grid-column:1/-1; }
+        .web-update-editor input,
+        .web-update-editor textarea {
+            width:100%;
+            box-sizing:border-box;
+            padding:9px 10px;
+            border:1px solid #c9bea4;
+            border-radius:8px;
+            background:#fff;
+            color:#333;
+            font-size:.84rem;
+        }
+        .web-update-editor textarea { min-height:130px; resize:vertical; line-height:1.55; }
+        .web-update-editor-actions { display:flex; justify-content:flex-end; gap:7px; margin-top:10px; }
+        .web-update-editor-actions button { min-width:76px; min-height:37px; border:1px solid #b9aa7b; border-radius:9px; background:#fff; font-size:.78rem; font-weight:700; cursor:pointer; }
+        .web-update-editor-actions .web-update-save { background:#fff1bd; border-color:#ad9140; }
+        .web-update-editor-status { min-height:19px; margin-top:7px; color:#777; font-size:.74rem; }
+        .web-update-editor-status.error { color:#a03b3b; }
+        .web-update-editor-status.ok { color:#347044; }
+
+        .web-update-list { display:flex; flex-direction:column; gap:10px; }
+        .web-update-empty { padding:28px 10px; text-align:center; color:#999; font-size:.82rem; }
+        .web-update-post { padding:13px 14px; border:1px solid #e6dac0; border-radius:13px; background:#fff; box-shadow:0 3px 9px rgba(92,70,30,.04); }
+        .web-update-post-top { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+        .web-update-post-date { margin-bottom:4px; color:#9b8a69; font-size:.72rem; }
+        .web-update-post-title { color:#45351f; font-size:.91rem; font-weight:700; line-height:1.4; word-break:keep-all; }
+        .web-update-post-content { margin-top:9px; color:#555; font-size:.8rem; line-height:1.65; white-space:pre-wrap; word-break:break-word; }
+        .web-update-post-actions { display:none; flex:0 0 auto; gap:5px; }
+        .web-update-list.manage-mode .web-update-post-actions { display:flex; }
+        .web-update-post-actions button { min-width:40px; min-height:30px; padding:4px 7px; border:1px solid #c8bea8; border-radius:7px; background:#fff; font-size:.7rem; font-weight:700; cursor:pointer; }
+        .web-update-post-actions .delete { color:#a13d3d; border-color:#d9acac; background:#fff5f5; }
 
         .btn-update-delete {
             flex: 0 0 auto;
@@ -666,6 +819,20 @@
                 font-size: 0.72rem;
             }
 
+            .web-update-title-wrap { gap:5px; }
+            .btn-web-update { min-height:27px; padding:5px 8px; font-size:.72rem; }
+            .web-update-modal { padding:10px; }
+            .web-update-modal-card { max-height:90vh; border-radius:15px; }
+            .web-update-modal-head { padding:11px 12px; }
+            .web-update-modal-title { font-size:.88rem; }
+            .web-update-manage-btn,.web-update-close-btn { width:34px; height:34px; flex-basis:34px; }
+            .web-update-modal-body { padding:10px; }
+            .web-update-editor-grid { grid-template-columns:1fr; }
+            .web-update-editor label.span-2 { grid-column:auto; }
+            .web-update-post { padding:11px; }
+            .web-update-post-title { font-size:.84rem; }
+            .web-update-post-content { font-size:.76rem; }
+
             .btn-update-delete {
                 width: 26px;
                 height: 26px;
@@ -748,7 +915,7 @@
 
     
 
-        /* demo_v4.27: v4.27 레이아웃/비율 유지 + 메인페이지 디자인만 개선 */
+        /* demo_v4.28: v4.28 레이아웃/비율 유지 + 메인페이지 디자인만 개선 */
         body {
             background:
                 radial-gradient(circle at 9% 92%, rgba(255, 227, 104, .18), transparent 16%),
@@ -1015,7 +1182,7 @@
 
     </style>
 
-    <link rel="manifest" href="/manifest.webmanifest?v=4.27">
+    <link rel="manifest" href="/manifest.webmanifest?v=4.28">
     <meta name="theme-color" content="#ffe680">
     <meta name="application-name" content="레몬공책DEMO">
     <meta name="mobile-web-app-capable" content="yes">
@@ -1120,7 +1287,10 @@
         <div class="right-panel">
             <div>
                 <div class="table-header-box">
-                    <span class="table-title">🍋 업데이트 내역</span>
+                    <div class="web-update-title-wrap">
+                        <span class="table-title">🍋 업데이트 내역</span>
+                        <button type="button" class="btn-web-update" id="openWebUpdates" title="레몬공책 업데이트 공지" aria-label="레몬공책 업데이트 공지 열기">📢 <span class="web-update-new-label">NEW!</span></button>
+                    </div>
                     <button type="button" class="btn-reset" id="clearUpdatesBtn" onclick="clearAllUpdates()">전체 초기화</button>
                 </div>
                 <table id="updateTable">
@@ -1137,9 +1307,41 @@
         </div>
     </div>
 
+    <div class="web-update-modal" id="webUpdateModal" aria-hidden="true">
+        <section class="web-update-modal-card" role="dialog" aria-modal="true" aria-labelledby="webUpdateModalTitle">
+            <header class="web-update-modal-head">
+                <div class="web-update-modal-title" id="webUpdateModalTitle">🍋 레몬공책 업데이트 기록</div>
+                <button type="button" class="web-update-manage-btn" id="toggleWebUpdateManage" title="공지 작성 및 관리" aria-label="공지 작성 및 관리">✏️</button>
+                <button type="button" class="web-update-close-btn" id="closeWebUpdates" title="닫기" aria-label="닫기">✕</button>
+            </header>
+            <div class="web-update-modal-body">
+                <form class="web-update-editor" id="webUpdateEditor">
+                    <input type="hidden" id="webUpdateEditId">
+                    <h2 class="web-update-editor-title" id="webUpdateEditorTitle">새 공지 작성</h2>
+                    <div class="web-update-editor-grid">
+                        <label>날짜<input type="date" id="webUpdateDate" required></label>
+                        <label>제목<input type="text" id="webUpdateTitle" maxlength="120" required></label>
+                        <label class="span-2">내용<textarea id="webUpdateContent" maxlength="4000" required placeholder="웹 업데이트 내용을 입력해주세요."></textarea></label>
+                    </div>
+                    <div id="webUpdateEditorStatus" class="web-update-editor-status" aria-live="polite"></div>
+                    <div class="web-update-editor-actions">
+                        <button type="button" id="cancelWebUpdateEdit">취소</button>
+                        <button type="submit" class="web-update-save" id="saveWebUpdate">등록</button>
+                    </div>
+                </form>
+                <div class="web-update-list" id="webUpdateList"></div>
+            </div>
+        </section>
+    </div>
+
     <script>
         const UPDATES_API = '/api/updates';
+        const WEB_UPDATES_API = '/api/web-updates';
+        const WEB_UPDATES_SEEN_KEY = 'lemon_web_updates_seen_at';
         let updateList = [];
+        let webUpdateList = [];
+        let latestWebUpdateAt = 0;
+        let webUpdateManageMode = false;
         let updatePollTimer = null;
 
         function escapeHtml(value) {
@@ -1154,6 +1356,144 @@
             const map = Object.fromEntries(parts.map(p => [p.type, p.value]));
             const year2 = String(map.year || '').slice(-2);
             return `${year2}.${map.month}.${map.day}`;
+        }
+
+        function formatWebUpdateDate(value) {
+            const date = String(value || '');
+            return /^\d{4}-\d{2}-\d{2}$/.test(date) ? date.replace(/-/g, '.') : '-';
+        }
+
+        function todayInKorea() {
+            const parts = new Intl.DateTimeFormat('en-CA', {
+                timeZone:'Asia/Seoul', year:'numeric', month:'2-digit', day:'2-digit'
+            }).formatToParts(new Date());
+            const map = Object.fromEntries(parts.map(part => [part.type, part.value]));
+            return `${map.year}-${map.month}-${map.day}`;
+        }
+
+        function getSeenWebUpdateAt() {
+            try { return Number(localStorage.getItem(WEB_UPDATES_SEEN_KEY) || 0); }
+            catch (_) { return 0; }
+        }
+
+        function updateWebUpdateBadge() {
+            const button = document.getElementById('openWebUpdates');
+            if (!button) return;
+            const hasNew = latestWebUpdateAt > getSeenWebUpdateAt();
+            button.classList.toggle('is-new', hasNew);
+            button.setAttribute('aria-label', hasNew ? '새로운 레몬공책 업데이트 공지 열기' : '레몬공책 업데이트 공지 열기');
+        }
+
+        function markWebUpdatesSeen() {
+            if (!latestWebUpdateAt) return;
+            try { localStorage.setItem(WEB_UPDATES_SEEN_KEY, String(latestWebUpdateAt)); } catch (_) {}
+            updateWebUpdateBadge();
+        }
+
+        function renderWebUpdates() {
+            const list = document.getElementById('webUpdateList');
+            list.classList.toggle('manage-mode', webUpdateManageMode);
+            if (!webUpdateList.length) {
+                list.innerHTML = '<div class="web-update-empty">등록된 웹 업데이트 공지가 없습니다.</div>';
+                return;
+            }
+            list.innerHTML = webUpdateList.map(item => `
+                <article class="web-update-post">
+                    <div class="web-update-post-top">
+                        <div>
+                            <div class="web-update-post-date">${escapeHtml(formatWebUpdateDate(item.noticeDate))}</div>
+                            <div class="web-update-post-title">${escapeHtml(item.title)}</div>
+                        </div>
+                        <div class="web-update-post-actions">
+                            <button type="button" data-web-update-edit="${Number(item.id)}">수정</button>
+                            <button type="button" class="delete" data-web-update-delete="${Number(item.id)}">삭제</button>
+                        </div>
+                    </div>
+                    <div class="web-update-post-content">${escapeHtml(item.content)}</div>
+                </article>`).join('');
+            list.querySelectorAll('[data-web-update-edit]').forEach(button => {
+                button.addEventListener('click', () => editWebUpdate(Number(button.dataset.webUpdateEdit)));
+            });
+            list.querySelectorAll('[data-web-update-delete]').forEach(button => {
+                button.addEventListener('click', () => deleteWebUpdate(Number(button.dataset.webUpdateDelete)));
+            });
+        }
+
+        function resetWebUpdateEditor() {
+            document.getElementById('webUpdateEditId').value = '';
+            document.getElementById('webUpdateDate').value = todayInKorea();
+            document.getElementById('webUpdateTitle').value = '';
+            document.getElementById('webUpdateContent').value = '';
+            document.getElementById('webUpdateEditorTitle').textContent = '새 공지 작성';
+            document.getElementById('saveWebUpdate').textContent = '등록';
+            const status = document.getElementById('webUpdateEditorStatus');
+            status.textContent = '';status.className = 'web-update-editor-status';
+        }
+
+        function setWebUpdateManageMode(active) {
+            webUpdateManageMode = Boolean(active);
+            document.getElementById('toggleWebUpdateManage').classList.toggle('active', webUpdateManageMode);
+            document.getElementById('webUpdateEditor').classList.toggle('active', webUpdateManageMode);
+            if (webUpdateManageMode) resetWebUpdateEditor();
+            renderWebUpdates();
+        }
+
+        async function fetchWebUpdates() {
+            try {
+                const response = await fetch(WEB_UPDATES_API, { cache:'no-store' });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(payload.error || `GET ${response.status}`);
+                webUpdateList = Array.isArray(payload.notices) ? payload.notices : [];
+                latestWebUpdateAt = Number(payload.latestChangedAt || 0);
+                renderWebUpdates();
+                if (document.getElementById('webUpdateModal').classList.contains('active')) markWebUpdatesSeen();
+                else updateWebUpdateBadge();
+            } catch (error) {
+                console.warn('웹 업데이트 공지 조회 실패', error);
+                document.getElementById('webUpdateList').innerHTML = '<div class="web-update-empty">웹 업데이트 공지를 불러오지 못했습니다.</div>';
+            }
+        }
+
+        async function openWebUpdates() {
+            const modal = document.getElementById('webUpdateModal');
+            modal.classList.add('active');modal.setAttribute('aria-hidden','false');
+            setWebUpdateManageMode(false);
+            await fetchWebUpdates();
+            markWebUpdatesSeen();
+        }
+
+        function closeWebUpdates() {
+            const modal = document.getElementById('webUpdateModal');
+            modal.classList.remove('active');modal.setAttribute('aria-hidden','true');
+            setWebUpdateManageMode(false);
+        }
+
+        function editWebUpdate(id) {
+            const item = webUpdateList.find(entry => Number(entry.id) === Number(id));
+            if (!item) return;
+            document.getElementById('webUpdateEditId').value = String(item.id);
+            document.getElementById('webUpdateDate').value = item.noticeDate || todayInKorea();
+            document.getElementById('webUpdateTitle').value = item.title || '';
+            document.getElementById('webUpdateContent').value = item.content || '';
+            document.getElementById('webUpdateEditorTitle').textContent = '공지 수정';
+            document.getElementById('saveWebUpdate').textContent = '저장';
+            document.getElementById('webUpdateEditorStatus').textContent = '';
+            document.querySelector('.web-update-modal-body').scrollTop = 0;
+            document.getElementById('webUpdateTitle').focus();
+        }
+
+        async function deleteWebUpdate(id) {
+            const item = webUpdateList.find(entry => Number(entry.id) === Number(id));
+            if (!item || !confirm(`'${item.title}' 공지를 삭제하시겠습니까?`)) return;
+            try {
+                const response = await fetch(`${WEB_UPDATES_API}?id=${encodeURIComponent(id)}`, { method:'DELETE' });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(payload.error || `DELETE ${response.status}`);
+                await fetchWebUpdates();
+                resetWebUpdateEditor();
+            } catch (error) {
+                alert(`공지 삭제에 실패했습니다.\n${error.message || error}`);
+            }
         }
 
         function getUpdateImageSrc(item) {
@@ -1257,16 +1597,65 @@
             }
         }
 
+        document.getElementById('openWebUpdates').addEventListener('click', openWebUpdates);
+        document.getElementById('closeWebUpdates').addEventListener('click', closeWebUpdates);
+        document.getElementById('webUpdateModal').addEventListener('click', event => {
+            if (event.target === document.getElementById('webUpdateModal')) closeWebUpdates();
+        });
+        document.getElementById('toggleWebUpdateManage').addEventListener('click', () => {
+            setWebUpdateManageMode(!webUpdateManageMode);
+        });
+        document.getElementById('cancelWebUpdateEdit').addEventListener('click', resetWebUpdateEditor);
+        document.getElementById('webUpdateEditor').addEventListener('submit', async event => {
+            event.preventDefault();
+            const id = Number(document.getElementById('webUpdateEditId').value || 0);
+            const noticeDate = document.getElementById('webUpdateDate').value;
+            const title = document.getElementById('webUpdateTitle').value.trim();
+            const content = document.getElementById('webUpdateContent').value.trim();
+            const status = document.getElementById('webUpdateEditorStatus');
+            const saveButton = document.getElementById('saveWebUpdate');
+            if (!noticeDate || !title || !content) {
+                status.textContent = '날짜, 제목, 내용을 모두 입력해주세요.';
+                status.className = 'web-update-editor-status error';
+                return;
+            }
+            saveButton.disabled = true;
+            status.textContent = id ? '공지를 수정하는 중입니다…' : '공지를 등록하는 중입니다…';
+            status.className = 'web-update-editor-status';
+            try {
+                const response = await fetch(WEB_UPDATES_API, {
+                    method:id ? 'PUT' : 'POST',
+                    headers:{ 'content-type':'application/json' },
+                    body:JSON.stringify({ id:id || undefined, noticeDate, title, content })
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(payload.error || `${id ? 'PUT' : 'POST'} ${response.status}`);
+                await fetchWebUpdates();
+                resetWebUpdateEditor();
+                status.textContent = id ? '수정되었습니다.' : '등록되었습니다.';
+                status.className = 'web-update-editor-status ok';
+            } catch (error) {
+                status.textContent = error.message || '공지를 저장하지 못했습니다.';
+                status.className = 'web-update-editor-status error';
+            } finally {
+                saveButton.disabled = false;
+            }
+        });
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && document.getElementById('webUpdateModal').classList.contains('active')) closeWebUpdates();
+        });
+
         window.addEventListener('load', () => {
             fetchUpdates();
-            updatePollTimer = setInterval(fetchUpdates, 5000);
+            fetchWebUpdates();
+            updatePollTimer = setInterval(() => { fetchUpdates(); fetchWebUpdates(); }, 5000);
         });
-        window.addEventListener('focus', fetchUpdates);
-        document.addEventListener('visibilitychange', () => { if (!document.hidden) fetchUpdates(); });
+        window.addEventListener('focus', () => { fetchUpdates(); fetchWebUpdates(); });
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) { fetchUpdates(); fetchWebUpdates(); } });
     </script>
 
 
-    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.27</div>
+    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.28</div>
 
 
 <script id="pwa-auto-update-script">
@@ -1285,8 +1674,8 @@
       updatePromptOpen = false;
 
       if (ok && registration.waiting) {
-        // 사용자가 확인을 눌렀을 때만 demo_v4.27 서비스워커를 활성화합니다.
-        registration.waiting.postMessage({ type: 'APPLY_UPDATE', version: 'v4.27' });
+        // 사용자가 확인을 눌렀을 때만 demo_v4.28 서비스워커를 활성화합니다.
+        registration.waiting.postMessage({ type: 'APPLY_UPDATE', version: 'v4.28' });
       }
     };
 
