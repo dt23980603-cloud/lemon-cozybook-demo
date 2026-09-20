@@ -92,6 +92,16 @@
     .section-head h2{margin:0;font-size:1.2rem}
     .section-head p{margin:4px 0 0;color:#818181;font-size:.72rem}
     .section-count{font-size:.72rem;color:#7b7b7b}
+    .section-head-actions{display:flex;align-items:center;gap:7px;flex:0 0 auto}
+    .zodiac-manage-btn{
+      width:42px;height:42px;display:inline-flex;align-items:center;justify-content:center;
+      padding:0;border:1px solid #e7dfd1;border-radius:14px;
+      background:rgba(255,255,255,.92);box-shadow:0 6px 16px rgba(81,60,26,.055),inset 0 1px 0 rgba(255,255,255,.95);
+      color:#666;font-size:1.25rem;line-height:1;opacity:.34;
+      transition:opacity .15s ease,border-color .15s ease,transform .15s ease
+    }
+    .zodiac-manage-btn:hover{background:rgba(255,255,255,.92);opacity:.72;border-color:#d6b94f;transform:translateY(-1px);box-shadow:0 9px 20px rgba(81,60,26,.10)}
+    .zodiac-manage-btn:focus-visible{opacity:.8;outline:2px solid rgba(130,130,130,.28);outline-offset:2px}
 
     .zodiac-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
     .zodiac-card{
@@ -178,6 +188,32 @@
       margin:0 0 13px;padding:11px 12px;border-radius:13px;
       background:#fff9da;color:#625a3d;font-size:.76rem;line-height:1.55
     }
+    .zodiac-manage-dialog{width:min(620px,100%)}
+    .zodiac-manage-form{display:grid;gap:12px}
+    .zodiac-manage-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .zodiac-manage-field{display:grid;gap:6px;min-width:0;color:#5f5a4e;font-size:.72rem;font-weight:700}
+    .zodiac-manage-field.span-2{grid-column:1/-1}
+    .zodiac-manage-field select,.zodiac-manage-field input{
+      width:100%;min-width:0;min-height:42px;padding:8px 10px;border:1px solid #d7d0bd;
+      border-radius:11px;background:#fff;color:#333;font:inherit;font-weight:400
+    }
+    .zodiac-flower-preview{
+      min-height:112px;display:grid;grid-template-columns:96px minmax(0,1fr);align-items:center;gap:13px;
+      padding:10px;border:1px solid #e3dece;border-radius:14px;background:#fffdf8
+    }
+    .zodiac-flower-preview img{width:96px;height:96px;object-fit:cover;border-radius:11px;background:#f3f1eb}
+    .zodiac-preview-placeholder{width:96px;height:96px;display:grid;place-items:center;border-radius:11px;background:#f2f0e9;font-size:2rem}
+    .zodiac-preview-copy strong{display:block;margin-bottom:5px;font-size:.9rem}
+    .zodiac-preview-copy span{display:block;color:#7d786d;font-size:.69rem;line-height:1.5}
+    .zodiac-manage-status{min-height:20px;text-align:center;color:#777;font-size:.7rem;line-height:1.4}
+    .zodiac-manage-status.error{color:#b34c4c}.zodiac-manage-status.success{color:#4f7b45}
+    .zodiac-manage-actions{display:flex;justify-content:flex-end;gap:8px}
+    .zodiac-manage-actions button{
+      min-height:40px;padding:8px 14px;border:1px solid #d8d1bd;border-radius:11px;
+      background:#fff;color:#504b40;font-weight:700
+    }
+    .zodiac-manage-actions .primary{background:#fff0a9;border-color:#ddc560}
+    .zodiac-manage-actions button:disabled{opacity:.55;cursor:wait}
     .reward-dev-notice{
       margin:0 0 12px;padding:9px 11px;border:1px solid rgba(214,74,74,.34);
       border-radius:11px;background:rgba(255,92,92,.11);
@@ -252,6 +288,7 @@
       }
       .birth-status,.unfound{font-size:.62rem}
       .section-head{margin-top:16px}.section-head h2{font-size:1rem}.section-head p,.section-count{font-size:.62rem}
+      .section-head-actions{gap:5px}.zodiac-manage-btn{width:36px;height:36px;border-radius:12px;font-size:1.05rem}
       .zodiac-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
       .zodiac-card{border-radius:14px}
       .zodiac-media{aspect-ratio:1.35/1}
@@ -267,6 +304,12 @@
       .dialog h3{font-size:.96rem}
       .dialog-scroll{padding:12px}
       .modal-intro{font-size:.66rem;padding:9px 10px}.reward-dev-notice{font-size:.6rem;padding:8px 9px;margin-bottom:9px}
+      .zodiac-manage-grid{grid-template-columns:1fr;gap:8px}.zodiac-manage-field.span-2{grid-column:auto}
+      .zodiac-manage-field{font-size:.64rem}.zodiac-manage-field select,.zodiac-manage-field input{min-height:39px}
+      .zodiac-flower-preview{grid-template-columns:78px minmax(0,1fr);min-height:94px;gap:10px}
+      .zodiac-flower-preview img,.zodiac-preview-placeholder{width:78px;height:78px}
+      .zodiac-preview-copy strong{font-size:.78rem}.zodiac-preview-copy span,.zodiac-manage-status{font-size:.61rem}
+      .zodiac-manage-actions button{flex:1;min-width:0;padding-inline:8px;font-size:.68rem}
       .flow-chip{font-size:.59rem;padding:5px 7px}
       .guide-section{padding:10px 11px;border-radius:12px}
       .guide-section h4{font-size:.78rem}
@@ -289,7 +332,7 @@
       .zodiac-name{font-size:.73rem}
     }
   </style>
-  <link rel="manifest" href="/manifest.webmanifest?v=4.28">
+  <link rel="manifest" href="/manifest.webmanifest?v=4.29">
   <meta name="theme-color" content="#ffe680">
 </head>
 <body>
@@ -337,7 +380,10 @@
 
   <div class="section-head">
     <div><h2>⭐ 별자리 카드</h2><p>게임의 별자리 기간을 기준으로 자동 분류됩니다.</p></div>
-    <div class="section-count" id="registeredCount"></div>
+    <div class="section-head-actions">
+      <div class="section-count" id="registeredCount"></div>
+      <button type="button" class="zodiac-manage-btn" id="openZodiacManage" title="별자리 관리" aria-label="별자리 관리 열기">⚙️</button>
+    </div>
   </div>
 
   <section class="zodiac-grid" id="zodiacGrid" aria-live="polite"></section>
@@ -437,13 +483,53 @@
   </div>
 </div>
 
-<div id="site-version">demo_v4.28</div>
+<div class="modal" id="zodiacManageModal" role="dialog" aria-modal="true" aria-labelledby="zodiacManageTitle">
+  <div class="dialog zodiac-manage-dialog">
+    <div class="dialog-head">
+      <h3 id="zodiacManageTitle">⚙️ 별자리 관리</h3>
+      <button type="button" class="dialog-close" data-close-modal aria-label="닫기">×</button>
+    </div>
+    <div class="dialog-scroll">
+      <p class="modal-intro">별자리의 출시 상태를 바꾸고 전체 꽃 도감에 등록된 꽃을 연결할 수 있습니다. 연결된 꽃의 이름과 이미지가 별자리 카드에 바로 표시됩니다.</p>
+      <form class="zodiac-manage-form" id="zodiacManageForm">
+        <div class="zodiac-manage-grid">
+          <label class="zodiac-manage-field">별자리
+            <select id="zodiacManageKey" required aria-label="관리할 별자리"></select>
+          </label>
+          <label class="zodiac-manage-field">출시 상태
+            <select id="zodiacManageReleased" required aria-label="출시 상태">
+              <option value="false">미출시</option>
+              <option value="true">출시</option>
+            </select>
+          </label>
+          <label class="zodiac-manage-field span-2">꽃 검색
+            <input type="search" id="zodiacFlowerSearch" placeholder="꽃 이름·분류·등급 검색" autocomplete="off">
+          </label>
+          <label class="zodiac-manage-field span-2">연결 꽃
+            <select id="zodiacFlowerSelect" aria-label="연결할 꽃"><option value="">기존 카드 정보 사용</option></select>
+          </label>
+        </div>
+        <div class="zodiac-flower-preview" id="zodiacFlowerPreview" aria-live="polite"></div>
+        <div class="zodiac-manage-status" id="zodiacManageStatus" aria-live="polite"></div>
+        <div class="zodiac-manage-actions">
+          <button type="button" id="resetZodiacSetting">기본값 복원</button>
+          <button type="submit" class="primary" id="saveZodiacSetting">설정 저장</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="site-version">demo_v4.29</div>
 
 <script>
 const API='/api/guild-state';
+const STAR_SOUL_SETTINGS_API='/api/star-soul-settings';
+const FLOWERS_API='/api/flowers';
 const roleOrder={'길드장':1,'부길드장':2,'임원':3,'정예':4,'멤버':5};
+const gradeOrder={N:1,R:2,SR:3,SSR:4,UR:5};
 
-const zodiacData=[
+const zodiacBaseData=[
   {key:'aquarius',symbol:'♒',name:'물병자리',period:'1월 20일 ~ 2월 18일',start:120,end:218,image:'images/guides/starsoul/zodiac/aquarius.webp',flower:'물병자리 · 창공의 별자취',unreleased:true},
   {key:'pisces',symbol:'♓',name:'물고기자리',period:'2월 19일 ~ 3월 20일',start:219,end:320,image:'images/guides/starsoul/zodiac/pisces.webp',flower:'물고기자리 · 보랏빛 심연의 별자리',unreleased:true},
   {key:'aries',symbol:'♈',name:'양자리',period:'3월 21일 ~ 4월 19일',start:321,end:419,image:'images/guides/starsoul/zodiac/aries.webp',flower:'양자리 · 별자국 두루마리',unreleased:true},
@@ -458,6 +544,9 @@ const zodiacData=[
   {key:'capricorn',symbol:'♑',name:'염소자리',period:'12월 25일 ~ 1월 19일',start:1225,end:119,image:'images/guides/starsoul/zodiac/capricorn.webp',flower:'염소자리 · 달물결 별의 커튼',unreleased:true}
 ];
 
+let zodiacData=zodiacBaseData.map(z=>({...z}));
+let zodiacSettings={};
+let catalogFlowers=[];
 let members=[];
 let memberBirthdays={};
 
@@ -470,8 +559,108 @@ const participation=document.getElementById('participation');
 const registeredCount=document.getElementById('registeredCount');
 const unfound=document.getElementById('unfound');
 const zodiacGrid=document.getElementById('zodiacGrid');
+const openZodiacManage=document.getElementById('openZodiacManage');
+const zodiacManageModal=document.getElementById('zodiacManageModal');
+const zodiacManageForm=document.getElementById('zodiacManageForm');
+const zodiacManageKey=document.getElementById('zodiacManageKey');
+const zodiacManageReleased=document.getElementById('zodiacManageReleased');
+const zodiacFlowerSearch=document.getElementById('zodiacFlowerSearch');
+const zodiacFlowerSelect=document.getElementById('zodiacFlowerSelect');
+const zodiacFlowerPreview=document.getElementById('zodiacFlowerPreview');
+const zodiacManageStatus=document.getElementById('zodiacManageStatus');
+const resetZodiacSetting=document.getElementById('resetZodiacSetting');
+const saveZodiacSetting=document.getElementById('saveZodiacSetting');
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+
+function settingFor(key){return Object.prototype.hasOwnProperty.call(zodiacSettings,key)?zodiacSettings[key]:null}
+function linkedFlowerFor(key){
+  const setting=settingFor(key);
+  return setting?.flowerKey?catalogFlowers.find(f=>f.key===setting.flowerKey)||null:null;
+}
+function applyZodiacSettings(){
+  zodiacData=zodiacBaseData.map(base=>{
+    const setting=settingFor(base.key);
+    if(!setting)return {...base};
+    const linked=linkedFlowerFor(base.key);
+    return {
+      ...base,
+      unreleased:!setting.released,
+      linkedFlowerKey:setting.flowerKey||'',
+      image:linked?.image||base.image,
+      flower:linked?(linked.listName||linked.name):(base.flower||'')
+    };
+  });
+  renderZodiac();
+}
+async function loadZodiacSettings(silent=true){
+  try{
+    const response=await fetch(STAR_SOUL_SETTINGS_API,{cache:'no-store'});
+    if(!response.ok)throw new Error(`GET ${response.status}`);
+    const payload=await response.json();
+    zodiacSettings=Object.fromEntries((Array.isArray(payload.settings)?payload.settings:[]).map(item=>[item.zodiacKey,item]));
+    applyZodiacSettings();
+    return true;
+  }catch(error){
+    console.warn('별자리 설정 조회 실패',error);
+    if(!silent)setManageStatus('별자리 설정을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.','error');
+    return false;
+  }
+}
+async function loadCatalogFlowers(silent=true){
+  try{
+    const response=await fetch(FLOWERS_API,{cache:'no-store'});
+    if(!response.ok)throw new Error(`GET ${response.status}`);
+    const payload=await response.json();
+    catalogFlowers=(Array.isArray(payload.flowers)?payload.flowers:[]).sort((a,b)=>(gradeOrder[a.grade]||99)-(gradeOrder[b.grade]||99)||String(a.listName||a.name||'').localeCompare(String(b.listName||b.name||''),'ko-KR'));
+    applyZodiacSettings();
+    return true;
+  }catch(error){
+    console.warn('꽃 도감 조회 실패',error);
+    if(!silent)setManageStatus('전체 꽃 도감을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.','error');
+    return false;
+  }
+}
+function setManageStatus(message='',kind=''){
+  zodiacManageStatus.textContent=message;
+  zodiacManageStatus.className=`zodiac-manage-status${kind?' '+kind:''}`;
+}
+function renderFlowerChoices(query='',preferredValue=zodiacFlowerSelect.value){
+  const needle=String(query||'').trim().toLocaleLowerCase('ko-KR');
+  const matches=catalogFlowers.filter(f=>!needle||`${f.grade||''} ${f.category||''} ${f.name||''} ${f.listName||''}`.toLocaleLowerCase('ko-KR').includes(needle));
+  const selected=catalogFlowers.find(f=>f.key===preferredValue);
+  const list=selected&&!matches.some(f=>f.key===selected.key)?[selected,...matches]:matches;
+  zodiacFlowerSelect.innerHTML='<option value="">기존 카드 정보 사용</option>'+list.map(f=>`<option value="${esc(f.key)}">${esc(f.grade||'-')} · ${esc(f.listName||f.name||'이름 없음')}</option>`).join('');
+  if(preferredValue&&list.some(f=>f.key===preferredValue))zodiacFlowerSelect.value=preferredValue;
+}
+function effectiveManagePreview(){
+  const base=zodiacBaseData.find(z=>z.key===zodiacManageKey.value)||zodiacBaseData[0];
+  const linked=catalogFlowers.find(f=>f.key===zodiacFlowerSelect.value)||null;
+  return {
+    base,linked,image:linked?.image||base.image,
+    flower:linked?(linked.listName||linked.name):(base.flower||'미연결'),
+    released:zodiacManageReleased.value==='true'
+  };
+}
+function renderManagePreview(){
+  const data=effectiveManagePreview();
+  const image=data.image
+    ? `<img src="${esc(data.image)}" alt="${esc(data.flower)}">`
+    : `<div class="zodiac-preview-placeholder" aria-hidden="true">${data.base.symbol}</div>`;
+  const status=data.released?'출시':'미출시';
+  const linked=data.linked?`${data.linked.grade||'-'} · ${data.linked.listName||data.linked.name}`:'기존 카드 정보 사용';
+  zodiacFlowerPreview.innerHTML=`${image}<div class="zodiac-preview-copy"><strong>${data.base.symbol} ${esc(data.base.name)} · ${status}</strong><span>${esc(data.flower||'연결 꽃 없음')}</span><span>${esc(linked)}</span></div>`;
+}
+function syncZodiacManageForm(){
+  const base=zodiacBaseData.find(z=>z.key===zodiacManageKey.value)||zodiacBaseData[0];
+  zodiacManageKey.value=base.key;
+  const setting=settingFor(base.key);
+  zodiacManageReleased.value=String(setting?setting.released:!base.unreleased);
+  zodiacFlowerSearch.value='';
+  renderFlowerChoices('',setting?.flowerKey||'');
+  renderManagePreview();
+  setManageStatus(setting?'저장된 별자리 설정을 표시하고 있습니다.':'현재 기본 카드 정보를 표시하고 있습니다.');
+}
 
 function sortedMembers(){
   return [...members].sort((a,b)=>(roleOrder[a.role]||99)-(roleOrder[b.role]||99)||String(a.name||'').localeCompare(String(b.name||''),'ko-KR'));
@@ -681,6 +870,80 @@ monthSelect.addEventListener('change',fillDays);
 memberSelect.addEventListener('change',updateFormForMember);
 birthSave.addEventListener('click',saveBirthday);
 
+zodiacManageKey.innerHTML=zodiacBaseData.map(z=>`<option value="${esc(z.key)}">${z.symbol} ${esc(z.name)}</option>`).join('');
+zodiacManageKey.addEventListener('change',syncZodiacManageForm);
+zodiacManageReleased.addEventListener('change',renderManagePreview);
+zodiacFlowerSelect.addEventListener('change',renderManagePreview);
+zodiacFlowerSearch.addEventListener('input',()=>{
+  renderFlowerChoices(zodiacFlowerSearch.value,zodiacFlowerSelect.value);
+  renderManagePreview();
+});
+
+async function openZodiacManager(){
+  openInfoModal('zodiacManageModal');
+  setManageStatus('별자리와 꽃 도감 정보를 불러오는 중입니다.');
+  openZodiacManage.disabled=true;
+  const [settingsOk,flowersOk]=await Promise.all([loadZodiacSettings(false),loadCatalogFlowers(false)]);
+  openZodiacManage.disabled=false;
+  syncZodiacManageForm();
+  if(!settingsOk||!flowersOk)setManageStatus('일부 정보를 불러오지 못했습니다. 잠시 후 다시 열어주세요.','error');
+}
+openZodiacManage.addEventListener('click',openZodiacManager);
+
+zodiacManageForm.addEventListener('submit',async event=>{
+  event.preventDefault();
+  const base=zodiacBaseData.find(z=>z.key===zodiacManageKey.value);
+  const flower=catalogFlowers.find(f=>f.key===zodiacFlowerSelect.value)||null;
+  const released=zodiacManageReleased.value==='true';
+  if(!base)return setManageStatus('관리할 별자리를 다시 선택해주세요.','error');
+  if(released&&!flower&&!base.image)return setManageStatus('이미지가 없는 별자리를 출시로 바꾸려면 연결 꽃을 선택해주세요.','error');
+
+  saveZodiacSetting.disabled=true;
+  resetZodiacSetting.disabled=true;
+  setManageStatus('별자리 설정을 저장하는 중입니다.');
+  try{
+    const response=await fetch(STAR_SOUL_SETTINGS_API,{
+      method:'PUT',headers:{'content-type':'application/json'},
+      body:JSON.stringify({zodiacKey:base.key,released,flowerKey:flower?.key||''})
+    });
+    const payload=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(payload.error||`PUT ${response.status}`);
+    zodiacSettings[base.key]=payload.setting;
+    applyZodiacSettings();
+    renderManagePreview();
+    setManageStatus(`${base.name} 설정을 저장했습니다.`,'success');
+  }catch(error){
+    console.warn('별자리 설정 저장 실패',error);
+    setManageStatus(error.message||'별자리 설정 저장에 실패했습니다.','error');
+  }finally{
+    saveZodiacSetting.disabled=false;
+    resetZodiacSetting.disabled=false;
+  }
+});
+
+resetZodiacSetting.addEventListener('click',async()=>{
+  const base=zodiacBaseData.find(z=>z.key===zodiacManageKey.value);
+  if(!base||!confirm(`${base.name}의 별자리 설정을 기본값으로 복원할까요?`))return;
+  saveZodiacSetting.disabled=true;
+  resetZodiacSetting.disabled=true;
+  setManageStatus('기본값으로 복원하는 중입니다.');
+  try{
+    const response=await fetch(`${STAR_SOUL_SETTINGS_API}?zodiacKey=${encodeURIComponent(base.key)}`,{method:'DELETE'});
+    const payload=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(payload.error||`DELETE ${response.status}`);
+    delete zodiacSettings[base.key];
+    applyZodiacSettings();
+    syncZodiacManageForm();
+    setManageStatus(`${base.name} 설정을 기본값으로 복원했습니다.`,'success');
+  }catch(error){
+    console.warn('별자리 설정 초기화 실패',error);
+    setManageStatus(error.message||'기본값 복원에 실패했습니다.','error');
+  }finally{
+    saveZodiacSetting.disabled=false;
+    resetZodiacSetting.disabled=false;
+  }
+});
+
 function openInfoModal(id){
   const modal=document.getElementById(id);
   if(!modal)return;
@@ -706,9 +969,11 @@ document.addEventListener('keydown',e=>{
 });
 
 loadState();
-let pollTimer=setInterval(loadState,5000);
-window.addEventListener('focus',loadState);
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadState()});
+loadZodiacSettings();
+loadCatalogFlowers();
+let pollTimer=setInterval(()=>{loadState();loadZodiacSettings()},5000);
+window.addEventListener('focus',()=>{loadState();loadZodiacSettings()});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){loadState();loadZodiacSettings()}});
 
 if('serviceWorker'in navigator){
   window.addEventListener('load',async()=>{
