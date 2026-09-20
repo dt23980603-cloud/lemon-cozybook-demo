@@ -73,7 +73,7 @@
             text-align: center;
         }
 
-        /* demo_v4.30: 바로가기 아이콘 메뉴 */
+        /* demo_v4.31: 바로가기 아이콘 메뉴 */
         .quick-section,
         .main-menu-section {
             width: 100%;
@@ -273,6 +273,30 @@
             transform: translateY(-1px);
         }
 
+        .table-header-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+            flex: 0 0 auto;
+        }
+
+        .btn-featured-save {
+            border: 1px solid #af9b58;
+            border-radius: 999px;
+            background: linear-gradient(180deg, #fffdf4 0%, #ffefb8 100%);
+            color: #684f16;
+            padding: 5px 11px;
+            font-size: .79rem;
+            font-weight: 700;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background .2s, transform .2s;
+        }
+
+        .btn-featured-save:hover { background:linear-gradient(180deg,#fff9e8 0%,#ffe497 100%);transform:translateY(-1px); }
+        .btn-featured-save:disabled { opacity:.55;cursor:wait;transform:none; }
+
         .web-update-title-wrap {
             min-width: 0;
             display: flex;
@@ -465,9 +489,29 @@
         .update-actions {
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-end;
             gap: 6px;
             flex-shrink: 0;
         }
+
+        .update-featured-toggle {
+            display:inline-flex;
+            align-items:center;
+            gap:4px;
+            min-height:28px;
+            padding:4px 7px;
+            border:1px solid #d8c98c;
+            border-radius:8px;
+            background:#fffdf3;
+            color:#705b24;
+            font-size:.71rem;
+            font-weight:700;
+            white-space:nowrap;
+            cursor:pointer;
+        }
+        .update-featured-toggle:has(input:checked){background:#fff0b7;border-color:#a68d36;color:#57430e;}
+        .update-featured-toggle input{width:15px;height:15px;margin:0;accent-color:#b39227;}
 
 
         #updateTable {
@@ -819,6 +863,10 @@
                 font-size: 0.72rem;
             }
 
+            .table-header-actions { gap:4px; }
+            .btn-featured-save { padding:5px 8px;font-size:.68rem; }
+            .update-featured-toggle { min-height:26px;padding:3px 5px;font-size:.64rem; }
+
             .web-update-title-wrap { gap:5px; }
             .btn-web-update { min-height:27px; padding:5px 8px; font-size:.72rem; }
             .web-update-modal { padding:10px; }
@@ -915,7 +963,7 @@
 
     
 
-        /* demo_v4.30: v4.30 레이아웃/비율 유지 + 메인페이지 디자인만 개선 */
+        /* demo_v4.31: v4.31 레이아웃/비율 유지 + 메인페이지 디자인만 개선 */
         body {
             background:
                 radial-gradient(circle at 9% 92%, rgba(255, 227, 104, .18), transparent 16%),
@@ -1182,7 +1230,7 @@
 
     </style>
 
-    <link rel="manifest" href="/manifest.webmanifest?v=4.30">
+    <link rel="manifest" href="/manifest.webmanifest?v=4.31">
     <meta name="theme-color" content="#ffe680">
     <meta name="application-name" content="레몬공책DEMO">
     <meta name="mobile-web-app-capable" content="yes">
@@ -1291,7 +1339,10 @@
                         <span class="table-title">🍋 업데이트 내역</span>
                         <button type="button" class="btn-web-update" id="openWebUpdates" title="레몬공책 업데이트 공지" aria-label="레몬공책 업데이트 공지 열기">📢 <span class="web-update-new-label">NEW!</span></button>
                     </div>
-                    <button type="button" class="btn-reset" id="clearUpdatesBtn" onclick="clearAllUpdates()">전체 초기화</button>
+                    <div class="table-header-actions">
+                        <button type="button" class="btn-featured-save" id="saveFeaturedFlowersBtn">🌷 선택 저장</button>
+                        <button type="button" class="btn-reset" id="clearUpdatesBtn" onclick="clearAllUpdates()">전체 초기화</button>
+                    </div>
                 </div>
                 <table id="updateTable">
                     <thead>
@@ -1343,6 +1394,8 @@
         let latestWebUpdateAt = 0;
         let webUpdateManageMode = false;
         let updatePollTimer = null;
+        let featuredFlowerKeys = new Set();
+        let featuredSelectionDraft = null;
 
         function escapeHtml(value) {
             return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
@@ -1502,16 +1555,77 @@
             return `/api/flower-image/${encodeURIComponent(item.flowerKey)}?v=${encodeURIComponent(version)}`;
         }
 
+        function visibleUpdateFlowerKeys() {
+            return new Set(updateList.map(item => String(item.flowerKey || '')).filter(Boolean));
+        }
+
+        function effectiveFeaturedFlowerKeys() {
+            return featuredSelectionDraft || featuredFlowerKeys;
+        }
+
+        function getFeaturedKeysForSave() {
+            const visibleKeys = visibleUpdateFlowerKeys();
+            return [...effectiveFeaturedFlowerKeys()].filter(key => visibleKeys.has(key));
+        }
+
+        function updateFeaturedSaveButton() {
+            const button = document.getElementById('saveFeaturedFlowersBtn');
+            if (!button) return;
+            button.textContent = `🌷 선택 ${getFeaturedKeysForSave().length}개 저장`;
+        }
+
+        function changeFeaturedDraft(flowerKey, checked) {
+            if (!featuredSelectionDraft) {
+                const visibleKeys = visibleUpdateFlowerKeys();
+                featuredSelectionDraft = new Set([...featuredFlowerKeys].filter(key => visibleKeys.has(key)));
+            }
+            if (checked) featuredSelectionDraft.add(flowerKey);
+            else featuredSelectionDraft.delete(flowerKey);
+            document.querySelectorAll('[data-featured-flower-key]').forEach(input => {
+                if (input.dataset.featuredFlowerKey === flowerKey) input.checked = checked;
+            });
+            updateFeaturedSaveButton();
+        }
+
+        async function saveFeaturedFlowers() {
+            const flowerKeys = getFeaturedKeysForSave();
+            if (!confirm(`선택한 ${flowerKeys.length}개의 꽃을 신규 추가 꽃 영역에 표시할까요?\n\n현재 신규 꽃 목록은 이번 선택 내용으로 교체됩니다.`)) return;
+            const button = document.getElementById('saveFeaturedFlowersBtn');
+            button.disabled = true;
+            try {
+                const response = await fetch(UPDATES_API, {
+                    method:'PUT',
+                    headers:{ 'content-type':'application/json' },
+                    body:JSON.stringify({ featuredFlowerKeys:flowerKeys })
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(payload.error || `PUT ${response.status}`);
+                featuredFlowerKeys = new Set((payload.featuredFlowers || []).map(item => item.flowerKey));
+                featuredSelectionDraft = null;
+                renderTable();
+                alert(`신규 추가 꽃 ${featuredFlowerKeys.size}개를 저장했습니다.`);
+            } catch (error) {
+                console.error('신규 꽃 선택 저장 실패', error);
+                alert(`신규 꽃 선택 저장에 실패했습니다.\n${error.message || error}`);
+            } finally {
+                button.disabled = false;
+            }
+        }
+
         function renderTable() {
             const tbody = document.getElementById('updateTbody');
             if (!updateList.length) {
                 tbody.innerHTML = '<tr><td style="color:#888;">등록된 업데이트 내역이 없습니다.</td></tr>';
+                updateFeaturedSaveButton();
                 return;
             }
+            const selectedKeys = effectiveFeaturedFlowerKeys();
             tbody.innerHTML = updateList.map(item => {
                 const label = item.category ? `[${item.category}] ${item.name}` : item.name;
                 const score = item.guildScore == null ? '-' : `${item.guildScore}점`;
                 const imageSrc = getUpdateImageSrc(item);
+                const flowerKey = String(item.flowerKey || '');
+                const featured = flowerKey && selectedKeys.has(flowerKey);
                 return `<tr>
                     <td class="update-content-cell">
                         <div class="update-item">
@@ -1524,6 +1638,10 @@
                                 </div>
                             </div>
                             <div class="update-actions">
+                                <label class="update-featured-toggle" title="신규 추가 꽃 영역 표시 여부">
+                                    <input type="checkbox" data-featured-flower-key="${escapeHtml(flowerKey)}" ${featured ? 'checked' : ''} ${flowerKey ? '' : 'disabled'}>
+                                    <span>🌷 신규 꽃</span>
+                                </label>
                                 <button type="button" class="btn-update-flower" data-flower-key="${escapeHtml(item.flowerKey || '')}">꽃 정보 보기</button>
                                 <button type="button" class="btn-update-delete" title="이 공지만 삭제" aria-label="이 공지만 삭제" onclick="deleteUpdate(${Number(item.id)})">🗑️</button>
                             </div>
@@ -1534,6 +1652,10 @@
             tbody.querySelectorAll('.btn-update-flower').forEach(button => {
                 button.addEventListener('click', () => openUpdateFlower(button.dataset.flowerKey));
             });
+            tbody.querySelectorAll('[data-featured-flower-key]').forEach(input => {
+                input.addEventListener('change', () => changeFeaturedDraft(input.dataset.featuredFlowerKey, input.checked));
+            });
+            updateFeaturedSaveButton();
         }
 
         function openUpdateFlower(flowerKey) {
@@ -1566,7 +1688,7 @@
                 alert('삭제할 업데이트 내역이 없습니다.');
                 return;
             }
-            if (!confirm('업데이트 내역을 전체 초기화할까요?\n\n공지 기록만 삭제되며 전체 꽃 도감, 길드 꽃 도감, R2 이미지는 그대로 유지됩니다.')) return;
+            if (!confirm('업데이트 내역을 전체 초기화할까요?\n\n공지 기록만 삭제되며 전체 꽃 도감, 길드 꽃 도감, R2 이미지와 현재 신규 꽃 지정은 그대로 유지됩니다.')) return;
 
             const button = document.getElementById('clearUpdatesBtn');
             if (button) button.disabled = true;
@@ -1590,6 +1712,11 @@
                 if (!response.ok) throw new Error(`GET ${response.status}`);
                 const payload = await response.json();
                 updateList = Array.isArray(payload.updates) ? payload.updates : [];
+                featuredFlowerKeys = new Set((Array.isArray(payload.featuredFlowers) ? payload.featuredFlowers : []).map(item => String(item.flowerKey || '')).filter(Boolean));
+                if (featuredSelectionDraft) {
+                    const visibleKeys = visibleUpdateFlowerKeys();
+                    featuredSelectionDraft = new Set([...featuredSelectionDraft].filter(key => visibleKeys.has(key)));
+                }
                 renderTable();
             } catch (error) {
                 console.warn('업데이트 내역 D1 조회 실패', error);
@@ -1598,6 +1725,7 @@
         }
 
         document.getElementById('openWebUpdates').addEventListener('click', openWebUpdates);
+        document.getElementById('saveFeaturedFlowersBtn').addEventListener('click', saveFeaturedFlowers);
         document.getElementById('closeWebUpdates').addEventListener('click', closeWebUpdates);
         document.getElementById('webUpdateModal').addEventListener('click', event => {
             if (event.target === document.getElementById('webUpdateModal')) closeWebUpdates();
@@ -1655,7 +1783,7 @@
     </script>
 
 
-    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.30</div>
+    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.31</div>
 
 
 <script id="pwa-auto-update-script">
@@ -1674,8 +1802,8 @@
       updatePromptOpen = false;
 
       if (ok && registration.waiting) {
-        // 사용자가 확인을 눌렀을 때만 demo_v4.30 서비스워커를 활성화합니다.
-        registration.waiting.postMessage({ type: 'APPLY_UPDATE', version: 'v4.30' });
+        // 사용자가 확인을 눌렀을 때만 demo_v4.31 서비스워커를 활성화합니다.
+        registration.waiting.postMessage({ type: 'APPLY_UPDATE', version: 'v4.31' });
       }
     };
 
