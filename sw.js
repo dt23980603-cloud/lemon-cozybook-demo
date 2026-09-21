@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.35-update-prompt';
+const CACHE_NAME = 'lemon-demo-v4.36-update-prompt';
 const APP_SHELL = [
   '/',
   '/index.html',
