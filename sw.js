@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.37-update-prompt';
+const CACHE_NAME = 'lemon-demo-v4.38-update-prompt';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -77,7 +77,7 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'APPLY_UPDATE' && event.data.version === 'v4.37') {
+  if (event.data && event.data.type === 'APPLY_UPDATE' && event.data.version === 'v4.38') {
     self.skipWaiting();
   }
 });

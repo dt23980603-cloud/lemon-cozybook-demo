@@ -143,9 +143,11 @@
     }
     .zodiac-body{padding:11px 12px 12px}
     .zodiac-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
-    .zodiac-name{display:flex;align-items:center;gap:.28em;margin:0;font-size:1rem;line-height:1.3}
-    .zodiac-title-icon{display:block;flex:0 0 auto;width:1.08em;height:1.08em;object-fit:contain}
-    .zodiac-period{margin:3px 0 0;font-size:.7rem;color:#777}
+    .zodiac-identity{display:flex;align-items:center;gap:8px;min-width:0}
+    .zodiac-identity-copy{min-width:0}
+    .zodiac-name{margin:0;font-size:1rem;line-height:1.25}
+    .zodiac-title-icon{display:block;flex:0 0 30px;width:30px;height:30px;object-fit:contain}
+    .zodiac-period{margin:2px 0 0;font-size:.7rem;line-height:1.25;color:#777}
     .member-total{font-size:.68rem;color:#777;background:#f7f7f7;border-radius:999px;padding:4px 7px;white-space:nowrap}
     .guild-label{margin-top:10px;font-size:.65rem;color:#989898}
     .member-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px;min-height:24px}
@@ -302,6 +304,7 @@
       .zodiac-media{aspect-ratio:1.35/1}
       .flower-pill{left:6px;bottom:6px;max-width:calc(100% - 12px);font-size:.54rem;padding:4px 6px}
       .zodiac-body{padding:8px}
+      .zodiac-identity{gap:6px}.zodiac-title-icon{flex-basis:28px;width:28px;height:28px}
       .zodiac-name{font-size:.79rem}.zodiac-period{font-size:.58rem}.member-total{font-size:.54rem;padding:3px 5px}
       .guild-label{font-size:.55rem;margin-top:7px}.member-tags{gap:3px;margin-top:4px}
       .member-tag{font-size:.55rem;padding:3px 5px}.none-tag{font-size:.55rem}.zodiac-more-btn{min-height:20px;padding:3px 5px;font-size:.52rem}
@@ -340,7 +343,7 @@
       .zodiac-name{font-size:.73rem}
     }
   </style>
-  <link rel="manifest" href="/manifest.webmanifest?v=4.36">
+  <link rel="manifest" href="/manifest.webmanifest?v=4.38">
   <meta name="theme-color" content="#ffe680">
 </head>
 <body>
@@ -528,7 +531,7 @@
   </div>
 </div>
 
-<div id="site-version">demo_v4.37</div>
+<div id="site-version">demo_v4.38</div>
 
 <script>
 const API='/api/guild-state';
@@ -781,7 +784,10 @@ function renderZodiac(){
       ${media}
       <div class="zodiac-body">
         <div class="zodiac-top">
-          <div><h3 class="zodiac-name">${zodiacIconHtml(z)}<span>${esc(z.name)}</span></h3><p class="zodiac-period">${esc(z.period)}</p></div>
+          <div class="zodiac-identity">
+            ${zodiacIconHtml(z)}
+            <div class="zodiac-identity-copy"><h3 class="zodiac-name">${esc(z.name)}</h3><p class="zodiac-period">${esc(z.period)}</p></div>
+          </div>
           <span class="member-total">${owners.length}명</span>
         </div>
         <div class="guild-label">우리 길드</div>
