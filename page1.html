@@ -131,6 +131,9 @@
     }
     .placeholder-inner{text-align:center;color:#aaa;padding:8px}
     .placeholder-symbol{display:block;font-size:2rem;margin-bottom:3px;color:#9792b7}
+    .zodiac-media.placeholder .placeholder-zodiac-icon{
+      display:block;width:2rem;height:2rem;margin:0 auto 3px;object-fit:contain;filter:none
+    }
     .placeholder-inner small{font-size:.65rem}
     .flower-pill{
       position:absolute;left:9px;bottom:8px;max-width:calc(100% - 18px);
@@ -140,7 +143,8 @@
     }
     .zodiac-body{padding:11px 12px 12px}
     .zodiac-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
-    .zodiac-name{margin:0;font-size:1rem;line-height:1.3}
+    .zodiac-name{display:flex;align-items:center;gap:.28em;margin:0;font-size:1rem;line-height:1.3}
+    .zodiac-title-icon{display:block;flex:0 0 auto;width:1.08em;height:1.08em;object-fit:contain}
     .zodiac-period{margin:3px 0 0;font-size:.7rem;color:#777}
     .member-total{font-size:.68rem;color:#777;background:#f7f7f7;border-radius:999px;padding:4px 7px;white-space:nowrap}
     .guild-label{margin-top:10px;font-size:.65rem;color:#989898}
@@ -204,7 +208,10 @@
     }
     .zodiac-flower-preview img{width:96px;height:96px;object-fit:cover;border-radius:11px;background:#f3f1eb}
     .zodiac-preview-placeholder{width:96px;height:96px;display:grid;place-items:center;border-radius:11px;background:#f2f0e9;font-size:2rem}
+    .zodiac-preview-placeholder .zodiac-preview-icon{width:2.15rem;height:2.15rem;object-fit:contain;background:transparent;border-radius:0}
     .zodiac-preview-copy strong{display:block;margin-bottom:5px;font-size:.9rem}
+    .zodiac-preview-copy .zodiac-preview-title{display:flex;align-items:center;gap:.3em}
+    .zodiac-preview-title .zodiac-preview-title-icon{width:1.1em;height:1.1em;object-fit:contain;border-radius:0;background:transparent}
     .zodiac-preview-copy span{display:block;color:#7d786d;font-size:.69rem;line-height:1.5}
     .zodiac-manage-status{min-height:20px;text-align:center;color:#777;font-size:.7rem;line-height:1.4}
     .zodiac-manage-status.error{color:#b34c4c}.zodiac-manage-status.success{color:#4f7b45}
@@ -521,7 +528,7 @@
   </div>
 </div>
 
-<div id="site-version">demo_v4.36</div>
+<div id="site-version">demo_v4.37</div>
 
 <script>
 const API='/api/guild-state';
@@ -531,18 +538,18 @@ const roleOrder={'길드장':1,'부길드장':2,'임원':3,'정예':4,'멤버':5
 const gradeOrder={N:1,R:2,SR:3,SSR:4,UR:5};
 
 const zodiacBaseData=[
-  {key:'aquarius',symbol:'♒',name:'물병자리',period:'1월 20일 ~ 2월 18일',start:120,end:218,image:'images/guides/starsoul/zodiac/aquarius.webp',flower:'물병자리 · 창공의 별자취',unreleased:true},
-  {key:'pisces',symbol:'♓',name:'물고기자리',period:'2월 19일 ~ 3월 20일',start:219,end:320,image:'images/guides/starsoul/zodiac/pisces.webp',flower:'물고기자리 · 보랏빛 심연의 별자리',unreleased:true},
-  {key:'aries',symbol:'♈',name:'양자리',period:'3월 21일 ~ 4월 19일',start:321,end:419,image:'images/guides/starsoul/zodiac/aries.webp',flower:'양자리 · 별자국 두루마리',unreleased:true},
-  {key:'taurus',symbol:'♉',name:'황소자리',period:'4월 20일 ~ 5월 20일',start:420,end:520,image:'images/flowers/UR/F0019.webp',flower:'황소자리 · 풍요의 별그림'},
-  {key:'gemini',symbol:'♊',name:'쌍둥이자리',period:'5월 21일 ~ 6월 21일',start:521,end:621,image:'images/flowers/UR/F0014.webp',flower:'쌍둥이자리 · 성수쌍영'},
-  {key:'cancer',symbol:'♋',name:'게자리',period:'6월 22일 ~ 7월 22일',start:622,end:722,image:'images/flowers/UR/F0005.webp',flower:'게자리 · 물결치는 별무리'},
-  {key:'leo',symbol:'♌',name:'사자자리',period:'7월 23일 ~ 8월 22일',start:723,end:822,image:'images/flowers/UR/F0011.webp',flower:'사자자리 · 금관의 빛나는 정원'},
-  {key:'virgo',symbol:'♍',name:'처녀자리',period:'8월 23일 ~ 9월 23일',start:823,end:923,image:'images/flowers/UR/F0353.webp',flower:'처녀자리 · 블루스톤 가든 위스퍼'},
-  {key:'libra',symbol:'♎',name:'천칭자리',period:'9월 24일 ~ 10월 22일',start:924,end:1022,image:'',flower:'미출시',unreleased:true},
-  {key:'scorpio',symbol:'♏',name:'전갈자리',period:'10월 23일 ~ 11월 22일',start:1023,end:1122,image:'',flower:'미출시',unreleased:true},
-  {key:'sagittarius',symbol:'♐',name:'사수자리',period:'11월 23일 ~ 12월 24일',start:1123,end:1224,image:'images/guides/starsoul/zodiac/sagittarius.webp',flower:'사수자리 · 유성의 화염 깃털',unreleased:true},
-  {key:'capricorn',symbol:'♑',name:'염소자리',period:'12월 25일 ~ 1월 19일',start:1225,end:119,image:'images/guides/starsoul/zodiac/capricorn.webp',flower:'염소자리 · 달물결 별의 커튼',unreleased:true}
+  {key:'aquarius',name:'물병자리',period:'1월 20일 ~ 2월 18일',start:120,end:218,image:'images/guides/starsoul/zodiac/aquarius.webp',flower:'물병자리 · 창공의 별자취',unreleased:true},
+  {key:'pisces',name:'물고기자리',period:'2월 19일 ~ 3월 20일',start:219,end:320,image:'images/guides/starsoul/zodiac/pisces.webp',flower:'물고기자리 · 보랏빛 심연의 별자리',unreleased:true},
+  {key:'aries',name:'양자리',period:'3월 21일 ~ 4월 19일',start:321,end:419,image:'images/guides/starsoul/zodiac/aries.webp',flower:'양자리 · 별자국 두루마리',unreleased:true},
+  {key:'taurus',name:'황소자리',period:'4월 20일 ~ 5월 20일',start:420,end:520,image:'images/flowers/UR/F0019.webp',flower:'황소자리 · 풍요의 별그림'},
+  {key:'gemini',name:'쌍둥이자리',period:'5월 21일 ~ 6월 21일',start:521,end:621,image:'images/flowers/UR/F0014.webp',flower:'쌍둥이자리 · 성수쌍영'},
+  {key:'cancer',name:'게자리',period:'6월 22일 ~ 7월 22일',start:622,end:722,image:'images/flowers/UR/F0005.webp',flower:'게자리 · 물결치는 별무리'},
+  {key:'leo',name:'사자자리',period:'7월 23일 ~ 8월 22일',start:723,end:822,image:'images/flowers/UR/F0011.webp',flower:'사자자리 · 금관의 빛나는 정원'},
+  {key:'virgo',name:'처녀자리',period:'8월 23일 ~ 9월 23일',start:823,end:923,image:'images/flowers/UR/F0353.webp',flower:'처녀자리 · 블루스톤 가든 위스퍼'},
+  {key:'libra',name:'천칭자리',period:'9월 24일 ~ 10월 22일',start:924,end:1022,image:'',flower:'미출시',unreleased:true},
+  {key:'scorpio',name:'전갈자리',period:'10월 23일 ~ 11월 22일',start:1023,end:1122,image:'',flower:'미출시',unreleased:true},
+  {key:'sagittarius',name:'사수자리',period:'11월 23일 ~ 12월 24일',start:1123,end:1224,image:'images/guides/starsoul/zodiac/sagittarius.webp',flower:'사수자리 · 유성의 화염 깃털',unreleased:true},
+  {key:'capricorn',name:'염소자리',period:'12월 25일 ~ 1월 19일',start:1225,end:119,image:'images/guides/starsoul/zodiac/capricorn.webp',flower:'염소자리 · 달물결 별의 커튼',unreleased:true}
 ];
 
 let zodiacData=zodiacBaseData.map(z=>({...z}));
@@ -573,6 +580,8 @@ const resetZodiacSetting=document.getElementById('resetZodiacSetting');
 const saveZodiacSetting=document.getElementById('saveZodiacSetting');
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+const zodiacIconPath=key=>`images/guides/starsoul/zodiac-icons/${key}.png`;
+const zodiacIconHtml=(z,className='zodiac-title-icon')=>`<img class="${className}" src="${esc(zodiacIconPath(z.key))}" alt="" aria-hidden="true">`;
 
 function settingFor(key){return Object.prototype.hasOwnProperty.call(zodiacSettings,key)?zodiacSettings[key]:null}
 function linkedFlowerFor(key){
@@ -647,10 +656,10 @@ function renderManagePreview(){
   const data=effectiveManagePreview();
   const image=data.image
     ? `<img src="${esc(data.image)}" alt="${esc(data.flower)}">`
-    : `<div class="zodiac-preview-placeholder" aria-hidden="true">${data.base.symbol}</div>`;
+    : `<div class="zodiac-preview-placeholder" aria-hidden="true">${zodiacIconHtml(data.base,'zodiac-preview-icon')}</div>`;
   const status=data.released?'출시':'미출시';
   const linked=data.linked?`${data.linked.grade||'-'} · ${data.linked.listName||data.linked.name}`:'기존 카드 정보 사용';
-  zodiacFlowerPreview.innerHTML=`${image}<div class="zodiac-preview-copy"><strong>${data.base.symbol} ${esc(data.base.name)} · ${status}</strong><span>${esc(data.flower||'연결 꽃 없음')}</span><span>${esc(linked)}</span></div>`;
+  zodiacFlowerPreview.innerHTML=`${image}<div class="zodiac-preview-copy"><strong class="zodiac-preview-title">${zodiacIconHtml(data.base,'zodiac-preview-title-icon')}${esc(data.base.name)} · ${status}</strong><span>${esc(data.flower||'연결 꽃 없음')}</span><span>${esc(linked)}</span></div>`;
 }
 function syncZodiacManageForm(){
   const base=zodiacBaseData.find(z=>z.key===zodiacManageKey.value)||zodiacBaseData[0];
@@ -713,7 +722,7 @@ function updateFormForMember(){
     monthSelect.value=String(b.month);fillDays();daySelect.value=String(b.day);
     const z=zodiacFor(b.month,b.day);
     birthSave.textContent='✨ 내 별자리 수정하기';
-    birthStatus.textContent=`${member.name}님은 ${z?z.symbol+' '+z.name:'별자리'}로 등록되어 있어요.`;
+    birthStatus.textContent=`${member.name}님은 ${z?z.name:'별자리'}로 등록되어 있어요.`;
   }else{
     monthSelect.value='';fillDays();daySelect.value='';
     birthSave.textContent='🌟 내 별자리 등록하기';
@@ -752,7 +761,7 @@ function renderZodiac(){
     const unreleasedBadge=z.unreleased?'<span class="release-badge">미출시</span>':'';
     const media=z.image
       ? `<div class="zodiac-media${unreleasedClass}"><img src="${esc(z.image)}" alt="${esc(z.name)}" loading="lazy">${unreleasedBadge}<div class="flower-pill">${esc(z.flower)}</div></div>`
-      : `<div class="zodiac-media placeholder${unreleasedClass}">${unreleasedBadge}<div class="placeholder-inner"><span class="placeholder-symbol">${z.symbol}</span><small>${z.unreleased?'별자리 아이템 미출시':'별자리 꽃 이미지 준비중'}</small></div></div>`;
+      : `<div class="zodiac-media placeholder${unreleasedClass}">${unreleasedBadge}<div class="placeholder-inner">${zodiacIconHtml(z,'placeholder-zodiac-icon')}<small>${z.unreleased?'별자리 아이템 미출시':'별자리 꽃 이미지 준비중'}</small></div></div>`;
     const expanded=expandedZodiacMembers.has(z.key);
     const limit=zodiacVisibleMemberLimit();
     const visibleOwners=expanded?owners:owners.slice(0,limit);
@@ -772,7 +781,7 @@ function renderZodiac(){
       ${media}
       <div class="zodiac-body">
         <div class="zodiac-top">
-          <div><h3 class="zodiac-name">${z.symbol} ${esc(z.name)}</h3><p class="zodiac-period">${esc(z.period)}</p></div>
+          <div><h3 class="zodiac-name">${zodiacIconHtml(z)}<span>${esc(z.name)}</span></h3><p class="zodiac-period">${esc(z.period)}</p></div>
           <span class="member-total">${owners.length}명</span>
         </div>
         <div class="guild-label">우리 길드</div>
@@ -836,16 +845,16 @@ async function saveBirthday(){
   const before=memberBirthdays[member.id]||null;
   const z=zodiacFor(month,day);
 
-  if(before===birthday)return alert(`이미 ${z.symbol} ${z.name}로 등록되어 있어요.`);
+  if(before===birthday)return alert(`이미 ${z.name}로 등록되어 있어요.`);
   if(before){
     const old=parseBirthday(before),oldZ=old?zodiacFor(old.month,old.day):null;
-    const text=`${member.name}님의 별자리를\n${oldZ?oldZ.symbol+' '+oldZ.name:'기존 정보'} → ${z.symbol} ${z.name}\n으로 수정할까요?`;
+    const text=`${member.name}님의 별자리를\n${oldZ?oldZ.name:'기존 정보'} → ${z.name}\n으로 수정할까요?`;
     if(!confirm(text))return;
   }
 
   memberBirthdays[member.id]=birthday;
   localSave();renderAll();
-  birthStatus.textContent=`✨ ${member.name}님이 ${z.symbol} ${z.name}의 별로 등록되었어요!`;
+  birthStatus.textContent=`✨ ${member.name}님이 ${z.name}의 별로 등록되었어요!`;
   birthSave.disabled=true;
 
   try{
@@ -871,7 +880,7 @@ monthSelect.addEventListener('change',fillDays);
 memberSelect.addEventListener('change',updateFormForMember);
 birthSave.addEventListener('click',saveBirthday);
 
-zodiacManageKey.innerHTML=zodiacBaseData.map(z=>`<option value="${esc(z.key)}">${z.symbol} ${esc(z.name)}</option>`).join('');
+zodiacManageKey.innerHTML=zodiacBaseData.map(z=>`<option value="${esc(z.key)}">${esc(z.name)}</option>`).join('');
 zodiacManageKey.addEventListener('change',syncZodiacManageForm);
 zodiacManageReleased.addEventListener('change',renderManagePreview);
 zodiacFlowerSelect.addEventListener('change',renderManagePreview);

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.36-update-prompt';
+const CACHE_NAME = 'lemon-demo-v4.37-update-prompt';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -43,6 +43,18 @@ const APP_SHELL = [
   '/images/guides/starsoul/zodiac/aries.webp',
   '/images/guides/starsoul/zodiac/sagittarius.webp',
   '/images/guides/starsoul/zodiac/capricorn.webp',
+  '/images/guides/starsoul/zodiac-icons/aries.png',
+  '/images/guides/starsoul/zodiac-icons/taurus.png',
+  '/images/guides/starsoul/zodiac-icons/gemini.png',
+  '/images/guides/starsoul/zodiac-icons/cancer.png',
+  '/images/guides/starsoul/zodiac-icons/leo.png',
+  '/images/guides/starsoul/zodiac-icons/virgo.png',
+  '/images/guides/starsoul/zodiac-icons/libra.png',
+  '/images/guides/starsoul/zodiac-icons/scorpio.png',
+  '/images/guides/starsoul/zodiac-icons/sagittarius.png',
+  '/images/guides/starsoul/zodiac-icons/capricorn.png',
+  '/images/guides/starsoul/zodiac-icons/aquarius.png',
+  '/images/guides/starsoul/zodiac-icons/pisces.png',
   '/icons/icon-v4.12-192.png',
   '/icons/icon-v4.12-512.png'
 ];
@@ -65,7 +77,7 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'APPLY_UPDATE' && event.data.version === 'v4.32') {
+  if (event.data && event.data.type === 'APPLY_UPDATE' && event.data.version === 'v4.37') {
     self.skipWaiting();
   }
 });

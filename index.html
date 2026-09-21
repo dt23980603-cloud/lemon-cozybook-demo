@@ -73,7 +73,7 @@
             text-align: center;
         }
 
-        /* demo_v4.36: 바로가기 아이콘 메뉴 */
+        /* demo_v4.37: 바로가기 아이콘 메뉴 */
         .quick-section,
         .main-menu-section {
             width: 100%;
@@ -963,7 +963,7 @@
 
     
 
-        /* demo_v4.36: 기존 레이아웃/비율 유지 + 메인페이지 디자인만 개선 */
+        /* demo_v4.37: 기존 레이아웃/비율 유지 + 메인페이지 디자인만 개선 */
         body {
             background:
                 radial-gradient(circle at 9% 92%, rgba(255, 227, 104, .18), transparent 16%),
@@ -1280,12 +1280,12 @@
   }
   .birthday-member-list{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:7px;width:100%;min-width:0;min-height:31px}
   .birthday-member{
-    display:inline-flex;align-items:center;gap:0;box-sizing:border-box;max-width:100%;min-width:0;min-height:31px;padding:5px 9px;
+    display:inline-flex;align-items:center;gap:.28em;box-sizing:border-box;max-width:100%;min-width:0;min-height:31px;padding:5px 9px;
     border:1px solid #e1d7c8;border-radius:999px;background:rgba(255,255,255,.83);color:#49372a;
     font-size:.76rem;font-weight:700;line-height:1.3;white-space:normal;word-break:break-word;
     box-shadow:0 2px 6px rgba(76,56,25,.045)
   }
-  .birthday-member-zodiac{color:#8a62a8;font-size:1rem;font-weight:800;line-height:1}
+  .birthday-member-zodiac{display:block;flex:0 0 auto;width:1rem;height:1rem;object-fit:contain}
   .birthday-member>span:last-child{min-width:0;overflow-wrap:anywhere}
   .birthday-member-empty{color:#9b9087;font-size:.73rem;line-height:1.45;text-align:center}
   .birthday-message{margin:0;color:#6d5b4e;font-size:.76rem;line-height:1.5;text-align:center}
@@ -1307,7 +1307,7 @@
       display:block;margin-bottom:7px;padding:6px 7px;border-radius:12px
     }
     .birthday-member-list{justify-content:center;gap:4px;min-height:25px;text-align:center}
-    .birthday-member{min-height:25px;padding:3px 6px;font-size:.64rem}.birthday-member-zodiac{font-size:.86rem}
+    .birthday-member{min-height:25px;padding:3px 6px;font-size:.64rem}.birthday-member-zodiac{width:.86rem;height:.86rem}
     .birthday-member-empty{font-size:.64rem;text-align:left}.birthday-message{font-size:.64rem;line-height:1.4}
     .birthday-register-wrap{margin-top:6px}.birthday-register-link{min-height:26px;padding:3px 9px;font-size:.6rem}
   }
@@ -1929,18 +1929,18 @@
         const GUILD_STATE_API = '/api/guild-state';
         const roleOrder = { '길드장':1, '부길드장':2, '임원':3, '정예':4, '멤버':5 };
         const zodiacPeriods = [
-          { symbol:'♒', name:'물병자리', start:120, end:218 },
-          { symbol:'♓', name:'물고기자리', start:219, end:320 },
-          { symbol:'♈', name:'양자리', start:321, end:419 },
-          { symbol:'♉', name:'황소자리', start:420, end:520 },
-          { symbol:'♊', name:'쌍둥이자리', start:521, end:621 },
-          { symbol:'♋', name:'게자리', start:622, end:722 },
-          { symbol:'♌', name:'사자자리', start:723, end:822 },
-          { symbol:'♍', name:'처녀자리', start:823, end:923 },
-          { symbol:'♎', name:'천칭자리', start:924, end:1022 },
-          { symbol:'♏', name:'전갈자리', start:1023, end:1122 },
-          { symbol:'♐', name:'사수자리', start:1123, end:1224 },
-          { symbol:'♑', name:'염소자리', start:1225, end:119 }
+          { key:'aquarius', name:'물병자리', start:120, end:218 },
+          { key:'pisces', name:'물고기자리', start:219, end:320 },
+          { key:'aries', name:'양자리', start:321, end:419 },
+          { key:'taurus', name:'황소자리', start:420, end:520 },
+          { key:'gemini', name:'쌍둥이자리', start:521, end:621 },
+          { key:'cancer', name:'게자리', start:622, end:722 },
+          { key:'leo', name:'사자자리', start:723, end:822 },
+          { key:'virgo', name:'처녀자리', start:823, end:923 },
+          { key:'libra', name:'천칭자리', start:924, end:1022 },
+          { key:'scorpio', name:'전갈자리', start:1023, end:1122 },
+          { key:'sagittarius', name:'사수자리', start:1123, end:1224 },
+          { key:'capricorn', name:'염소자리', start:1225, end:119 }
         ];
 
         function birthdayMonthInKorea() {
@@ -1962,7 +1962,7 @@
           const value = month * 100 + day;
           return zodiacPeriods.find(zodiac => zodiac.start <= zodiac.end
             ? value >= zodiac.start && value <= zodiac.end
-            : value >= zodiac.start || value <= zodiac.end) || { symbol:'☆', name:'별자리' };
+            : value >= zodiac.start || value <= zodiac.end) || { key:'', name:'별자리' };
         }
 
         function escapeBirthdayHtml(value) {
@@ -2002,7 +2002,10 @@
                 const name = String(member.name || '').trim();
                 const zodiac = zodiacForBirthday(birthday.month, birthday.day);
                 const label = `${name}(${birthday.month}월 ${birthday.day}일)`;
-                return `<span class="birthday-member" aria-label="${escapeBirthdayHtml(zodiac.name)} ${escapeBirthdayHtml(label)}"><span class="birthday-member-zodiac" aria-hidden="true">${zodiac.symbol}</span><span>${escapeBirthdayHtml(label)}</span></span>`;
+                const icon = zodiac.key
+                  ? `<img class="birthday-member-zodiac" src="images/guides/starsoul/zodiac-icons/${escapeBirthdayHtml(zodiac.key)}.png" alt="" aria-hidden="true">`
+                  : '';
+                return `<span class="birthday-member" aria-label="${escapeBirthdayHtml(zodiac.name)} ${escapeBirthdayHtml(label)}">${icon}<span>${escapeBirthdayHtml(label)}</span></span>`;
               }).join('')
             : '<span class="birthday-member-empty">이번 달에 등록된 생일자가 없어요.</span>';
           document.getElementById('birthdayMessage').innerHTML = currentMembers.length
@@ -2038,7 +2041,7 @@
     </script>
 
 
-    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.36</div>
+    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.37</div>
 
 
 <script id="pwa-auto-update-script">
@@ -2057,8 +2060,8 @@
       updatePromptOpen = false;
 
       if (ok && registration.waiting) {
-        // 사용자가 확인을 눌렀을 때만 demo_v4.36 서비스워커를 활성화합니다.
-        registration.waiting.postMessage({ type: 'APPLY_UPDATE', version: 'v4.36' });
+        // 사용자가 확인을 눌렀을 때만 demo_v4.37 서비스워커를 활성화합니다.
+        registration.waiting.postMessage({ type: 'APPLY_UPDATE', version: 'v4.37' });
       }
     };
 
