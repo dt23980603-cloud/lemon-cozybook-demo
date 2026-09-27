@@ -11,7 +11,7 @@
     '/':['#clearUpdatesBtn','#openFeaturedFlowerOptions','#toggleWebUpdateManage'],
     '/page1.html':['#openZodiacManage'],
     '/page3.html':['a[href="page10.html"]'],
-    '/page5.html':['.flower-manage-btn','.guild-manage-link','#resetCompetitionMission','#openEditFlowerModal']
+    '/page5.html':['#resetCompetitionMission','#openEditFlowerModal']
   };
   (adminSelectors[location.pathname]||[]).forEach(selector=>document.querySelectorAll(selector).forEach(element=>{
     element.dataset.adminOnly='true';
@@ -30,7 +30,7 @@
   `;
   document.head.appendChild(style);
   const account=document.createElement('div');account.className='lemon-account';
-  account.innerHTML=`<button type="button" class="lemon-account-toggle" aria-expanded="false">👤 ${escapeText(auth.memberName)}${auth.role==='admin'?' · 관리자':''}</button><div class="lemon-account-menu"><div class="lemon-account-name">${escapeText(auth.memberName)}<br><small>${escapeText(auth.loginCode)}</small></div>${auth.role==='admin'?'<a href="/admin-accounts.html">⚙️ 길드원 · 계정 관리</a>':''}<a href="/change-pin.html">🔐 PIN 변경</a><button type="button" data-logout>↪ 로그아웃</button></div>`;
+  account.innerHTML=`<button type="button" class="lemon-account-toggle" aria-expanded="false">👤 ${escapeText(auth.memberName)}${auth.role==='admin'?' · 관리자':''}</button><div class="lemon-account-menu"><div class="lemon-account-name">${escapeText(auth.memberName)}<br><small>${escapeText(auth.loginCode)}</small></div>${auth.role==='admin'?'<a href="/admin-accounts.html">⚙️ 길드원 · 계정 관리</a><a href="/page8.html">🌷 꽃 관리</a>':''}<a href="/change-pin.html">🔐 PIN 변경</a><button type="button" data-logout>↪ 로그아웃</button></div>`;
   document.body.appendChild(account);
   const toggle=account.querySelector('.lemon-account-toggle');toggle.addEventListener('click',()=>{const open=account.classList.toggle('open');toggle.setAttribute('aria-expanded',String(open))});
   document.addEventListener('click',event=>{if(!account.contains(event.target)){account.classList.remove('open');toggle.setAttribute('aria-expanded','false')}});

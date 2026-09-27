@@ -41,8 +41,10 @@ button,input,select{font:inherit}
 .admin-help{margin:-4px 0 13px;color:#777;font-size:.74rem;line-height:1.55}
 .account-create-grid{display:grid;grid-template-columns:minmax(0,1fr) 130px auto;gap:8px;align-items:end}
 .account-create-grid .auth-field{margin:0}
-.unified-create-grid{grid-template-columns:minmax(190px,1.3fr) minmax(170px,1fr) 120px 125px auto}
+.unified-create-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
 .new-member-field[hidden]{display:none}
+.unified-create-grid .new-member-field:not([hidden]){grid-column:1/-1}
+.unified-create-grid .auth-primary{width:100%;min-width:0;min-height:47px;white-space:nowrap}
 .credential-box{margin-top:13px;padding:14px;border:2px solid #d7bf51;border-radius:14px;background:#fff9d9}
 .credential-box[hidden]{display:none}.credential-box strong{display:block;margin-bottom:8px}
 .credential-row{display:grid;grid-template-columns:105px minmax(0,1fr);gap:7px;font-size:.8rem;margin:5px 0}
@@ -58,6 +60,6 @@ button,input,select{font:inherit}
 @media(max-width:720px){
   body{padding:16px 11px}.auth-shell{margin-top:2vh}.auth-card{padding:20px 17px;border-radius:18px}
   .admin-head{align-items:flex-start}.admin-head h1{font-size:1.18rem}.admin-panel{padding:14px}
-  .account-create-grid,.unified-create-grid{grid-template-columns:1fr 1fr}.account-create-grid .auth-primary,.unified-create-grid .auth-primary{grid-column:1/-1}.unified-create-grid .auth-field:first-child,.unified-create-grid .new-member-field{grid-column:1/-1}
+  .account-create-grid,.unified-create-grid{grid-template-columns:1fr 1fr}.account-create-grid .auth-primary,.unified-create-grid .auth-primary{grid-column:1/-1}.unified-create-grid .member-target-field,.unified-create-grid .new-member-field{grid-column:1/-1}
   .account-card{grid-template-columns:1fr;gap:8px}.account-actions{justify-content:flex-start}
 }
