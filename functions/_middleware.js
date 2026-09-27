@@ -45,11 +45,19 @@ function isAdminMutation(pathname, method) {
   return false;
 }
 
-function loginRedirect(request, destination = '/login.html') {
+function normalizePagePath(pathname) {
+  if (pathname === '/' || pathname === '/index' || pathname === '/index.html') return '/index.html';
+  if (/^\/(?:login|auth-setup|change-pin|admin-accounts|page(?:[1-9]|10))$/.test(pathname)) {
+    return `${pathname}.html`;
+  }
+  return pathname;
+}
+
+function loginRedirect(request, destination = '/login') {
   const url = new URL(request.url);
   const next = `${url.pathname}${url.search}`;
   const target = new URL(destination, url.origin);
-  if (destination === '/login.html' && next !== '/index.html' && next !== '/') {
+  if (destination === '/login' && next !== '/index.html' && next !== '/index' && next !== '/') {
     target.searchParams.set('next', next);
   }
   return Response.redirect(target.toString(), 302);
@@ -67,7 +75,7 @@ async function withSessionRefresh(context, auth) {
 export async function onRequest(context) {
   const { request } = context;
   const url = new URL(request.url);
-  const pathname = url.pathname === '/' ? '/index.html' : url.pathname;
+  const pathname = normalizePagePath(url.pathname);
   const method = request.method.toUpperCase();
 
   if (method === 'OPTIONS') return context.next();
@@ -79,7 +87,7 @@ export async function onRequest(context) {
   if (PUBLIC_API_PATHS.has(pathname)) return context.next();
 
   if (PUBLIC_AUTH_PAGES.has(pathname)) {
-    if (auth) return Response.redirect(new URL(auth.mustChangePin ? '/change-pin.html' : '/index.html', request.url).toString(), 302);
+    if (auth) return Response.redirect(new URL(auth.mustChangePin ? '/change-pin' : '/', request.url).toString(), 302);
     return context.next();
   }
 
@@ -94,12 +102,12 @@ export async function onRequest(context) {
       pathname === '/api/auth/logout' || pathname === '/api/auth/change-pin';
     if (!allowed) {
       if (pathname.startsWith('/api/')) return json({ error: 'PIN 변경이 필요합니다.', code: 'PIN_CHANGE_REQUIRED' }, 403);
-      return loginRedirect(request, '/change-pin.html');
+      return loginRedirect(request, '/change-pin');
     }
   }
 
   if (ADMIN_PAGES.has(pathname) && auth.role !== 'admin') {
-    return Response.redirect(new URL('/index.html', request.url).toString(), 302);
+    return Response.redirect(new URL('/', request.url).toString(), 302);
   }
 
   if (isAdminMutation(pathname, method) && auth.role !== 'admin') {
