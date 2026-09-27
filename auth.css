@@ -36,6 +36,7 @@ button,input,select{font:inherit}
 .admin-page{width:min(1100px,100%);margin:0 auto}
 .admin-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
 .admin-head h1{margin:0;font-size:1.45rem}.admin-head-actions{display:flex;gap:7px}
+.admin-home-link{width:45px;height:45px;min-width:45px;min-height:45px;padding:0;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-size:1.15rem;line-height:1}
 .admin-panel{padding:18px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.95);box-shadow:0 9px 24px rgba(92,77,24,.09);margin-bottom:14px}
 .admin-panel h2{margin:0 0 12px;font-size:1rem}
 .admin-help{margin:-4px 0 13px;color:#777;font-size:.74rem;line-height:1.55}
