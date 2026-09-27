@@ -22,10 +22,9 @@ body{
 button,input,select,textarea{font:inherit}
 .page{width:min(1100px,100%);margin:0 auto}
 .header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.back{width:48px;height:48px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;border:1px solid #cfc7a8;border-radius:12px;background:rgba(255,255,255,.94);box-shadow:0 5px 14px rgba(92,77,24,.08)}
-.back img{width:100%;height:100%;object-fit:contain}.header-copy{min-width:0}
+.header-copy{min-width:0}
 .home-link{margin-left:auto;min-width:74px;min-height:45px;padding:9px 14px;display:inline-flex;align-items:center;justify-content:center;gap:5px;flex:0 0 auto;border:1px solid #cfc7a8;border-radius:12px;background:#fff;color:#514b3a;text-decoration:none;font-size:.78rem;font-weight:700;cursor:pointer}
-.back:hover,.home-link:hover{border-color:#a99a58;background:#fffdf4}
+.home-link:hover{border-color:#a99a58;background:#fffdf4}
 h1{margin:0;font-size:1.45rem}.subtitle{margin:3px 0 0;color:#827a67;font-size:.74rem;line-height:1.45}
 .nav-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;padding:8px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.75);box-shadow:0 7px 20px rgba(92,77,24,.06)}
 .nav-tab{min-height:45px;border:1px solid #d6c989;border-radius:12px;background:#fff;color:#514b3a;font-weight:700;font-size:.86rem;cursor:pointer;transition:background .15s ease,border-color .15s ease,box-shadow .15s ease}
@@ -57,8 +56,8 @@ h1{margin:0;font-size:1.45rem}.subtitle{margin:3px 0 0;color:#827a67;font-size:.
 .option-dialog{width:min(430px,calc(100% - 28px));padding:0;border:2px solid #d3c06b;border-radius:18px;background:#fff;box-shadow:0 18px 45px rgba(40,32,10,.24)}.option-dialog::backdrop{background:rgba(38,33,19,.45)}.option-dialog-inner{padding:19px}.option-dialog h2{margin:0 0 7px;font-size:1rem}.option-dialog p{margin:0 0 13px;color:#777;font-size:.74rem;line-height:1.55}.dialog-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:15px}.dialog-actions button{min-height:45px;padding:9px 14px;border:1px solid #cfc7a8;border-radius:12px;background:#fff;color:#514b3a;font-weight:700;cursor:pointer}.dialog-actions .save-option{background:var(--lemon);border-color:#6f6227;color:#3f381b}.dialog-actions .delete-option{background:#fff3f3;border-color:#d9a4a4;color:var(--danger)}.dialog-actions button:disabled{opacity:.5;cursor:not-allowed}
 #site-version{position:fixed;left:12px;bottom:10px;color:#aaa;font-size:11px;pointer-events:none}
 @media(max-width:720px){
-  body{padding:16px 11px}.header{align-items:flex-start;gap:8px}.back{width:44px;height:44px}h1{font-size:1.18rem}.subtitle{font-size:.66rem}
-  .home-link{min-width:46px;min-height:44px;padding:7px 9px;font-size:.68rem}.home-link .home-text{display:none}
+  body{padding:16px 11px}.header{align-items:flex-start;gap:8px}h1{font-size:1.18rem}.subtitle{font-size:.66rem}
+  .home-link{min-width:62px;min-height:44px;padding:7px 12px;font-size:.72rem}
   .nav-tabs{gap:5px;padding:6px;border-radius:16px}.nav-tab{min-height:40px;padding:6px 3px;font-size:.72rem;border-radius:10px}
   .card{padding:14px}.form-grid{grid-template-columns:1fr}.form-grid label.span-2,.form-grid .field.span-2{grid-column:auto}
   .managed-select-row{gap:4px}.option-add-btn,.option-delete-btn{min-width:54px;padding:7px 6px;font-size:.66rem}
@@ -72,9 +71,8 @@ h1{margin:0;font-size:1.45rem}.subtitle{margin:3px 0 0;color:#827a67;font-size:.
 <body>
 <main class="page">
   <header class="header">
-    <a class="back" href="page5.html" title="전체 꽃 도감으로 돌아가기"><img src="images/ui/back-button.png" alt="뒤로가기"></a>
     <div class="header-copy"><h1>⚙️ 꽃 관리</h1><p class="subtitle">꽃 추가·수정·삭제를 한 곳에서 관리합니다.</p></div>
-    <a class="home-link" href="index.html" title="메인페이지로 이동" aria-label="메인페이지로 이동"><span aria-hidden="true">🏠</span><span class="home-text">메인</span></a>
+    <a class="home-link" href="index.html" title="메인페이지로 이동" aria-label="메인페이지로 이동">메인</a>
   </header>
 
   <div class="nav-tabs">
@@ -171,7 +169,7 @@ h1{margin:0;font-size:1.45rem}.subtitle{margin:3px 0 0;color:#827a67;font-size:.
     <div class="dialog-actions"><button id="cancelOptionDelete" type="button">취소</button><button id="confirmOptionDelete" class="delete-option" type="submit">삭제</button></div>
   </form>
 </dialog>
-<div id="site-version">demo_v4.44</div>
+<div id="site-version">demo_v4.45</div>
 
 <script src="flower-data-all.js"></script>
 <script>
