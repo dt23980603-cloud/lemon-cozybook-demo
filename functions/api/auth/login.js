@@ -1,10 +1,12 @@
 import {
   createSession,
+  deviceCookie,
   ensureAuthTables,
   json,
   normalizeLoginCode,
   normalizePin,
   readGuildMembers,
+  recordSuccessfulLogin,
   sessionCookie,
   verifyPin
 } from '../../_shared/auth.js';
@@ -40,13 +42,21 @@ export async function onRequestPost(context) {
     WHERE account_id = ?1
   `).bind(account.account_id, now).run();
   const session = await createSession(env, account.account_id, request);
+  let loginAudit = null;
+  try {
+    loginAudit = await recordSuccessfulLogin(env, account.account_id, session.sessionId, request);
+  } catch (error) {
+    console.error('login audit failed', error);
+  }
   const members = await readGuildMembers(env.DB);
   const member = members.find(item => item.id === account.member_id) || null;
-  return json({
+  const response = json({
     ok: true,
     role: account.role === 'admin' ? 'admin' : 'member',
     memberId: account.member_id,
     memberName: member?.name || '',
     mustChangePin: Number(account.must_change_pin || 0) === 1
   }, 200, { 'set-cookie': sessionCookie(session.token) });
+  if (loginAudit?.deviceToken) response.headers.append('set-cookie', deviceCookie(loginAudit.deviceToken));
+  return response;
 }

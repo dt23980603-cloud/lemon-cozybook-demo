@@ -1,5 +1,6 @@
 import {
   createSession,
+  deviceCookie,
   ensureAuthTables,
   hashPin,
   json,
@@ -7,6 +8,7 @@ import {
   normalizePin,
   publicAccount,
   readGuildMembers,
+  recordSuccessfulLogin,
   safeEqual,
   sessionCookie
 } from '../../_shared/auth.js';
@@ -94,9 +96,17 @@ export async function onRequestPost(context) {
       throw error;
     }
     const account = await env.DB.prepare('SELECT * FROM auth_accounts WHERE account_id = ?1').bind(accountId).first();
-    return json({ ok: true, account: publicAccount(account, members) }, 201, {
+    let loginAudit = null;
+    try {
+      loginAudit = await recordSuccessfulLogin(env, accountId, session.sessionId, request);
+    } catch (error) {
+      console.error('bootstrap login audit failed', error);
+    }
+    const response = json({ ok: true, account: publicAccount(account, members) }, 201, {
       'set-cookie': sessionCookie(session.token)
     });
+    if (loginAudit?.deviceToken) response.headers.append('set-cookie', deviceCookie(loginAudit.deviceToken));
+    return response;
   } catch (error) {
     console.error('auth bootstrap failed', error);
     return json({ error: '관리자 계정을 만드는 중 서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' }, 500);

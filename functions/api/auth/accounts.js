@@ -22,7 +22,9 @@ export async function onRequestGet(context) {
   const state = await readGuildState(context.env.DB);
   const members = Array.isArray(state.members) ? state.members.map(publicMember).filter(member => member.id) : [];
   const result = await context.env.DB.prepare(`
-    SELECT a.*, COUNT(s.session_id) AS session_count
+    SELECT a.*, COUNT(s.session_id) AS session_count,
+      (SELECT COUNT(*) FROM auth_login_events AS e
+       WHERE e.account_id = a.account_id AND e.suspicious = 1 AND e.review_status = 'pending') AS suspicious_count
     FROM auth_accounts AS a
     LEFT JOIN auth_sessions AS s ON s.account_id = a.account_id AND s.expires_at > ?1
     GROUP BY a.account_id
@@ -30,7 +32,8 @@ export async function onRequestGet(context) {
   `).bind(Date.now()).all();
   const accounts = (result.results || []).map(row => ({
     ...publicAccount(row, members),
-    sessionCount: Number(row.session_count || 0)
+    sessionCount: Number(row.session_count || 0),
+    suspiciousCount: Number(row.suspicious_count || 0)
   }));
   const assigned = new Set(accounts.map(account => account.memberId));
   const availableMembers = members.filter(member => !assigned.has(member.id));

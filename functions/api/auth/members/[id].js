@@ -62,6 +62,9 @@ export async function onRequestDelete(context) {
   if (account) {
     statements.push(
       context.env.DB.prepare('DELETE FROM auth_sessions WHERE account_id = ?1').bind(account.account_id),
+      context.env.DB.prepare('DELETE FROM auth_login_events WHERE account_id = ?1').bind(account.account_id),
+      context.env.DB.prepare('DELETE FROM auth_trusted_devices WHERE account_id = ?1').bind(account.account_id),
+      context.env.DB.prepare('DELETE FROM auth_trusted_locations WHERE account_id = ?1').bind(account.account_id),
       context.env.DB.prepare('DELETE FROM auth_accounts WHERE account_id = ?1').bind(account.account_id)
     );
   }

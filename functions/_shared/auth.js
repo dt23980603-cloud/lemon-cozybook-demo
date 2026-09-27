@@ -1,6 +1,9 @@
 export const AUTH_COOKIE = 'lemon_demo_session';
+export const AUTH_DEVICE_COOKIE = 'lemon_demo_device';
 export const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 180;
+export const DEVICE_MAX_AGE_SECONDS = 60 * 60 * 24 * 365;
 const SESSION_TOUCH_INTERVAL = 60 * 60 * 24 * 7;
+const LOGIN_LOG_RETENTION_MS = 90 * 24 * 60 * 60 * 1000;
 // Cloudflare Workers Free는 요청당 CPU 시간이 짧으므로 Web Crypto 연산을
 // 그 범위 안에서 끝낼 수 있게 조정한다. 계정별 반복 횟수를 DB에 함께
 // 저장해 이후 값을 바꾸더라도 기존 계정을 검증할 수 있게 한다.
@@ -143,6 +146,53 @@ async function createSchema(db) {
   `).run();
   await db.prepare('CREATE INDEX IF NOT EXISTS idx_auth_sessions_account ON auth_sessions(account_id)').run();
   await db.prepare('CREATE INDEX IF NOT EXISTS idx_auth_sessions_expiry ON auth_sessions(expires_at)').run();
+  await db.prepare(`
+    CREATE TABLE IF NOT EXISTS auth_trusted_devices (
+      account_id TEXT NOT NULL,
+      device_hash TEXT NOT NULL,
+      device_label TEXT NOT NULL DEFAULT '',
+      user_agent TEXT NOT NULL DEFAULT '',
+      first_seen_at INTEGER NOT NULL,
+      last_seen_at INTEGER NOT NULL,
+      PRIMARY KEY (account_id, device_hash)
+    )
+  `).run();
+  await db.prepare(`
+    CREATE TABLE IF NOT EXISTS auth_trusted_locations (
+      account_id TEXT NOT NULL,
+      location_key TEXT NOT NULL,
+      city TEXT NOT NULL DEFAULT '',
+      region TEXT NOT NULL DEFAULT '',
+      country TEXT NOT NULL DEFAULT '',
+      first_seen_at INTEGER NOT NULL,
+      last_seen_at INTEGER NOT NULL,
+      PRIMARY KEY (account_id, location_key)
+    )
+  `).run();
+  await db.prepare(`
+    CREATE TABLE IF NOT EXISTS auth_login_events (
+      event_id TEXT PRIMARY KEY,
+      account_id TEXT NOT NULL,
+      session_id TEXT NOT NULL DEFAULT '',
+      occurred_at INTEGER NOT NULL,
+      city TEXT NOT NULL DEFAULT '',
+      region TEXT NOT NULL DEFAULT '',
+      country TEXT NOT NULL DEFAULT '',
+      location_key TEXT NOT NULL DEFAULT '',
+      device_hash TEXT NOT NULL DEFAULT '',
+      device_label TEXT NOT NULL DEFAULT '',
+      user_agent TEXT NOT NULL DEFAULT '',
+      ip_masked TEXT NOT NULL DEFAULT '',
+      new_device INTEGER NOT NULL DEFAULT 0,
+      new_location INTEGER NOT NULL DEFAULT 0,
+      baseline_created INTEGER NOT NULL DEFAULT 0,
+      suspicious INTEGER NOT NULL DEFAULT 0,
+      review_status TEXT NOT NULL DEFAULT 'normal',
+      reviewed_at INTEGER NOT NULL DEFAULT 0
+    )
+  `).run();
+  await db.prepare('CREATE INDEX IF NOT EXISTS idx_auth_login_events_account ON auth_login_events(account_id, occurred_at DESC)').run();
+  await db.prepare('CREATE INDEX IF NOT EXISTS idx_auth_login_events_pending ON auth_login_events(account_id, suspicious, review_status)').run();
 }
 
 export async function ensureAuthTables(db) {
@@ -175,6 +225,133 @@ export function sessionCookie(token, maxAge = SESSION_MAX_AGE_SECONDS) {
 
 export function clearSessionCookie() {
   return `${AUTH_COOKIE}=; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Secure; SameSite=Lax`;
+}
+
+export function deviceCookie(token) {
+  const expires = new Date(Date.now() + DEVICE_MAX_AGE_SECONDS * 1000).toUTCString();
+  return `${AUTH_DEVICE_COOKIE}=${token}; Path=/; Max-Age=${DEVICE_MAX_AGE_SECONDS}; Expires=${expires}; HttpOnly; Secure; SameSite=Lax`;
+}
+
+function locationPart(value, maxLength = 80) {
+  return cleanText(value, maxLength).replace(/[|\n\r]/g, ' ');
+}
+
+function requestLocation(request) {
+  const cf = request.cf || {};
+  const city = locationPart(cf.city);
+  const region = locationPart(cf.region || cf.regionCode);
+  const country = locationPart(cf.country || request.headers.get('cf-ipcountry'), 8).toUpperCase();
+  const locationKey = [country, region, city].filter(Boolean).join('|').toLocaleLowerCase('en-US');
+  return { city, region, country, locationKey };
+}
+
+function maskIp(value) {
+  const ip = cleanText(value, 90);
+  if (!ip) return '';
+  if (/^\d{1,3}(?:\.\d{1,3}){3}$/.test(ip)) {
+    const parts = ip.split('.');
+    return `${parts[0]}.${parts[1]}.xxx.xxx`;
+  }
+  if (ip.includes(':')) {
+    const parts = ip.split(':').filter(Boolean);
+    return `${parts.slice(0, 3).join(':')}:…`;
+  }
+  return '확인 불가';
+}
+
+function deviceLabelFromUserAgent(userAgent) {
+  const ua = String(userAgent || '');
+  let os = '알 수 없는 기기';
+  if (/iPhone/i.test(ua)) os = 'iPhone';
+  else if (/iPad/i.test(ua)) os = 'iPad';
+  else if (/Android/i.test(ua)) os = 'Android';
+  else if (/Windows/i.test(ua)) os = 'Windows';
+  else if (/Macintosh|Mac OS X/i.test(ua)) os = 'Mac';
+  else if (/Linux/i.test(ua)) os = 'Linux';
+  let browser = '';
+  if (/SamsungBrowser/i.test(ua)) browser = 'Samsung Internet';
+  else if (/Edg\//i.test(ua)) browser = 'Edge';
+  else if (/CriOS|Chrome\//i.test(ua)) browser = 'Chrome';
+  else if (/FxiOS|Firefox\//i.test(ua)) browser = 'Firefox';
+  else if (/Safari\//i.test(ua)) browser = 'Safari';
+  return browser ? `${os} · ${browser}` : os;
+}
+
+export async function recordSuccessfulLogin(env, accountId, sessionId, request) {
+  await ensureAuthTables(env.DB);
+  const now = Date.now();
+  const cookieToken = cleanText(parseCookies(request)[AUTH_DEVICE_COOKIE], 128);
+  const deviceToken = /^[a-f0-9]{32,128}$/i.test(cookieToken) ? cookieToken : randomHex(24);
+  const deviceHash = await sha256(deviceToken);
+  const userAgent = cleanText(request.headers.get('user-agent'), 300);
+  const deviceLabel = deviceLabelFromUserAgent(userAgent);
+  const { city, region, country, locationKey } = requestLocation(request);
+  const ipMasked = maskIp(request.headers.get('cf-connecting-ip'));
+
+  const deviceCountRow = await env.DB.prepare('SELECT COUNT(*) AS count FROM auth_trusted_devices WHERE account_id = ?1').bind(accountId).first();
+  const locationCountRow = await env.DB.prepare('SELECT COUNT(*) AS count FROM auth_trusted_locations WHERE account_id = ?1').bind(accountId).first();
+  const trustedDevice = await env.DB.prepare('SELECT device_hash FROM auth_trusted_devices WHERE account_id = ?1 AND device_hash = ?2 LIMIT 1').bind(accountId, deviceHash).first();
+  const trustedLocation = locationKey
+    ? await env.DB.prepare('SELECT location_key FROM auth_trusted_locations WHERE account_id = ?1 AND location_key = ?2 LIMIT 1').bind(accountId, locationKey).first()
+    : null;
+  const hasDeviceBaseline = Number(deviceCountRow?.count || 0) > 0;
+  const hasLocationBaseline = Number(locationCountRow?.count || 0) > 0;
+  const unknownDevice = !trustedDevice;
+  const unknownLocation = Boolean(locationKey) && !trustedLocation;
+  const newDevice = hasDeviceBaseline && unknownDevice;
+  const newLocation = hasLocationBaseline && unknownLocation;
+  const baselineCreated = !hasDeviceBaseline && !hasLocationBaseline;
+  const suspicious = newDevice && newLocation;
+  const eventId = crypto.randomUUID();
+  const statements = [];
+
+  if (!suspicious) {
+    statements.push(env.DB.prepare(`
+      INSERT INTO auth_trusted_devices (account_id, device_hash, device_label, user_agent, first_seen_at, last_seen_at)
+      VALUES (?1, ?2, ?3, ?4, ?5, ?5)
+      ON CONFLICT(account_id, device_hash) DO UPDATE SET
+        device_label = excluded.device_label, user_agent = excluded.user_agent, last_seen_at = excluded.last_seen_at
+    `).bind(accountId, deviceHash, deviceLabel, userAgent, now));
+    if (locationKey) {
+      statements.push(env.DB.prepare(`
+        INSERT INTO auth_trusted_locations (account_id, location_key, city, region, country, first_seen_at, last_seen_at)
+        VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?6)
+        ON CONFLICT(account_id, location_key) DO UPDATE SET
+          city = excluded.city, region = excluded.region, country = excluded.country, last_seen_at = excluded.last_seen_at
+      `).bind(accountId, locationKey, city, region, country, now));
+    }
+  }
+  statements.push(env.DB.prepare(`
+    INSERT INTO auth_login_events
+      (event_id, account_id, session_id, occurred_at, city, region, country, location_key,
+       device_hash, device_label, user_agent, ip_masked, new_device, new_location,
+       baseline_created, suspicious, review_status, reviewed_at)
+    VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, 0)
+  `).bind(eventId, accountId, sessionId || '', now, city, region, country, locationKey,
+    deviceHash, deviceLabel, userAgent, ipMasked, unknownDevice ? 1 : 0, unknownLocation ? 1 : 0,
+    baselineCreated ? 1 : 0, suspicious ? 1 : 0, suspicious ? 'pending' : 'normal'));
+  statements.push(env.DB.prepare('DELETE FROM auth_login_events WHERE occurred_at < ?1').bind(now - LOGIN_LOG_RETENTION_MS));
+  await env.DB.batch(statements);
+  return { deviceToken, eventId, suspicious };
+}
+
+export function publicLoginEvent(row) {
+  return {
+    eventId: String(row.event_id || ''),
+    accountId: String(row.account_id || ''),
+    occurredAt: Number(row.occurred_at || 0),
+    city: String(row.city || ''),
+    region: String(row.region || ''),
+    country: String(row.country || ''),
+    deviceLabel: String(row.device_label || '알 수 없는 기기'),
+    ipMasked: String(row.ip_masked || ''),
+    newDevice: Number(row.new_device || 0) === 1,
+    newLocation: Number(row.new_location || 0) === 1,
+    baselineCreated: Number(row.baseline_created || 0) === 1,
+    suspicious: Number(row.suspicious || 0) === 1,
+    reviewStatus: String(row.review_status || 'normal'),
+    reviewedAt: Number(row.reviewed_at || 0)
+  };
 }
 
 export async function readGuildMembers(db) {
