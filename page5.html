@@ -1506,7 +1506,7 @@
 
   </style>
 
-    <link rel="manifest" href="/manifest.webmanifest?v=4.38">
+    <link rel="manifest" href="/manifest.webmanifest?v=4.39">
     <meta name="theme-color" content="#ffe680">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1756,6 +1756,7 @@
     let guildStateRequestInFlight = false;
     let lastGuildMemberSignature = '';
     let memberOwnershipFilter = 'ALL';
+    let authProfile = null;
     const expandedOwnerFlowerKeys = new Set();
     const guildRoleOrder = { '길드장':1, '부길드장':2, '임원':3, '정예':4, '멤버':5 };
 
@@ -1967,7 +1968,7 @@
               <span class="competition-mission-role" data-role="${escapeHtml(member.role || '멤버')}">${escapeHtml(member.role || '멤버')}</span>
               <span class="competition-mission-name">${escapeHtml(member.name || '')}</span>
             </div>
-            <button type="button" class="competition-mission-toggle ${done ? 'done' : ''}" data-mission-member="${escapeHtml(member.id)}">${done ? '✓ 완료' : '□ 미완료'}</button>
+            <button type="button" class="competition-mission-toggle ${done ? 'done' : ''}" data-mission-member="${escapeHtml(member.id)}" ${authProfile && authProfile.role !== 'admin' && authProfile.memberId !== member.id ? 'disabled title="본인의 상태만 변경할 수 있습니다."' : ''}>${done ? '✓ 완료' : '□ 미완료'}</button>
           </div>`;
       }).join('');
 
@@ -2073,7 +2074,17 @@
     }
 
     function renderGuildMemberSelect(force = false) {
-      const sorted = getSortedGuildMembers();
+      const memberScoped = authProfile && authProfile.role !== 'admin';
+      if (memberScoped) {
+        selectedGuildMemberId = authProfile.memberId;
+        localStorage.setItem('all_flower_selected_member', selectedGuildMemberId);
+      }
+      const sorted = memberScoped
+        ? getSortedGuildMembers().filter(member => member.id === authProfile.memberId)
+        : getSortedGuildMembers();
+      guildMemberSelect.disabled = Boolean(memberScoped);
+      guildMemberPickerBtn.disabled = Boolean(memberScoped);
+      guildMemberPickerBtn.title = memberScoped ? '로그인한 길드원으로 고정됩니다.' : '';
       const signature = memberSignature(sorted);
       const validIds = new Set(sorted.map(member => member.id));
 
@@ -2089,7 +2100,7 @@
         ).join('');
 
         guildMemberPickerMenu.innerHTML =
-          `<button type="button" class="picker-option picker-option-none ${selectedGuildMemberId ? '' : 'selected'}" data-member-id="">선택 안 함</button>` +
+          (memberScoped ? '' : `<button type="button" class="picker-option picker-option-none ${selectedGuildMemberId ? '' : 'selected'}" data-member-id="">선택 안 함</button>`) +
           sorted.map(member => `
             <button type="button" class="picker-option role-${escapeHtml(member.role || '멤버')} ${member.id === selectedGuildMemberId ? 'selected' : ''}" data-member-id="${escapeHtml(member.id)}">
               <span class="picker-role-dot role-dot-${escapeHtml(member.role || '멤버')}"></span>
@@ -2121,6 +2132,8 @@
       guildCheckHelp.textContent = selected
         ? `${selected.name}님의 보유 현황을 카드에서 바로 체크합니다.`
         : '선택 후 꽃 카드에서 바로 보유 체크할 수 있습니다.';
+      guildMemberPickerBtn.disabled = Boolean(memberScoped);
+      guildMemberPickerBtn.title = memberScoped ? '로그인한 본인의 보유 현황입니다.' : '';
       updateCompetitionMissionMiniCount();
     }
 
@@ -2820,6 +2833,12 @@
     }
 
     initializeFlowers();
+    window.addEventListener('lemon-auth-ready', event => {
+      authProfile = event.detail || null;
+      renderGuildMemberSelect(true);
+      renderCompetitionMissionModal();
+      renderFlowers();
+    });
     setInterval(() => syncRemoteFlowers(true), 5000);
     setInterval(() => fetchGuildState(false), 1000);
     window.addEventListener('focus', () => { syncRemoteFlowers(true); fetchGuildState(true); });
@@ -2834,5 +2853,6 @@
   }
 </script>
 
+<script src="/auth-client.js" defer></script>
 </body>
 </html>

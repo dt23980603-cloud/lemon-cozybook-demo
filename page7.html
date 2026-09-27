@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *,body,input,button,select{font-family:'Gowun Batang',serif;box-sizing:border-box}body{margin:14px;background:#f9f9f9;color:#333}.page{width:min(900px,100%);margin:0 auto}
-.header{display:flex;align-items:center;gap:12px;margin-bottom:15px}.back{width:50px;height:50px;display:inline-flex;flex:0 0 auto}.back img{width:100%;height:100%;object-fit:contain}
+.header{display:flex;align-items:center;gap:12px;margin-bottom:15px}.header-copy{min-width:0;flex:1}.account-link{flex:0 0 auto;padding:8px 11px;border:1px solid #b9aa6c;border-radius:8px;background:#fff9db;color:#514829;text-decoration:none;font-size:.75rem;font-weight:700}.back{width:50px;height:50px;display:inline-flex;flex:0 0 auto}.back img{width:100%;height:100%;object-fit:contain}
 h1{margin:0;font-size:1.45rem}.subtitle{margin:4px 0 0;color:#777;font-size:.8rem;line-height:1.5}.card{background:#fff;border:1px solid #bbb;border-radius:10px;padding:16px;margin-bottom:14px;box-shadow:2px 2px 5px rgba(0,0,0,.04)}
 .title{margin:0 0 11px;font-size:1rem}.form{display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:8px}.form select,.form input{min-height:42px;padding:8px 10px;border:1px solid #aaa;border-radius:7px;background:#fff}
 .btn-add{min-width:90px;border:1px solid #666;border-radius:7px;background:#fff9db;font-weight:700}.status{margin-top:9px;min-height:20px;color:#777;font-size:.76rem}
@@ -22,6 +22,7 @@ h1{margin:0;font-size:1.45rem}.subtitle{margin:4px 0 0;color:#777;font-size:.8re
 #site-version{position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;pointer-events:none}
 @media(max-width:600px){
 body{margin:8px}.card{padding:12px}h1{font-size:1.25rem}
+.header{align-items:flex-start;gap:7px}.back{width:42px;height:42px}.account-link{padding:7px 8px;font-size:.66rem;white-space:nowrap}
 .form{grid-template-columns:1fr 1fr}.form input{grid-column:1/-1;grid-row:1}.form select{grid-column:1;grid-row:2}.btn-add{grid-column:2;grid-row:2}
 .member-row{grid-template-columns:minmax(0,1fr) auto;gap:6px;padding:8px}
 .member-main{gap:6px;min-width:0}
@@ -34,12 +35,12 @@ body{margin:8px}.card{padding:12px}h1{font-size:1.25rem}
 </head>
 <body>
 <main class="page">
-<header class="header"><a class="back" href="page5.html"><img src="images/ui/back-button.png" alt="뒤로가기"></a><div><h1>👥 길드원 관리</h1><p class="subtitle">길드원 추가·수정·삭제를 관리합니다. 정보 수정 시 내부 ID는 유지되어 기존 꽃 보유 체크와 꽃 개량 옵션 기록이 유지됩니다.</p></div></header>
+<header class="header"><a class="back" href="page5.html"><img src="images/ui/back-button.png" alt="뒤로가기"></a><div class="header-copy"><h1>👥 길드원 관리</h1><p class="subtitle">길드원 추가·수정·삭제를 관리합니다. 정보 수정 시 내부 ID는 유지되어 기존 꽃 보유 체크와 꽃 개량 옵션 기록이 유지됩니다.</p></div><a class="account-link" href="admin-accounts.html">🔐 계정 관리</a></header>
 <section class="card"><h2 class="title">➕ 길드원 추가</h2><div class="form"><select id="addRole"><option>길드장</option><option>부길드장</option><option>임원</option><option>정예</option><option selected>멤버</option></select><input id="addName" maxlength="40" placeholder="닉네임 입력"><button id="addBtn" class="btn-add">추가</button></div><div id="status" class="status"></div></section>
 <section class="card"><h2 class="title">📖 길드원 목록 <span id="memberCount"></span></h2><div id="memberList" class="member-list"></div></section>
 </main>
 <div id="editModal" class="modal"><div class="dialog"><div class="dialog-head"><h2>✏️ 수정</h2><button id="editClose" class="close">×</button></div><div class="edit-grid"><label>직위<select id="editRole"><option>길드장</option><option>부길드장</option><option>임원</option><option>정예</option><option>멤버</option></select></label><label>닉네임<input id="editName" maxlength="40"></label></div><div class="dialog-actions"><button id="editCancel">취소</button><button id="editSave" class="save">저장</button></div></div></div>
-<div id="site-version">demo_v4.38</div>
+<div id="site-version">demo_v4.39</div>
 <script>
 const API='/api/guild-state';const roleOrder={'길드장':1,'부길드장':2,'임원':3,'정예':4,'멤버':5};let members=[],checks={},flowerOptions={},memberBirthdays={},editMemberId='';
 const memberList=document.getElementById('memberList'),memberCount=document.getElementById('memberCount'),statusEl=document.getElementById('status'),addRole=document.getElementById('addRole'),addName=document.getElementById('addName'),editModal=document.getElementById('editModal'),editRole=document.getElementById('editRole'),editName=document.getElementById('editName');
@@ -59,4 +60,5 @@ async function deleteMember(id){const m=members.find(x=>x.id===id);if(!m)return;
 document.getElementById('addBtn').onclick=addMember;addName.onkeydown=e=>{if(e.key==='Enter')addMember()};document.getElementById('editClose').onclick=closeEdit;document.getElementById('editCancel').onclick=closeEdit;document.getElementById('editSave').onclick=saveEdit;editModal.onclick=e=>{if(e.target===editModal)closeEdit()};document.onkeydown=e=>{if(e.key==='Escape'&&editModal.classList.contains('show'))closeEdit()};load();window.addEventListener('focus',load);document.addEventListener('visibilitychange',()=>{if(!document.hidden)load()});
 </script>
 <script>if('serviceWorker'in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}))}</script>
+<script src="/auth-client.js" defer></script>
 </body></html>

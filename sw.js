@@ -1,17 +1,8 @@
-const CACHE_NAME = 'lemon-demo-v4.38-update-prompt';
+const CACHE_NAME = 'lemon-demo-v4.39-update-prompt';
 const APP_SHELL = [
-  '/',
-  '/index.html',
-  '/page1.html',
-  '/page2.html',
-  '/page3.html',
-  '/page4.html',
-  '/page5.html',
-  '/page6.html',
-  '/page7.html',
-  '/page8.html',
-  '/page9.html',
-  '/page10.html',
+  '/login.html',
+  '/auth-setup.html',
+  '/auth.css',
   '/upgrade-efficiency-data.js',
   '/flower-data-all.js',
   '/images/branding/lemon-favicon.png',
@@ -77,7 +68,7 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'APPLY_UPDATE' && event.data.version === 'v4.38') {
+  if (event.data && event.data.type === 'APPLY_UPDATE' && event.data.version === 'v4.39') {
     self.skipWaiting();
   }
 });
@@ -89,16 +80,11 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin || url.pathname.startsWith('/api/')) return;
 
-  // HTML 이동은 항상 네트워크를 먼저 확인해서 최신 배포본을 우선 사용합니다.
+  // 로그인으로 보호되는 HTML은 캐시하지 않습니다. 오프라인에서는 로그인 화면만 표시합니다.
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request, { cache: 'no-store' })
-        .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
-          return response;
-        })
-        .catch(async () => (await caches.match(request)) || (await caches.match('/index.html')))
+        .catch(() => caches.match('/login.html'))
     );
     return;
   }

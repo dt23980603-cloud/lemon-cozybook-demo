@@ -146,7 +146,7 @@ body{margin:8px}.card{padding:12px}.header{gap:8px}.back{width:44px;height:44px}
     <div class="dialog-actions"><button id="cancelOptionDelete" type="button">취소</button><button id="confirmOptionDelete" class="delete-option" type="submit">삭제</button></div>
   </form>
 </dialog>
-<div id="site-version">demo_v4.38</div>
+<div id="site-version">demo_v4.39</div>
 
 <script src="flower-data-all.js"></script>
 <script>
@@ -375,5 +375,6 @@ document.getElementById('optionDeleteForm').addEventListener('submit',async e=>{
 (async()=>{try{await ensureSeed();await refreshOptions();await refresh()}catch(err){console.error(err);alert(`꽃 관리 데이터를 불러오지 못했습니다.\\n${err.message||err}`)}})();
 </script>
 <script>if('serviceWorker'in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}))}</script>
+<script src="/auth-client.js" defer></script>
 </body>
 </html>

@@ -135,7 +135,7 @@
       }
 }
   </style>
-  <link rel="manifest" href="/manifest.webmanifest?v=4.38"><meta name="theme-color" content="#ffe680">
+  <link rel="manifest" href="/manifest.webmanifest?v=4.39"><meta name="theme-color" content="#ffe680">
 </head>
 <body>
 <main class="page">
@@ -736,7 +736,7 @@
 </div>
   </div>
 </div>
-<div id="site-version">demo_v4.38</div>
+<div id="site-version">demo_v4.39</div>
 <script>
 const packageFlowersModal=document.getElementById('packageFlowersModal');
 const openPackageFlowers=document.getElementById('openPackageFlowers');
@@ -749,4 +749,5 @@ packageFlowersModal.addEventListener('click',e=>{if(e.target===packageFlowersMod
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&packageFlowersModal.classList.contains('show'))closePackageFlowerModal()});
 if('serviceWorker'in navigator){window.addEventListener('load',async()=>{try{const registration=await navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'});await registration.update()}catch(e){console.warn(e)}})}
 </script>
+<script src="/auth-client.js" defer></script>
 </body></html>

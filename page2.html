@@ -384,7 +384,7 @@
     </div>
   </div>
 
-  <div id="site-version">demo_v4.38</div>
+  <div id="site-version">demo_v4.39</div>
   <script src="flower-data-all.js"></script>
   <script>
     const FLOWERS_API = '/api/flowers';
@@ -408,6 +408,7 @@
     let optionDraft = new Map();
     let optionFilterGrade = 'ALL';
     let optionEditingMemberId = '';
+    let authProfile = null;
 
     const memberSelect = document.getElementById('memberSelect');
     const memberStatus = document.getElementById('memberStatus');
@@ -585,10 +586,13 @@
       const optionCount = scoredFlowers.filter(flower => getFlowerOption(selected.id, flower.key) > 0).length;
       const { options, excludedUpgradeCost } = groupScoreOptions(selected.id);
 
-      optionConfigBtn.disabled = false;
-      optionConfigStatus.textContent = optionCount
-        ? `${selected.name} · 옵션이 설정된 꽃 ${optionCount}종`
-        : `${selected.name} · 현재 모든 꽃 옵션 +0점`;
+      const canEditOptions = !authProfile || authProfile.role === 'admin' || authProfile.memberId === selected.id;
+      optionConfigBtn.disabled = !canEditOptions;
+      optionConfigStatus.textContent = !canEditOptions
+        ? `${selected.name}님의 꽃 개량 옵션은 조회만 가능합니다.`
+        : optionCount
+          ? `${selected.name} · 옵션이 설정된 꽃 ${optionCount}종`
+          : `${selected.name} · 현재 모든 꽃 옵션 +0점`;
 
       memberStatus.textContent = `${selected.name} · 보유 체크 ${owned}종 · 경쟁전 점수 등록 ${scored}종 · 사용 가능한 임무 유형 ${options.length}개`;
       if (multiplier === 2 && excludedUpgradeCost) {
@@ -753,6 +757,10 @@
       const selected = getSelectedMember();
       if (!selected) {
         alert('먼저 계산 대상 길드원을 선택해주세요.');
+        return;
+      }
+      if (authProfile && authProfile.role !== 'admin' && authProfile.memberId !== selected.id) {
+        alert('본인의 꽃 개량 옵션만 수정할 수 있습니다.');
         return;
       }
 
@@ -1232,6 +1240,10 @@
     }));
 
     localStorage.removeItem('mission_calc_member');
+    window.addEventListener('lemon-auth-ready', event => {
+      authProfile = event.detail || null;
+      updateMemberStatus();
+    });
     loadData(true);
     window.addEventListener('focus', () => loadData(false));
     document.addEventListener('visibilitychange', () => { if (!document.hidden) loadData(false); });
@@ -1241,5 +1253,6 @@
       window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(err => console.warn('PWA service worker registration failed:', err)));
     }
   </script>
+<script src="/auth-client.js" defer></script>
 </body>
 </html>

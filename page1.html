@@ -343,7 +343,7 @@
       .zodiac-name{font-size:.73rem}
     }
   </style>
-  <link rel="manifest" href="/manifest.webmanifest?v=4.38">
+  <link rel="manifest" href="/manifest.webmanifest?v=4.39">
   <meta name="theme-color" content="#ffe680">
 </head>
 <body>
@@ -531,12 +531,13 @@
   </div>
 </div>
 
-<div id="site-version">demo_v4.38</div>
+<div id="site-version">demo_v4.39</div>
 
 <script>
 const API='/api/guild-state';
 const STAR_SOUL_SETTINGS_API='/api/star-soul-settings';
 const FLOWERS_API='/api/flowers';
+let authProfile=null;
 const roleOrder={'길드장':1,'부길드장':2,'임원':3,'정예':4,'멤버':5};
 const gradeOrder={N:1,R:2,SR:3,SSR:4,UR:5};
 
@@ -710,7 +711,13 @@ function renderMemberSelect(){
     const done=memberBirthdays[m.id]?' ✓':'';
     return `<option value="${esc(m.id)}">${esc(m.name)}${done}</option>`;
   }).join('');
-  if(members.some(m=>m.id===current))memberSelect.value=current;
+  if(authProfile&&authProfile.role!=='admin'){
+    memberSelect.value=authProfile.memberId||'';
+    memberSelect.disabled=true;
+  }else{
+    memberSelect.disabled=false;
+    if(members.some(m=>m.id===current))memberSelect.value=current;
+  }
 }
 function updateFormForMember(){
   const member=members.find(m=>m.id===memberSelect.value);
@@ -987,6 +994,11 @@ document.addEventListener('keydown',e=>{
 loadState();
 loadZodiacSettings();
 loadCatalogFlowers();
+window.addEventListener('lemon-auth-ready',event=>{
+  authProfile=event.detail||null;
+  renderMemberSelect();
+  updateFormForMember();
+});
 let pollTimer=setInterval(()=>{loadState();loadZodiacSettings()},5000);
 window.addEventListener('focus',()=>{loadState();loadZodiacSettings()});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){loadState();loadZodiacSettings()}});
@@ -1000,5 +1012,6 @@ if('serviceWorker'in navigator){
   });
 }
 </script>
+<script src="/auth-client.js" defer></script>
 </body>
 </html>
