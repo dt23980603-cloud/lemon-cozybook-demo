@@ -8,6 +8,14 @@ import {
   uniqueLoginCode
 } from '../../../_shared/auth.js';
 
+async function hasAnotherActiveAdmin(db, accountId) {
+  const row = await db.prepare(`
+    SELECT COUNT(*) AS count FROM auth_accounts
+    WHERE role = 'admin' AND status = 'active' AND account_id <> ?1
+  `).bind(accountId).first();
+  return Number(row?.count || 0) > 0;
+}
+
 export async function onRequestPatch(context) {
   if (!requireAdmin(context)) return json({ error: '관리자 권한이 필요합니다.' }, 403);
   const accountId = String(context.params.id || '');
@@ -39,12 +47,18 @@ export async function onRequestPatch(context) {
   } else if (action === 'setStatus') {
     const status = body?.status === 'active' ? 'active' : 'inactive';
     if (accountId === context.data.auth.accountId && status !== 'active') return json({ error: '현재 로그인한 관리자 계정은 비활성화할 수 없습니다.' }, 400);
+    if (account.role === 'admin' && account.status === 'active' && status !== 'active' && !(await hasAnotherActiveAdmin(context.env.DB, accountId))) {
+      return json({ error: '마지막 활성 관리자 계정은 비활성화할 수 없습니다.' }, 400);
+    }
     const statements = [context.env.DB.prepare('UPDATE auth_accounts SET status = ?2, updated_at = ?3 WHERE account_id = ?1').bind(accountId, status, now)];
     if (status !== 'active') statements.push(context.env.DB.prepare('DELETE FROM auth_sessions WHERE account_id = ?1').bind(accountId));
     await context.env.DB.batch(statements);
   } else if (action === 'setRole') {
     const role = body?.role === 'admin' ? 'admin' : 'member';
     if (accountId === context.data.auth.accountId && role !== 'admin') return json({ error: '현재 로그인한 관리자 권한은 해제할 수 없습니다.' }, 400);
+    if (account.role === 'admin' && account.status === 'active' && role !== 'admin' && !(await hasAnotherActiveAdmin(context.env.DB, accountId))) {
+      return json({ error: '마지막 활성 관리자의 권한은 해제할 수 없습니다.' }, 400);
+    }
     await context.env.DB.prepare('UPDATE auth_accounts SET role = ?2, updated_at = ?3 WHERE account_id = ?1')
       .bind(accountId, role, now).run();
   } else if (action === 'revokeSessions') {
