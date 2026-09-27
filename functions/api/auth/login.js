@@ -26,7 +26,7 @@ export async function onRequestPost(context) {
     return json({ error: '로그인 시도가 많아 잠시 잠겼습니다. 잠시 후 다시 시도해주세요.', lockedUntil: Number(account.locked_until) }, 429);
   }
 
-  const valid = await verifyPin(pin, account.pin_salt, account.pin_hash);
+  const valid = await verifyPin(pin, account.pin_salt, account.pin_hash, account.pin_iterations);
   if (!valid) {
     const failed = Number(account.failed_attempts || 0) + 1;
     const lockedUntil = failed >= 5 ? now + 10 * 60 * 1000 : 0;

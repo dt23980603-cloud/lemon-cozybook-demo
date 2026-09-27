@@ -24,9 +24,9 @@ export async function onRequestPatch(context) {
     temporaryPin = randomPin();
     const pin = await hashPin(temporaryPin);
     await context.env.DB.batch([
-      context.env.DB.prepare(`UPDATE auth_accounts SET pin_salt = ?2, pin_hash = ?3, must_change_pin = 1,
-        failed_attempts = 0, locked_until = 0, updated_at = ?4 WHERE account_id = ?1`)
-        .bind(accountId, pin.salt, pin.hash, now),
+      context.env.DB.prepare(`UPDATE auth_accounts SET pin_salt = ?2, pin_hash = ?3, pin_iterations = ?4, must_change_pin = 1,
+        failed_attempts = 0, locked_until = 0, updated_at = ?5 WHERE account_id = ?1`)
+        .bind(accountId, pin.salt, pin.hash, pin.iterations, now),
       context.env.DB.prepare('DELETE FROM auth_sessions WHERE account_id = ?1').bind(accountId)
     ]);
   } else if (action === 'regenerateCode') {

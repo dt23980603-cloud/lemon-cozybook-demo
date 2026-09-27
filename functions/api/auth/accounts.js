@@ -49,10 +49,10 @@ export async function onRequestPost(context) {
   const now = Date.now();
   await context.env.DB.prepare(`
     INSERT INTO auth_accounts
-      (account_id, member_id, login_code, pin_salt, pin_hash, role, status, must_change_pin,
+      (account_id, member_id, login_code, pin_salt, pin_hash, pin_iterations, role, status, must_change_pin,
        failed_attempts, locked_until, last_login_at, created_at, updated_at)
-    VALUES (?1, ?2, ?3, ?4, ?5, ?6, 'active', 1, 0, 0, 0, ?7, ?7)
-  `).bind(accountId, memberId, loginCode, pin.salt, pin.hash, role, now).run();
+    VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, 'active', 1, 0, 0, 0, ?8, ?8)
+  `).bind(accountId, memberId, loginCode, pin.salt, pin.hash, pin.iterations, role, now).run();
   const account = await context.env.DB.prepare('SELECT * FROM auth_accounts WHERE account_id = ?1').bind(accountId).first();
   return json({ ok: true, account: publicAccount(account, members), temporaryPin }, 201);
 }

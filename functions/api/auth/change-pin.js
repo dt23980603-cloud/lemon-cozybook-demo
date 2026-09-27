@@ -13,20 +13,20 @@ export async function onRequestPost(context) {
   try { body = await context.request.json(); } catch (_) { return json({ error: 'PIN 정보를 확인해주세요.' }, 400); }
   const newPin = normalizePin(body?.newPin);
   if (!newPin || newPin !== String(body?.newPinConfirm || '')) return json({ error: '새 PIN은 동일한 숫자 6~12자리로 입력해주세요.' }, 400);
-  const account = await context.env.DB.prepare('SELECT pin_salt, pin_hash, must_change_pin FROM auth_accounts WHERE account_id = ?1')
+  const account = await context.env.DB.prepare('SELECT pin_salt, pin_hash, pin_iterations, must_change_pin FROM auth_accounts WHERE account_id = ?1')
     .bind(auth.accountId).first();
   if (!account) return json({ error: '계정을 찾을 수 없습니다.' }, 404);
   if (Number(account.must_change_pin || 0) !== 1) {
     const currentPin = normalizePin(body?.currentPin);
-    if (!currentPin || !(await verifyPin(currentPin, account.pin_salt, account.pin_hash))) {
+    if (!currentPin || !(await verifyPin(currentPin, account.pin_salt, account.pin_hash, account.pin_iterations))) {
       return json({ error: '현재 PIN이 올바르지 않습니다.' }, 403);
     }
   }
   const result = await hashPin(newPin);
   const now = Date.now();
   await context.env.DB.prepare(`
-    UPDATE auth_accounts SET pin_salt = ?2, pin_hash = ?3, must_change_pin = 0,
-      failed_attempts = 0, locked_until = 0, updated_at = ?4 WHERE account_id = ?1
-  `).bind(auth.accountId, result.salt, result.hash, now).run();
+    UPDATE auth_accounts SET pin_salt = ?2, pin_hash = ?3, pin_iterations = ?4, must_change_pin = 0,
+      failed_attempts = 0, locked_until = 0, updated_at = ?5 WHERE account_id = ?1
+  `).bind(auth.accountId, result.salt, result.hash, result.iterations, now).run();
   return json({ ok: true });
 }
