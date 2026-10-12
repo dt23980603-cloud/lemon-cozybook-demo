@@ -8,6 +8,7 @@ import {
   readGuildMembers,
   recordSuccessfulLogin,
   sessionCookie,
+  normalizeAccessRole,
   verifyPin
 } from '../../_shared/auth.js';
 
@@ -52,7 +53,7 @@ export async function onRequestPost(context) {
   const member = members.find(item => item.id === account.member_id) || null;
   const response = json({
     ok: true,
-    role: account.role === 'admin' ? 'admin' : 'member',
+    role: normalizeAccessRole(account.role),
     memberId: account.member_id,
     memberName: member?.name || '',
     mustChangePin: Number(account.must_change_pin || 0) === 1

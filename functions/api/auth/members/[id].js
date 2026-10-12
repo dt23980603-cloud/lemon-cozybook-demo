@@ -69,5 +69,12 @@ export async function onRequestDelete(context) {
     );
   }
   await context.env.DB.batch(statements);
+  for (const table of ['guild_management_daily', 'guild_management_weekly', 'guild_management_attendance']) {
+    try {
+      await context.env.DB.prepare(`DELETE FROM ${table} WHERE member_id = ?1`).bind(memberId).run();
+    } catch (_) {
+      // 길드원 관리 기능을 아직 한 번도 열지 않아 테이블이 없는 경우는 무시합니다.
+    }
+  }
   return json({ ok: true, deleted: true, memberId, memberName: member.name });
 }

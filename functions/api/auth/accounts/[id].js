@@ -1,6 +1,7 @@
 import {
   hashPin,
   json,
+  normalizeAccessRole,
   publicAccount,
   randomPin,
   readGuildMembers,
@@ -54,7 +55,7 @@ export async function onRequestPatch(context) {
     if (status !== 'active') statements.push(context.env.DB.prepare('DELETE FROM auth_sessions WHERE account_id = ?1').bind(accountId));
     await context.env.DB.batch(statements);
   } else if (action === 'setRole') {
-    const role = body?.role === 'admin' ? 'admin' : 'member';
+    const role = normalizeAccessRole(body?.role);
     if (accountId === context.data.auth.accountId && role !== 'admin') return json({ error: '현재 로그인한 관리자 권한은 해제할 수 없습니다.' }, 400);
     if (account.role === 'admin' && account.status === 'active' && role !== 'admin' && !(await hasAnotherActiveAdmin(context.env.DB, accountId))) {
       return json({ error: '마지막 활성 관리자의 권한은 해제할 수 없습니다.' }, 400);

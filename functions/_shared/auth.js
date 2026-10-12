@@ -375,7 +375,7 @@ export function publicAccount(account, members = []) {
     memberName: member?.name || '알 수 없는 길드원',
     memberRole: member?.role || '',
     loginCode: account.login_code,
-    role: account.role === 'admin' ? 'admin' : 'member',
+    role: normalizeAccessRole(account.role),
     status: account.status === 'active' ? 'active' : 'inactive',
     mustChangePin: Number(account.must_change_pin || 0) === 1,
     lockedUntil: Number(account.locked_until || 0),
@@ -406,7 +406,7 @@ export async function getAuthSession(env, request) {
     accountId: row.account_id,
     memberId: row.member_id,
     loginCode: row.login_code,
-    role: row.role === 'admin' ? 'admin' : 'member',
+    role: normalizeAccessRole(row.role),
     mustChangePin: Number(row.must_change_pin || 0) === 1,
     expiresAt: Number(row.expires_at || 0),
     lastSeenAt: Number(row.last_seen_at || 0),
@@ -464,4 +464,15 @@ export async function uniqueLoginCode(db) {
 
 export function requireAdmin(context) {
   return context.data?.auth?.role === 'admin';
+}
+
+export function normalizeAccessRole(value) {
+  if (value === 'admin') return 'admin';
+  if (value === 'subadmin') return 'subadmin';
+  return 'member';
+}
+
+export function requireGuildManager(context) {
+  const role = context.data?.auth?.role;
+  return role === 'admin' || role === 'subadmin';
 }
