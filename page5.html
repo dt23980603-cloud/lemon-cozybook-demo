@@ -87,6 +87,8 @@
     .flower-name { font-size:1rem; font-weight:bold; margin-bottom:10px; }
     .btn-open { width:100%; padding:8px 12px; background:#fff0f0; border:1px solid #666; border-radius:6px; font-size:.85rem; font-weight:bold; cursor:pointer; transition:.15s; }
     .btn-open:hover { background:#fae0e0; }
+    .btn-upgrade-setting { width:100%; padding:8px 6px; border:1px solid #8c7a28; border-radius:6px; font-size:.82rem; font-weight:bold; cursor:pointer; transition:.15s; }
+    .btn-upgrade-setting:disabled { opacity:.52; cursor:not-allowed; background:#f3f3f3; }
     .empty-result { grid-column:1/-1; padding:50px 15px; text-align:center; color:#888; border:1px dashed #ccc; border-radius:8px; background:#fafafa; }
 
     .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:1200; justify-content:center; align-items:center; padding:18px; }
@@ -332,11 +334,11 @@
       line-height:1.5;
     }
     .card-action-row {
-      grid-template-columns:1fr 1fr;
+      grid-template-columns:repeat(3,minmax(0,1fr));
       margin-top:auto;
       gap:7px;
     }
-    .btn-open, .btn-own-check {
+    .btn-open, .btn-own-check, .btn-upgrade-setting {
       min-height:36px;
       padding:7px 6px;
       font-size:.76rem;
@@ -408,10 +410,10 @@
       .card-action-row {
         gap:4px;
       }
-      .btn-open, .btn-own-check {
+      .btn-open, .btn-own-check, .btn-upgrade-setting {
         min-height:30px;
         padding:5px 2px;
-        font-size:.62rem;
+        font-size:.58rem;
       }
     }
 
@@ -875,7 +877,7 @@
       .guild-owner-box{padding:7px 8px;margin-bottom:7px;}
       .guild-owner-head{font-size:.68rem;margin-bottom:5px;}
       .guild-owner-tag,.owner-more-btn{min-height:26px;padding:3px 8px;font-size:.68rem;}
-      .btn-open,.btn-own-check{min-height:32px;padding:5px 4px;font-size:.68rem;}
+      .btn-open,.btn-own-check,.btn-upgrade-setting{min-height:32px;padding:5px 3px;font-size:.64rem;}
     }
 
     @media (min-width:621px) and (max-width:980px){
@@ -1079,6 +1081,7 @@
       box-shadow:inset 0 1px 0 rgba(255,255,255,.92);
     }
     .btn-own-check,
+    .btn-upgrade-setting,
     .btn-open{
       background:rgba(255,255,255,.92);
       border-color:#e7dfd1;
@@ -1091,7 +1094,18 @@
       border-color:#d8c77f;
       color:#5c451b;
     }
+    .btn-upgrade-setting{
+      background:#fff5df;
+      border-color:#dbc77f;
+      color:#655123;
+    }
+    .btn-upgrade-setting.configured{
+      background:#f1edff;
+      border-color:#b9a8d8;
+      color:#594574;
+    }
     .btn-own-check:hover,
+    .btn-upgrade-setting:hover,
     .btn-open:hover{
       background:#fff6df;
       border-color:#d6b94f;
@@ -1153,7 +1167,138 @@
       .flower-card{border-radius:14px;}
       .guild-owner-box{border-radius:10px;}
       .btn-own-check,
+      .btn-upgrade-setting,
       .btn-open{border-radius:10px;}
+    }
+
+    /* demo_v4.49: 꽃 카드 개량 설정 */
+    .upgrade-setting-card{
+      width:min(430px,100%);
+      overflow:hidden;
+      border:1.6px solid #dfc568;
+      border-radius:20px;
+      background:#fffdf8;
+      box-shadow:0 16px 38px rgba(81,60,26,.20);
+    }
+    .upgrade-setting-body{padding:15px 17px 16px;}
+    .upgrade-setting-target{
+      display:flex;
+      align-items:center;
+      gap:11px;
+      padding:10px 12px;
+      border:1px solid #e8dcba;
+      border-radius:14px;
+      background:#fffaf0;
+    }
+    .upgrade-setting-thumb{
+      width:50px;
+      height:50px;
+      flex:0 0 50px;
+      object-fit:cover;
+      border:3px solid var(--upgrade-grade-color,#b9d99f);
+      border-radius:11px;
+      background:#fff;
+      box-shadow:inset 0 0 0 2px #fff;
+    }
+    .upgrade-setting-target-copy{min-width:0;}
+    .upgrade-setting-target-copy strong{
+      display:block;
+      overflow:hidden;
+      margin-bottom:3px;
+      color:#493322;
+      font-size:.96rem;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .upgrade-setting-target-copy span{color:#81776b;font-size:.72rem;}
+    .upgrade-setting-label{
+      display:flex;
+      align-items:baseline;
+      justify-content:space-between;
+      gap:10px;
+      margin:15px 2px 8px;
+      color:#493322;
+      font-size:.86rem;
+      font-weight:700;
+    }
+    .upgrade-setting-label small{color:#918779;font-size:.66rem;font-weight:400;}
+    .upgrade-levels{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;}
+    .upgrade-level-btn{
+      min-height:43px;
+      border:1px solid #ddd2b6;
+      border-radius:11px;
+      background:#fff;
+      color:#665d51;
+      font-family:system-ui,sans-serif;
+      font-size:.82rem;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .upgrade-level-btn:hover{background:#fff9e8;border-color:#d5bd67;}
+    .upgrade-level-btn.active{
+      border-color:#9aa875;
+      background:#eaf4dc;
+      color:#3e5633;
+      box-shadow:0 0 0 2px rgba(154,168,117,.18);
+    }
+    .upgrade-formula{
+      margin:12px 2px 5px;
+      color:#8a8175;
+      font-size:.65rem;
+      line-height:1.45;
+      text-align:center;
+    }
+    .upgrade-result{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      min-height:45px;
+      padding:10px;
+      border:1px dashed #d5bd67;
+      border-radius:12px;
+      background:#fff9df;
+      color:#665125;
+      font-family:system-ui,sans-serif;
+      font-size:.78rem;
+    }
+    .upgrade-result strong{color:#433317;font-size:1rem;}
+    .upgrade-setting-note{
+      margin:9px 2px 0;
+      color:#8a8175;
+      font-size:.66rem;
+      line-height:1.55;
+      text-align:center;
+    }
+    .upgrade-setting-status{
+      min-height:17px;
+      margin:8px 17px 0;
+      color:#55734d;
+      font-size:.68rem;
+      text-align:center;
+    }
+    .upgrade-setting-status.error{color:#a14646;}
+    .upgrade-setting-actions{
+      display:grid;
+      grid-template-columns:1fr 1.25fr;
+      gap:9px;
+      padding:0 17px 17px;
+    }
+    .upgrade-setting-actions button{
+      min-height:44px;
+      border-radius:12px;
+      font-size:.8rem;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .upgrade-cancel-btn{border:1px solid #ddd4c2;background:#fff;color:#6e665d;}
+    .upgrade-save-btn{border:1px solid #caae4e;background:#f7e7a6;color:#4d3d15;}
+    .upgrade-setting-actions button:disabled{opacity:.55;cursor:not-allowed;}
+    @media(max-width:620px){
+      .upgrade-setting-card{border-radius:17px;}
+      .upgrade-setting-body{padding:13px 14px 14px;}
+      .upgrade-setting-status{margin-left:14px;margin-right:14px;}
+      .upgrade-setting-actions{padding:0 14px 14px;}
     }
 
     /* demo_v4.37: 외곽 프레임을 제거하고 페이지 전체 폭을 콘텐츠에 활용 */
@@ -1506,7 +1651,7 @@
 
   </style>
 
-    <link rel="manifest" href="/manifest.webmanifest?v=4.47">
+    <link rel="manifest" href="/manifest.webmanifest?v=4.49">
     <meta name="theme-color" content="#ffe680">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1600,12 +1745,13 @@
       </div>
       <div class="guide-step"><b>① 체크 대상 길드원 선택</b><br>상단의 <b>👤 체크 대상 길드원</b>에서 자신의 닉네임을 선택해주세요. 선택한 길드원의 보유 체크 상태가 각 꽃 카드에 표시됩니다.</div>
       <div class="guide-step"><b>② 꽃 보유 체크 / 해제</b><br>꽃 카드의 <b>✓ 보유 / □ 보유</b> 버튼으로 선택한 길드원의 보유 여부를 바로 변경할 수 있습니다. 체크 내용은 길드 공용 데이터로 저장됩니다.</div>
-      <div class="guide-step"><b>③ 보유한 꽃만 빠르게 보기</b><br>길드원을 선택하면 <b>✓ 보유만</b>과 <b>□ 미보유만</b> 버튼이 나타납니다. 같은 버튼을 한 번 더 누르면 필터가 해제되어 전체 꽃이 다시 표시됩니다.</div>
-      <div class="guide-step"><b>④ 등급별 보유 수 확인</b><br>길드원을 선택한 상태에서 N / R / SR / SSR / UR 등급을 누르면 현재 등급의 <b>보유 꽃 수 / 전체 꽃 수</b>를 바로 확인할 수 있습니다.</div>
-      <div class="guide-step"><b>⑤ 길드 전체 보유 현황 확인</b><br>각 꽃 카드의 <b>👥 길드 보유 현황</b>에는 현재 그 꽃을 보유한 길드원이 표시됩니다. 인원이 많으면 <b>더보기</b>를 눌러 전체 명단을 펼칠 수 있습니다.</div>
-      <div class="guide-step"><b>⑥ 경쟁전 임무 완료 표시</b><br>상단의 <b>⚔️ 임무 현황</b>에서 길드원별 경쟁전 임무 완료 여부를 체크할 수 있습니다. 완료한 길드원은 꽃 보유자 태그에 <b>✓ 표시</b>가 붙고 조금 흐리게 표시됩니다.</div>
-      <div class="guide-step"><b>⑦ 신규 추가 꽃 빠른 체크</b><br><b>🌷신규 추가 꽃🌷</b>에는 업데이트 내역에서 지정한 현재 신규 출시 꽃이 표시됩니다. 체크 대상 길드원을 선택한 뒤 각 꽃의 <b>보유</b> 체크박스에서 바로 보유 여부를 변경할 수 있습니다.</div>
-      <div class="guide-step"><b>⑧ 꽃 검색과 상세 정보</b><br>꽃 이름 검색과 등급 필터를 함께 사용할 수 있습니다. <b>정보 보기</b>에서는 분류, 경쟁전 점수, 획득 방법, 날짜 기간, 비고를 확인할 수 있습니다.</div>
+      <div class="guide-step"><b>③ 꽃 개량 점수 설정</b><br>꽃 카드의 <b>개량 설정</b>을 누르면 선택한 길드원의 절품 추가 점수를 +0~+4점으로 저장할 수 있습니다. 저장한 값은 경쟁전 임무 계산기에 자동 반영됩니다.</div>
+      <div class="guide-step"><b>④ 보유한 꽃만 빠르게 보기</b><br>길드원을 선택하면 <b>✓ 보유만</b>과 <b>□ 미보유만</b> 버튼이 나타납니다. 같은 버튼을 한 번 더 누르면 필터가 해제되어 전체 꽃이 다시 표시됩니다.</div>
+      <div class="guide-step"><b>⑤ 등급별 보유 수 확인</b><br>길드원을 선택한 상태에서 N / R / SR / SSR / UR 등급을 누르면 현재 등급의 <b>보유 꽃 수 / 전체 꽃 수</b>를 바로 확인할 수 있습니다.</div>
+      <div class="guide-step"><b>⑥ 길드 전체 보유 현황 확인</b><br>각 꽃 카드의 <b>👥 길드 보유 현황</b>에는 현재 그 꽃을 보유한 길드원이 표시됩니다. 인원이 많으면 <b>더보기</b>를 눌러 전체 명단을 펼칠 수 있습니다.</div>
+      <div class="guide-step"><b>⑦ 경쟁전 임무 완료 표시</b><br>상단의 <b>⚔️ 임무 현황</b>에서 길드원별 경쟁전 임무 완료 여부를 체크할 수 있습니다. 완료한 길드원은 꽃 보유자 태그에 <b>✓ 표시</b>가 붙고 조금 흐리게 표시됩니다.</div>
+      <div class="guide-step"><b>⑧ 신규 추가 꽃 빠른 체크</b><br><b>🌷신규 추가 꽃🌷</b>에는 업데이트 내역에서 지정한 현재 신규 출시 꽃이 표시됩니다. 체크 대상 길드원을 선택한 뒤 각 꽃의 <b>보유</b> 체크박스에서 바로 보유 여부를 변경할 수 있습니다.</div>
+      <div class="guide-step"><b>⑨ 꽃 검색과 상세 정보</b><br>꽃 이름 검색과 등급 필터를 함께 사용할 수 있습니다. <b>정보 보기</b>에서는 분류, 경쟁전 점수, 획득 방법, 날짜 기간, 비고를 확인할 수 있습니다.</div>
       <div class="guide-tip">⚠️ 보유 체크는 길드원 모두에게 공유됩니다. 꽃을 체크하기 전에 선택된 닉네임이 맞는지 확인해주세요. 잘못 체크했다면 같은 꽃의 보유 버튼을 다시 눌러 해제하면 됩니다.</div>
     </div>
   </div>
@@ -1642,6 +1788,44 @@
       <div id="memberFlowerList" class="member-flower-list"></div>
       <div class="member-flower-footer">
         <button class="member-flower-close-btn" type="button" id="closeMemberFlowerModal">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 선택 길드원 꽃 개량 설정 -->
+  <div class="modal-overlay" id="upgradeSettingModal" aria-hidden="true">
+    <div class="upgrade-setting-card" role="dialog" aria-modal="true" aria-labelledby="upgradeSettingTitle">
+      <div class="modal-header">
+        <div class="modal-title" id="upgradeSettingTitle">🌈개량 설정</div>
+        <button class="modal-close" type="button" id="closeUpgradeSetting" aria-label="개량 설정 닫기">✕</button>
+      </div>
+      <div class="upgrade-setting-body">
+        <div class="upgrade-setting-target">
+          <img id="upgradeSettingImage" class="upgrade-setting-thumb" src="" alt="">
+          <div class="upgrade-setting-target-copy">
+            <strong id="upgradeSettingFlowerName">꽃 이름</strong>
+            <span id="upgradeSettingMemberInfo">길드원 · 기본 경쟁전 점수</span>
+          </div>
+        </div>
+        <div class="upgrade-setting-label">
+          <span>절품 추가 점수</span>
+          <small>+0 ~ +4 선택</small>
+        </div>
+        <div class="upgrade-levels" id="upgradeLevelButtons" aria-label="절품 추가 점수 선택">
+          <button type="button" class="upgrade-level-btn" data-upgrade-value="0">+0</button>
+          <button type="button" class="upgrade-level-btn" data-upgrade-value="1">+1</button>
+          <button type="button" class="upgrade-level-btn" data-upgrade-value="2">+2</button>
+          <button type="button" class="upgrade-level-btn" data-upgrade-value="3">+3</button>
+          <button type="button" class="upgrade-level-btn" data-upgrade-value="4">+4</button>
+        </div>
+        <div class="upgrade-formula">계산식: 기본 점수 × 배율 + 꽃 개량 점수</div>
+        <div class="upgrade-result" id="upgradeSettingResult" aria-live="polite"></div>
+        <p class="upgrade-setting-note">저장한 값은 선택한 길드원의 경쟁전 임무 계산기에 자동으로 반영됩니다.</p>
+      </div>
+      <div class="upgrade-setting-status" id="upgradeSettingStatus" aria-live="polite"></div>
+      <div class="upgrade-setting-actions">
+        <button type="button" class="upgrade-cancel-btn" id="cancelUpgradeSetting">취소</button>
+        <button type="button" class="upgrade-save-btn" id="saveUpgradeSetting">저장</button>
       </div>
     </div>
   </div>
@@ -1754,8 +1938,11 @@
     let lastGuildMemberSignature = '';
     let memberOwnershipFilter = 'ALL';
     let authProfile = null;
+    let upgradeSettingFlowerKey = '';
+    let upgradeSettingDraft = 0;
     const expandedOwnerFlowerKeys = new Set();
     const guildRoleOrder = { '길드장':1, '부길드장':2, '임원':3, '정예':4, '멤버':5 };
+    const upgradeGradeColors = { N:'#8fbc70', R:'#72b7de', SR:'#b58acd', SSR:'#e3b54e', UR:'#e88989' };
 
     const grid = document.getElementById('flowerGrid');
     const searchInput = document.getElementById('flowerSearch');
@@ -1787,6 +1974,15 @@
     const memberFlowerList = document.getElementById('memberFlowerList');
     const newFlowerTrack = document.getElementById('newFlowerTrack');
     const newFlowerCount = document.getElementById('newFlowerCount');
+    const upgradeSettingModal = document.getElementById('upgradeSettingModal');
+    const upgradeSettingImage = document.getElementById('upgradeSettingImage');
+    const upgradeSettingFlowerName = document.getElementById('upgradeSettingFlowerName');
+    const upgradeSettingMemberInfo = document.getElementById('upgradeSettingMemberInfo');
+    const upgradeLevelButtons = document.getElementById('upgradeLevelButtons');
+    const upgradeSettingResult = document.getElementById('upgradeSettingResult');
+    const upgradeSettingStatus = document.getElementById('upgradeSettingStatus');
+    const saveUpgradeSetting = document.getElementById('saveUpgradeSetting');
+    const cancelUpgradeSetting = document.getElementById('cancelUpgradeSetting');
 
     function escapeHtml(value) {
       return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
@@ -1837,6 +2033,110 @@
     function getGuildFlowerOption(memberId, flowerKey) {
       const value = Number(guildFlowerOptions[getGuildFlowerOptionKey(flowerKey, memberId)] || 0);
       return Number.isInteger(value) && value >= 0 && value <= 4 ? value : 0;
+    }
+
+    function renderUpgradeSettingValue() {
+      const flower = findFlowerByKey(upgradeSettingFlowerKey);
+      if (!flower) return;
+      const baseScore = Number(flower.guildScore);
+      const safeBaseScore = Number.isFinite(baseScore) ? baseScore : 0;
+      const rawTotal = safeBaseScore + upgradeSettingDraft;
+      const total = Math.min(rawTotal, 60);
+      const capText = rawTotal > 60 ? ' <small>(최대 60점 적용)</small>' : '';
+
+      upgradeLevelButtons.querySelectorAll('[data-upgrade-value]').forEach(button => {
+        const active = Number(button.dataset.upgradeValue) === upgradeSettingDraft;
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
+      upgradeSettingResult.innerHTML = `<span>기본 ${escapeHtml(safeBaseScore)}점</span><span>× 1배</span><span>+</span><span>절품 ${escapeHtml(upgradeSettingDraft)}점</span><span>=</span><strong>${escapeHtml(total)}점</strong>${capText}`;
+    }
+
+    function openUpgradeSetting(flowerKey) {
+      const member = getSelectedGuildMember();
+      const flower = findFlowerByKey(flowerKey);
+      if (!member) {
+        alert('먼저 체크 대상 길드원을 선택해주세요.');
+        guildMemberPickerBtn.focus();
+        return;
+      }
+      if (!flower) return;
+      if (flower.guildScore == null || flower.guildScore === '' || !Number.isFinite(Number(flower.guildScore))) {
+        alert('경쟁전 기본 점수가 등록되지 않은 꽃입니다.');
+        return;
+      }
+      if (authProfile && authProfile.role !== 'admin' && authProfile.memberId !== member.id) {
+        alert('본인의 꽃 개량 점수만 수정할 수 있습니다.');
+        return;
+      }
+
+      upgradeSettingFlowerKey = flower.key;
+      upgradeSettingDraft = getGuildFlowerOption(member.id, flower.key);
+      upgradeSettingImage.src = flower.image || '';
+      upgradeSettingImage.alt = flower.name || '꽃 이미지';
+      upgradeSettingImage.style.setProperty('--upgrade-grade-color', upgradeGradeColors[flower.grade] || '#b9d99f');
+      upgradeSettingFlowerName.textContent = flower.name || flower.listName || '꽃';
+      upgradeSettingMemberInfo.textContent = `${member.name || '길드원'} · 기본 경쟁전 점수 ${Number(flower.guildScore)}점`;
+      upgradeSettingStatus.textContent = '';
+      upgradeSettingStatus.className = 'upgrade-setting-status';
+      renderUpgradeSettingValue();
+      upgradeSettingModal.classList.add('active');
+      upgradeSettingModal.setAttribute('aria-hidden','false');
+      requestAnimationFrame(() => {
+        upgradeLevelButtons.querySelector('.upgrade-level-btn.active')?.focus();
+      });
+    }
+
+    function closeUpgradeSetting() {
+      upgradeSettingModal.classList.remove('active');
+      upgradeSettingModal.setAttribute('aria-hidden','true');
+      const key = upgradeSettingFlowerKey;
+      upgradeSettingFlowerKey = '';
+      upgradeSettingDraft = 0;
+      if (key) [...grid.querySelectorAll('.btn-upgrade-setting')].find(button => button.dataset.key === key)?.focus();
+    }
+
+    async function saveUpgradeSettingValue() {
+      const member = getSelectedGuildMember();
+      const flower = findFlowerByKey(upgradeSettingFlowerKey);
+      if (!member || !flower) return;
+
+      const before = getGuildFlowerOption(member.id, flower.key);
+      if (before === upgradeSettingDraft) {
+        closeUpgradeSetting();
+        return;
+      }
+
+      saveUpgradeSetting.disabled = true;
+      cancelUpgradeSetting.disabled = true;
+      upgradeSettingStatus.textContent = '저장 중입니다…';
+      upgradeSettingStatus.className = 'upgrade-setting-status';
+
+      try {
+        const key = getGuildFlowerOptionKey(flower.key, member.id);
+        const response = await fetch(GUILD_STATE_API, {
+          method:'PATCH',
+          headers:{ 'Content-Type':'application/json' },
+          body:JSON.stringify({ optionChanges:[{ key, value:upgradeSettingDraft }] })
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(payload.error || `PATCH ${response.status}`);
+
+        if (upgradeSettingDraft > 0) guildFlowerOptions[key] = upgradeSettingDraft;
+        else delete guildFlowerOptions[key];
+        localStorage.setItem('guild_flower_options', JSON.stringify(guildFlowerOptions));
+        guildStateUpdatedAt = Math.max(guildStateUpdatedAt, Number(payload.updatedAt || Date.now()));
+        upgradeSettingStatus.textContent = '저장되었습니다.';
+        renderFlowers();
+        closeUpgradeSetting();
+      } catch (error) {
+        console.warn('꽃 개량 점수 저장 실패', error);
+        upgradeSettingStatus.textContent = '저장하지 못했습니다. 잠시 후 다시 시도해주세요.';
+        upgradeSettingStatus.className = 'upgrade-setting-status error';
+      } finally {
+        saveUpgradeSetting.disabled = false;
+        cancelUpgradeSetting.disabled = false;
+      }
     }
 
     function isFlowerOwnedBySelectedMember(flower) {
@@ -2184,7 +2484,7 @@
         const activeMemberId = memberFlowerModal.dataset.memberId || '';
         if (activeMemberId) openMemberFlowerModal(activeMemberId);
       }
-      if (membersChanged || checksChanged || missionChanged) renderFlowers();
+      if (membersChanged || checksChanged || optionsChanged || missionChanged) renderFlowers();
       return membersChanged || checksChanged || optionsChanged || missionChanged;
     }
 
@@ -2368,12 +2668,14 @@
             ${renderFlowerOwnerTags(f)}
             <div class="card-action-row">
               <button class="btn-own-check ${isFlowerOwnedBySelectedMember(f) ? 'checked' : ''}" type="button" data-key="${escapeHtml(f.key)}" ${selectedGuildMemberId ? '' : 'disabled'}>${isFlowerOwnedBySelectedMember(f) ? '✓ 보유' : '□ 보유'}</button>
+              <button class="btn-upgrade-setting ${getGuildFlowerOption(selectedGuildMemberId, f.key) > 0 ? 'configured' : ''}" type="button" data-key="${escapeHtml(f.key)}" ${selectedGuildMemberId && f.guildScore != null && f.guildScore !== '' ? '' : 'disabled'} title="${selectedGuildMemberId ? `${escapeHtml(getSelectedGuildMember()?.name || '')} · 현재 개량 +${getGuildFlowerOption(selectedGuildMemberId, f.key)}점` : '길드원을 먼저 선택해주세요.'}">개량 설정</button>
               <button class="btn-open" type="button" data-key="${escapeHtml(f.key)}">정보 보기</button>
             </div>
           </div>
         </article>`).join('');
       document.querySelectorAll('.btn-open').forEach(btn => btn.addEventListener('click', openDetail));
       document.querySelectorAll('.btn-own-check').forEach(btn => btn.addEventListener('click', () => toggleSelectedMemberFlower(btn.dataset.key)));
+      document.querySelectorAll('.btn-upgrade-setting').forEach(btn => btn.addEventListener('click', () => openUpgradeSetting(btn.dataset.key)));
       document.querySelectorAll('.guild-owner-tag[data-owner-member]').forEach(tag => tag.addEventListener('click', event => {
         event.stopPropagation();
         openMemberFlowerModal(tag.dataset.ownerMember);
@@ -2709,6 +3011,7 @@
       });
     });
     guildMemberSelect.addEventListener('change', () => {
+      if (upgradeSettingModal.classList.contains('active')) closeUpgradeSetting();
       selectedGuildMemberId = guildMemberSelect.value;
       memberOwnershipFilter = 'ALL';
       if (selectedGuildMemberId) localStorage.setItem('all_flower_selected_member', selectedGuildMemberId);
@@ -2758,6 +3061,19 @@
     document.getElementById('closeMemberFlowerModal').addEventListener('click', closeMemberFlowerModal);
     memberFlowerModal.addEventListener('click', event => {
       if (event.target === memberFlowerModal) closeMemberFlowerModal();
+    });
+
+    upgradeLevelButtons.addEventListener('click', event => {
+      const button = event.target.closest('[data-upgrade-value]');
+      if (!button) return;
+      upgradeSettingDraft = Number(button.dataset.upgradeValue || 0);
+      renderUpgradeSettingValue();
+    });
+    document.getElementById('closeUpgradeSetting').addEventListener('click', closeUpgradeSetting);
+    cancelUpgradeSetting.addEventListener('click', closeUpgradeSetting);
+    saveUpgradeSetting.addEventListener('click', saveUpgradeSettingValue);
+    upgradeSettingModal.addEventListener('click', event => {
+      if (event.target === upgradeSettingModal) closeUpgradeSetting();
     });
 
     document.getElementById('openCompetitionMission').addEventListener('click', openCompetitionMissionModal);
@@ -2811,6 +3127,7 @@
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
         closeDetail(); closeAddFlowers(); closeEditFlowers(); closeDeleteFlowers(); closeCompetitionMissionModal(); closeMemberFlowerModal();
+        if (upgradeSettingModal.classList.contains('active')) closeUpgradeSetting();
         catalogGuideModal.classList.remove('active');
         catalogGuideModal.setAttribute('aria-hidden','true');
       }
