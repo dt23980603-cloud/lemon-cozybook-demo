@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>demo 길드원 관리</title>
+  <link rel="icon" href="/images/branding/lemon-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/auth.css">
+  <link rel="manifest" href="/manifest.webmanifest?v=4.51">
+  <style>
+    :root{--neutral:#e8eaed;--missed:#ffcfc9;--achieved:#d4edbc;--high:#bfe1f6;--sheet-line:#dfd7ba;--sheet-ink:#4d4738}
+    body{padding-bottom:78px}
+    .management-page{width:min(1240px,100%);margin:0 auto}
+    .management-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+    .management-head h1{margin:0;font-size:1.5rem}.management-head p{margin:4px 0 0;color:#7c7462;font-size:.75rem}
+    .management-panel{margin-bottom:14px;padding:17px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.96);box-shadow:0 9px 24px rgba(92,77,24,.09)}
+    .management-panel h2{margin:0;font-size:1rem}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.panel-note{color:#8a8374;font-size:.68rem;text-align:right}
+    .filter-grid{display:grid;grid-template-columns:180px minmax(220px,1fr) auto;gap:9px;align-items:end}.filter-grid .auth-field{margin:0}.filter-grid button{min-width:92px}
+    .week-toolbar{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:10px;align-items:end;margin-bottom:10px}.week-buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.week-button{min-height:42px;border:1px solid #d9cfaa;border-radius:11px;background:#fff;color:#5f5742;font-weight:700;cursor:pointer}.week-button.active{border-color:#7b6c2d;background:#fff5b8;box-shadow:inset 0 -3px 0 #514a38}.date-field{margin:0}
+    .legend{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 13px}.legend span,.status-pill{display:inline-flex;align-items:center;justify-content:center;min-height:25px;padding:3px 8px;border-radius:999px;font-size:.65rem}.tone-neutral{background:var(--neutral)}.tone-missed{background:var(--missed);color:#963c36}.tone-achieved{background:var(--achieved);color:#426735}.tone-high{background:var(--high);color:#315f7e}
+    .entry-list,.stats-list{display:grid;gap:10px}.member-entry,.member-stat{border:1px solid var(--sheet-line);border-radius:15px;background:#fff;overflow:hidden}.member-entry-head,.member-stat-head{display:flex;align-items:center;justify-content:space-between;gap:9px;padding:10px 12px;background:#fffdf4;border-bottom:1px solid #eee5c7}.member-name{font-weight:700}.member-role{color:#837b68;font-size:.68rem}.member-number{display:inline-flex;align-items:center;justify-content:center;min-width:25px;height:25px;margin-right:7px;border-radius:50%;background:#fff1a8;font-size:.65rem;font-weight:700}
+    .entry-grid{display:grid;grid-template-columns:1.05fr 1.2fr 1fr}.entry-group{padding:12px;border-right:1px solid #eee7cf}.entry-group:last-child{border-right:0}.entry-title{display:flex;align-items:center;justify-content:space-between;gap:7px;margin-bottom:9px;font-size:.76rem;font-weight:700}.entry-sub{font-size:.62rem;color:#827b6c;font-weight:400}.entry-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.entry-fields.single{grid-template-columns:1fr}.entry-field{display:grid;gap:4px;color:#777;font-size:.62rem}.entry-field.full{grid-column:1/-1}.entry-field input,.entry-field select{width:100%;min-height:39px;padding:7px 9px;border:1px solid #d9d1b7;border-radius:10px;background:#fff;color:#443f33;outline:none}.entry-field input:focus,.entry-field select:focus{border-color:#8a7a2b;box-shadow:0 0 0 3px rgba(255,230,128,.3)}.build-select[data-value=""]{background:var(--neutral)}.build-select[data-value="missed"],.competition-select[data-value="missed"]{background:var(--missed)}.build-select[data-value="achieved_under70"],.competition-select[data-value="achieved"]{background:var(--achieved)}.build-select[data-value="achieved_70plus"]{background:var(--high)}
+    .counter-control{display:grid;grid-template-columns:38px minmax(0,1fr) 38px;gap:5px}.counter-control button{min-height:39px;border:1px solid #d9d1b7;border-radius:10px;background:#fffdf4;color:#5e563d;font-weight:700;cursor:pointer}.counter-control input{text-align:center}
+    .week-summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;padding:11px}.week-summary{padding:9px;border:1px solid #e7dfc3;border-radius:11px;background:#fff}.week-summary h3{margin:0 0 7px;font-size:.72rem}.week-row{display:flex;align-items:center;justify-content:space-between;gap:7px;margin-top:5px;color:#6e6759;font-size:.65rem}.week-row strong{color:#494335}.member-stat-total{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px;padding:9px 12px;border-top:1px solid #eee5c7;background:#fffdf6;font-size:.67rem}.member-stat-total strong{color:#554b21}.member-memo{max-width:420px;color:#7b7466;overflow-wrap:anywhere}.empty-state{padding:25px;text-align:center;color:#8c8576;font-size:.76rem;border:1px dashed #d9cfaa;border-radius:13px;background:#fffdf4}
+    .save-toast{position:fixed;left:50%;bottom:18px;z-index:10030;transform:translateX(-50%);min-width:150px;padding:8px 13px;border:1px solid #d7ca8c;border-radius:999px;background:rgba(255,255,255,.96);box-shadow:0 6px 20px rgba(60,50,20,.14);color:#655b30;text-align:center;font-size:.7rem;opacity:0;pointer-events:none;transition:.2s}.save-toast.show{opacity:1}.save-toast.error{border-color:#dfa7a0;color:#9a3e38;background:#fff7f6}
+    @media(max-width:800px){
+      body{padding:15px 10px 70px}.management-head h1{font-size:1.18rem}.management-head p{font-size:.66rem}.management-panel{padding:13px;border-radius:16px}.panel-head{align-items:flex-start}.panel-note{max-width:48%;font-size:.61rem}
+      .filter-grid{grid-template-columns:1fr 1.4fr}.filter-grid button{grid-column:1/-1;width:100%}.week-toolbar{grid-template-columns:1fr}.week-buttons{gap:5px}.week-button{min-height:39px;font-size:.72rem}.date-field{width:100%}
+      .entry-grid{grid-template-columns:1fr}.entry-group{border-right:0;border-bottom:1px solid #eee7cf}.entry-group:last-child{border-bottom:0}.entry-group{padding:10px}.entry-field input,.entry-field select{min-height:42px;font-size:.72rem}
+      .week-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr));padding:9px;gap:6px}.week-summary{padding:8px}.member-stat-total{display:grid;gap:4px}.member-memo{max-width:none}
+    }
+    @media(max-width:420px){.filter-grid{grid-template-columns:1fr}.filter-grid button{grid-column:auto}.management-head p{max-width:220px}.week-row{align-items:flex-start}.entry-fields{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+  <main class="management-page">
+    <header class="management-head">
+      <div><h1>📋 길드원 관리</h1><p>길드 건설 · 길드 경쟁전 · 접속 기록을 관리합니다. · demo_v4.51</p></div>
+      <a class="auth-secondary admin-home-link" href="/index.html" title="메인페이지로 이동" aria-label="메인페이지로 이동">🏠</a>
+    </header>
+
+    <section class="management-panel">
+      <div class="panel-head"><h2>조회 설정</h2><span class="panel-note">한국 시간 기준으로 저장됩니다.</span></div>
+      <div class="filter-grid">
+        <label class="auth-field">조회 월<input id="monthPicker" type="month"></label>
+        <label class="auth-field">길드원 검색<input id="memberSearch" type="search" placeholder="닉네임 검색"></label>
+        <button class="auth-secondary" id="refreshButton" type="button">새로고침</button>
+      </div>
+    </section>
+
+    <section class="management-panel">
+      <div class="panel-head"><h2 id="statsTitle">월간 통계</h2><span class="panel-note">1~4주차 기록을 한 번에 표시합니다.</span></div>
+      <div class="stats-list" id="statsList"><div class="empty-state">통계를 불러오는 중입니다.</div></div>
+    </section>
+
+    <section class="management-panel">
+      <div class="panel-head"><h2 id="entryTitle">주간 기록 입력</h2><span class="panel-note">일일 건설은 날짜마다 새로 시작하고, 경쟁전은 주차마다 새로 시작합니다.</span></div>
+      <div class="week-toolbar">
+        <div class="week-buttons" id="weekButtons">
+          <button type="button" class="week-button active" data-week="1">1주차</button>
+          <button type="button" class="week-button" data-week="2">2주차</button>
+          <button type="button" class="week-button" data-week="3">3주차</button>
+          <button type="button" class="week-button" data-week="4">4주차</button>
+        </div>
+        <label class="auth-field date-field">일일 건설 날짜<input id="recordDate" type="date"></label>
+      </div>
+      <div class="legend" aria-label="길드 건설 상태 색상 안내">
+        <span class="tone-neutral">-</span><span class="tone-missed">미달성</span><span class="tone-achieved">달성(70점-)</span><span class="tone-high">달성(70점↑)</span>
+      </div>
+      <div class="entry-list" id="entryList"><div class="empty-state">기록을 불러오는 중입니다.</div></div>
+    </section>
+  </main>
+  <div class="save-toast" id="saveToast" role="status" aria-live="polite"></div>
+  <script src="/auth-client.js" defer></script>
+  <script>
+  (()=>{
+    const roleOrder={'길드장':1,'부길드장':2,'임원':3,'정예':4,'멤버':5};
+    const BUILD_LABELS={'':'-','missed':'미달성','achieved_under70':'달성(70점-)','achieved_70plus':'달성(70점↑)'};
+    const COMP_LABELS={missed:'미달성',achieved:'달성'};
+    const monthPicker=document.getElementById('monthPicker'),recordDate=document.getElementById('recordDate'),memberSearch=document.getElementById('memberSearch');
+    const entryList=document.getElementById('entryList'),statsList=document.getElementById('statsList'),saveToast=document.getElementById('saveToast');
+    let currentWeek=1,members=[],daily=[],weekly=[],attendance=[],lastToday='',pendingSaves=0,toastTimer=0;
+    const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
+    const number=value=>Math.max(0,Number(value)||0);
+    function kstDate(){const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const values=Object.fromEntries(parts.map(part=>[part.type,part.value]));return `${values.year}-${values.month}-${values.day}`}
+    function sortedMembers(){return [...members].sort((a,b)=>(roleOrder[a.role]||99)-(roleOrder[b.role]||99)||String(a.name||'').localeCompare(String(b.name||''),'ko-KR'))}
+    function visibleMembers(){const query=memberSearch.value.trim().toLocaleLowerCase('ko-KR');return sortedMembers().filter(member=>!query||String(member.name||'').toLocaleLowerCase('ko-KR').includes(query))}
+    function dailyRecord(memberId,date=recordDate.value){return daily.find(item=>item.memberId===memberId&&item.recordDate===date)||null}
+    function weeklyRecord(memberId,week=currentWeek){return weekly.find(item=>item.memberId===memberId&&Number(item.week)===Number(week))||null}
+    function attendanceRecord(memberId){return attendance.find(item=>item.memberId===memberId)||null}
+    function buildCounts(memberId,week){const rows=daily.filter(item=>item.memberId===memberId&&Number(item.week)===Number(week));return {achieved:rows.filter(item=>String(item.buildStatus).startsWith('achieved_')).length,missed:rows.filter(item=>item.buildStatus==='missed').length}}
+    function formatScore(value){return new Intl.NumberFormat('ko-KR').format(number(value))}
+    function toneForBuild(value){if(value==='missed')return'tone-missed';if(value==='achieved_under70')return'tone-achieved';if(value==='achieved_70plus')return'tone-high';return'tone-neutral'}
+    function showToast(message,error=false){clearTimeout(toastTimer);saveToast.textContent=message;saveToast.className=`save-toast show${error?' error':''}`;toastTimer=setTimeout(()=>{if(pendingSaves===0)saveToast.className='save-toast'},1500)}
+    async function readPayload(response){const text=await response.text();try{return text?JSON.parse(text):{}}catch(_){throw new Error('서버 응답을 확인하지 못했습니다.')}}
+    async function save(body){pendingSaves+=1;showToast('저장 중...');try{const response=await fetch('/api/guild-management',{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify(body)});const payload=await readPayload(response);if(!response.ok)throw new Error(payload.error||'저장하지 못했습니다.');showToast('저장 완료')}catch(error){showToast(error.message,true);throw error}finally{pendingSaves=Math.max(0,pendingSaves-1)}}
+    async function load(){entryList.innerHTML='<div class="empty-state">기록을 불러오는 중입니다.</div>';statsList.innerHTML='<div class="empty-state">통계를 불러오는 중입니다.</div>';try{const response=await fetch(`/api/guild-management?month=${encodeURIComponent(monthPicker.value)}`,{cache:'no-store'});const payload=await readPayload(response);if(!response.ok)throw new Error(payload.error||'길드원 관리 기록을 불러오지 못했습니다.');members=payload.members||[];daily=payload.daily||[];weekly=payload.weekly||[];attendance=payload.attendance||[];renderAll()}catch(error){const html=`<div class="empty-state">${esc(error.message)}</div>`;entryList.innerHTML=html;statsList.innerHTML=html}}
+    function buildOptions(selected){return Object.entries(BUILD_LABELS).map(([value,label])=>`<option value="${value}" ${value===selected?'selected':''}>${label}</option>`).join('')}
+    function competitionOptions(selected){return Object.entries(COMP_LABELS).map(([value,label])=>`<option value="${value}" ${value===selected?'selected':''}>${label}</option>`).join('')}
+    function renderEntries(){const list=visibleMembers();document.getElementById('entryTitle').textContent=`${monthPicker.value.replace('-','년 ')}월 ${currentWeek}주차 기록 입력`;entryList.innerHTML=list.length?list.map((member,index)=>{const build=dailyRecord(member.id)?.buildStatus||'',competition=weeklyRecord(member.id)||{competitionStatus:'missed',extraMissions:0,totalScore:0},visit=attendanceRecord(member.id)||{absentDays:0,memo:''},counts=buildCounts(member.id,currentWeek);return `<article class="member-entry" data-member-id="${esc(member.id)}"><div class="member-entry-head"><div><span class="member-number">${index+1}</span><span class="member-name">${esc(member.name)}</span></div><span class="member-role">${esc(member.role||'멤버')}</span></div><div class="entry-grid"><div class="entry-group"><div class="entry-title"><span>🏗️ 길드 건설</span><span class="entry-sub build-count">달성 ${counts.achieved}일 · 미달성 ${counts.missed}일</span></div><div class="entry-fields single"><label class="entry-field">${esc(recordDate.value)} 상태<select class="build-select" data-value="${esc(build)}">${buildOptions(build)}</select></label></div></div><div class="entry-group"><div class="entry-title"><span>⚔️ 길드 경쟁전</span><span class="entry-sub">${currentWeek}주차</span></div><div class="entry-fields"><label class="entry-field full">기본 임무<select class="competition-select" data-value="${esc(competition.competitionStatus||'missed')}">${competitionOptions(competition.competitionStatus||'missed')}</select></label><label class="entry-field">추가 임무<input class="extra-input" type="number" inputmode="numeric" min="0" max="999" value="${number(competition.extraMissions)}"></label><label class="entry-field">총 점수<input class="score-input" type="number" inputmode="numeric" min="0" max="9999999" value="${number(competition.totalScore)}"></label></div></div><div class="entry-group"><div class="entry-title"><span>📅 접속 관리</span><span class="entry-sub">월간</span></div><div class="entry-fields"><label class="entry-field full">미접속 일수<div class="counter-control"><button type="button" data-absent-step="-1" aria-label="미접속 일수 감소">−</button><input class="absent-input" type="number" inputmode="numeric" min="0" max="366" value="${number(visit.absentDays)}"><button type="button" data-absent-step="1" aria-label="미접속 일수 증가">＋</button></div></label><label class="entry-field full">메모<input class="memo-input" maxlength="500" value="${esc(visit.memo||'')}" placeholder="관리 메모 입력"></label></div></div></div></article>`}).join(''):'<div class="empty-state">검색 결과에 해당하는 길드원이 없습니다.</div>'}
+    function weekSummary(member,week){const counts=buildCounts(member.id,week),competition=weeklyRecord(member.id,week)||{competitionStatus:'missed',extraMissions:0,totalScore:0},achieved=competition.competitionStatus==='achieved';return `<div class="week-summary"><h3>${week}주차</h3><div class="week-row"><span>건설</span><strong>달성 ${counts.achieved} · 미달성 ${counts.missed}</strong></div><div class="week-row"><span>기본 임무</span><span class="status-pill ${achieved?'tone-achieved':'tone-missed'}">${achieved?'달성':'미달성'}</span></div><div class="week-row"><span>추가/점수</span><strong>${number(competition.extraMissions)}회 · ${formatScore(competition.totalScore)}점</strong></div></div>`}
+    function renderStats(){const list=visibleMembers();document.getElementById('statsTitle').textContent=`${monthPicker.value.replace('-','년 ')}월 통계`;statsList.innerHTML=list.length?list.map(member=>{const allCounts=[1,2,3,4].map(week=>buildCounts(member.id,week)),allCompetition=[1,2,3,4].map(week=>weeklyRecord(member.id,week)||{}),visit=attendanceRecord(member.id)||{absentDays:0,memo:''};const achieved=allCounts.reduce((sum,item)=>sum+item.achieved,0),missed=allCounts.reduce((sum,item)=>sum+item.missed,0),extra=allCompetition.reduce((sum,item)=>sum+number(item.extraMissions),0),score=allCompetition.reduce((sum,item)=>sum+number(item.totalScore),0);return `<article class="member-stat"><div class="member-stat-head"><span class="member-name">${esc(member.name)}</span><span class="member-role">${esc(member.role||'멤버')}</span></div><div class="week-summary-grid">${[1,2,3,4].map(week=>weekSummary(member,week)).join('')}</div><div class="member-stat-total"><strong>월간 합계 · 건설 달성 ${achieved}일 / 미달성 ${missed}일 · 추가 ${extra}회 · 총 ${formatScore(score)}점</strong><span>미접속 ${number(visit.absentDays)}일</span><span class="member-memo">${visit.memo?`메모 · ${esc(visit.memo)}`:'메모 없음'}</span></div></article>`}).join(''):'<div class="empty-state">검색 결과에 해당하는 길드원이 없습니다.</div>'}
+    function renderAll(){renderStats();renderEntries()}
+    function updateSelectTone(select){select.dataset.value=select.value}
+    async function saveDaily(card,select){const memberId=card.dataset.memberId,buildStatus=select.value;updateSelectTone(select);const existing=dailyRecord(memberId);if(existing)existing.buildStatus=buildStatus;else if(buildStatus)daily.push({memberId,recordDate:recordDate.value,week:currentWeek,buildStatus});if(!buildStatus&&existing)daily=daily.filter(item=>item!==existing);renderStats();const counts=buildCounts(memberId,currentWeek);card.querySelector('.build-count').textContent=`달성 ${counts.achieved}일 · 미달성 ${counts.missed}일`;await save({scope:'daily',month:monthPicker.value,week:currentWeek,date:recordDate.value,memberId,buildStatus})}
+    async function saveWeekly(card){const memberId=card.dataset.memberId,competitionStatus=card.querySelector('.competition-select').value,extraMissions=number(card.querySelector('.extra-input').value),totalScore=number(card.querySelector('.score-input').value);updateSelectTone(card.querySelector('.competition-select'));let row=weeklyRecord(memberId);if(!row){row={memberId,week:currentWeek};weekly.push(row)}Object.assign(row,{competitionStatus,extraMissions,totalScore});renderStats();await save({scope:'weekly',month:monthPicker.value,week:currentWeek,memberId,competitionStatus,extraMissions,totalScore})}
+    async function saveAttendance(card){const memberId=card.dataset.memberId,absentDays=number(card.querySelector('.absent-input').value),memo=card.querySelector('.memo-input').value.trim();let row=attendanceRecord(memberId);if(!row){row={memberId};attendance.push(row)}Object.assign(row,{absentDays,memo});renderStats();await save({scope:'attendance',month:monthPicker.value,memberId,absentDays,memo})}
+    entryList.addEventListener('change',event=>{const card=event.target.closest('.member-entry');if(!card)return;if(event.target.matches('.build-select'))saveDaily(card,event.target).catch(()=>load());else if(event.target.matches('.competition-select,.extra-input,.score-input'))saveWeekly(card).catch(()=>load());else if(event.target.matches('.absent-input,.memo-input'))saveAttendance(card).catch(()=>load())});
+    entryList.addEventListener('click',event=>{const button=event.target.closest('[data-absent-step]');if(!button)return;const card=button.closest('.member-entry'),input=card.querySelector('.absent-input');input.value=Math.max(0,Math.min(366,number(input.value)+Number(button.dataset.absentStep)));saveAttendance(card).catch(()=>load())});
+    document.getElementById('weekButtons').addEventListener('click',event=>{const button=event.target.closest('[data-week]');if(!button)return;currentWeek=Number(button.dataset.week);document.querySelectorAll('.week-button').forEach(item=>item.classList.toggle('active',item===button));renderEntries()});
+    memberSearch.addEventListener('input',renderAll);
+    monthPicker.addEventListener('change',()=>{const today=kstDate();recordDate.value=today.startsWith(`${monthPicker.value}-`)?today:`${monthPicker.value}-01`;load()});
+    recordDate.addEventListener('change',()=>{const selectedMonth=recordDate.value.slice(0,7);if(selectedMonth&&selectedMonth!==monthPicker.value){monthPicker.value=selectedMonth;load()}else renderEntries()});
+    document.getElementById('refreshButton').addEventListener('click',load);
+    lastToday=kstDate();monthPicker.value=lastToday.slice(0,7);recordDate.value=lastToday;load();
+    setInterval(()=>{const today=kstDate();if(today===lastToday)return;const followedToday=recordDate.value===lastToday;lastToday=today;if(followedToday){recordDate.value=today;if(monthPicker.value!==today.slice(0,7)){monthPicker.value=today.slice(0,7);load()}else renderEntries()}},60000);
+  })();
+  </script>
+</body>
+</html>
