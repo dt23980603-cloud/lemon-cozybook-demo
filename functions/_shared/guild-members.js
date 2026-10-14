@@ -13,6 +13,11 @@ export function normalizeGuildRole(value) {
   return GUILD_ROLES.has(role) ? role : '멤버';
 }
 
+export function normalizeJoinedAt(value) {
+  const date = String(value || '').trim();
+  return /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : '';
+}
+
 export function hasDuplicateMemberName(members, name, exceptId = '') {
   const normalized = normalizeMemberName(name).toLocaleLowerCase('ko-KR');
   return members.some(member => String(member?.id || '') !== exceptId &&
@@ -73,6 +78,7 @@ export function publicMember(member) {
   return {
     id: String(member?.id || ''),
     name: normalizeMemberName(member?.name),
-    role: normalizeGuildRole(member?.role)
+    role: normalizeGuildRole(member?.role),
+    joinedAt: normalizeJoinedAt(member?.joinedAt)
   };
 }

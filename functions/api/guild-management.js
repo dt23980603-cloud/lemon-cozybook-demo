@@ -6,7 +6,7 @@ import {
 } from '../_shared/auth.js';
 
 const BUILD_STATUSES = new Set(['', 'missed', 'achieved_under70', 'achieved_70plus']);
-const COMPETITION_STATUSES = new Set(['missed', 'achieved']);
+const COMPETITION_STATUSES = new Set(['missed', 'achieved', 'missed_officer']);
 let tablePromise = null;
 
 async function createTables(db) {
@@ -18,6 +18,7 @@ async function createTables(db) {
       record_date TEXT NOT NULL,
       member_id TEXT NOT NULL,
       build_status TEXT NOT NULL DEFAULT '',
+      absent INTEGER NOT NULL DEFAULT 0,
       updated_at INTEGER NOT NULL,
       updated_by TEXT NOT NULL DEFAULT '',
       PRIMARY KEY (state_id, record_date, member_id)
@@ -32,11 +33,20 @@ async function createTables(db) {
       competition_status TEXT NOT NULL DEFAULT 'missed',
       extra_missions INTEGER NOT NULL DEFAULT 0,
       total_score INTEGER NOT NULL DEFAULT 0,
+      memo TEXT NOT NULL DEFAULT '',
       updated_at INTEGER NOT NULL,
       updated_by TEXT NOT NULL DEFAULT '',
       PRIMARY KEY (state_id, month_key, week_no, member_id)
     )
   `).run();
+  const dailyColumns = new Set(((await db.prepare('PRAGMA table_info(guild_management_daily)').all())?.results || []).map(row => String(row.name || '')));
+  if (!dailyColumns.has('absent')) {
+    await db.prepare('ALTER TABLE guild_management_daily ADD COLUMN absent INTEGER NOT NULL DEFAULT 0').run();
+  }
+  const weeklyColumns = new Set(((await db.prepare('PRAGMA table_info(guild_management_weekly)').all())?.results || []).map(row => String(row.name || '')));
+  if (!weeklyColumns.has('memo')) {
+    await db.prepare("ALTER TABLE guild_management_weekly ADD COLUMN memo TEXT NOT NULL DEFAULT ''").run();
+  }
   await db.prepare(`
     CREATE TABLE IF NOT EXISTS guild_management_attendance (
       state_id TEXT NOT NULL DEFAULT 'main',
@@ -106,14 +116,14 @@ export async function onRequestGet(context) {
     readGuildMembers(context.env.DB),
     context.env.DB.prepare(`
       SELECT record_date AS recordDate, week_no AS week, member_id AS memberId,
-             build_status AS buildStatus, updated_at AS updatedAt
+             build_status AS buildStatus, absent, updated_at AS updatedAt
       FROM guild_management_daily
       WHERE state_id = ?1 AND month_key = ?2
       ORDER BY record_date ASC, member_id ASC
     `).bind(stateId, month).all(),
     context.env.DB.prepare(`
       SELECT week_no AS week, member_id AS memberId, competition_status AS competitionStatus,
-             extra_missions AS extraMissions, total_score AS totalScore, updated_at AS updatedAt
+             extra_missions AS extraMissions, total_score AS totalScore, memo, updated_at AS updatedAt
       FROM guild_management_weekly
       WHERE state_id = ?1 AND month_key = ?2
       ORDER BY week_no ASC, member_id ASC
@@ -156,27 +166,29 @@ export async function onRequestPatch(context) {
   if (scope === 'daily') {
     const date = String(body?.date || '');
     const status = String(body?.buildStatus || '');
+    const absent = body?.absent === true ? 1 : 0;
     if (!week || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !date.startsWith(`${month}-`) || !BUILD_STATUSES.has(status)) {
       return json({ error: '일일 건설 기록을 확인해주세요.' }, 400);
     }
-    if (!status) {
+    if (!status && absent === 0) {
       await context.env.DB.prepare(`
         DELETE FROM guild_management_daily WHERE state_id = ?1 AND record_date = ?2 AND member_id = ?3
       `).bind(stateId, date, memberId).run();
     } else {
       await context.env.DB.prepare(`
         INSERT INTO guild_management_daily
-          (state_id, month_key, week_no, record_date, member_id, build_status, updated_at, updated_by)
-        VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
+          (state_id, month_key, week_no, record_date, member_id, build_status, absent, updated_at, updated_by)
+        VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)
         ON CONFLICT(state_id, record_date, member_id) DO UPDATE SET
           month_key = excluded.month_key,
           week_no = excluded.week_no,
           build_status = excluded.build_status,
+          absent = excluded.absent,
           updated_at = excluded.updated_at,
           updated_by = excluded.updated_by
-      `).bind(stateId, month, week, date, memberId, status, now, updatedBy).run();
+      `).bind(stateId, month, week, date, memberId, status, absent, now, updatedBy).run();
     }
-    return json({ ok: true, scope, month, week, date, memberId, buildStatus: status, updatedAt: now });
+    return json({ ok: true, scope, month, week, date, memberId, buildStatus: status, absent: absent === 1, updatedAt: now });
   }
 
   if (scope === 'weekly') {
@@ -186,18 +198,20 @@ export async function onRequestPatch(context) {
     }
     const extraMissions = boundedInteger(body?.extraMissions, 999);
     const totalScore = boundedInteger(body?.totalScore, 9999999);
+    const memo = cleanText(body?.memo, 500);
     await context.env.DB.prepare(`
       INSERT INTO guild_management_weekly
-        (state_id, month_key, week_no, member_id, competition_status, extra_missions, total_score, updated_at, updated_by)
-      VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)
+        (state_id, month_key, week_no, member_id, competition_status, extra_missions, total_score, memo, updated_at, updated_by)
+      VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)
       ON CONFLICT(state_id, month_key, week_no, member_id) DO UPDATE SET
         competition_status = excluded.competition_status,
         extra_missions = excluded.extra_missions,
         total_score = excluded.total_score,
+        memo = excluded.memo,
         updated_at = excluded.updated_at,
         updated_by = excluded.updated_by
-    `).bind(stateId, month, week, memberId, competitionStatus, extraMissions, totalScore, now, updatedBy).run();
-    return json({ ok: true, scope, month, week, memberId, competitionStatus, extraMissions, totalScore, updatedAt: now });
+    `).bind(stateId, month, week, memberId, competitionStatus, extraMissions, totalScore, memo, now, updatedBy).run();
+    return json({ ok: true, scope, month, week, memberId, competitionStatus, extraMissions, totalScore, memo, updatedAt: now });
   }
 
   if (scope === 'attendance') {

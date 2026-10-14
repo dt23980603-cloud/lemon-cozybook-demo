@@ -3,6 +3,7 @@ import {
   guildStateUpsert,
   hasDuplicateMemberName,
   normalizeGuildRole,
+  normalizeJoinedAt,
   normalizeMemberName,
   publicMember,
   readGuildState,
@@ -16,6 +17,7 @@ export async function onRequestPatch(context) {
   try { body = await context.request.json(); } catch (_) { return json({ error: '길드원 정보를 확인해주세요.' }, 400); }
   const memberName = normalizeMemberName(body?.memberName);
   const memberRole = normalizeGuildRole(body?.memberRole);
+  const memberJoinedAt = normalizeJoinedAt(body?.memberJoinedAt);
   if (!memberName) return json({ error: '길드원 닉네임을 입력해주세요.' }, 400);
 
   const state = await readGuildState(context.env.DB);
@@ -23,7 +25,7 @@ export async function onRequestPatch(context) {
   const existing = members.find(member => member.id === memberId);
   if (!existing) return json({ error: '길드원을 찾을 수 없습니다.' }, 404);
   if (hasDuplicateMemberName(members, memberName, memberId)) return json({ error: '이미 사용 중인 길드원 닉네임입니다.' }, 409);
-  const updatedMember = { ...existing, name: memberName, role: memberRole };
+  const updatedMember = { ...existing, name: memberName, role: memberRole, joinedAt: memberJoinedAt };
   const nextState = {
     ...state,
     members: members.map(member => member.id === memberId ? updatedMember : member)

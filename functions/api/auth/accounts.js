@@ -12,6 +12,7 @@ import {
   guildStateUpsert,
   hasDuplicateMemberName,
   normalizeGuildRole,
+  normalizeJoinedAt,
   normalizeMemberName,
   publicMember,
   readGuildState
@@ -56,6 +57,7 @@ export async function onRequestPost(context) {
   const members = Array.isArray(state.members) ? state.members.map(publicMember).filter(member => member.id) : [];
   const createNewMember = body?.createNewMember === true;
   const requestedRole = normalizeGuildRole(body?.memberRole);
+  const requestedJoinedAt = normalizeJoinedAt(body?.memberJoinedAt);
   let member;
   let nextMembers = members;
 
@@ -63,13 +65,13 @@ export async function onRequestPost(context) {
     const memberName = normalizeMemberName(body?.memberName);
     if (!memberName) return json({ error: '새 길드원의 닉네임을 입력해주세요.' }, 400);
     if (hasDuplicateMemberName(members, memberName)) return json({ error: '이미 사용 중인 길드원 닉네임입니다.' }, 409);
-    member = { id: `m_${crypto.randomUUID()}`, name: memberName, role: requestedRole };
+    member = { id: `m_${crypto.randomUUID()}`, name: memberName, role: requestedRole, joinedAt: requestedJoinedAt };
     nextMembers = [...members, member];
   } else {
     const memberId = String(body?.memberId || '');
     const found = members.find(item => item.id === memberId);
     if (!found) return json({ error: '계정을 발급할 기존 길드원을 선택해주세요.' }, 400);
-    member = { ...found, role: requestedRole };
+    member = { ...found, role: requestedRole, joinedAt: requestedJoinedAt || found.joinedAt || '' };
     nextMembers = members.map(item => item.id === memberId ? member : item);
   }
 
