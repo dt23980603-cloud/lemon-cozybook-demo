@@ -71,7 +71,7 @@ export async function onRequestDelete(context) {
     );
   }
   await context.env.DB.batch(statements);
-  for (const table of ['guild_management_daily', 'guild_management_weekly', 'guild_management_attendance']) {
+  for (const table of ['guild_management_daily', 'guild_management_weekly', 'guild_management_week_ranges', 'guild_management_attendance']) {
     try {
       await context.env.DB.prepare(`DELETE FROM ${table} WHERE member_id = ?1`).bind(memberId).run();
     } catch (_) {

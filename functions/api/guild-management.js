@@ -7,7 +7,43 @@ import {
 
 const BUILD_STATUSES = new Set(['', 'missed', 'achieved_under70', 'achieved_70plus']);
 const COMPETITION_STATUSES = new Set(['missed', 'achieved', 'missed_officer']);
+const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 let tablePromise = null;
+
+function parseDate(value) {
+  if (!DATE_PATTERN.test(String(value || ''))) return null;
+  const [year, month, day] = String(value).split('-').map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function isoDate(date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function addDays(value, days) {
+  const date = typeof value === 'string' ? parseDate(value) : new Date(value.getTime());
+  if (!date) return '';
+  date.setUTCDate(date.getUTCDate() + days);
+  return isoDate(date);
+}
+
+function mondayForDate(value) {
+  const date = parseDate(value);
+  if (!date) return '';
+  const offset = (date.getUTCDay() + 6) % 7;
+  date.setUTCDate(date.getUTCDate() - offset);
+  return isoDate(date);
+}
+
+function monthRange(month) {
+  const first = `${month}-01`;
+  const [year, monthNumber] = month.split('-').map(Number);
+  const last = isoDate(new Date(Date.UTC(year, monthNumber, 0)));
+  const start = mondayForDate(first);
+  const lastWeekStart = mondayForDate(last);
+  return { start, last, lastWeekStart, end: addDays(lastWeekStart, 6) };
+}
 
 async function createTables(db) {
   await db.prepare(`
@@ -48,6 +84,32 @@ async function createTables(db) {
     await db.prepare("ALTER TABLE guild_management_weekly ADD COLUMN memo TEXT NOT NULL DEFAULT ''").run();
   }
   await db.prepare(`
+    CREATE TABLE IF NOT EXISTS guild_management_week_ranges (
+      state_id TEXT NOT NULL DEFAULT 'main',
+      week_start TEXT NOT NULL,
+      member_id TEXT NOT NULL,
+      competition_status TEXT NOT NULL DEFAULT 'missed',
+      extra_missions INTEGER NOT NULL DEFAULT 0,
+      total_score INTEGER NOT NULL DEFAULT 0,
+      memo TEXT NOT NULL DEFAULT '',
+      updated_at INTEGER NOT NULL,
+      updated_by TEXT NOT NULL DEFAULT '',
+      PRIMARY KEY (state_id, week_start, member_id)
+    )
+  `).run();
+  await db.prepare(`
+    INSERT OR IGNORE INTO guild_management_week_ranges
+      (state_id, week_start, member_id, competition_status, extra_missions, total_score, memo, updated_at, updated_by)
+    SELECT state_id,
+      date(
+        month_key || '-01',
+        '-' || ((CAST(strftime('%w', month_key || '-01') AS INTEGER) + 6) % 7) || ' days',
+        '+' || ((week_no - 1) * 7) || ' days'
+      ),
+      member_id, competition_status, extra_missions, total_score, memo, updated_at, updated_by
+    FROM guild_management_weekly
+  `).run();
+  await db.prepare(`
     CREATE TABLE IF NOT EXISTS guild_management_attendance (
       state_id TEXT NOT NULL DEFAULT 'main',
       month_key TEXT NOT NULL,
@@ -59,8 +121,8 @@ async function createTables(db) {
       PRIMARY KEY (state_id, month_key, member_id)
     )
   `).run();
-  await db.prepare('CREATE INDEX IF NOT EXISTS idx_gm_daily_month ON guild_management_daily(state_id, month_key, week_no)').run();
-  await db.prepare('CREATE INDEX IF NOT EXISTS idx_gm_weekly_month ON guild_management_weekly(state_id, month_key, week_no)').run();
+  await db.prepare('CREATE INDEX IF NOT EXISTS idx_gm_daily_date ON guild_management_daily(state_id, record_date)').run();
+  await db.prepare('CREATE INDEX IF NOT EXISTS idx_gm_week_range ON guild_management_week_ranges(state_id, week_start)').run();
 }
 
 async function ensureTables(db) {
@@ -76,11 +138,6 @@ async function ensureTables(db) {
 function monthKey(value) {
   const month = String(value || '');
   return /^\d{4}-(?:0[1-9]|1[0-2])$/.test(month) ? month : '';
-}
-
-function weekNumber(value) {
-  const week = Number(value);
-  return Number.isInteger(week) && week >= 1 && week <= 4 ? week : 0;
 }
 
 function boundedInteger(value, max) {
@@ -112,22 +169,23 @@ export async function onRequestGet(context) {
   if (!month) return json({ error: '조회할 월을 확인해주세요.' }, 400);
   await ensureTables(context.env.DB);
   const stateId = stateIdFrom(context.request);
+  const range = monthRange(month);
   const [members, daily, weekly, attendance] = await Promise.all([
     readGuildMembers(context.env.DB),
     context.env.DB.prepare(`
-      SELECT record_date AS recordDate, week_no AS week, member_id AS memberId,
+      SELECT record_date AS recordDate, member_id AS memberId,
              build_status AS buildStatus, absent, updated_at AS updatedAt
       FROM guild_management_daily
-      WHERE state_id = ?1 AND month_key = ?2
+      WHERE state_id = ?1 AND record_date BETWEEN ?2 AND ?3
       ORDER BY record_date ASC, member_id ASC
-    `).bind(stateId, month).all(),
+    `).bind(stateId, range.start, range.end).all(),
     context.env.DB.prepare(`
-      SELECT week_no AS week, member_id AS memberId, competition_status AS competitionStatus,
+      SELECT week_start AS weekStart, member_id AS memberId, competition_status AS competitionStatus,
              extra_missions AS extraMissions, total_score AS totalScore, memo, updated_at AS updatedAt
-      FROM guild_management_weekly
-      WHERE state_id = ?1 AND month_key = ?2
-      ORDER BY week_no ASC, member_id ASC
-    `).bind(stateId, month).all(),
+      FROM guild_management_week_ranges
+      WHERE state_id = ?1 AND week_start BETWEEN ?2 AND ?3
+      ORDER BY week_start ASC, member_id ASC
+    `).bind(stateId, range.start, range.lastWeekStart).all(),
     context.env.DB.prepare(`
       SELECT member_id AS memberId, absent_days AS absentDays, memo, updated_at AS updatedAt
       FROM guild_management_attendance
@@ -138,6 +196,8 @@ export async function onRequestGet(context) {
   return json({
     ok: true,
     month,
+    rangeStart: range.start,
+    rangeEnd: range.end,
     members,
     daily: daily.results || [],
     weekly: weekly.results || [],
@@ -152,7 +212,6 @@ export async function onRequestPatch(context) {
   let body;
   try { body = await context.request.json(); } catch (_) { return json({ error: '저장할 내용을 확인해주세요.' }, 400); }
   const month = monthKey(body?.month);
-  const week = weekNumber(body?.week);
   const memberId = cleanText(body?.memberId, 200);
   if (!month || !memberId) return json({ error: '월과 길드원 정보를 확인해주세요.' }, 400);
   const members = await validMember(context.env.DB, memberId);
@@ -167,9 +226,12 @@ export async function onRequestPatch(context) {
     const date = String(body?.date || '');
     const status = String(body?.buildStatus || '');
     const absent = body?.absent === true ? 1 : 0;
-    if (!week || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !date.startsWith(`${month}-`) || !BUILD_STATUSES.has(status)) {
+    if (!parseDate(date) || date.slice(0, 7) !== month || !BUILD_STATUSES.has(status)) {
       return json({ error: '일일 건설 기록을 확인해주세요.' }, 400);
     }
+    const range = monthRange(month);
+    const weekStart = mondayForDate(date);
+    const week = Math.floor((parseDate(weekStart).getTime() - parseDate(range.start).getTime()) / 604800000) + 1;
     if (!status && absent === 0) {
       await context.env.DB.prepare(`
         DELETE FROM guild_management_daily WHERE state_id = ?1 AND record_date = ?2 AND member_id = ?3
@@ -188,30 +250,32 @@ export async function onRequestPatch(context) {
           updated_by = excluded.updated_by
       `).bind(stateId, month, week, date, memberId, status, absent, now, updatedBy).run();
     }
-    return json({ ok: true, scope, month, week, date, memberId, buildStatus: status, absent: absent === 1, updatedAt: now });
+    return json({ ok: true, scope, month, weekStart, date, memberId, buildStatus: status, absent: absent === 1, updatedAt: now });
   }
 
   if (scope === 'weekly') {
+    const weekStart = String(body?.weekStart || '');
     const competitionStatus = String(body?.competitionStatus || 'missed');
-    if (!week || !COMPETITION_STATUSES.has(competitionStatus)) {
+    const range = monthRange(month);
+    if (!parseDate(weekStart) || mondayForDate(weekStart) !== weekStart || weekStart < range.start || weekStart > range.lastWeekStart || !COMPETITION_STATUSES.has(competitionStatus)) {
       return json({ error: '길드 경쟁전 기록을 확인해주세요.' }, 400);
     }
     const extraMissions = boundedInteger(body?.extraMissions, 999);
     const totalScore = boundedInteger(body?.totalScore, 9999999);
     const memo = cleanText(body?.memo, 500);
     await context.env.DB.prepare(`
-      INSERT INTO guild_management_weekly
-        (state_id, month_key, week_no, member_id, competition_status, extra_missions, total_score, memo, updated_at, updated_by)
-      VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)
-      ON CONFLICT(state_id, month_key, week_no, member_id) DO UPDATE SET
+      INSERT INTO guild_management_week_ranges
+        (state_id, week_start, member_id, competition_status, extra_missions, total_score, memo, updated_at, updated_by)
+      VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)
+      ON CONFLICT(state_id, week_start, member_id) DO UPDATE SET
         competition_status = excluded.competition_status,
         extra_missions = excluded.extra_missions,
         total_score = excluded.total_score,
         memo = excluded.memo,
         updated_at = excluded.updated_at,
         updated_by = excluded.updated_by
-    `).bind(stateId, month, week, memberId, competitionStatus, extraMissions, totalScore, memo, now, updatedBy).run();
-    return json({ ok: true, scope, month, week, memberId, competitionStatus, extraMissions, totalScore, memo, updatedAt: now });
+    `).bind(stateId, weekStart, memberId, competitionStatus, extraMissions, totalScore, memo, now, updatedBy).run();
+    return json({ ok: true, scope, month, weekStart, memberId, competitionStatus, extraMissions, totalScore, memo, updatedAt: now });
   }
 
   if (scope === 'attendance') {
