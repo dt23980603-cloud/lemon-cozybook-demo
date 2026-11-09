@@ -45,6 +45,10 @@ h1{margin:0;font-size:1.45rem}.subtitle{margin:3px 0 0;color:#827a67;font-size:.
 .featured-toggle{grid-column:1/-1;display:flex!important;flex-direction:row!important;align-items:center;gap:10px!important;padding:12px 13px;border:1px solid #e1d49e;border-radius:12px;background:#fffaf0;cursor:pointer}
 .featured-toggle input{width:20px!important;height:20px!important;min-height:0!important;flex:0 0 20px;margin:0;accent-color:#b39227;box-shadow:none!important}
 .featured-toggle-copy{display:flex;flex-direction:column;gap:2px}.featured-toggle-title{font-size:.8rem;font-weight:700;color:#514b3a}.featured-toggle-help{font-size:.67rem;font-weight:400;color:#8b8370;line-height:1.4}
+.featured-manage-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}.featured-manage-head .card-title{margin:0}.featured-manage-count{margin-left:auto;padding:5px 9px;border:1px solid #e1d49e;border-radius:999px;background:#fffaf0;color:#74632d;font-size:.7rem;font-weight:700;white-space:nowrap}
+.featured-manage-actions{display:flex;justify-content:flex-end;gap:7px;margin-bottom:10px}.featured-manage-actions button{min-height:38px;padding:7px 11px;border:1px solid #cfc7a8;border-radius:10px;background:#fff;color:#514b3a;font-size:.72rem;font-weight:700;cursor:pointer}.featured-manage-actions .remove{border-color:#d9a4a4;background:#fff3f3;color:var(--danger)}.featured-manage-actions button:disabled{opacity:.5;cursor:not-allowed}
+.featured-manage-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-height:320px;overflow-y:auto;padding-right:2px}
+.featured-manage-item{display:grid;grid-template-columns:45px minmax(0,1fr) 20px;align-items:center;gap:9px;padding:8px 10px;border:1px solid #e8e1c5;border-radius:12px;background:#fff;cursor:pointer}.featured-manage-item.is-selected{border-color:#c9b548;background:#fffaf0}.featured-manage-item input{width:19px;height:19px;margin:0;accent-color:#b39227}.featured-manage-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.74rem;font-weight:700}.featured-manage-empty{grid-column:1/-1;padding:23px;text-align:center;color:#888;border:1px dashed #d6c989;border-radius:12px;background:#fffdf4;font-size:.75rem}
 .actions{display:flex;justify-content:flex-end;margin-top:12px}
 .submit{min-width:120px;min-height:45px;padding:9px 14px;border:1px solid #6f6227;border-radius:12px;background:var(--lemon);color:#3f381b;font-weight:700;cursor:pointer}.submit:hover{background:#ffdf5a}.submit:disabled{opacity:.55;cursor:wait}
 .status{min-height:22px;margin:11px 0 0;text-align:center;color:#777;font-size:.75rem;line-height:1.5}.status.ok{color:#39723b}.status.error{color:#a54242}
@@ -64,6 +68,7 @@ h1{margin:0;font-size:1.45rem}.subtitle{margin:3px 0 0;color:#827a67;font-size:.
   .nav-tabs{gap:5px;padding:6px;border-radius:16px}.nav-tab{min-height:40px;padding:6px 3px;font-size:.72rem;border-radius:10px}
   .card{padding:14px}.form-grid{grid-template-columns:1fr}.form-grid label.span-2,.form-grid .field.span-2{grid-column:auto}
   .managed-select-row{gap:4px}.option-add-btn,.option-delete-btn{min-width:54px;padding:7px 6px;font-size:.66rem}
+  .featured-manage-list{grid-template-columns:1fr;max-height:280px}.featured-manage-actions{display:grid;grid-template-columns:1fr 1fr}.featured-manage-actions button{min-width:0;padding-inline:6px;font-size:.66rem}.featured-manage-head{align-items:flex-start}.featured-manage-count{font-size:.64rem}
   .finder{grid-template-columns:105px minmax(0,1fr)}.finder button{grid-column:1/-1}
   .flower-row{grid-template-columns:46px minmax(0,1fr) auto;padding:8px}.flower-name{font-size:.7rem}.row-btn{font-size:.64rem;padding:5px 7px}
   .selected-card{grid-template-columns:82px minmax(0,1fr)}.selected-card img{width:82px;height:82px}
@@ -107,6 +112,20 @@ h1{margin:0;font-size:1.45rem}.subtitle{margin:3px 0 0;color:#827a67;font-size:.
   </section>
 
   <section id="panel-edit" class="panel">
+    <div class="card">
+      <div class="featured-manage-head">
+        <h2 class="card-title">🌷 신규 추가 꽃 표시 관리</h2>
+        <span id="featuredManageCount" class="featured-manage-count">표시 0개 · 선택 0개</span>
+      </div>
+      <p class="guide">현재 전체 꽃 도감의 ‘신규 추가 꽃’ 영역에 표시 중인 꽃입니다. 원하는 꽃만 선택하여 표시를 해제할 수 있습니다.</p>
+      <div class="featured-manage-actions">
+        <button id="toggleAllFeaturedFlowers" type="button">전체 선택</button>
+        <button id="removeSelectedFeaturedFlowers" class="remove" type="button" disabled>선택한 꽃 표시 해제</button>
+      </div>
+      <div id="featuredManageList" class="featured-manage-list"></div>
+      <div id="featuredManageStatus" class="status" aria-live="polite"></div>
+    </div>
+
     <div class="card">
       <h2 class="card-title">✏️ 수정할 꽃 선택</h2>
       <div class="finder">
@@ -174,12 +193,13 @@ h1{margin:0;font-size:1.45rem}.subtitle{margin:3px 0 0;color:#827a67;font-size:.
     <div class="dialog-actions"><button id="cancelOptionDelete" type="button">취소</button><button id="confirmOptionDelete" class="delete-option" type="submit">삭제</button></div>
   </form>
 </dialog>
-<div id="site-version">demo_v4.55</div>
+<div id="site-version">demo_v4.56</div>
 
 <script src="flower-data-all.js"></script>
 <script>
 const FLOWERS_API='/api/flowers';
 const FLOWER_OPTIONS_API='/api/flower-options';
+const UPDATES_API='/api/updates';
 const BASE_SEED_VERSION = 'demo_v4.1_base_356';
 const masterFlowers=window.FLOWER_MASTER_DATA||[];
 let flowers=[];
@@ -187,6 +207,7 @@ let ready=false;
 let fieldOptions={category:[],acquire:[],guildScore:[]};
 let pendingOption={type:'',target:'',label:''};
 let pendingDeleteOption={type:'',label:''};
+let selectedFeaturedKeys=new Set();
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 const byName=(a,b)=>String(a.listName||a.name||'').localeCompare(String(b.listName||b.name||''),'ko-KR');
@@ -206,8 +227,10 @@ async function refresh(){
   if(!r.ok)throw new Error(`GET ${r.status}`);
   const p=await r.json();
   flowers=Array.isArray(p.flowers)?p.flowers:[];
+  const activeFeaturedKeys=new Set(flowers.filter(f=>f.featuredNew).map(f=>String(f.key)));
+  selectedFeaturedKeys=new Set([...selectedFeaturedKeys].filter(key=>activeFeaturedKeys.has(key)));
   ready=true;
-  renderEditList();renderDeleteList();
+  renderEditList();renderDeleteList();renderFeaturedManageList();
 }
 function optionSort(type,values){
   const unique=[...new Set((values||[]).map(v=>String(v).trim()).filter(Boolean))];
@@ -286,6 +309,52 @@ function renderEditList(){
   box.innerHTML=list.length?list.map(f=>rowHtml(f,'edit','✏️ 수정')).join(''):'<div class="empty">조건에 맞는 꽃이 없습니다.</div>';
   box.querySelectorAll('[data-key]').forEach(b=>b.onclick=()=>selectEditFlower(b.dataset.key));
 }
+function renderFeaturedManageList(){
+  const list=flowers.filter(f=>f.featuredNew).sort((a,b)=>(['N','R','SR','SSR','UR'].indexOf(a.grade)-['N','R','SR','SSR','UR'].indexOf(b.grade))||byName(a,b));
+  const box=document.getElementById('featuredManageList');
+  const count=document.getElementById('featuredManageCount');
+  const toggleAll=document.getElementById('toggleAllFeaturedFlowers');
+  const removeButton=document.getElementById('removeSelectedFeaturedFlowers');
+  count.textContent=`표시 ${list.length}개 · 선택 ${selectedFeaturedKeys.size}개`;
+  toggleAll.textContent=list.length>0&&selectedFeaturedKeys.size===list.length?'전체 선택 해제':'전체 선택';
+  toggleAll.disabled=!list.length;
+  removeButton.disabled=!selectedFeaturedKeys.size;
+  if(!list.length){
+    box.innerHTML='<div class="featured-manage-empty">현재 신규 추가 꽃 영역에 표시 중인 꽃이 없습니다.</div>';
+    return;
+  }
+  box.innerHTML=list.map(f=>{
+    const selected=selectedFeaturedKeys.has(String(f.key));
+    return `<label class="featured-manage-item${selected?' is-selected':''}"><span class="grade grade-${esc(f.grade)}">${esc(f.grade)}</span><span class="featured-manage-name">${esc(f.listName||f.name)}</span><input type="checkbox" data-featured-manage-key="${esc(f.key)}" ${selected?'checked':''} aria-label="${esc(f.listName||f.name)} 선택"></label>`;
+  }).join('');
+  box.querySelectorAll('[data-featured-manage-key]').forEach(input=>input.addEventListener('change',()=>{
+    const key=String(input.dataset.featuredManageKey||'');
+    if(input.checked)selectedFeaturedKeys.add(key);else selectedFeaturedKeys.delete(key);
+    input.closest('.featured-manage-item').classList.toggle('is-selected',input.checked);
+    count.textContent=`표시 ${list.length}개 · 선택 ${selectedFeaturedKeys.size}개`;
+    toggleAll.textContent=selectedFeaturedKeys.size===list.length?'전체 선택 해제':'전체 선택';
+    removeButton.disabled=!selectedFeaturedKeys.size;
+  }));
+}
+async function removeSelectedFeaturedFlowers(){
+  const keys=[...selectedFeaturedKeys];
+  if(!keys.length)return;
+  if(!confirm(`선택한 꽃 ${keys.length}개를 신규 추가 꽃 영역에서 내릴까요?\n\n꽃 데이터, 이미지와 업데이트 공지는 삭제되지 않습니다.`))return;
+  const button=document.getElementById('removeSelectedFeaturedFlowers');
+  const status=document.getElementById('featuredManageStatus');
+  button.disabled=true;status.textContent='선택한 꽃의 신규 표시를 해제하는 중입니다…';status.className='status';
+  try{
+    const r=await fetch(UPDATES_API,{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({removeFeaturedFlowerKeys:keys})});
+    const p=await r.json().catch(()=>({}));if(!r.ok)throw new Error(p.error||`표시 해제 실패 (${r.status})`);
+    const currentEditKey=document.getElementById('editKey').value;
+    selectedFeaturedKeys.clear();
+    await refresh();
+    if(currentEditKey&&keys.includes(currentEditKey))document.getElementById('editFeaturedNew').checked=false;
+    status.textContent=`선택한 꽃 ${keys.length}개를 신규 추가 꽃 영역에서 내렸습니다.`;status.className='status ok';
+  }catch(err){
+    status.textContent=err.message||'신규 꽃 표시 해제 중 오류가 발생했습니다.';status.className='status error';renderFeaturedManageList();
+  }
+}
 function renderDeleteList(){
   const list=listFiltered(document.getElementById('deleteGradeFilter').value,document.getElementById('deleteSearch').value);
   const box=document.getElementById('deleteList');
@@ -319,6 +388,13 @@ document.querySelectorAll('.nav-tab').forEach(btn=>btn.onclick=()=>{
   document.querySelectorAll('.nav-tab').forEach(b=>b.classList.toggle('active',b===btn));
   document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===`panel-${btn.dataset.panel}`));
 });
+
+document.getElementById('toggleAllFeaturedFlowers').addEventListener('click',()=>{
+  const keys=flowers.filter(f=>f.featuredNew).map(f=>String(f.key));
+  selectedFeaturedKeys=keys.length>0&&selectedFeaturedKeys.size===keys.length?new Set():new Set(keys);
+  renderFeaturedManageList();
+});
+document.getElementById('removeSelectedFeaturedFlowers').addEventListener('click',removeSelectedFeaturedFlowers);
 
 document.getElementById('addForm').addEventListener('submit',async e=>{
   e.preventDefault();if(!ready)return;

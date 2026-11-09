@@ -88,6 +88,22 @@ export async function onRequestPut(context) {
     return new Response(JSON.stringify({ error: 'Invalid JSON body.' }), { status: 400, headers: JSON_HEADERS });
   }
 
+  const removeIncoming = Array.isArray(body?.removeFeaturedFlowerKeys) ? body.removeFeaturedFlowerKeys : null;
+  if (removeIncoming) {
+    const flowerKeys = [...new Set(removeIncoming.map(value => String(value || '').trim()).filter(Boolean))];
+    if (!flowerKeys.length || flowerKeys.length > 300 || flowerKeys.some(key => !validFlowerKey(key))) {
+      return new Response(JSON.stringify({ error: '신규 꽃 표시를 해제할 목록을 확인해주세요.' }), { status: 400, headers: JSON_HEADERS });
+    }
+    await ensureTable(env.DB);
+    const placeholders = flowerKeys.map((_, index) => `?${index + 1}`).join(',');
+    const result = await env.DB.prepare(`DELETE FROM featured_new_flowers WHERE flower_key IN (${placeholders})`).bind(...flowerKeys).run();
+    return new Response(JSON.stringify({
+      ok: true,
+      removedFeaturedFlowerKeys: flowerKeys,
+      changes: Number(result.meta?.changes || 0)
+    }), { headers: JSON_HEADERS });
+  }
+
   const incoming = Array.isArray(body?.featuredFlowerKeys) ? body.featuredFlowerKeys : null;
   if (!incoming || incoming.length > 100) {
     return new Response(JSON.stringify({ error: '신규 꽃 선택 목록을 확인해주세요.' }), { status: 400, headers: JSON_HEADERS });
