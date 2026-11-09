@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-demo-v4.54-update-prompt';
+const CACHE_NAME = 'lemon-demo-v4.55-update-prompt';
 const APP_SHELL = [
   '/login.html',
   '/auth-setup.html',
@@ -6,6 +6,7 @@ const APP_SHELL = [
   '/upgrade-efficiency-data.js',
   '/flower-data-all.js',
   '/images/branding/lemon-favicon.png',
+  '/images/branding/lemon-link-preview-v4.47.png',
   '/images/banners/lemon-banner-pc.png',
   '/images/banners/lemon-banner-mobile.png',
   '/images/ui/back-button.png',
@@ -68,7 +69,7 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'APPLY_UPDATE' && event.data.version === 'v4.54') {
+  if (event.data && event.data.type === 'APPLY_UPDATE' && event.data.version === 'v4.55') {
     self.skipWaiting();
   }
 });

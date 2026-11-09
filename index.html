@@ -5,6 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>demo 레몬 | 더 코지 플로리스트</title>
+    <meta name="description" content="레몬공책 - 더 코지 플로리스트 레몬 길드용 꽃 도감 및 가이드">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="레몬공책">
+    <meta property="og:title" content="🍋 레몬공책">
+    <meta property="og:description" content="더 코지 플로리스트 레몬 길드용 꽃 도감 및 가이드">
+    <meta property="og:url" content="https://lemon-cozybook.pages.dev/">
+    <meta property="og:image" content="https://lemon-cozybook.pages.dev/images/branding/lemon-link-preview-v4.47.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="레몬공책 캐릭터">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="🍋 레몬공책">
+    <meta name="twitter:description" content="더 코지 플로리스트 레몬 길드용 꽃 도감 및 가이드">
+    <meta name="twitter:image" content="https://lemon-cozybook.pages.dev/images/branding/lemon-link-preview-v4.47.png">
     <link rel="icon" type="image/png" href="images/branding/lemon-favicon.png">
 
     <!-- 고운 바탕 폰트 불러오기 -->
@@ -465,6 +479,25 @@
         .featured-flower-actions .save{background:#fff1bd;border-color:#ad9140;}
         .featured-flower-actions button:disabled{opacity:.55;cursor:wait;}
 
+        .update-selection-bar {
+            display: none;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 11px;
+            border: 1.5px solid #eadfbc;
+            border-top: none;
+            background: #fffaf0;
+        }
+        .update-selection-bar.active { display:flex; }
+        .update-selection-count { margin-right:auto; color:#6d5b34; font-size:.76rem; font-weight:700; }
+        .update-selection-bar button { min-height:34px; padding:6px 10px; border:1px solid #cfc2a3; border-radius:9px; background:#fff; color:#51452f; font-size:.72rem; font-weight:700; cursor:pointer; }
+        .update-selection-bar .delete { border-color:#d9a4a4; background:#fff3f3; color:#a94b4b; }
+        .update-selection-bar button:disabled { opacity:.5; cursor:not-allowed; }
+        .update-select-wrap { flex:0 0 auto; display:none; align-items:center; justify-content:center; }
+        .update-selection-mode .update-select-wrap { display:inline-flex; }
+        .update-select-wrap input { width:20px; height:20px; margin:0; accent-color:#b39227; cursor:pointer; }
+        #updateTable tbody tr.is-selected td { background:#fff4ce; }
+
         .btn-update-delete {
             flex: 0 0 auto;
             margin-left: 10px;
@@ -588,21 +621,42 @@
         }
 
         #updateTable .update-thumb-wrap {
+            position: relative;
             flex: 0 0 58px;
             width: 58px;
             height: 58px;
             border-radius: 12px;
             overflow: hidden;
-            border: 1px solid #eadfbc;
-            background: linear-gradient(180deg, #fffef8 0%, #fff8e9 100%);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.95);
+            border: 0;
+            padding: 3px;
+            background: var(--grade-frame-color,#fff);
+            box-shadow: none;
+        }
+
+        #updateTable .update-thumb-wrap.grade-border-N { --grade-frame-color:#d4edbc;--grade-line-color:#8fbc70; }
+        #updateTable .update-thumb-wrap.grade-border-R { --grade-frame-color:#bfe1f6;--grade-line-color:#72b7de; }
+        #updateTable .update-thumb-wrap.grade-border-SR { --grade-frame-color:#e6cff2;--grade-line-color:#b58acd; }
+        #updateTable .update-thumb-wrap.grade-border-SSR { --grade-frame-color:#ffe5a0;--grade-line-color:#e3b54e; }
+        #updateTable .update-thumb-wrap.grade-border-UR { --grade-frame-color:#ffcfc9;--grade-line-color:#e88989; }
+        #updateTable .update-thumb-wrap::after {
+            content:'';
+            position:absolute;
+            z-index:2;
+            inset:0;
+            border:2px solid var(--grade-frame-color,#fff);
+            border-radius:inherit;
+            box-shadow:inset 0 0 0 1px var(--grade-line-color,var(--grade-frame-color,#fff));
+            pointer-events:none;
         }
 
         #updateTable .update-thumb {
+            position: relative;
+            z-index: 1;
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
+            border-radius: 8px;
         }
 
         #updateTable .update-text {
@@ -861,6 +915,9 @@
 
             .table-header-actions { gap:4px; }
             .featured-flower-options-btn { width:29px;height:29px;border-radius:9px;font-size:.87rem; }
+            .update-selection-bar{flex-wrap:wrap;padding:8px;gap:5px;}
+            .update-selection-count{flex:1 0 100%;margin:0;text-align:center;}
+            .update-selection-bar button{flex:1;min-width:0;padding-inline:6px;font-size:.67rem;}
 
             .web-update-title-wrap { gap:5px; }
             .btn-web-update { min-height:27px; padding:5px 8px; font-size:.72rem; }
@@ -1423,8 +1480,14 @@
                     </div>
                     <div class="table-header-actions">
                         <button type="button" class="btn-reset" id="clearUpdatesBtn" onclick="clearAllUpdates()">전체 초기화</button>
-                        <button type="button" class="featured-flower-options-btn" id="openFeaturedFlowerOptions" title="신규 꽃 표시 설정" aria-label="신규 꽃 표시 설정 열기">⚙️</button>
+                        <button type="button" class="featured-flower-options-btn" id="toggleUpdateSelection" title="업데이트 공지 선택 삭제" aria-label="업데이트 공지 선택 삭제">⚙️</button>
                     </div>
+                </div>
+                <div class="update-selection-bar" id="updateSelectionBar">
+                    <span class="update-selection-count" id="updateSelectionCount">선택 0개</span>
+                    <button type="button" id="selectAllUpdates">전체 선택</button>
+                    <button type="button" class="delete" id="deleteSelectedUpdates" disabled>선택 삭제</button>
+                    <button type="button" id="cancelUpdateSelection">취소</button>
                 </div>
                 <table id="updateTable">
                     <thead>
@@ -1467,25 +1530,6 @@
         </section>
     </div>
 
-    <div class="web-update-modal" id="featuredFlowerModal" aria-hidden="true">
-        <section class="web-update-modal-card featured-flower-modal-card" role="dialog" aria-modal="true" aria-labelledby="featuredFlowerModalTitle">
-            <header class="web-update-modal-head">
-                <div class="web-update-modal-title" id="featuredFlowerModalTitle">🌷 신규 추가 꽃 설정</div>
-                <span class="featured-flower-count" id="featuredFlowerCount">선택 0개</span>
-                <button type="button" class="web-update-close-btn" id="closeFeaturedFlowerOptions" title="닫기" aria-label="닫기">✕</button>
-            </header>
-            <div class="web-update-modal-body">
-                <p class="featured-flower-help">업데이트 내역의 같은 꽃 기록은 하나로 합쳐서 표시됩니다. 다음 게임 업데이트 전까지 보여줄 꽃을 선택한 뒤 저장해주세요.</p>
-                <div class="featured-flower-list" id="featuredFlowerList"></div>
-                <div class="featured-flower-status" id="featuredFlowerStatus" aria-live="polite"></div>
-                <div class="featured-flower-actions">
-                    <button type="button" id="clearFeaturedFlowerDraft">전체 해제</button>
-                    <button type="button" class="save" id="saveFeaturedFlowers">선택 저장</button>
-                </div>
-            </div>
-        </section>
-    </div>
-
     <script>
         const UPDATES_API = '/api/updates';
         const WEB_UPDATES_API = '/api/web-updates';
@@ -1495,9 +1539,8 @@
         let latestWebUpdateAt = 0;
         let webUpdateManageMode = false;
         let updatePollTimer = null;
-        let featuredFlowerKeys = new Set();
-        let featuredSelectionDraft = null;
-        let featuredFlowerDetails = [];
+        let updateSelectionMode = false;
+        let selectedUpdateIds = new Set();
 
         function escapeHtml(value) {
             return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
@@ -1657,119 +1700,43 @@
             return `/api/flower-image/${encodeURIComponent(item.flowerKey)}?v=${encodeURIComponent(version)}`;
         }
 
-        function uniqueFeaturedFlowerCandidates() {
-            const candidates = new Map();
-            updateList.forEach(item => {
-                const key = String(item.flowerKey || '');
-                if (key && !candidates.has(key)) candidates.set(key, { ...item, source:'update' });
-            });
-            featuredFlowerDetails.forEach(item => {
-                const key = String(item.flowerKey || '');
-                if (key && !candidates.has(key)) {
-                    candidates.set(key, {
-                        ...item,
-                        createdAt:Number(item.selectedAt || 0),
-                        action:'selected',
-                        source:'saved'
-                    });
-                }
-            });
-            return [...candidates.values()];
+        function updateSelectionUi() {
+            const table = document.getElementById('updateTable');
+            const bar = document.getElementById('updateSelectionBar');
+            const toggle = document.getElementById('toggleUpdateSelection');
+            table.classList.toggle('update-selection-mode', updateSelectionMode);
+            bar.classList.toggle('active', updateSelectionMode);
+            toggle.classList.toggle('active', updateSelectionMode);
+            toggle.setAttribute('aria-pressed', updateSelectionMode ? 'true' : 'false');
+            document.getElementById('updateSelectionCount').textContent = `선택 ${selectedUpdateIds.size}개`;
+            document.getElementById('deleteSelectedUpdates').disabled = selectedUpdateIds.size === 0;
         }
 
-        function renderFeaturedFlowerModal() {
-            const list = document.getElementById('featuredFlowerList');
-            const selectedKeys = featuredSelectionDraft || featuredFlowerKeys;
-            const candidates = uniqueFeaturedFlowerCandidates();
-            document.getElementById('featuredFlowerCount').textContent = `선택 ${selectedKeys.size}개`;
-            if (!candidates.length) {
-                list.innerHTML = '<div class="featured-flower-empty">업데이트 내역에 선택할 꽃이 없습니다.</div>';
-                return;
-            }
-            list.innerHTML = candidates.map(item => {
-                const flowerKey = String(item.flowerKey || '');
-                const checked = selectedKeys.has(flowerKey);
-                const label = item.name ? (item.category ? `[${item.category}] ${item.name}` : item.name) : '꽃 정보 없음';
-                const imageSrc = getUpdateImageSrc(item);
-                const meta = item.source === 'saved'
-                    ? `${item.grade || '-'} · 현재 지정 목록`
-                    : `${item.grade || '-'} · ${formatUpdateDate(item.createdAt)} 최근 기록`;
-                return `<label class="featured-flower-row${checked ? ' is-selected' : ''}">
-                    <span class="featured-flower-thumb-wrap">${imageSrc ? `<img class="featured-flower-thumb" src="${escapeHtml(imageSrc)}" alt="${escapeHtml(label)}" loading="lazy" onerror="this.style.display='none'">` : ''}</span>
-                    <span class="featured-flower-copy"><span class="featured-flower-name">${escapeHtml(label)}</span><span class="featured-flower-meta">${escapeHtml(meta)}</span></span>
-                    <span class="featured-flower-check"><input type="checkbox" data-featured-modal-key="${escapeHtml(flowerKey)}" ${checked ? 'checked' : ''}><span>표시</span></span>
-                </label>`;
-            }).join('');
-            list.querySelectorAll('[data-featured-modal-key]').forEach(input => {
-                input.addEventListener('change', () => {
-                    const key = input.dataset.featuredModalKey;
-                    if (input.checked) featuredSelectionDraft.add(key);
-                    else featuredSelectionDraft.delete(key);
-                    input.closest('.featured-flower-row').classList.toggle('is-selected', input.checked);
-                    document.getElementById('featuredFlowerCount').textContent = `선택 ${featuredSelectionDraft.size}개`;
-                });
-            });
-        }
-
-        function openFeaturedFlowerOptions() {
-            featuredSelectionDraft = new Set(featuredFlowerKeys);
-            const status = document.getElementById('featuredFlowerStatus');
-            status.textContent = '';status.className = 'featured-flower-status';
-            renderFeaturedFlowerModal();
-            const modal = document.getElementById('featuredFlowerModal');
-            modal.classList.add('active');modal.setAttribute('aria-hidden','false');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeFeaturedFlowerOptions() {
-            const modal = document.getElementById('featuredFlowerModal');
-            modal.classList.remove('active');modal.setAttribute('aria-hidden','true');
-            featuredSelectionDraft = null;
-            if (!document.querySelector('.web-update-modal.active')) document.body.style.overflow = '';
-        }
-
-        async function saveFeaturedFlowers() {
-            const flowerKeys = [...(featuredSelectionDraft || new Set())];
-            const button = document.getElementById('saveFeaturedFlowers');
-            const status = document.getElementById('featuredFlowerStatus');
-            button.disabled = true;
-            status.textContent = '신규 꽃 표시 목록을 저장하는 중입니다.';status.className = 'featured-flower-status';
-            try {
-                const response = await fetch(UPDATES_API, {
-                    method:'PUT',headers:{ 'content-type':'application/json' },
-                    body:JSON.stringify({ featuredFlowerKeys:flowerKeys })
-                });
-                const payload = await response.json().catch(() => ({}));
-                if (!response.ok) throw new Error(payload.error || `PUT ${response.status}`);
-                await fetchUpdates();
-                featuredSelectionDraft = new Set(featuredFlowerKeys);
-                renderFeaturedFlowerModal();
-                status.textContent = `신규 추가 꽃 ${featuredFlowerKeys.size}개를 저장했습니다.`;
-                status.className = 'featured-flower-status ok';
-            } catch (error) {
-                console.error('신규 꽃 선택 저장 실패', error);
-                status.textContent = error.message || '신규 꽃 선택 저장에 실패했습니다.';
-                status.className = 'featured-flower-status error';
-            } finally {
-                button.disabled = false;
-            }
+        function setUpdateSelectionMode(active) {
+            updateSelectionMode = Boolean(active);
+            if (!updateSelectionMode) selectedUpdateIds.clear();
+            renderTable();
         }
 
         function renderTable() {
             const tbody = document.getElementById('updateTbody');
             if (!updateList.length) {
                 tbody.innerHTML = '<tr><td style="color:#888;">등록된 업데이트 내역이 없습니다.</td></tr>';
+                updateSelectionUi();
                 return;
             }
             tbody.innerHTML = updateList.map(item => {
                 const label = item.category ? `[${item.category}] ${item.name}` : item.name;
                 const score = item.guildScore == null ? '-' : `${item.guildScore}점`;
                 const imageSrc = getUpdateImageSrc(item);
-                return `<tr>
+                const id = Number(item.id);
+                const selected = selectedUpdateIds.has(id);
+                return `<tr class="${selected ? 'is-selected' : ''}">
                     <td class="update-content-cell">
                         <div class="update-item">
+                            <label class="update-select-wrap" title="이 공지 선택"><input type="checkbox" data-update-select="${id}" ${selected ? 'checked' : ''} aria-label="${escapeHtml(label)} 공지 선택"></label>
                             <div class="update-item-main">
-                                <div class="update-thumb-wrap">${imageSrc ? `<img class="update-thumb" src="${escapeHtml(imageSrc)}" alt="${escapeHtml(label)}" loading="lazy" onerror="this.closest('.update-thumb-wrap').style.display='none'">` : ''}</div>
+                                <div class="update-thumb-wrap grade-border-${escapeHtml(item.grade)}">${imageSrc ? `<img class="update-thumb" src="${escapeHtml(imageSrc)}" alt="${escapeHtml(label)}" loading="lazy" onerror="this.closest('.update-thumb-wrap').style.display='none'">` : ''}</div>
                                 <div class="update-text">
                                     <div class="update-meta">${escapeHtml(formatUpdateDate(item.createdAt))} · ${item.action === 'edit' ? '정보 수정' : '신규 추가'}</div>
                                     <div class="update-label">${escapeHtml(label)}</div>
@@ -1778,7 +1745,6 @@
                             </div>
                             <div class="update-actions">
                                 <button type="button" class="btn-update-flower" data-flower-key="${escapeHtml(item.flowerKey || '')}">꽃 정보 보기</button>
-                                <button type="button" class="btn-update-delete" title="이 공지만 삭제" aria-label="이 공지만 삭제" onclick="deleteUpdate(${Number(item.id)})">🗑️</button>
                             </div>
                         </div>
                     </td>
@@ -1787,6 +1753,16 @@
             tbody.querySelectorAll('.btn-update-flower').forEach(button => {
                 button.addEventListener('click', () => openUpdateFlower(button.dataset.flowerKey));
             });
+            tbody.querySelectorAll('[data-update-select]').forEach(input => {
+                input.addEventListener('change', () => {
+                    const id = Number(input.dataset.updateSelect);
+                    if (input.checked) selectedUpdateIds.add(id);
+                    else selectedUpdateIds.delete(id);
+                    input.closest('tr').classList.toggle('is-selected', input.checked);
+                    updateSelectionUi();
+                });
+            });
+            updateSelectionUi();
         }
 
         function openUpdateFlower(flowerKey) {
@@ -1797,20 +1773,25 @@
             location.href = `page5.html?flower=${encodeURIComponent(flowerKey)}&from=updates`;
         }
 
-        async function deleteUpdate(id) {
-            const item = updateList.find(entry => Number(entry.id) === Number(id));
-            const label = item ? (item.category ? `[${item.category}] ${item.name}` : item.name) : '이 공지';
-            if (!confirm(`${label}\n\n이 업데이트 공지만 삭제할까요?\n꽃 데이터와 이미지는 삭제되지 않습니다.`)) return;
-
+        async function deleteSelectedUpdates() {
+            const ids = [...selectedUpdateIds];
+            if (!ids.length) return;
+            if (!confirm(`선택한 업데이트 공지 ${ids.length}개를 삭제할까요?\n\n공지 기록만 삭제되며 꽃 데이터, 꽃 이미지와 신규 추가 꽃 표시는 그대로 유지됩니다.`)) return;
+            const button = document.getElementById('deleteSelectedUpdates');
+            button.disabled = true;
             try {
-                const response = await fetch(`${UPDATES_API}?id=${encodeURIComponent(id)}`, { method:'DELETE' });
+                const response = await fetch(`${UPDATES_API}?ids=${encodeURIComponent(ids.join(','))}`, { method:'DELETE' });
                 const payload = await response.json().catch(() => ({}));
                 if (!response.ok) throw new Error(payload.error || `DELETE ${response.status}`);
-                updateList = updateList.filter(entry => Number(entry.id) !== Number(id));
+                const deleted = new Set(ids);
+                updateList = updateList.filter(entry => !deleted.has(Number(entry.id)));
+                selectedUpdateIds.clear();
+                if (!updateList.length) updateSelectionMode = false;
                 renderTable();
             } catch (error) {
-                console.error('업데이트 공지 삭제 실패', error);
-                alert(`공지 삭제에 실패했습니다.\n${error.message || error}`);
+                console.error('업데이트 공지 선택 삭제 실패', error);
+                alert(`선택한 공지 삭제에 실패했습니다.\n${error.message || error}`);
+                updateSelectionUi();
             }
         }
 
@@ -1828,6 +1809,8 @@
                 const payload = await response.json().catch(() => ({}));
                 if (!response.ok) throw new Error(payload.error || `DELETE ${response.status}`);
                 updateList = [];
+                selectedUpdateIds.clear();
+                updateSelectionMode = false;
                 renderTable();
             } catch (error) {
                 console.error('업데이트 내역 전체 초기화 실패', error);
@@ -1843,10 +1826,9 @@
                 if (!response.ok) throw new Error(`GET ${response.status}`);
                 const payload = await response.json();
                 updateList = Array.isArray(payload.updates) ? payload.updates : [];
-                featuredFlowerDetails = Array.isArray(payload.featuredFlowers) ? payload.featuredFlowers : [];
-                featuredFlowerKeys = new Set(featuredFlowerDetails.map(item => String(item.flowerKey || '')).filter(Boolean));
+                const validIds = new Set(updateList.map(item => Number(item.id)));
+                selectedUpdateIds = new Set([...selectedUpdateIds].filter(id => validIds.has(id)));
                 renderTable();
-                if (document.getElementById('featuredFlowerModal').classList.contains('active')) renderFeaturedFlowerModal();
             } catch (error) {
                 console.warn('업데이트 내역 D1 조회 실패', error);
                 document.getElementById('updateTbody').innerHTML = '<tr><td style="color:#a66;">업데이트 내역을 불러오지 못했습니다.</td></tr>';
@@ -1854,18 +1836,13 @@
         }
 
         document.getElementById('openWebUpdates').addEventListener('click', openWebUpdates);
-        document.getElementById('openFeaturedFlowerOptions').addEventListener('click', openFeaturedFlowerOptions);
-        document.getElementById('closeFeaturedFlowerOptions').addEventListener('click', closeFeaturedFlowerOptions);
-        document.getElementById('saveFeaturedFlowers').addEventListener('click', saveFeaturedFlowers);
-        document.getElementById('clearFeaturedFlowerDraft').addEventListener('click', () => {
-            featuredSelectionDraft = new Set();
-            renderFeaturedFlowerModal();
-            const status = document.getElementById('featuredFlowerStatus');
-            status.textContent = '전체 선택을 해제했습니다. 저장하면 실제 표시 목록에 반영됩니다.';
-            status.className = 'featured-flower-status';
-        });
-        document.getElementById('featuredFlowerModal').addEventListener('click', event => {
-            if (event.target === document.getElementById('featuredFlowerModal')) closeFeaturedFlowerOptions();
+        document.getElementById('toggleUpdateSelection').addEventListener('click', () => setUpdateSelectionMode(!updateSelectionMode));
+        document.getElementById('cancelUpdateSelection').addEventListener('click', () => setUpdateSelectionMode(false));
+        document.getElementById('deleteSelectedUpdates').addEventListener('click', deleteSelectedUpdates);
+        document.getElementById('selectAllUpdates').addEventListener('click', () => {
+            const allSelected = updateList.length > 0 && selectedUpdateIds.size === updateList.length;
+            selectedUpdateIds = allSelected ? new Set() : new Set(updateList.map(item => Number(item.id)));
+            renderTable();
         });
         document.getElementById('closeWebUpdates').addEventListener('click', closeWebUpdates);
         document.getElementById('webUpdateModal').addEventListener('click', event => {
@@ -1912,7 +1889,7 @@
         });
         document.addEventListener('keydown', event => {
             if (event.key === 'Escape' && document.getElementById('webUpdateModal').classList.contains('active')) closeWebUpdates();
-            if (event.key === 'Escape' && document.getElementById('featuredFlowerModal').classList.contains('active')) closeFeaturedFlowerOptions();
+            if (event.key === 'Escape' && updateSelectionMode) setUpdateSelectionMode(false);
         });
 
         window.addEventListener('load', () => {
@@ -2041,7 +2018,7 @@
     </script>
 
 
-    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.54</div>
+    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">demo_v4.55</div>
 
 
 <script id="pwa-auto-update-script">
@@ -2060,8 +2037,8 @@
       updatePromptOpen = false;
 
       if (ok && registration.waiting) {
-        // 사용자가 확인을 눌렀을 때만 demo_v4.54 서비스워커를 활성화합니다.
-        registration.waiting.postMessage({ type: 'APPLY_UPDATE', version: 'v4.54' });
+        // 사용자가 확인을 눌렀을 때만 demo_v4.55 서비스워커를 활성화합니다.
+        registration.waiting.postMessage({ type: 'APPLY_UPDATE', version: 'v4.55' });
       }
     };
 

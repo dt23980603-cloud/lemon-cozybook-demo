@@ -144,6 +144,21 @@ export async function onRequestDelete(context) {
     return new Response(JSON.stringify({ ok: true, cleared: true, changes: Number(result.meta?.changes || 0) }), { headers: JSON_HEADERS });
   }
 
+  const idsParam = String(url.searchParams.get('ids') || '').trim();
+  if (idsParam) {
+    const ids = [...new Set(idsParam.split(',').map(value => Number(value)).filter(value => Number.isInteger(value) && value > 0))];
+    if (!ids.length || ids.length > 300) {
+      return new Response(JSON.stringify({ error: '삭제할 업데이트 공지 목록을 확인해주세요.' }), { status: 400, headers: JSON_HEADERS });
+    }
+    const placeholders = ids.map((_, index) => `?${index + 1}`).join(',');
+    const result = await env.DB.prepare(`DELETE FROM update_logs WHERE id IN (${placeholders})`).bind(...ids).run();
+    return new Response(JSON.stringify({
+      ok: true,
+      deleted: ids,
+      changes: Number(result.meta?.changes || 0)
+    }), { headers: JSON_HEADERS });
+  }
+
   const id = Number(url.searchParams.get('id'));
   if (!Number.isInteger(id) || id <= 0) {
     return new Response(JSON.stringify({ error: 'A valid update id is required.' }), { status: 400, headers: JSON_HEADERS });

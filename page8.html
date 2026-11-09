@@ -42,6 +42,9 @@ h1{margin:0;font-size:1.45rem}.subtitle{margin:3px 0 0;color:#827a67;font-size:.
 .option-delete-btn{background:#fff3f3;border-color:#d9a4a4;color:var(--danger)}
 .option-add-btn:hover{background:#fff4b8}.option-delete-btn:hover{background:#ffe8e8}
 .form-grid textarea{min-height:88px;resize:vertical}.image-help{font-size:.68rem;color:#8b8370;font-weight:400;line-height:1.45}
+.featured-toggle{grid-column:1/-1;display:flex!important;flex-direction:row!important;align-items:center;gap:10px!important;padding:12px 13px;border:1px solid #e1d49e;border-radius:12px;background:#fffaf0;cursor:pointer}
+.featured-toggle input{width:20px!important;height:20px!important;min-height:0!important;flex:0 0 20px;margin:0;accent-color:#b39227;box-shadow:none!important}
+.featured-toggle-copy{display:flex;flex-direction:column;gap:2px}.featured-toggle-title{font-size:.8rem;font-weight:700;color:#514b3a}.featured-toggle-help{font-size:.67rem;font-weight:400;color:#8b8370;line-height:1.4}
 .actions{display:flex;justify-content:flex-end;margin-top:12px}
 .submit{min-width:120px;min-height:45px;padding:9px 14px;border:1px solid #6f6227;border-radius:12px;background:var(--lemon);color:#3f381b;font-weight:700;cursor:pointer}.submit:hover{background:#ffdf5a}.submit:disabled{opacity:.55;cursor:wait}
 .status{min-height:22px;margin:11px 0 0;text-align:center;color:#777;font-size:.75rem;line-height:1.5}.status.ok{color:#39723b}.status.error{color:#a54242}
@@ -95,6 +98,7 @@ h1{margin:0;font-size:1.45rem}.subtitle{margin:3px 0 0;color:#827a67;font-size:.
           <label>종료일<input id="addFlowerEndDate" type="date"></label>
           <label class="span-2">비고<textarea id="addNote" maxlength="500" rows="3"></textarea></label>
           <label class="span-2">이미지<input id="addImage" type="file" accept="image/png,image/jpeg,image/webp" required><span class="image-help">PNG/JPG도 등록 시 WebP로 자동 변환되어 저장됩니다.</span></label>
+          <label class="featured-toggle"><input id="addFeaturedNew" type="checkbox" checked><span class="featured-toggle-copy"><span class="featured-toggle-title">🌷 신규 추가 꽃에 표시</span><span class="featured-toggle-help">전체 꽃 도감 상단의 ‘신규 추가 꽃’ 영역에 바로 표시합니다.</span></span></label>
         </div>
         <div id="addStatus" class="status" aria-live="polite"></div>
         <div class="actions"><button id="submitAdd" class="submit" type="submit">등록</button></div>
@@ -131,6 +135,7 @@ h1{margin:0;font-size:1.45rem}.subtitle{margin:3px 0 0;color:#827a67;font-size:.
           <label>종료일<input id="editFlowerEndDate" type="date"></label>
           <label class="span-2">비고<textarea id="editNote" maxlength="500" rows="3"></textarea></label>
           <label class="span-2">이미지<input id="editImage" type="file" accept="image/png,image/jpeg,image/webp"><span id="editImageHelp" class="image-help">변경하지 않으려면 이미지를 선택하지 마세요.</span></label>
+          <label class="featured-toggle"><input id="editFeaturedNew" type="checkbox"><span class="featured-toggle-copy"><span class="featured-toggle-title">🌷 신규 추가 꽃에 표시</span><span class="featured-toggle-help">체크를 해제하면 꽃 데이터와 이미지는 유지되고 신규 추가 꽃 영역에서만 제외됩니다.</span></span></label>
         </div>
         <div id="editStatus" class="status" aria-live="polite"></div>
         <div class="actions"><button id="submitEdit" class="submit" type="submit">저장</button></div>
@@ -169,7 +174,7 @@ h1{margin:0;font-size:1.45rem}.subtitle{margin:3px 0 0;color:#827a67;font-size:.
     <div class="dialog-actions"><button id="cancelOptionDelete" type="button">취소</button><button id="confirmOptionDelete" class="delete-option" type="submit">삭제</button></div>
   </form>
 </dialog>
-<div id="site-version">demo_v4.54</div>
+<div id="site-version">demo_v4.55</div>
 
 <script src="flower-data-all.js"></script>
 <script>
@@ -299,6 +304,7 @@ function selectEditFlower(key){
   document.getElementById('editFlowerEndDate').value=f.flowerEndDate||'';
   document.getElementById('editFlowerEndDate').min=document.getElementById('editFlowerStartDate').value||'';
   document.getElementById('editNote').value=f.note||'';
+  document.getElementById('editFeaturedNew').checked=Boolean(f.featuredNew);
   document.getElementById('editImage').value='';
   document.getElementById('editPreview').src=f.image||'';
   document.getElementById('editSelectedName').textContent=f.listName||f.name||'';
@@ -324,9 +330,9 @@ document.getElementById('addForm').addEventListener('submit',async e=>{
   submit.disabled=true;status.textContent='이미지를 WebP로 변환하고 등록 중입니다…';status.className='status';
   try{
     const webp=await imageToWebP(document.getElementById('addImage').files[0]);
-    const form=new FormData();form.append('grade',grade);form.append('category',category);form.append('name',name);form.append('guildScore',document.getElementById('addGuildScore').value.trim());form.append('acquire',document.getElementById('addAcquire').value.trim());form.append('flowerStartDate',document.getElementById('addFlowerStartDate').value);form.append('flowerEndDate',document.getElementById('addFlowerEndDate').value);form.append('note',document.getElementById('addNote').value.trim());form.append('image',webp,'flower.webp');
+    const form=new FormData();form.append('grade',grade);form.append('category',category);form.append('name',name);form.append('guildScore',document.getElementById('addGuildScore').value.trim());form.append('acquire',document.getElementById('addAcquire').value.trim());form.append('flowerStartDate',document.getElementById('addFlowerStartDate').value);form.append('flowerEndDate',document.getElementById('addFlowerEndDate').value);form.append('note',document.getElementById('addNote').value.trim());form.append('featuredNew',document.getElementById('addFeaturedNew').checked?'1':'0');form.append('image',webp,'flower.webp');
     const r=await fetch(FLOWERS_API,{method:'POST',body:form});const p=await r.json().catch(()=>({}));if(!r.ok)throw new Error(p.error||`등록 실패 (${r.status})`);
-    status.textContent='등록되었습니다. 전체 꽃 도감과 업데이트 내역에 자동 반영됩니다.';status.className='status ok';e.target.reset();document.getElementById('addFlowerEndDate').min='';await refresh();await refreshOptions();
+    status.textContent='등록되었습니다. 전체 꽃 도감과 업데이트 내역에 자동 반영됩니다.';status.className='status ok';e.target.reset();document.getElementById('addFeaturedNew').checked=true;document.getElementById('addFlowerEndDate').min='';await refresh();await refreshOptions();
   }catch(err){status.textContent=err.message||'등록 중 오류가 발생했습니다.';status.className='status error'}finally{submit.disabled=false}
 });
 
@@ -337,7 +343,7 @@ document.getElementById('editForm').addEventListener('submit',async e=>{
   if(!validDateRange('editFlowerStartDate','editFlowerEndDate',status))return;
   submit.disabled=true;status.textContent='꽃 정보를 저장 중입니다…';status.className='status';
   try{
-    const form=new FormData();form.append('key',key);form.append('grade',grade);form.append('category',category);form.append('name',name);form.append('guildScore',document.getElementById('editGuildScore').value.trim());form.append('acquire',document.getElementById('editAcquire').value.trim());form.append('flowerStartDate',document.getElementById('editFlowerStartDate').value);form.append('flowerEndDate',document.getElementById('editFlowerEndDate').value);form.append('note',document.getElementById('editNote').value.trim());
+    const form=new FormData();form.append('key',key);form.append('grade',grade);form.append('category',category);form.append('name',name);form.append('guildScore',document.getElementById('editGuildScore').value.trim());form.append('acquire',document.getElementById('editAcquire').value.trim());form.append('flowerStartDate',document.getElementById('editFlowerStartDate').value);form.append('flowerEndDate',document.getElementById('editFlowerEndDate').value);form.append('note',document.getElementById('editNote').value.trim());form.append('featuredNew',document.getElementById('editFeaturedNew').checked?'1':'0');
     const file=document.getElementById('editImage').files[0];if(file){status.textContent='새 이미지를 WebP로 변환하고 저장 중입니다…';form.append('image',await imageToWebP(file),'flower.webp')}
     const r=await fetch(FLOWERS_API,{method:'PUT',body:form});const p=await r.json().catch(()=>({}));if(!r.ok)throw new Error(p.error||`수정 실패 (${r.status})`);
     status.textContent='수정되었습니다. 전체 꽃 도감과 업데이트 내역에 자동 반영됩니다.';status.className='status ok';await refresh();await refreshOptions();selectEditFlower(key);

@@ -69,7 +69,7 @@ export async function onRequestGet(context) {
 
   await ensureTable(env.DB);
   const url = new URL(context.request.url);
-  const stateId = url.searchParams.get('mode') === 'demo' ? 'demo' : 'main';
+  const stateId = 'main';
   let current = await readCurrentState(env.DB, stateId);
 
   // 데모 상태가 아직 없으면 운영(main) 상태를 1회 복제해 시작합니다.
@@ -130,7 +130,7 @@ export async function onRequestPut(context) {
 
   await ensureTable(env.DB);
   const url = new URL(context.request.url);
-  const stateId = url.searchParams.get('mode') === 'demo' ? 'demo' : 'main';
+  const stateId = 'main';
   const current = await readCurrentState(env.DB, stateId);
   const mergedState = { ...current.state, ...patch };
   const updatedAt = Date.now();
@@ -312,7 +312,7 @@ export async function onRequestPatch(context) {
 
   await ensureTable(env.DB);
   const url = new URL(request.url);
-  const stateId = url.searchParams.get('mode') === 'demo' ? 'demo' : 'main';
+  const stateId = 'main';
 
   // Keep the demo seed behavior even if PATCH is the first request.
   if (stateId === 'demo') {

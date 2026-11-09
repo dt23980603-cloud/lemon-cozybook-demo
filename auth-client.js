@@ -7,8 +7,8 @@
   document.documentElement.dataset.authMemberId=auth.memberId||'';
 
   const adminSelectors={
-    '/index.html':['#clearUpdatesBtn','#openFeaturedFlowerOptions','#toggleWebUpdateManage'],
-    '/':['#clearUpdatesBtn','#openFeaturedFlowerOptions','#toggleWebUpdateManage'],
+    '/index.html':['#clearUpdatesBtn','#toggleUpdateSelection','#toggleWebUpdateManage'],
+    '/':['#clearUpdatesBtn','#toggleUpdateSelection','#toggleWebUpdateManage'],
     '/page1.html':['#openZodiacManage'],
     '/page3.html':['a[href="page10.html"]'],
     '/page5.html':['#resetCompetitionMission','#openEditFlowerModal']

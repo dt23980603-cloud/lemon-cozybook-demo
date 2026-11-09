@@ -1171,7 +1171,7 @@
       .btn-open{border-radius:10px;}
     }
 
-    /* demo_v4.54: 꽃 카드 개량 설정 */
+    /* demo_v4.55: 꽃 카드 개량 설정 */
     .upgrade-setting-card{
       width:min(430px,100%);
       overflow:hidden;
@@ -1928,6 +1928,7 @@
     let remoteFlowers = [];
     let featuredNewFlowerSelections = [];
     let d1Ready = false;
+    let baseSeedAttempted = false;
     let activeGrade = 'ALL';
     let currentDetailKey = '';
     const requestedFlowerKey = new URLSearchParams(location.search).get('flower') || '';
@@ -2808,6 +2809,24 @@
       return payload;
     }
 
+    async function ensureAdminBaseSeed() {
+      if (authProfile?.role !== 'admin' || baseSeedAttempted) return;
+
+      const remoteKeys = new Set(remoteFlowers.map(item => String(item?.key || '')));
+      const needsSeed = !d1Ready || masterFlowers.some(item => !remoteKeys.has(String(item?.key || '')));
+      baseSeedAttempted = true;
+      if (!needsSeed) return;
+
+      try {
+        await ensureBaseSeed();
+        await syncRemoteFlowers(false);
+      } catch (error) {
+        baseSeedAttempted = false;
+        console.error('관리자용 D1 기본 꽃 초기화 실패', error);
+        alert(`D1 꽃 데이터 초기화에 실패했습니다.\n${error.message || error}\n기존 flower-data-all.js 데이터를 임시로 표시합니다.`);
+      }
+    }
+
     async function fetchRemoteFlowers() {
       const response = await fetch(FLOWERS_API, { cache:'no-store' });
       if (!response.ok) throw new Error(`GET ${response.status}`);
@@ -3141,21 +3160,16 @@
       renderGuildMemberSelect(true);
       renderFlowers();
       await fetchGuildState(true);
-      try {
-        await ensureBaseSeed();
-        await syncRemoteFlowers(false);
-      } catch (error) {
-        console.error('D1 기본 꽃 이전/조회 실패', error);
-        alert(`D1 꽃 데이터 초기화에 실패했습니다.\n${error.message || error}\n기존 flower-data-all.js 데이터를 임시로 표시합니다.`);
-      }
+      await syncRemoteFlowers(false);
     }
 
     initializeFlowers();
-    window.addEventListener('lemon-auth-ready', event => {
+    window.addEventListener('lemon-auth-ready', async event => {
       authProfile = event.detail || null;
       renderGuildMemberSelect(true);
       renderCompetitionMissionModal();
       renderFlowers();
+      await ensureAdminBaseSeed();
     });
     setInterval(() => syncRemoteFlowers(true), 5000);
     setInterval(() => fetchGuildState(false), 1000);

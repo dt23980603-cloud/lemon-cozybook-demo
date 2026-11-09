@@ -57,6 +57,13 @@ async function ensureTables(db) {
   await db.prepare(`CREATE INDEX IF NOT EXISTS idx_update_logs_created_at ON update_logs (created_at DESC)`).run();
 
   await db.prepare(`
+    CREATE TABLE IF NOT EXISTS featured_new_flowers (
+      flower_key TEXT PRIMARY KEY,
+      selected_at INTEGER NOT NULL
+    )
+  `).run();
+
+  await db.prepare(`
     CREATE TABLE IF NOT EXISTS app_meta (
       meta_key TEXT PRIMARY KEY,
       meta_value TEXT NOT NULL,
@@ -112,6 +119,7 @@ function rowToFlower(row) {
       : imagePath,
     createdAt: Number(row.created_at || 0),
     updatedAt,
+    featuredNew: Number(row.featured_new || 0) === 1,
     isRemote: true,
     hasR2Image: Boolean(imageKey)
   };
@@ -119,9 +127,13 @@ function rowToFlower(row) {
 
 async function readFlower(db, key) {
   return db.prepare(`
-    SELECT flower_key, grade, category, name, guild_score, acquire, flower_date, flower_end_date, note,
-           image_key, image_path, created_at, updated_at
-    FROM flowers WHERE flower_key = ?1
+    SELECT flowers.flower_key, flowers.grade, flowers.category, flowers.name, flowers.guild_score,
+           flowers.acquire, flowers.flower_date, flowers.flower_end_date, flowers.note,
+           flowers.image_key, flowers.image_path, flowers.created_at, flowers.updated_at,
+           CASE WHEN featured.flower_key IS NULL THEN 0 ELSE 1 END AS featured_new
+    FROM flowers
+    LEFT JOIN featured_new_flowers AS featured ON featured.flower_key = flowers.flower_key
+    WHERE flowers.flower_key = ?1
   `).bind(key).first();
 }
 
@@ -196,10 +208,13 @@ export async function onRequestGet(context) {
   }
   await ensureTables(env.DB);
   const result = await env.DB.prepare(`
-    SELECT flower_key, grade, category, name, guild_score, acquire, flower_date, flower_end_date, note,
-           image_key, image_path, created_at, updated_at
+    SELECT flowers.flower_key, flowers.grade, flowers.category, flowers.name, flowers.guild_score,
+           flowers.acquire, flowers.flower_date, flowers.flower_end_date, flowers.note,
+           flowers.image_key, flowers.image_path, flowers.created_at, flowers.updated_at,
+           CASE WHEN featured.flower_key IS NULL THEN 0 ELSE 1 END AS featured_new
     FROM flowers
-    ORDER BY created_at ASC, flower_key ASC
+    LEFT JOIN featured_new_flowers AS featured ON featured.flower_key = flowers.flower_key
+    ORDER BY flowers.created_at ASC, flowers.flower_key ASC
   `).all();
   return new Response(JSON.stringify({ flowers: (result.results || []).map(rowToFlower) }), { headers: JSON_HEADERS });
 }
@@ -235,6 +250,7 @@ export async function onRequestPost(context) {
   const note = cleanText(form.get('note'), 500);
   const score = parseGuildScore(form.get('guildScore'));
   const image = form.get('image');
+  const featuredNew = form.get('featuredNew') === '1';
 
   if (!GRADES.has(grade) || !category || !name) {
     return new Response(JSON.stringify({ error: '등급, 분류, 꽃 이름을 확인해주세요.' }), { status: 400, headers: JSON_HEADERS });
@@ -273,7 +289,7 @@ export async function onRequestPost(context) {
       httpMetadata: { contentType: 'image/webp', cacheControl: 'public, max-age=31536000, immutable' }
     });
 
-    await env.DB.batch([
+    const statements = [
       env.DB.prepare(`
         INSERT INTO flowers
           (flower_key, grade, category, name, guild_score, acquire, flower_date, flower_end_date, note, image_key, image_path, created_at, updated_at)
@@ -283,7 +299,15 @@ export async function onRequestPost(context) {
         INSERT INTO update_logs (flower_key, action, category, name, grade, guild_score, created_at)
         VALUES (?1, 'add', ?2, ?3, ?4, ?5, ?6)
       `).bind(flowerKey, category, name, grade, score.value, now)
-    ]);
+    ];
+    if (featuredNew) {
+      statements.push(env.DB.prepare(`
+        INSERT INTO featured_new_flowers (flower_key, selected_at)
+        VALUES (?1, ?2)
+        ON CONFLICT(flower_key) DO UPDATE SET selected_at = excluded.selected_at
+      `).bind(flowerKey, now));
+    }
+    await env.DB.batch(statements);
   } catch (error) {
     try { await env.FLOWER_IMAGES.delete(imageKey); } catch (_) {}
     return new Response(JSON.stringify({ error: '꽃 저장 중 오류가 발생했습니다.', detail: String(error?.message || error) }), { status: 500, headers: JSON_HEADERS });
@@ -316,6 +340,7 @@ export async function onRequestPut(context) {
   const note = cleanText(form.get('note'), 500);
   const score = parseGuildScore(form.get('guildScore'));
   const image = form.get('image');
+  const featuredNew = form.get('featuredNew') === '1';
 
   if (!validFlowerKey(key) || !GRADES.has(grade) || !category || !name) {
     return new Response(JSON.stringify({ error: '수정할 꽃 정보가 올바르지 않습니다.' }), { status: 400, headers: JSON_HEADERS });
@@ -371,7 +396,7 @@ export async function onRequestPut(context) {
   }
 
   try {
-    await env.DB.batch([
+    const statements = [
       env.DB.prepare(`
         UPDATE flowers
         SET grade = ?2,
@@ -390,7 +415,15 @@ export async function onRequestPut(context) {
         INSERT INTO update_logs (flower_key, action, category, name, grade, guild_score, created_at)
         VALUES (?1, 'edit', ?2, ?3, ?4, ?5, ?6)
       `).bind(key, category, name, grade, score.value, now)
-    ]);
+    ];
+    statements.push(featuredNew
+      ? env.DB.prepare(`
+          INSERT INTO featured_new_flowers (flower_key, selected_at)
+          VALUES (?1, ?2)
+          ON CONFLICT(flower_key) DO UPDATE SET selected_at = excluded.selected_at
+        `).bind(key, now)
+      : env.DB.prepare(`DELETE FROM featured_new_flowers WHERE flower_key = ?1`).bind(key));
+    await env.DB.batch(statements);
   } catch (error) {
     if (uploadedImageKey && env.FLOWER_IMAGES) {
       try { await env.FLOWER_IMAGES.delete(uploadedImageKey); } catch (_) {}
@@ -421,7 +454,10 @@ export async function onRequestDelete(context) {
   if (!row) {
     return new Response(JSON.stringify({ error: '등록된 꽃을 찾을 수 없습니다.' }), { status: 404, headers: JSON_HEADERS });
   }
-  await env.DB.prepare(`DELETE FROM flowers WHERE flower_key = ?1`).bind(key).run();
+  await env.DB.batch([
+    env.DB.prepare(`DELETE FROM featured_new_flowers WHERE flower_key = ?1`).bind(key),
+    env.DB.prepare(`DELETE FROM flowers WHERE flower_key = ?1`).bind(key)
+  ]);
   if (env.FLOWER_IMAGES && row.image_key) {
     try { await env.FLOWER_IMAGES.delete(row.image_key); } catch (_) {}
   }

@@ -11,6 +11,7 @@ const PUBLIC_PATHS = new Set([
   '/sw.js',
   '/favicon.ico',
   '/images/branding/lemon-favicon.png',
+  '/images/branding/lemon-link-preview-v4.47.png',
   '/icons/icon-v4.12-192.png',
   '/icons/icon-v4.12-512.png'
 ]);
