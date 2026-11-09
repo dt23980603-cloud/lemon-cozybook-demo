@@ -1171,7 +1171,7 @@
       .btn-open{border-radius:10px;}
     }
 
-    /* demo_v4.56: 꽃 카드 개량 설정 */
+    /* demo_v4.57: 꽃 카드 개량 설정 */
     .upgrade-setting-card{
       width:min(430px,100%);
       overflow:hidden;
@@ -2254,6 +2254,7 @@
     function renderCompetitionMissionModal() {
       const sorted = getSortedGuildMembers();
       const doneCount = getCompetitionMissionDoneCount();
+      const canManageAllMissions = authProfile && (authProfile.role === 'admin' || authProfile.role === 'subadmin');
       competitionMissionSummary.textContent = `${doneCount} / ${guildMembers.length}명 완료`;
       updateCompetitionMissionMiniCount();
 
@@ -2270,7 +2271,7 @@
               <span class="competition-mission-role" data-role="${escapeHtml(member.role || '멤버')}">${escapeHtml(member.role || '멤버')}</span>
               <span class="competition-mission-name">${escapeHtml(member.name || '')}</span>
             </div>
-            <button type="button" class="competition-mission-toggle ${done ? 'done' : ''}" data-mission-member="${escapeHtml(member.id)}" ${authProfile && authProfile.role !== 'admin' && authProfile.memberId !== member.id ? 'disabled title="본인의 상태만 변경할 수 있습니다."' : ''}>${done ? '✓ 완료' : '□ 미완료'}</button>
+            <button type="button" class="competition-mission-toggle ${done ? 'done' : ''}" data-mission-member="${escapeHtml(member.id)}" ${authProfile && !canManageAllMissions && authProfile.memberId !== member.id ? 'disabled title="본인의 상태만 변경할 수 있습니다."' : ''}>${done ? '✓ 완료' : '□ 미완료'}</button>
           </div>`;
       }).join('');
 

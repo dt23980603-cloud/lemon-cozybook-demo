@@ -303,11 +303,12 @@ export async function onRequestPatch(context) {
   if (!auth) return forbidden('로그인이 필요합니다.');
   if (auth.role !== 'admin') {
     const ownMemberId = String(auth.memberId || '');
-    const outsideScope = changes.some(change => memberIdFromScopedKey(change.key) !== ownMemberId) ||
+    const outsidePersonalScope = changes.some(change => memberIdFromScopedKey(change.key) !== ownMemberId) ||
       optionChanges.some(change => memberIdFromScopedKey(change.key) !== ownMemberId) ||
-      missionChanges.some(change => change.memberId !== ownMemberId) ||
       birthdayChanges.some(change => change.memberId !== ownMemberId);
-    if (outsideScope) return forbidden();
+    const outsideMissionScope = auth.role !== 'subadmin' &&
+      missionChanges.some(change => change.memberId !== ownMemberId);
+    if (outsidePersonalScope || outsideMissionScope) return forbidden();
   }
 
   await ensureTable(env.DB);
